@@ -1,0 +1,6 @@
+Resources/
+.superpowers/
+chatgpt-to-markdown-fixed/
+node_modules/
+.next/
+*.log
