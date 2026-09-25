@@ -3,11 +3,13 @@
 import type { Block, Effect } from "@studybuddy/engine";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getConcept, getLesson, isDetour, lessonHref, misconceptionInfo, nextConcept, splitRef } from "@/lib/course";
+import { getConcept, getLesson, isDetour, lessonHref, misconceptionFor, nextConcept, splitRef } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { BlockView, PASSIVE } from "../blocks/BlockView";
 import type { AnswerInput, BlockCtx } from "../blocks/types";
 import { LessonComplete } from "./LessonComplete";
+
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 type Offer = { key: string; afterBlock: string; effect: Extract<Effect, { type: "offerRemediation" | "offerSkip" }> };
 
@@ -130,13 +132,13 @@ export function LessonPlayer({ conceptId, lessonId, returnTo, resumeBlockId }: {
 
 function OfferCard({ offer, conceptId, lessonId, dismiss }: { offer: Offer; conceptId: string; lessonId: string; dismiss: () => void }) {
   if (offer.effect.type === "offerRemediation") {
-    const info = misconceptionInfo.get(offer.effect.tag);
+    const info = misconceptionFor(conceptId, offer.effect.tag);
     const target = splitRef(offer.effect.lessonRef);
     return (
       <div className="fb fb-again reveal mt-4 space-y-2" role="status">
         <p>
-          <strong>↺ This looks like a common sticking point.</strong> {info?.description} A 3-minute detour usually clears it up, and you'll come
-          straight back here.
+          <strong>↺ Same sticking point twice:</strong> <em>{lowerFirst(info?.description.replace(/\.$/, "") ?? "")}</em>. It's one of the most common in
+          this topic, and a 3-minute detour usually clears it. You'll come straight back here afterwards.
         </p>
         <div className="flex gap-2">
           <Link className="btn text-sm" href={lessonHref(target.conceptId, target.lessonId, `?return=${encodeURIComponent(`${conceptId}/${lessonId}@${offer.afterBlock}`)}`)}>

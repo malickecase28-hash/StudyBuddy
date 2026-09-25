@@ -1,6 +1,6 @@
 "use client";
 
-import { Html, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
 import { labReadout, type GaussLabConfig, type LabCharge, type LabState, type LabSurface } from "@studybuddy/course-em1";
 import { blobRadius, dot, fluxDensity, norm, type Vec3 } from "@studybuddy/physics";
@@ -104,6 +104,23 @@ export default function GaussLab({
               <sub>enc</sub> = <strong>{fmtQ(readout.qenc)}</strong>
             </div>
           </div>
+        )}
+        {charges.length > 0 && (
+          <ul className="pointer-events-none absolute right-3 top-3 space-y-0.5 rounded-lg bg-raised/90 px-3 py-2 text-xs shadow-sm" aria-label="Charges">
+            {charges.map((c) => {
+              const inside = surface ? Math.abs(labReadout({ charges: [c], surface }, 8)!.qenc) > 0 : null;
+              return (
+                <li key={c.id}>
+                  <span className="sem-charge">
+                    {c.q > 0 ? "+" : "−"}
+                    {Math.abs(c.q)} µC
+                  </span>
+                  {c.q < 0 && <span className="text-faint"> (hollow)</span>}
+                  {inside !== null && <span className="text-soft"> · {inside ? "inside" : "outside"}</span>}
+                </li>
+              );
+            })}
+          </ul>
         )}
         {!use2D && charges.some((c) => c.draggable) && (
           <p className="pointer-events-none absolute bottom-2 left-3 text-xs text-faint">Drag a charge to move it · drag empty space to orbit</p>
@@ -212,13 +229,7 @@ function ChargeMesh({ charge, colors, focus, onGrab }: { charge: LabCharge; colo
       }}
     >
       <sphereGeometry args={[r, 24, 16]} />
-      <meshStandardMaterial color={colors.charge} emissive={colors.charge} emissiveIntensity={charge.q < 0 ? 0.05 : 0.35} />
-      <Html center distanceFactor={6} style={{ pointerEvents: "none" }}>
-        <span style={{ color: colors.charge, fontWeight: 700, fontSize: 13, whiteSpace: "nowrap", transform: "translateY(-18px)", display: "block" }}>
-          {charge.q > 0 ? "+" : "−"}
-          {Math.abs(charge.q)} µC
-        </span>
-      </Html>
+      <meshStandardMaterial color={colors.charge} emissive={colors.charge} emissiveIntensity={charge.q < 0 ? 0.05 : 0.35} wireframe={charge.q < 0} />
     </mesh>
   );
 }

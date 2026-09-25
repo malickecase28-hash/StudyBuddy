@@ -3,7 +3,7 @@
 import { unmetPrerequisites } from "@studybuddy/engine";
 import Link from "next/link";
 import { useEffect } from "react";
-import { course, getConcept, getLesson, isDetour, lessonHref, mainLesson } from "@/lib/course";
+import { course, diagnosticSolid, getConcept, getLesson, isDetour, lessonHref, mainLesson } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { useUi } from "@/lib/ui";
 import { Markup } from "../Markup";
@@ -30,7 +30,10 @@ export function LessonScreen({ conceptId, lessonId, returnTo, resumeBlockId }: {
     );
   }
 
-  const unmet = unmetPrerequisites(course, conceptId, learner).map((u) => getConcept(u.conceptId)!);
+  const solid = diagnosticSolid(learner.diagnostic?.results);
+  const unmet = unmetPrerequisites(course, conceptId, learner)
+    .filter((u) => !solid.has(u.conceptId))
+    .map((u) => getConcept(u.conceptId)!);
   const main = concept.lessons.filter((l) => !isDetour(conceptId, l.id));
   const detours = concept.lessons.filter((l) => isDetour(conceptId, l.id));
   const detour = isDetour(conceptId, lessonId);

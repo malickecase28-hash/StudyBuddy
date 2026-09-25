@@ -48,3 +48,18 @@ export function isDetour(conceptId: string, lessonId: string): boolean {
 export const misconceptionInfo = new Map(
   course.concepts.flatMap((c) => c.misconceptions.map((m) => [m.tag, m] as const)),
 );
+
+/** Misconception description as worded by the concept where it fired (falls back to any concept). */
+export function misconceptionFor(conceptId: string, tag: string) {
+  return conceptById.get(conceptId)?.misconceptions.find((m) => m.tag === tag) ?? misconceptionInfo.get(tag);
+}
+
+/** Refresher concepts the diagnostic showed are already solid (every topic mapping to them was "ready"). */
+export function diagnosticSolid(results: Record<string, string> | undefined): Set<string> {
+  const solid = new Set<string>();
+  if (!results) return solid;
+  const byRefresher = new Map<string, string[]>();
+  for (const t of diagnostic.topics) if (t.refresher) byRefresher.set(t.refresher, [...(byRefresher.get(t.refresher) ?? []), t.id]);
+  for (const [refresher, topics] of byRefresher) if (topics.every((t) => results[t] === "ready")) solid.add(refresher);
+  return solid;
+}

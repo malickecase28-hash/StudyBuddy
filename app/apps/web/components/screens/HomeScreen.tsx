@@ -2,7 +2,7 @@
 
 import { DAY_MS } from "@studybuddy/engine";
 import Link from "next/link";
-import { conceptById, conceptOrder, course, examDateMs, getConcept, getLesson, lessonHref, mainLesson, misconceptionInfo } from "@/lib/course";
+import { conceptById, conceptOrder, course, diagnosticSolid, examDateMs, getConcept, getLesson, lessonHref, mainLesson, misconceptionInfo } from "@/lib/course";
 import { conceptProgress, pct, STATE_GLYPH } from "@/lib/progress";
 import { dueCount } from "@/lib/retrieval";
 import { useStudy } from "@/lib/store";
@@ -18,13 +18,14 @@ export function HomeScreen() {
   const firstRun = !learner.diagnostic && learner.history.length === 0;
   const daysToExam = Math.max(0, Math.ceil((examDateMs - now) / DAY_MS));
   const due = dueCount(learner, now);
-  const returning = returnInfo && returnInfo.gapDays >= 2 && !welcomeDismissed;
+  const returning = !!returnInfo && returnInfo.gapDays >= 2 && !welcomeDismissed;
 
   const route = [
     ...(learner.diagnostic?.route ?? []),
     ...conceptOrder.filter((id) => !conceptById.get(id)!.locked && !(learner.diagnostic?.route ?? []).includes(id)),
   ];
-  const nextUp = route.find((id) => ["NOT_STARTED", "INTRODUCED", "EXPLORED"].includes(conceptProgress(learner, id).state));
+  const solid = diagnosticSolid(learner.diagnostic?.results);
+  const nextUp = route.find((id) => !solid.has(id) && ["NOT_STARTED", "INTRODUCED", "EXPLORED"].includes(conceptProgress(learner, id).state));
   const pos = learner.position;
   const posLesson = pos ? getLesson(pos.conceptId, pos.lessonId) : undefined;
 
@@ -48,11 +49,11 @@ export function HomeScreen() {
             </Link>
           </div>
         </section>
-      ) : returning ? (
+      ) : returning && returnInfo ? (
         <WelcomeBack gapDays={returnInfo.gapDays} lastConceptId={returnInfo.lastConceptId} onDone={dismissWelcome} />
       ) : null}
 
-      {!firstRun && (
+      {!firstRun && !returning && (
         <div className="grid gap-4 md:grid-cols-3">
           <section className="card md:col-span-2">
             <p className="label">Continue</p>
@@ -120,6 +121,7 @@ export function HomeScreen() {
                   {c.title}
                 </Link>
                 {fromDiagnostic && <span className="label">refresher</span>}
+                {solid.has(id) && state === "NOT_STARTED" && <span className="label">ready per check</span>}
                 {id === nextUp && <span className="label" style={{ color: "var(--sem-flux)" }}>next up</span>}
                 <span className="w-10 text-right text-sm text-soft">{pct(mastery)}</span>
               </li>

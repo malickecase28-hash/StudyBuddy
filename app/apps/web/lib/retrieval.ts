@@ -8,7 +8,8 @@ const pool: RetrievalItem[] = course.concepts.flatMap((c) => {
   const out: RetrievalItem[] = [];
   for (const l of c.lessons) {
     walkBlocks(l.blocks, (b: Block) => {
-      if (b.type === "mcq" && !b.selfExplain) out.push({ conceptId: c.id, dimension: b.dimension, block: b });
+      // Context-free questions only: skip multi-part exam items ("Part (ii)…").
+      if (b.type === "mcq" && !b.selfExplain && !/^Part/.test(b.prompt)) out.push({ conceptId: c.id, dimension: b.dimension, block: b });
     });
   }
   return out;
