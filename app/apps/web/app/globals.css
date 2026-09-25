@@ -1,0 +1,202 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-raised: var(--bg-raised);
+  --color-sunken: var(--bg-sunken);
+  --color-ink: var(--ink);
+  --color-soft: var(--ink-soft);
+  --color-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-charge: var(--sem-charge);
+  --color-field: var(--sem-field);
+  --color-flux: var(--sem-flux);
+  --color-surface: var(--sem-surface);
+  --color-confirmed: var(--sem-confirmed);
+  --font-read: var(--font-read);
+  --font-ui: var(--font-ui);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.read {
+  font-family: var(--font-read);
+  font-size: 1.075rem;
+  line-height: 1.65;
+  max-width: var(--measure);
+}
+
+/* Semantic term colouring (prose spans and KaTeX \htmlClass terms). */
+.sem-charge,
+.t-charge {
+  color: var(--sem-charge);
+}
+.sem-field,
+.t-field {
+  color: var(--sem-field);
+}
+.sem-flux,
+.t-flux {
+  color: var(--sem-flux);
+}
+.sem-surface,
+.t-surface {
+  color: var(--sem-surface);
+}
+.sem-confirmed {
+  color: var(--sem-confirmed);
+}
+.sem-charge,
+.sem-field,
+.sem-flux,
+.sem-surface {
+  font-weight: 600;
+}
+
+/* Equation-build: the newly introduced term pulses once, then settles. */
+.eq-highlight .t-flux,
+.eq-highlight .t-surface,
+.eq-highlight .t-charge,
+.eq-highlight .t-field {
+  transition: text-shadow var(--motion-reveal) var(--ease);
+}
+.pulse {
+  animation: pulse var(--motion-causal) var(--ease) 1;
+}
+@keyframes pulse {
+  0% {
+    text-shadow: 0 0 0 transparent;
+  }
+  40% {
+    text-shadow: 0 0 14px currentColor;
+  }
+  100% {
+    text-shadow: 0 0 0 transparent;
+  }
+}
+
+.reveal {
+  animation: reveal var(--motion-reveal) var(--ease) both;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: calc(var(--space) * 1.25);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: var(--radius);
+  padding: 0.5rem 0.95rem;
+  font-weight: 600;
+  font-size: 0.925rem;
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background var(--motion-fast);
+}
+.btn:hover {
+  background: var(--bg-sunken);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.btn-primary:hover {
+  background: var(--ink-soft);
+}
+
+.choice {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.9rem;
+  background: var(--bg-raised);
+  cursor: pointer;
+  transition: border-color var(--motion-fast), background var(--motion-fast);
+}
+.choice:hover:not(:disabled) {
+  border-color: var(--ink-faint);
+}
+.choice[data-state="right"] {
+  border-color: var(--confirmed-line);
+  background: var(--confirmed-bg);
+}
+.choice[data-state="again"] {
+  border-color: var(--look-again-line);
+  background: var(--look-again-bg);
+}
+
+.fb {
+  border-radius: var(--radius);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.fb-right {
+  background: var(--confirmed-bg);
+  border: 1px solid var(--confirmed-line);
+  color: var(--confirmed-ink);
+}
+.fb-again {
+  background: var(--look-again-bg);
+  border: 1px solid var(--look-again-line);
+  color: var(--look-again-ink);
+}
+
+.input {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  padding: 0.5rem 0.7rem;
+  font: inherit;
+  color: var(--ink);
+}
+
+.label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .pulse {
+    animation: none;
+  }
+}

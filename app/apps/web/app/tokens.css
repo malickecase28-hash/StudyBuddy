@@ -1,0 +1,98 @@
+/*
+ * Design tokens. Components use only these variables, so a UI pass can re-skin the app
+ * by editing this file. Semantic colours (charge/field/flux/surface/confirmed) mean the
+ * same thing in equations, 3D, 2D and diagrams, in every theme.
+ */
+:root,
+[data-theme="paper"] {
+  --bg: #f7f4ee;
+  --bg-raised: #fffdf8;
+  --bg-sunken: #efe9df;
+  --ink: #1f2a37;
+  --ink-soft: #5b6472;
+  --ink-faint: #8a8175;
+  --line: #e2dacb;
+  --focus: #2b6cb0;
+
+  --sem-charge: #c2455c;
+  --sem-field: #1b8a96;
+  --sem-flux: #6d4fd0;
+  --sem-surface: #b27716;
+  --sem-confirmed: #2f8a57;
+
+  --look-again-bg: #fbf1dc;
+  --look-again-line: #e7c98a;
+  --look-again-ink: #6b4e12;
+  --confirmed-bg: #e6f3ea;
+  --confirmed-line: #a9d6b8;
+  --confirmed-ink: #1f5c3a;
+  --system-error: #b42318;
+
+  --lab-bg: #f1ece3;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --space: 1rem;
+  --font-read: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-ui: "Inter", "Segoe UI", system-ui, sans-serif;
+  --measure: 68ch;
+  --motion-fast: 160ms;
+  --motion-reveal: 420ms;
+  --motion-causal: 750ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-theme="night"] {
+  --bg: #111822;
+  --bg-raised: #172130;
+  --bg-sunken: #0d131b;
+  --ink: #dde5ee;
+  --ink-soft: #9fb0c2;
+  --ink-faint: #71839a;
+  --line: #243244;
+  --focus: #7cb4ff;
+  --sem-charge: #f07a8c;
+  --sem-field: #4cc9d6;
+  --sem-flux: #a78bfa;
+  --sem-surface: #f2b544;
+  --sem-confirmed: #5fd39a;
+  --look-again-bg: #2a2415;
+  --look-again-line: #6b5520;
+  --look-again-ink: #f0d9a0;
+  --confirmed-bg: #15291f;
+  --confirmed-line: #2e6147;
+  --confirmed-ink: #b6ecc9;
+  --lab-bg: #0d131b;
+}
+
+[data-theme="contrast"] {
+  --bg: #ffffff;
+  --bg-raised: #ffffff;
+  --bg-sunken: #f0f0f0;
+  --ink: #000000;
+  --ink-soft: #1a1a1a;
+  --ink-faint: #333333;
+  --line: #000000;
+  --focus: #0040ff;
+  --sem-charge: #a8002a;
+  --sem-field: #00606b;
+  --sem-flux: #4b00b5;
+  --sem-surface: #7a4a00;
+  --sem-confirmed: #00662e;
+  --look-again-bg: #fff4d6;
+  --look-again-line: #7a4a00;
+  --look-again-ink: #3d2500;
+  --confirmed-bg: #e0f5e8;
+  --confirmed-line: #00662e;
+  --confirmed-ink: #00331a;
+  --lab-bg: #f4f4f4;
+}
+
+[data-density="compact"] {
+  --space: 0.7rem;
+}
+
+[data-motion="reduced"] {
+  --motion-fast: 0ms;
+  --motion-reveal: 0ms;
+  --motion-causal: 0ms;
+}
