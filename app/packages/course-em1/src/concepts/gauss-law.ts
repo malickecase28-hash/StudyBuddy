@@ -63,10 +63,12 @@ export const gaussLaw = {
       blocks: [
         // ── Hook: Faraday's spheres ─────────────────────────────────────────
         {
-          ...meta("quiet", src(SLIDES, "pp. 29-30")),
+          ...meta("vivid", src(SLIDES, "pp. 29-30")),
           id: "hook",
-          type: "prose",
-          text: "In 1837 Michael Faraday put a charged metal ball, $+Q$, inside a larger hollow metal sphere, touching nothing. Then he measured the charge that appeared on the outer sphere. He repeated it with air, glass, sulphur and shellac packed between the two.",
+          type: "sim-2d",
+          scene: "faraday-apparatus",
+          config: {},
+          caption: "Faraday repeated this setup with different materials between the charged ball and the outer metal sphere. What should the meter show?",
         },
         {
           ...meta("quiet", src(SLIDES, "p. 30")),

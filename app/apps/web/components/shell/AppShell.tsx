@@ -13,12 +13,13 @@ import { Hydrated } from "./Providers";
 import { SettingsDialog } from "./SettingsDialog";
 
 const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/map", label: "Map" },
-  { href: "/lab", label: "Explore" },
-  { href: "/past-papers", label: "Past papers" },
-  { href: "/dashboard", label: "Mastery" },
+  { href: "/", label: "Workspace" },
+  { href: "/map", label: "Concept map" },
+  { href: "/lab", label: "Lab" },
+  { href: "/past-papers", label: "Problems" },
+  { href: "/dashboard", label: "Progress" },
   { href: "/notebook", label: "Notebook" },
+  { href: "/paper", label: "Working paper" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -29,7 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <ResetNotice />
       <div className="flex flex-1">
         {railOpen && <CourseRail />}
-        <main className="min-w-0 flex-1 px-6 py-6 lg:px-10">
+        <main className="min-w-0 flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <Hydrated>{children}</Hydrated>
         </main>
         <ContextDrawer />
@@ -47,39 +48,39 @@ function TopBar() {
   const path = usePathname();
   const days = Math.max(0, Math.ceil((examDateMs - now()) / DAY_MS));
   return (
-    <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-line bg-raised/95 px-4 py-2 backdrop-blur">
+    <header className="workspace-topbar sticky top-0 z-20 flex items-center gap-4 border-b border-line px-4 py-2.5 backdrop-blur">
       <button className="btn px-2 py-1" onClick={toggleRail} aria-label="Toggle course rail">
         ☰
       </button>
-      <Link href="/" className="font-semibold tracking-tight">
-        <span className="label mr-2">{course.code}</span>
-        {course.title}
+      <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight" aria-label="StudyBuddy workspace home">
+        <span className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-raised" aria-hidden>✳</span>
+        <span>StudyBuddy<span className="hidden text-faint sm:inline"> / {course.code}</span></span>
       </Link>
-      <nav className="ml-4 hidden gap-1 md:flex" aria-label="Main">
+      <nav className="workspace-nav ml-4 hidden gap-1 xl:flex" aria-label="Main">
         {NAV.map((n) => (
           <Link
             key={n.href}
             href={n.href}
-            className="rounded-md px-2.5 py-1 text-sm text-soft hover:bg-sunken data-[on=true]:bg-sunken data-[on=true]:text-ink"
+            className="rounded-lg px-3 py-1.5 text-sm text-soft hover:bg-sunken"
             data-on={path === n.href}
           >
             {n.label}
           </Link>
         ))}
       </nav>
-      <div className="ml-auto flex items-center gap-4 text-sm">
+      <div className="ml-auto flex items-center gap-3 text-sm">
         {hydrated && (
           <span title="Average mastery across this slice's concepts">
             <span className="label mr-1">Mastery</span>
             {pct(courseMastery(learner))}
           </span>
         )}
-        <span title={`Finals on ${course.examDate}`}>
+        <span className="hidden md:inline" title={`Finals on ${course.examDate}`}>
           <span className="label mr-1">Finals</span>
           {days} days
         </span>
         <button className="btn px-2.5 py-1" onClick={() => openDrawer()} aria-label="Open sources, formulas and notebook">
-          Sources &amp; notes
+          Reference desk
         </button>
         <SettingsDialog />
       </div>
@@ -114,8 +115,17 @@ function CourseRail() {
   const learner = useStudy((s) => s.learner);
   const hydrated = useStudy((s) => s.hydrated);
   const active = useUi((s) => s.activeConceptId);
+  const path = usePathname();
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-line bg-bg px-3 py-5 text-sm lg:block" aria-label="Course contents">
+    <aside className="workspace-rail hidden w-64 shrink-0 border-r border-line px-3 py-6 text-sm lg:block" aria-label="Course contents">
+      <div className="mb-7 px-2">
+        <p className="label">Current course</p>
+        <p className="mt-1 text-base font-semibold">{course.title}</p>
+        <p className="text-xs text-faint">{course.code} · Concept workspace</p>
+      </div>
+      <nav className="mb-7 space-y-1 border-b border-line px-1 pb-6 xl:hidden" aria-label="Workspace tools">
+        {NAV.map((n) => <Link key={n.href} href={n.href} className="block rounded-lg px-2 py-1.5 hover:bg-sunken" data-on={path === n.href}>{n.label}</Link>)}
+      </nav>
       {course.units.map((u) => {
         const concepts = course.concepts.filter((c) => c.unit === u.number);
         return (
@@ -138,7 +148,7 @@ function CourseRail() {
                     ) : (
                       <Link
                         href={lessonHref(c.id, lesson.id)}
-                        className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-sunken data-[on=true]:bg-sunken data-[on=true]:font-semibold"
+                        className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-sunken data-[on=true]:font-semibold"
                         data-on={active === c.id}
                       >
                         <span aria-label={g.label} title={g.label} className="w-4 text-center">

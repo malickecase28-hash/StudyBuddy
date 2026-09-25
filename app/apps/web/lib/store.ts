@@ -37,7 +37,7 @@ type Store = {
   now: () => number;
   dispatch: (event: NewEvent) => Effect[];
   setPosition: (p: Position) => void;
-  addNote: (n: Omit<NotebookEntry, "id" | "createdAt">) => void;
+  addNote: (n: Omit<NotebookEntry, "id" | "createdAt">) => Promise<void>;
   removeNote: (id: string) => void;
   updateSettings: (s: Partial<Settings>) => void;
   completeDiagnostic: (results: Record<string, TopicResult>, route: string[]) => void;
@@ -94,13 +94,15 @@ export const useStudy = create<Store>((set, get) => ({
 
   setPosition: (position) => set((s) => ({ learner: { ...s.learner, position } })),
 
-  addNote: (n) =>
+  addNote: (n) => {
     set((s) => ({
       learner: {
         ...s.learner,
         notebook: [{ ...n, id: `n-${s.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, createdAt: s.now() }, ...s.learner.notebook],
       },
-    })),
+    }));
+    return get().storageUnavailable ? Promise.resolve() : save(STATE_KEY, get().learner);
+  },
 
   removeNote: (id) => set((s) => ({ learner: { ...s.learner, notebook: s.learner.notebook.filter((n) => n.id !== id) } })),
 

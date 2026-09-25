@@ -22,9 +22,10 @@ export type NotebookEntry = {
   id: string;
   createdAt: number;
   conceptId: string;
-  kind: "note" | "equation" | "sim-state";
+  kind: "note" | "equation" | "sim-state" | "drawing";
   title: string;
   body: string;
+  text?: string;
   simState?: { scene: string; config: Record<string, unknown> };
 };
 

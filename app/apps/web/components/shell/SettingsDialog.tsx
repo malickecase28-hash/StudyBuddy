@@ -9,7 +9,7 @@ import { useStudy } from "@/lib/store";
 type Option<K extends keyof Settings> = { key: K; label: string; hint: string; values: [Settings[K], string][] };
 
 const OPTIONS = [
-  { key: "theme", label: "Theme", hint: "Colour meanings stay the same in every theme.", values: [["paper", "Paper & Ink"], ["night", "Night"], ["contrast", "High contrast"]] },
+  { key: "theme", label: "Theme", hint: "Colour meanings stay the same in every theme.", values: [["paper", "Studio light"], ["night", "Night"], ["contrast", "High contrast"]] },
   { key: "motion", label: "Motion", hint: "Reduced shows the same information without animation.", values: [["standard", "Standard"], ["reduced", "Reduced"]] },
   { key: "density", label: "Density", hint: "", values: [["comfortable", "Comfortable"], ["compact", "Compact"]] },
   { key: "simQuality", label: "Simulation quality", hint: "Low-power uses fewer arrows and a coarser surface.", values: [["high", "High"], ["balanced", "Balanced"], ["low", "Low-power"]] },

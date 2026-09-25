@@ -5,19 +5,19 @@
  */
 :root,
 [data-theme="paper"] {
-  --bg: #f7f4ee;
-  --bg-raised: #fffdf8;
-  --bg-sunken: #efe9df;
-  --ink: #1f2a37;
-  --ink-soft: #5b6472;
-  --ink-faint: #8a8175;
-  --line: #e2dacb;
-  --focus: #2b6cb0;
+  --bg: #f4f6f5;
+  --bg-raised: #ffffff;
+  --bg-sunken: #eaf0ed;
+  --ink: #142b2b;
+  --ink-soft: #49605e;
+  --ink-faint: #70817d;
+  --line: #d8e3de;
+  --focus: #136e71;
 
-  --sem-charge: #c2455c;
-  --sem-field: #1b8a96;
-  --sem-flux: #6d4fd0;
-  --sem-surface: #b27716;
+  --sem-charge: #c14e51;
+  --sem-field: #087c82;
+  --sem-flux: #694bbb;
+  --sem-surface: #a46d15;
   --sem-confirmed: #2f8a57;
 
   --look-again-bg: #fbf1dc;
@@ -28,11 +28,11 @@
   --confirmed-ink: #1f5c3a;
   --system-error: #b42318;
 
-  --lab-bg: #f1ece3;
-  --radius: 10px;
-  --radius-lg: 14px;
+  --lab-bg: #edf3f0;
+  --radius: 12px;
+  --radius-lg: 20px;
   --space: 1rem;
-  --font-read: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-read: "Segoe UI", system-ui, sans-serif;
   --font-ui: "Inter", "Segoe UI", system-ui, sans-serif;
   --measure: 68ch;
   --motion-fast: 160ms;

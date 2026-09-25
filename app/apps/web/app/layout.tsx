@@ -7,8 +7,8 @@ import { AppShell } from "@/components/shell/AppShell";
 import { Providers } from "@/components/shell/Providers";
 
 export const metadata: Metadata = {
-  title: "StudyBuddy · Electromagnetics I",
-  description: "An authored, interactive mastery workspace for ELE3001 Electromagnetics I.",
+  title: "StudyBuddy · Learning workspace",
+  description: "An interactive study workspace for university courses, starting with Electromagnetics I.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

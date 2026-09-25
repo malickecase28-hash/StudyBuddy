@@ -1,9 +1,9 @@
 "use client";
 
-import { GaussLabConfig } from "@studybuddy/course-em1";
+import { GaussLabConfig, LAB_CHECKS, type LabState } from "@studybuddy/course-em1";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { conceptProgress } from "@/lib/progress";
+import { useCallback, useState } from "react";
 import { useStudy } from "@/lib/store";
 
 const GaussLab = dynamic(() => import("@/components/lab/GaussLab"), { ssr: false });
@@ -11,7 +11,7 @@ const GaussLab = dynamic(() => import("@/components/lab/GaussLab"), { ssr: false
 const EXPLORE = GaussLabConfig.parse({
   charges: [
     { id: "a", q: 3, pos: [0, 0, 0], draggable: true },
-    { id: "b", q: -2, pos: [1.4, 0, 0.4], draggable: true },
+    { id: "b", q: -2, pos: [0.4, 0, 0.4], draggable: true },
   ],
   surface: { kind: "sphere", radius: 1 },
   shapes: ["sphere", "cube", "blob"],
@@ -21,29 +21,31 @@ const EXPLORE = GaussLabConfig.parse({
   addCharge: true,
 });
 
-/**
- * Explore mode: the same engine as the lessons, with the guided contract removed.
- * Opens once Gauss's law has been explored in Learn mode.
- */
+const EXPERIMENTS = [
+  { title: "What counts as enclosed?", prompt: "Drag a charge outside the boundary. Watch its contribution to total flux disappear.", check: "outside-zero" },
+  { title: "Does shape matter?", prompt: "Swap the sphere for a cube or uneven surface while a charge remains inside.", check: "shape-swap" },
+  { title: "Does size matter?", prompt: "Grow or shrink the surface by at least 40% while keeping a charge inside.", check: "resize-constant" },
+] as const;
+
 export default function LabPage() {
-  const learner = useStudy((s) => s.learner);
   const addNote = useStudy((s) => s.addNote);
-  const { state } = conceptProgress(learner, "em1.electrostatics.gauss-law");
-  const unlocked = !["NOT_STARTED", "INTRODUCED"].includes(state);
+  const [state, setState] = useState<LabState>({ charges: EXPLORE.charges, surface: EXPLORE.surface });
+  const onChange = useCallback((next: LabState) => setState(next), []);
+  const [experiment, setExperiment] = useState(0);
+  const current = EXPERIMENTS[experiment]!;
+  const complete = LAB_CHECKS[current.check]!(state, { charges: EXPLORE.charges, surface: EXPLORE.surface });
 
   return (
-    <div className="mx-auto max-w-4xl space-y-4">
+    <div className="mx-auto max-w-6xl space-y-5">
       <div>
-        <p className="label">Explore mode</p>
-        <h1 className="text-2xl font-semibold">The Gauss lab, no instructions</h1>
-        <p className="read text-soft">
-          Add charges, drag them in and out, swap the surface, stretch it. Try to break Gauss's law. (You won't.) Save anything interesting to
-          your notebook.
-        </p>
+        <p className="label">Simulation lab / Electromagnetics I</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Electric flux workbench</h1>
+        <p className="mt-2 max-w-3xl text-sm text-soft">Move charges, change their strength, and reshape the boundary. The model calculates the flux as you work. Start with an experiment or investigate your own question.</p>
       </div>
-      {unlocked ? (
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_240px]">
         <GaussLab
           config={EXPLORE}
+          onChange={onChange}
           onFreeze={(s) =>
             addNote({
               conceptId: "em1.electrostatics.gauss-law",
@@ -54,14 +56,19 @@ export default function LabPage() {
             })
           }
         />
-      ) : (
-        <div className="fb fb-again">
-          ↺ Explore mode opens once you've worked through the first part of Gauss's law in Learn mode, so the lab makes sense when you get here.{" "}
-          <Link className="underline" href="/learn/em1.electrostatics.gauss-law/main">
-            Start Gauss's law
-          </Link>
-        </div>
-      )}
+        <aside className="card h-fit" aria-label="Suggested experiments">
+          <p className="label">Experiment cards</p>
+          <div className="mt-4 space-y-1">
+            {EXPERIMENTS.map((item, i) => <button key={item.check} onClick={() => setExperiment(i)} aria-pressed={experiment === i} className="w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-sunken data-[on=true]:bg-sunken data-[on=true]:font-semibold" data-on={experiment === i}>{String(i + 1).padStart(2, "0")} · {item.title}</button>)}
+          </div>
+          <div className="mt-5 border-t border-line pt-4">
+            <h2 className="font-semibold">{current.title}</h2>
+            <p className="mt-2 text-sm leading-6 text-soft">{current.prompt}</p>
+            <p className={`mt-4 text-sm font-medium ${complete ? "text-confirmed" : "text-faint"}`} role="status">{complete ? "✓ You made it happen. Try another setup." : "Observe the flux readout as you change the model."}</p>
+          </div>
+          <Link href="/learn/em1.electrostatics.gauss-law/main" className="mt-5 inline-block text-sm underline">Learn the reasoning →</Link>
+        </aside>
+      </div>
     </div>
   );
 }

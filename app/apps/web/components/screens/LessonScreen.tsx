@@ -47,13 +47,13 @@ function LessonBody({ conceptId, lessonId, returnTo, resumeBlockId }: { conceptI
   const detour = isDetour(conceptId, lessonId);
 
   return (
-    <article className="mx-auto max-w-3xl space-y-6">
-      <header className="space-y-2">
+    <article className="mx-auto max-w-6xl space-y-6">
+      <header className="space-y-2 border-b border-line pb-5">
         <p className="label">
-          Unit {concept.unit} · {concept.title}
+          StudyBuddy / {course.title} / Unit {concept.unit} · {concept.title}
           {detour && " · Detour"}
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight">{lesson.title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight lg:text-4xl">{lesson.title}</h1>
         <p className="text-sm text-soft">
           About {lesson.minutes} minutes
           {conceptId === "em1.electrostatics.gauss-law" && lessonId === "main" && (
@@ -118,7 +118,25 @@ function LessonBody({ conceptId, lessonId, returnTo, resumeBlockId }: { conceptI
           </div>
         )}
       </header>
-      <LessonPlayer conceptId={conceptId} lessonId={lessonId} {...(returnTo ? { returnTo } : {})} {...(resumeBlockId ? { resumeBlockId } : {})} />
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_240px]">
+        <div className="min-w-0"><LessonPlayer conceptId={conceptId} lessonId={lessonId} {...(returnTo ? { returnTo } : {})} {...(resumeBlockId ? { resumeBlockId } : {})} /></div>
+        <aside className="h-fit space-y-4 xl:sticky xl:top-24" aria-label="Lesson tools">
+          <div className="card">
+            <p className="label">Your desk</p>
+            <nav className="mt-3 space-y-1 text-sm" aria-label="Study tools">
+              <Link href={`/paper?concept=${encodeURIComponent(conceptId)}`} className="block rounded-lg px-2 py-2 hover:bg-sunken">✎ Working paper <span className="float-right">↗</span></Link>
+              <Link href="/lab" className="block rounded-lg px-2 py-2 hover:bg-sunken">◉ Simulation lab <span className="float-right">↗</span></Link>
+              <Link href="/notebook" className="block rounded-lg px-2 py-2 hover:bg-sunken">▤ Notebook <span className="float-right">↗</span></Link>
+              <Link href="/past-papers" className="block rounded-lg px-2 py-2 hover:bg-sunken">↗ Problems and papers <span className="float-right">↗</span></Link>
+            </nav>
+          </div>
+          <div className="card text-sm">
+            <p className="label">In this concept</p>
+            <p className="mt-2 font-semibold">{concept.title}</p>
+            <p className="mt-1 text-soft">{concept.objectives.length} learning objectives · {main.length} guided {main.length === 1 ? "lesson" : "lessons"}</p>
+          </div>
+        </aside>
+      </div>
     </article>
   );
 }

@@ -56,11 +56,11 @@ export default function GaussLab({
 
   return (
     <div className="overflow-hidden rounded-xl border border-line" style={{ background: colors.bg }}>
-      <div className="relative h-[380px]">
+      <div className="relative h-[420px]">
         {use2D ? (
           <GaussLab2D charges={charges} surface={surface} colors={colors} onMove={(id, pos) => setCharges((cs) => cs.map((c) => (c.id === id ? { ...c, pos } : c)))} />
         ) : (
-          <Canvas camera={{ position: [2.4, 2.1, 3.1], fov: 42 }} dpr={settings.simQuality === "low" ? 1 : [1, 2]} aria-label="3D Gauss's law lab">
+          <Canvas camera={{ position: [2.4, 2.1, 3.1], fov: 42 }} dpr={settings.simQuality === "low" ? 1 : [1, 2]} role="group" aria-label="3D Gauss's law lab">
             <ambientLight intensity={0.9} />
             <directionalLight position={[3, 5, 4]} intensity={0.8} />
             <OrbitControls enabled={!dragging} enablePan={false} minDistance={2} maxDistance={8} />
@@ -156,7 +156,7 @@ export default function GaussLab({
         {config.addCharge && (
           <button
             className="btn py-1 text-xs"
-            onClick={() => setCharges((cs) => [...cs, { id: `c${cs.length + 1}`, q: cs.length % 2 ? -1 : 1, pos: [0.4 * cs.length - 0.8, 0, 0.6], draggable: true }])}
+            onClick={() => setCharges((cs) => [...cs, { id: crypto.randomUUID(), q: cs.length % 2 ? -1 : 1, pos: [0.4 * cs.length - 0.8, 0, 0.6], draggable: true }])}
           >
             + Charge
           </button>
@@ -172,8 +172,26 @@ export default function GaussLab({
               Save state to notebook
             </button>
           )}
+          <button className="btn py-1 text-xs" onClick={() => { setCharges(initialState?.charges ?? config.charges); setSurface(initialState?.surface ?? config.surface); setShow(config.show); }}>
+            Reset setup
+          </button>
         </div>
       </div>
+      {config.addCharge && charges.length > 0 && (
+        <div className="border-t border-line bg-raised px-3 py-3">
+          <p className="label mb-2">Charge controls / µC</p>
+          <div className="flex flex-wrap gap-3">
+            {charges.map((c, i) => (
+              <div key={c.id} className="flex min-w-48 flex-1 items-center gap-2 rounded-lg border border-line px-2 py-1.5 text-xs">
+                <label htmlFor={`charge-${c.id}`} className="whitespace-nowrap font-medium">Q{i + 1}</label>
+                <input id={`charge-${c.id}`} type="range" min="-5" max="5" step="0.5" value={c.q} className="min-w-0 flex-1 accent-[#c14e51]" onChange={(e) => setCharges((cs) => cs.map((x) => x.id === c.id ? { ...x, q: Number(e.target.value) } : x))} />
+                <output className="w-14 text-right tabular-nums">{c.q > 0 ? "+" : ""}{c.q}</output>
+                <button aria-label={`Remove charge ${i + 1}`} title={`Remove charge ${i + 1}`} className="px-1 text-faint hover:text-ink" onClick={() => setCharges((cs) => cs.filter((x) => x.id !== c.id))}>×</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {surface && show.contributions && (
         <p className="border-t border-line bg-raised px-3 pb-2 text-xs text-soft">
           Patch shading: <span className="sem-flux">violet</span> = flux leaving, <span className="sem-surface">amber</span> = flux entering. Deeper = more.

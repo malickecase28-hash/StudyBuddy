@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./tokens.css";
+@import "js-draw/Editor.css";
 
 @theme inline {
   --color-bg: var(--bg);
@@ -21,6 +22,7 @@
 html,
 body {
   background: var(--bg);
+  background-image: radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--sem-field) 8%, transparent), transparent 48rem);
   color: var(--ink);
   font-family: var(--font-ui);
 }
@@ -105,6 +107,7 @@ body {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: calc(var(--space) * 1.25);
+  box-shadow: 0 12px 34px -28px color-mix(in srgb, var(--ink) 35%, transparent);
 }
 
 .btn {
@@ -119,22 +122,23 @@ body {
   background: var(--bg-raised);
   color: var(--ink);
   cursor: pointer;
-  transition: background var(--motion-fast);
+  transition: background var(--motion-fast), transform var(--motion-fast), border-color var(--motion-fast);
 }
 .btn:hover {
   background: var(--bg-sunken);
+  transform: translateY(-1px);
 }
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 .btn-primary {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+  background: #0e6e70;
+  color: #ffffff;
+  border-color: #0e6e70;
 }
 .btn-primary:hover {
-  background: var(--ink-soft);
+  background: #095457;
 }
 
 .choice {
@@ -192,6 +196,51 @@ body {
   text-transform: uppercase;
   color: var(--ink-faint);
   font-weight: 600;
+}
+
+.workspace-topbar {
+  background: color-mix(in srgb, var(--bg-raised) 94%, transparent);
+  box-shadow: 0 8px 28px -26px var(--ink);
+}
+.workspace-rail {
+  background: color-mix(in srgb, var(--bg-raised) 78%, var(--bg));
+}
+.workspace-rail a[data-on="true"] {
+  background: color-mix(in srgb, var(--sem-field) 13%, var(--bg-raised));
+  color: var(--ink);
+  box-shadow: inset 3px 0 var(--sem-field);
+}
+.workspace-nav a[data-on="true"] {
+  background: var(--ink);
+  color: var(--bg-raised);
+}
+.studio-hero {
+  background: #112a2c;
+  color: #f6faf7;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 28px 60px -45px #061e1e;
+}
+.studio-hero .label { color: #87c9c4; }
+.studio-hero .btn:not(.btn-primary) { background: #244346; color: #f6faf7; border-color: #426163; }
+.studio-hero .btn:not(.btn-primary):hover { background: #315457; }
+.studio-hero .lab-shell { border: 1px solid #466264; }
+.studio-hero .lab-shell { color: var(--ink); }
+.studio-hero .lab-shell .btn { background: var(--bg-raised); color: var(--ink); border-color: var(--line); }
+.studio-hero .lab-shell .btn:hover { background: var(--bg-sunken); }
+.workspace-route li { border-bottom: 1px solid var(--line); }
+.workspace-route li:last-child { border-bottom: 0; }
+.working-paper .imageEditorContainer {
+  color-scheme: light;
+  --background-color-1: #ffffff;
+  --foreground-color-1: #142b2b;
+  --background-color-2: #eef3f1;
+  --foreground-color-2: #142b2b;
+  --background-color-3: #e2eae6;
+  --foreground-color-3: #142b2b;
+  --selection-background-color: #ccebe6;
+  --selection-foreground-color: #142b2b;
+  --primary-action-foreground-color: #0e6e70;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -17,7 +17,7 @@ test("full learning journey", async ({ page }) => {
   page.on("pageerror", (e) => console.log("[pageerror]", e.message.slice(0, 300)));
   page.on("framenavigated", (f) => f === page.mainFrame() && console.log("[nav]", f.url()));
   await page.goto("/");
-  await expect(page.getByText("Electromagnetics I, built to be understood")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Make the invisible make sense." })).toBeVisible();
 
   // Readiness diagnostic with a probe after a miss.
   await page.getByRole("link", { name: "Start the readiness check" }).click();
@@ -33,6 +33,8 @@ test("full learning journey", async ({ page }) => {
 
   // Main Gauss lesson.
   await page.goto("/learn/em1.electrostatics.gauss-law/main");
+  await main(page).getByRole("button", { name: "Glass", exact: true }).click();
+  await expect(main(page).getByRole("button", { name: "Glass", exact: true })).toHaveAttribute("aria-pressed", "true");
   await cont(page).click();
   await choose(page, /Still exactly \+Q/);
   await expect(page.getByText("Always $+Q$", { exact: false }).or(page.getByText("Always +Q", { exact: false }))).toBeVisible();
@@ -113,7 +115,7 @@ test("return experience after time away", async ({ page }) => {
 });
 
 test("no serious accessibility violations on key screens", async ({ page }) => {
-  for (const path of ["/", "/diagnostic", "/learn/em1.electrostatics.gauss-law/main", "/dashboard", "/past-papers"]) {
+  for (const path of ["/", "/diagnostic", "/learn/em1.electrostatics.gauss-law/main", "/lab", "/paper", "/notebook", "/dashboard", "/past-papers"]) {
     await page.goto(path);
     await page.waitForTimeout(800);
     const results = await new AxeBuilder({ page }).disableRules(["color-contrast"]).analyze();
@@ -135,4 +137,23 @@ test("@perf lab stays usable on a 4x throttled CPU with low-power quality", asyn
   const start = Date.now();
   await expect(page.getByText(/Ψ = ∮ D·dS = 2\.00 µC/).first()).toBeVisible({ timeout: 20_000 });
   expect(Date.now() - start).toBeLessThan(20_000);
+});
+
+test("workbench changes the physics and working paper restores from the notebook", async ({ page }) => {
+  await page.goto("/lab");
+  await expect(page.getByText(/Ψ = ∮ D·dS = 1\.00 µC/)).toBeVisible();
+  await page.getByRole("slider", { name: "Q1" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByText(/Ψ = ∮ D·dS = 1\.50 µC/)).toBeVisible();
+
+  await page.goto("/paper?concept=em1.electrostatics.gauss-law");
+  await expect(page.getByRole("button", { name: "Save page to notebook" })).toBeEnabled();
+  await page.getByLabel("Typed working").fill("Flux follows enclosed charge.");
+  await expect(page.getByLabel("Typed working")).toHaveValue("Flux follows enclosed charge.");
+  await page.getByRole("button", { name: "Save page to notebook" }).click();
+  await expect(page.getByText("Saved to your notebook.", { exact: false })).toBeVisible();
+  await page.goto("/notebook");
+  await expect(page.getByText("Flux follows enclosed charge.")).toBeVisible();
+  await page.getByRole("link", { name: "Open in working paper" }).click();
+  await expect(page.getByLabel("Typed working")).toHaveValue("Flux follows enclosed charge.");
 });

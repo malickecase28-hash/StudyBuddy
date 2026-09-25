@@ -47,6 +47,12 @@ pnpm --dir apps/web e2e          # Playwright: journey, return experience, a11y 
 
 Also: Explore mode (`/lab`), and settings for theme, motion, density, simulation quality and equation detail.
 
+## Workspace pass (September 2026)
+
+The browser app now presents StudyBuddy as the workspace and ELE3001 as its first course. The landing screen contains a live 3D experiment; lessons have a nearby desk for working paper, lab, problems, and notebook. The open lab supports charge magnitude, shape and size changes, reset, and three experiment prompts. Working paper uses `js-draw` for pen/stylus/mouse strokes, keeps an editable draft in IndexedDB, and saves SVG plus typed reasoning to the notebook. The reference clones and their licenses are listed in `../references/README.md`.
+
+This is a structural and interaction pass, not a finished multi-course product. The course content is still EMag only; other engines from the repo shortlist have not been bundled. Native mobile and desktop apps are later targets; the browser workspace is the current product.
+
 ## Pedagogy audit against the vision notes
 
 Implemented:
@@ -66,7 +72,7 @@ Known gaps (deliberately deferred):
 - No time-based session modes ("30 minutes", "exam revision").
 - No authoring UI, no course versioning, no analytics beyond local history.
 - `identify` blocks fall back to multiple choice.
-- The visual design is the provisional Paper & Ink. All styling flows from `apps/web/app/tokens.css`, so a UI pass can re-skin everything without touching lessons.
+- The visual identity is a first workspace pass. Theme values live in `apps/web/app/tokens.css` and can change without editing lessons.
 
 ## Content and licensing
 

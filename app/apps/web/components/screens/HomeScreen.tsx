@@ -1,12 +1,24 @@
 "use client";
 
 import { DAY_MS } from "@studybuddy/engine";
+import { GaussLabConfig } from "@studybuddy/course-em1";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { conceptById, conceptOrder, course, diagnosticSolid, examDateMs, getConcept, getLesson, lessonHref, mainLesson, misconceptionInfo } from "@/lib/course";
 import { conceptProgress, pct, STATE_GLYPH } from "@/lib/progress";
 import { dueCount } from "@/lib/retrieval";
 import { useStudy } from "@/lib/store";
 import { RetrievalQuiz } from "./RetrievalQuiz";
+
+const GaussLab = dynamic(() => import("../lab/GaussLab"), { ssr: false });
+const PREVIEW = GaussLabConfig.parse({
+  charges: [{ id: "preview-charge", q: 2, pos: [0, 0, 0], draggable: true }],
+  surface: { kind: "sphere", radius: 1 },
+  shapes: ["sphere", "cube", "blob"],
+  resizable: true,
+  show: { field: true, normals: false, contributions: true, readout: true },
+  toggles: ["field", "normals", "contributions"],
+});
 
 export function HomeScreen() {
   const learner = useStudy((s) => s.learner);
@@ -30,44 +42,40 @@ export function HomeScreen() {
   const posLesson = pos ? getLesson(pos.conceptId, pos.lessonId) : undefined;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      {firstRun ? (
-        <section className="card space-y-3">
-          <p className="label">Welcome</p>
-          <h1 className="text-2xl font-semibold tracking-tight">Electromagnetics I, built to be understood</h1>
-          <p className="read text-soft">
-            This workspace follows your ELE3001 course: your lecturer's notation, the Wentworth textbook, and real past-paper questions. It starts
-            with <span className="sem-flux">electric flux</span> and <span className="sem-flux">Gauss's law</span>. First, a 5-minute readiness
-            check finds any maths or physics worth refreshing, then builds your route.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Link href="/diagnostic" className="btn btn-primary">
-              Start the readiness check
-            </Link>
-            <Link href={lessonHref("em1.electrostatics.gauss-law", "main")} className="btn">
-              Skip it: go straight to Gauss's law
-            </Link>
+    <div className="mx-auto max-w-6xl space-y-7">
+      <section className="studio-hero grid gap-8 p-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:p-8">
+          <div className="flex flex-col justify-center py-3 lg:py-8">
+            <p className="label">StudyBuddy / Your learning workspace</p>
+            <h1 className="mt-4 max-w-xl text-4xl font-semibold leading-tight tracking-[-0.04em] lg:text-5xl">Make the invisible <span className="text-[#8cddd2]">make sense.</span></h1>
+            <p className="mt-5 max-w-lg text-base leading-7 text-[#c7d9d5]">Explore a model, make a prediction, work a real problem. Your first course is Electromagnetics I; the workspace is built for everything you study next.</p>
+            <div className="mt-7 flex flex-wrap gap-2">
+              {firstRun ? <Link href="/diagnostic" className="btn btn-primary">Start the readiness check</Link> : <Link href={pos && posLesson ? lessonHref(pos.conceptId, pos.lessonId) : nextUp ? lessonHref(nextUp, mainLesson(getConcept(nextUp)!)!.id) : "/lab"} className="btn btn-primary">Continue studying →</Link>}
+              {firstRun ? <Link href={lessonHref("em1.electrostatics.gauss-law", "main")} className="btn">Go straight to Gauss&apos;s law →</Link> : <Link href="/lab" className="btn">Open the lab →</Link>}
+            </div>
+            <p className="mt-6 text-xs text-[#9ab8b2]">{firstRun ? "5 minute check · No streaks · Work at your own depth" : "Experiment freely · Return to your place · Work at your own depth"}</p>
           </div>
-        </section>
-      ) : returning && returnInfo ? (
-        <WelcomeBack gapDays={returnInfo.gapDays} lastConceptId={returnInfo.lastConceptId} onDone={dismissWelcome} />
-      ) : null}
+          <div className="min-w-0">
+            <div className="mb-3 flex items-center justify-between gap-3"><p className="label">Live experiment / Electric flux</p><span className="text-xs text-[#a7c4bd]">Drag the charge across the boundary</span></div>
+            <div className="lab-shell"><GaussLab config={PREVIEW} /></div>
+          </div>
+      </section>
+      {returning && returnInfo && <WelcomeBack gapDays={returnInfo.gapDays} lastConceptId={returnInfo.lastConceptId} onDone={dismissWelcome} />}
 
       {!firstRun && !returning && (
         <div className="grid gap-4 md:grid-cols-3">
-          <section className="card md:col-span-2">
-            <p className="label">Continue</p>
+          <section className="studio-hero p-7 md:col-span-2">
+            <p className="label">Pick up your work</p>
             {pos && posLesson ? (
               <>
-                <h2 className="mt-1 text-lg font-semibold">{posLesson.title}</h2>
-                <p className="text-sm text-soft">{getConcept(pos.conceptId)?.title}</p>
+                <h2 className="mt-3 text-3xl font-semibold">{posLesson.title}</h2>
+                <p className="mt-1 text-sm text-[#c7d9d5]">{getConcept(pos.conceptId)?.title}</p>
                 <Link href={lessonHref(pos.conceptId, pos.lessonId)} className="btn btn-primary mt-3">
                   Continue where you left off →
                 </Link>
               </>
             ) : nextUp ? (
               <>
-                <h2 className="mt-1 text-lg font-semibold">{getConcept(nextUp)?.title}</h2>
+                <h2 className="mt-3 text-3xl font-semibold">{getConcept(nextUp)?.title}</h2>
                 <Link href={lessonHref(nextUp, mainLesson(getConcept(nextUp)!)!.id)} className="btn btn-primary mt-3">
                   Start →
                 </Link>
@@ -77,7 +85,7 @@ export function HomeScreen() {
             )}
           </section>
           <section className="card space-y-2">
-            <p className="label">Finals</p>
+            <p className="label">On the horizon / Finals</p>
             <p className="text-3xl font-semibold">{daysToExam} days</p>
             <p className="text-sm text-soft">{course.examDate}</p>
             {due > 0 ? (
@@ -91,9 +99,19 @@ export function HomeScreen() {
         </div>
       )}
 
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5" aria-label="Workspace tools">
+        {[
+          { href: "/map", eyebrow: "01 / Navigate", title: "Concept map", text: "See how ideas depend on one another." },
+          { href: "/lab", eyebrow: "02 / Experiment", title: "Simulation lab", text: "Change a system and watch the maths respond." },
+          { href: "/past-papers", eyebrow: "03 / Apply", title: "Problem desk", text: "Work tutorial and exam questions." },
+          { href: "/notebook", eyebrow: "04 / Keep", title: "Notebook", text: "Collect your equations, experiments and thinking." },
+          { href: "/paper", eyebrow: "05 / Work", title: "Working paper", text: "Sketch, write, and save your working." },
+        ].map((tool) => <Link key={tool.href} href={tool.href} className="card group block transition-transform hover:-translate-y-1"><p className="label">{tool.eyebrow}</p><h2 className="mt-3 text-lg font-semibold">{tool.title} <span className="float-right text-faint group-hover:text-ink">↗</span></h2><p className="mt-2 text-sm text-soft">{tool.text}</p></Link>)}
+      </section>
+
       <section className="card">
         <div className="flex items-baseline justify-between">
-          <p className="label">Your route through this slice</p>
+          <p className="label">Your route / Electromagnetics I</p>
           {learner.diagnostic ? (
             <Link href="/diagnostic" className="text-xs text-faint underline">
               Retake readiness check
@@ -106,13 +124,13 @@ export function HomeScreen() {
             )
           )}
         </div>
-        <ol className="mt-3 space-y-1.5">
+        <ol className="workspace-route mt-3">
           {route.map((id, i) => {
             const c = conceptById.get(id)!;
             const { state, mastery } = conceptProgress(learner, id);
             const fromDiagnostic = learner.diagnostic?.route.includes(id);
             return (
-              <li key={id} className="flex items-center gap-3 rounded-md px-2 py-1.5 data-[next=true]:bg-sunken" data-next={id === nextUp}>
+              <li key={id} className="flex items-center gap-3 rounded-md px-2 py-3 data-[next=true]:bg-sunken" data-next={id === nextUp}>
                 <span className="w-5 text-faint">{i + 1}.</span>
                 <span title={STATE_GLYPH[state].label} aria-label={STATE_GLYPH[state].label}>
                   {STATE_GLYPH[state].glyph}
