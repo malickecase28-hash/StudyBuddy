@@ -1,0 +1,14 @@
+{
+  "name": "studybuddy",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  }
+}
