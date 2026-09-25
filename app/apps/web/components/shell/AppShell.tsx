@@ -15,6 +15,7 @@ import { SettingsDialog } from "./SettingsDialog";
 const NAV = [
   { href: "/", label: "Home" },
   { href: "/map", label: "Map" },
+  { href: "/lab", label: "Explore" },
   { href: "/past-papers", label: "Past papers" },
   { href: "/dashboard", label: "Mastery" },
   { href: "/notebook", label: "Notebook" },
@@ -88,7 +89,16 @@ function TopBar() {
 
 function ResetNotice() {
   const notice = useStudy((s) => s.resetNotice);
+  const unavailable = useStudy((s) => s.storageUnavailable);
   const dismiss = useStudy((s) => s.dismissResetNotice);
+  if (unavailable) {
+    return (
+      <div className="fb fb-again m-4" role="status">
+        ↺ Your saved progress couldn't be opened (another tab may be holding it). This session works normally but won't be saved. Close other
+        StudyBuddy tabs and reload to pick your progress back up.
+      </div>
+    );
+  }
   if (!notice) return null;
   return (
     <div className="fb fb-again m-4" role="status">

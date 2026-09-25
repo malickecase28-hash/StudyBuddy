@@ -40,6 +40,16 @@ export const vectors = {
         },
         {
           ...meta("assessment", orig()),
+          id: "mag-a",
+          type: "numeric",
+          prompt: "A = (1, 2, 2). What is |A|? (A pure number: no units.)",
+          answer: { value: 3, unit: "" },
+          distractors: [{ value: 5, unit: "", errorClass: "arithmetic", feedback: "Square each component before adding: 1 + 4 + 4 = 9, so |A| = 3." }],
+          hints: ["|A| = √(A_x² + A_y² + A_z²).", "1² + 2² + 2² = 9.", "√9."],
+          dimension: "computational",
+        },
+        {
+          ...meta("assessment", orig()),
           id: "dot-perp",
           type: "mcq",
           prompt: "D is parallel to a flat patch (lying in its plane), so it's perpendicular to the patch's normal. D·dS = ?",

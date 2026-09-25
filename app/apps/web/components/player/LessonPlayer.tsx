@@ -96,7 +96,8 @@ export function LessonPlayer({ conceptId, lessonId, returnTo, resumeBlockId }: {
           ref={(el) => {
             if (el) refs.current.set(b.id, el);
           }}
-          className={`reveal scroll-mt-20 ${i < cursor ? "opacity-85" : ""}`}
+          className={`reveal scroll-mt-20 transition-opacity ${i < cursor ? (["assessment", "intense"].includes(current.mood) ? "opacity-40" : "opacity-85") : ""}`}
+          data-current={i === cursor}
         >
           <BlockView block={b} ctx={ctxFor(b)} />
           {offers

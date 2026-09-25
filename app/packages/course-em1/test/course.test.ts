@@ -108,6 +108,7 @@ const derived: Record<string, number> = {
   "pp-d": 5e-9 * 100,
   "pp-q": 5e-9 * 100 * 4 * Math.PI * 100,
   // math
+  "mag-a": norm(vec(1, 2, 2)),
   "num-flat": 3e-9 * 4,
   "num-tilt": 3e-9 * 4 * Math.cos(Math.PI / 3),
   "cp-area": surfacePatches({ kind: "sphere", center: vec(0, 0, 0), radius: 2 }, 24).reduce((s, p) => s + norm(p.dS), 0),

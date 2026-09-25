@@ -14,7 +14,7 @@ import {
 } from "@studybuddy/engine";
 import { create } from "zustand";
 import { conceptById, examDateMs } from "./course";
-import { load, save } from "./persist";
+import { load, save, TIMED_OUT } from "./persist";
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 export type NewEvent = DistributiveOmit<LearnEvent, "at">;
@@ -26,6 +26,8 @@ type Store = {
   hydrated: boolean;
   learner: LearnerState;
   resetNotice: boolean;
+  /** Saved progress couldn't be read in time: this session runs in memory and never overwrites storage. */
+  storageUnavailable: boolean;
   clockOffsetDays: number;
   returnInfo: ReturnInfo;
   welcomeDismissed: boolean;
@@ -59,6 +61,7 @@ export const useStudy = create<Store>((set, get) => ({
   hydrated: false,
   learner: initialState(),
   resetNotice: false,
+  storageUnavailable: false,
   clockOffsetDays: 0,
   returnInfo: null,
   welcomeDismissed: false,
@@ -67,6 +70,10 @@ export const useStudy = create<Store>((set, get) => ({
   hydrate: async () => {
     if (get().hydrated) return;
     const [raw, dev] = await Promise.all([load(STATE_KEY), load(DEV_KEY)]);
+    if (raw === TIMED_OUT) {
+      set({ hydrated: true, storageUnavailable: true });
+      return;
+    }
     const { state, reset, backup } = migrate(raw);
     if (reset && backup) await save(`${STATE_KEY}-backup-${Date.now()}`, backup);
     const clockOffsetDays = typeof (dev as { clockOffsetDays?: unknown })?.clockOffsetDays === "number" ? (dev as { clockOffsetDays: number }).clockOffsetDays : 0;
@@ -117,7 +124,7 @@ export const useStudy = create<Store>((set, get) => ({
 if (typeof window !== "undefined") {
   let timer: ReturnType<typeof setTimeout> | undefined;
   useStudy.subscribe((s, prev) => {
-    if (!s.hydrated || s.learner === prev.learner) return;
+    if (!s.hydrated || s.storageUnavailable || s.learner === prev.learner) return;
     clearTimeout(timer);
     timer = setTimeout(() => void save(STATE_KEY, s.learner), 250);
   });

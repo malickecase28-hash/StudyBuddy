@@ -113,7 +113,7 @@ export default function GaussLab({
                 <li key={c.id}>
                   <span className="sem-charge">
                     {c.q > 0 ? "+" : "−"}
-                    {Math.abs(c.q)} µC
+                    {+Math.abs(c.q).toPrecision(3)} µC
                   </span>
                   {c.q < 0 && <span className="text-faint"> (hollow)</span>}
                   {inside !== null && <span className="text-soft"> · {inside ? "inside" : "outside"}</span>}

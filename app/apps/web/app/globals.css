@@ -200,3 +200,25 @@ body {
     animation: none;
   }
 }
+
+/*
+ * Learning moods (set per block). Subtle shifts tell the nervous system "we're doing something different now":
+ * explanation stays quiet, simulation is more vivid, challenge slightly more intense, assessment strips distractions.
+ */
+[data-mood="vivid"] canvas {
+  filter: saturate(1.15);
+}
+[data-mood="assessment"] {
+  padding-left: calc(var(--space) * 0.9);
+  border-left: 2px solid var(--line);
+}
+[data-mood="intense"] {
+  padding: var(--space);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+}
+[data-mood="reflect"] .read {
+  color: var(--ink-soft);
+  font-style: italic;
+}

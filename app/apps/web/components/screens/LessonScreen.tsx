@@ -2,6 +2,7 @@
 
 import { unmetPrerequisites } from "@studybuddy/engine";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { course, diagnosticSolid, getConcept, getLesson, isDetour, lessonHref, mainLesson } from "@/lib/course";
 import { useStudy } from "@/lib/store";
@@ -9,7 +10,14 @@ import { useUi } from "@/lib/ui";
 import { Markup } from "../Markup";
 import { LessonPlayer } from "../player/LessonPlayer";
 
-export function LessonScreen({ conceptId, lessonId, returnTo, resumeBlockId }: { conceptId: string; lessonId: string; returnTo?: string; resumeBlockId?: string }) {
+export function LessonScreen({ conceptId, lessonId }: { conceptId: string; lessonId: string }) {
+  const search = useSearchParams();
+  const returnTo = search.get("return") ?? undefined;
+  const resumeBlockId = search.get("resume") ?? undefined;
+  return <LessonBody key={`${conceptId}/${lessonId}/${resumeBlockId ?? ""}`} conceptId={conceptId} lessonId={lessonId} returnTo={returnTo} resumeBlockId={resumeBlockId} />;
+}
+
+function LessonBody({ conceptId, lessonId, returnTo, resumeBlockId }: { conceptId: string; lessonId: string; returnTo: string | undefined; resumeBlockId: string | undefined }) {
   const concept = getConcept(conceptId);
   const lesson = getLesson(conceptId, lessonId);
   const learner = useStudy((s) => s.learner);
@@ -46,7 +54,17 @@ export function LessonScreen({ conceptId, lessonId, returnTo, resumeBlockId }: {
           {detour && " · Detour"}
         </p>
         <h1 className="text-2xl font-semibold tracking-tight">{lesson.title}</h1>
-        <p className="text-sm text-soft">About {lesson.minutes} minutes</p>
+        <p className="text-sm text-soft">
+          About {lesson.minutes} minutes
+          {conceptId === "em1.electrostatics.gauss-law" && lessonId === "main" && (
+            <>
+              {" · "}
+              <Link className="underline" href="/learn/em1.electrostatics.gauss-applications/challenge">
+                Already know this? Prove it with the mastery challenge
+              </Link>
+            </>
+          )}
+        </p>
         {main.length > 1 && (
           <nav className="flex flex-wrap gap-1.5 pt-1" aria-label="Lessons in this concept">
             {main.map((l) => (

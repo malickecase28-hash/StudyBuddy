@@ -89,6 +89,11 @@ export function LessonComplete({ concept, lesson, detour, returnTo, next }: { co
             Next: {next.title} →
           </Link>
         )}
+        {concept.id.startsWith("em1.electrostatics.gauss") && (
+          <Link className="btn" href="/lab">
+            Explore the lab freely
+          </Link>
+        )}
         <Link className="btn" href="/map">
           Concept map
         </Link>

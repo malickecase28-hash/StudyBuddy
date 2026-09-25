@@ -279,6 +279,18 @@ export const gaussLaw = {
               ],
             },
             {
+              id: "advanced",
+              label: "Advanced: what assumptions are hiding here?",
+              blocks: [
+                {
+                  ...meta("quiet", src(WENT, "§2.7 p. 47; §2.11 Dielectrics")),
+                  id: "advanced-text",
+                  type: "prose",
+                  text: "Three things worth knowing. **(1)** Gauss's law is not just an electrostatics trick. $\nabla\cdot\mathbf D = \rho_v$ is the first of Maxwell's equations and holds for moving charges too. **(2)** $\mathbf D = \varepsilon_0\mathbf E$ only in free space. In a dielectric, the D-form counts only **free** charge, while $\oint \varepsilon_0\mathbf E\cdot d\mathbf S$ counts free **plus bound** (polarisation) charge. That's the real reason D exists. **(3)** A point charge sitting exactly *on* the surface makes the flux ill-defined; physically, a smooth surface catches half of it. Exam questions avoid this, and so should your Gaussian surfaces.",
+                },
+              ],
+            },
+            {
               id: "shape",
               label: "Does the surface's shape matter?",
               blocks: [

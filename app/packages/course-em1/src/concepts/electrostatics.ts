@@ -150,6 +150,18 @@ export const fluxDensity = {
           text: "Faraday found that the {{flux|electric flux}} from a charge is proportional to the charge, with constant 1 in SI: $\\Psi = Q$ (coulombs). **{{flux|D}}** is flux per unit area crossing a surface orthogonal to it (C/m²). For a point charge, $\\mathbf D = \\dfrac{Q}{4\\pi r^2}\\mathbf a_r$, and in free space $\\mathbf D = \\varepsilon_0\\mathbf E$.",
         },
         {
+          ...meta("vivid", orig()),
+          id: "faraday-lab",
+          type: "sim-3d",
+          scene: "gauss-lab",
+          config: {
+            charges: [{ id: "q", q: 2, pos: [0, 0, 0], draggable: false }],
+            surface: { kind: "sphere", radius: 1 },
+            show: { field: true, normals: false, contributions: true, readout: true },
+          },
+          caption: "Faraday's setup, idealised: a +2 µC charge inside a closed sphere. The flux out is exactly the charge, Ψ = Q.",
+        },
+        {
           ...meta("assessment", src(SLIDES, "p. 59 (Q.07a)")),
           id: "q7a",
           type: "numeric",

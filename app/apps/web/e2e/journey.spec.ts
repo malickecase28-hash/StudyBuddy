@@ -3,7 +3,8 @@ import { expect, test, type Page } from "@playwright/test";
 
 const main = (page: Page) => page.locator("main");
 const cont = (page: Page) => main(page).getByRole("button", { name: /Continue ↓/ });
-const choose = (page: Page, text: string | RegExp) => main(page).getByRole("button", { name: text }).last().click();
+const choose = (page: Page, text: string | RegExp) =>
+  main(page).getByRole("button", typeof text === "string" ? { name: text, exact: true } : { name: text }).last().click();
 const answer = async (page: Page, value: string) => {
   const input = main(page).getByLabel("Your answer, with units").last();
   await input.fill(value);
@@ -12,6 +13,9 @@ const answer = async (page: Page, value: string) => {
 
 /** Spec §8 journey: diagnostic → route → lesson → wrong answers → detour → return → challenge → dashboard → notebook restore. */
 test("full learning journey", async ({ page }) => {
+  page.on("console", (m) => m.type() === "error" && console.log("[console]", m.text().slice(0, 300)));
+  page.on("pageerror", (e) => console.log("[pageerror]", e.message.slice(0, 300)));
+  page.on("framenavigated", (f) => f === page.mainFrame() && console.log("[nav]", f.url()));
   await page.goto("/");
   await expect(page.getByText("Electromagnetics I, built to be understood")).toBeVisible();
 
@@ -59,8 +63,8 @@ test("full learning journey", async ({ page }) => {
   await cont(page).click(); // past branch (optional)
 
   // Outside-charge mcq wrong → still gated; then numeric with the same misconception family.
-  await choose(page, /^7 µC$/);
-  await choose(page, /^2 µC$/);
+  await choose(page, "7 µC");
+  await choose(page, "2 µC");
   await choose(page, /The outside charge's flux lines/);
   await cont(page).click();
   await answer(page, "4 nC");
@@ -75,7 +79,7 @@ test("full learning journey", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Detour: which way dS points" })).toBeVisible();
   await cont(page).click();
   await cont(page).click();
-  await choose(page, /^Negative$/);
+  await choose(page, "Negative");
   await cont(page).click();
   await main(page).getByRole("button", { name: "Finish lesson" }).click();
   await page.getByRole("link", { name: "← Back to where you were" }).click();

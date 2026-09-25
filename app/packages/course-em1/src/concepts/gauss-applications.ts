@@ -56,6 +56,35 @@ export const gaussApplications = {
           text: "**The recipe.** (1) Find the symmetry. (2) Choose a Gaussian surface on which $|\\mathbf D|$ is constant and D is normal to it (or tangent, contributing nothing). (3) Write $\\oint \\mathbf D\\cdot d\\mathbf S = D\\times(\\text{area})$. (4) Set it equal to $Q_{enc}$ and solve. For a point charge the sphere gives $D\\,4\\pi r^2 = Q$. For an infinite line, a coaxial cylinder of length $L$ gives $D\\,2\\pi\\rho L = \\rho_L L$, so $D = \\dfrac{\\rho_L}{2\\pi\\rho}$.",
         },
         {
+          ...meta("assessment", orig()),
+          id: "order-recipe",
+          type: "order",
+          prompt: "Put the Gauss's-law method in order.",
+          items: [
+            { id: "symmetry", label: "Identify the symmetry of the charge distribution" },
+            { id: "surface", label: "Choose a Gaussian surface where |D| is constant and D is normal to it" },
+            { id: "integral", label: "Write ∮ D·dS as D × (area of that surface)" },
+            { id: "qenc", label: "Find Q_enc, the charge inside the surface" },
+            { id: "solve", label: "Set D × area = Q_enc and solve for D (then E = D/ε)" },
+          ],
+          correctOrder: ["symmetry", "surface", "integral", "qenc", "solve"],
+          feedback: "Symmetry comes first: it's what tells you which surface makes the integral collapse to D × area.",
+          dimension: "application",
+        },
+        {
+          ...meta("assessment", orig()),
+          id: "debug-area",
+          type: "mcq",
+          prompt: "Find the mistake. For D = 0.3r² a_r nC/m², a student finds the flux out of the sphere r = 2 m: (1) D(2) = 0.3 × 2² = 1.2 nC/m². (2) Area = 4π(2) = 25.13 m². (3) Ψ = 1.2 × 25.13 = 30.2 nC. Which step is wrong?",
+          options: [
+            { id: "s1", label: "Step 1", correct: false, feedback: "Step 1 is fine: 0.3 × 4 = 1.2 nC/m²." },
+            { id: "s2", label: "Step 2", correct: true, feedback: "Right: a sphere's area is 4πr² = 50.27 m², so Ψ = 60.3 nC." },
+            { id: "s3", label: "Step 3", correct: false, feedback: "The multiplication is right; the area it uses isn't." },
+            { id: "none", label: "No mistake", correct: false, feedback: "Check the area formula for a sphere." },
+          ],
+          dimension: "recognition",
+        },
+        {
           ...meta("assessment", src(SLIDES, "p. 60 (Q.08)")),
           id: "q8",
           type: "step-solve",
@@ -177,6 +206,21 @@ export const gaussApplications = {
           id: "q9-setup",
           type: "prose",
           text: "Q.09: Find the total flux leaving the cube formed by the six planes $x, y, z = \\pm 5$ for each charge distribution. Remember: closed surface, so count only what's inside.",
+        },
+        {
+          ...meta("vivid", orig()),
+          id: "q9-lab",
+          type: "sim-3d",
+          scene: "gauss-lab",
+          config: {
+            charges: [
+              { id: "a", q: 0.1, pos: [0.2, -0.4, 0.6], draggable: true },
+              { id: "b", q: 0.1429, pos: [-0.2, 0.4, -0.4], draggable: true },
+            ],
+            surface: { kind: "cube", side: 2 },
+            show: { field: true, normals: false, contributions: true, readout: true },
+          },
+          caption: "Q.09(a) scaled 1:5 so it fits the lab (positions ÷ 5, cube side 10 → 2). Scaling doesn't change which charges are inside, so the flux doesn't change.",
         },
         {
           ...meta("assessment", src(SLIDES, "p. 61 (Q.09a)")),
