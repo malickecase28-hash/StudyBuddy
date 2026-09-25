@@ -117,7 +117,7 @@ The rule engine is a pure function: `(LearnerState, Event) → (LearnerState', E
 ### 3.4 Answer checking
 
 - **Numeric:** relative tolerance, plus unit parsing (µC, nC, C/m², m).
-- **Error classes:** `conceptual | arithmetic | unit | sign`, detected where the question defines distinguishing wrong answers (e.g. a factor-of-4π error, a wrong power of r).
+- **Error classes:** `conceptual | arithmetic | unit | sign | notation` (notation = unreadable input), detected where the question defines distinguishing wrong answers (e.g. a factor-of-4π error, a wrong power of r).
 
 ### 3.5 Mastery and retention
 
