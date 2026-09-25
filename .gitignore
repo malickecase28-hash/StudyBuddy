@@ -4,3 +4,5 @@ chatgpt-to-markdown-fixed/
 node_modules/
 .next/
 *.log
+content-src/extracted/
+content-src/pages/
