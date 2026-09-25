@@ -34,9 +34,10 @@ function tagsIn(b: Block): string[] {
   }
 }
 
-function quantitiesIn(b: Block): AuthoredQuantity[] {
-  if (b.type === "numeric" || b.type === "challenge") return [b.answer, ...b.distractors];
-  if (b.type === "step-solve") return b.steps.flatMap((s) => [s.answer, ...s.distractors]);
+/** Groups of quantities that must share one dimension: an answer with its distractors (per step for step-solve). */
+function quantityGroups(b: Block): AuthoredQuantity[][] {
+  if (b.type === "numeric" || b.type === "challenge") return [[b.answer, ...b.distractors]];
+  if (b.type === "step-solve") return b.steps.map((s) => [s.answer, ...s.distractors]);
   return [];
 }
 
@@ -82,15 +83,17 @@ export function lintCourse(course: Course): LintIssue[] {
         if (b.type === "remediate" && !resolvesLessonRef(course, b.lessonRef)) {
           add(`remediate ${b.id} lessonRef ${b.lessonRef} does not resolve`, b.id);
         }
-        const dims = new Set<string>();
-        for (const q of quantitiesIn(b)) {
-          try {
-            dims.add(toSI(q.value, q.unit).dim);
-          } catch {
-            add(`unit "${q.unit}" cannot be parsed`, b.id);
+        for (const group of quantityGroups(b)) {
+          const dims = new Set<string>();
+          for (const q of group) {
+            try {
+              dims.add(toSI(q.value, q.unit).dim);
+            } catch {
+              add(`unit "${q.unit}" cannot be parsed`, b.id);
+            }
           }
+          if (dims.size > 1) add(`answer and distractors have mixed dimensions in ${b.id}`, b.id);
         }
-        if (dims.size > 1) add(`answer and distractors have mixed dimensions in ${b.id}`, b.id);
       });
     }
   }

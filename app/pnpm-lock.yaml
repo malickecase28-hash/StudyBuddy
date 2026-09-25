@@ -15,6 +15,18 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(vite@8.3.1)
 
+  packages/course-em1:
+    dependencies:
+      '@studybuddy/engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@studybuddy/physics':
+        specifier: workspace:*
+        version: link:../physics
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+
   packages/engine:
     dependencies:
       zod:
