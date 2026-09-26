@@ -30,3 +30,10 @@ export function checkExpression(expectedLatex: string, inputLatex: string): { pa
   }
   return { parsed: true, equivalent: true };
 }
+/** Calculator: evaluate a closed LaTeX expression numerically; ε₀ is its SI value. Free variables ⇒ null. */
+export function evaluateNumeric(latex: string): number | null {
+  const e = ce.parse(latex.replace(/\\(varepsilon|epsilon)_(?:0|\{0\})/g, "(8.8541878128\\times10^{-12})"));
+  if (!e.isValid || e.unknowns.length > 0) return null;
+  const v = Number(e.N().re);
+  return Number.isFinite(v) ? v : null;
+}

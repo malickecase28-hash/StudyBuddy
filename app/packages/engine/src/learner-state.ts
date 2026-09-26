@@ -152,3 +152,15 @@ export function migrate(raw: unknown): { state: LearnerState; reset: boolean; ba
   }
   return { state: initialState(), reset: true, backup: raw };
 }
+export const seedOf = (s: LearnerState, templateId: string) => s.seeds[templateId] ?? 1;
+
+export const withNextSeed = (s: LearnerState, templateId: string): LearnerState => ({
+  ...s,
+  seeds: { ...s.seeds, [templateId]: seedOf(s, templateId) + 1 },
+});
+
+export function withLayout(s: LearnerState, mode: Mode, patch: Partial<Workspace["layouts"][Mode]>): LearnerState {
+  const cur = s.workspace.layouts[mode];
+  const split = Math.min(1, Math.max(0.2, patch.split ?? cur.split));
+  return { ...s, workspace: { lastMode: mode, layouts: { ...s.workspace.layouts, [mode]: { ...cur, ...patch, split } } } };
+}
