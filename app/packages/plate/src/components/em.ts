@@ -12,7 +12,7 @@ const V3 = z.tuple([z.number(), z.number(), z.number()]);
 /** Integer params round on parse, so timeline tweens between two integers stay valid mid-transition. */
 const int = (min: number, max: number, def: number) => z.number().transform(Math.round).pipe(z.number().int().min(min).max(max)).default(def);
 const ChargeItem = z.discriminatedUnion("kind", [
-  z.object({ id: z.string(), kind: z.literal("point"), q: z.number(), pos: V3, draggable: z.boolean().default(false) }),
+  z.object({ id: z.string(), kind: z.literal("point"), q: z.number(), pos: V3, label: z.string().optional(), draggable: z.boolean().default(false) }),
   z.object({ id: z.string(), kind: z.literal("line"), rhoL: z.number(), x: z.number(), y: z.number() }),
   z.object({ id: z.string(), kind: z.literal("sheet"), rhoS: z.number(), z0: z.number() }),
 ]);
@@ -27,7 +27,7 @@ const toSI = (it: Item): Charge =>
 
 export const Charges = defineComponent({
   id: "charges",
-  params: z.object({ items: z.array(ChargeItem).min(1) }),
+  params: z.object({ items: z.array(ChargeItem).min(1), drawScale: z.number().positive().default(1), oblique: z.boolean().default(false) }),
   model: (p) => ({
     charges: p.items.map(toSI),
     items: p.items,
@@ -217,6 +217,47 @@ export const FaradaySpheres = defineComponent({
   quotable: { innerQ: "µC", rMid: "m" },
 });
 
+const itemToSI = toSI;
+
+export const CoulombForce = defineComponent({
+  id: "coulomb-force",
+  params: z.object({ on: z.string(), drawScale: z.number().positive().default(1), oblique: z.boolean().default(false) }),
+  links: ["charges"],
+  model: (p, ctx) => {
+    const items = ctx.link("charges").params.items as Item[];
+    const target = items.find((i) => i.id === p.on && i.kind === "point");
+    if (!target || target.kind !== "point") return {};
+    const at = target.pos as Vec3;
+    const others = items.filter((i) => i.id !== p.on);
+    const E = electricField(others.map(itemToSI), at);
+    const q = target.q * 1e-6;
+    const F: Vec3 = [E[0] * q, E[1] * q, E[2] * q];
+    const pts = others.filter((i) => i.kind === "point") as Extract<Item, { kind: "point" }>[];
+    const R = pts.length === 1 && others.length === 1 ? norm([at[0] - pts[0]!.pos[0], at[1] - pts[0]!.pos[1], at[2] - pts[0]!.pos[2]]) : undefined;
+    return { Fx: F[0], Fy: F[1], Fz: F[2], Fmag: norm(F), at, ...(R === undefined ? {} : { R }) };
+  },
+  handles: [],
+  readouts: { Fx: "N", Fy: "N", Fz: "N", Fmag: "N", R: "m" },
+  quotable: { Fx: "N", Fy: "N", Fz: "N", Fmag: "N", R: "m" },
+});
+
+export const EProbe = defineComponent({
+  id: "e-probe",
+  params: z.object({ point: V3, drawScale: z.number().positive().default(1), oblique: z.boolean().default(false), draggable: z.boolean().default(false) }),
+  links: ["charges"],
+  model: (p, ctx) => {
+    const cs = chargesOf(ctx);
+    const pt = p.point as Vec3;
+    const onCharge = cs.some((c) => c.kind === "point" && norm([pt[0] - c.pos[0], pt[1] - c.pos[1], pt[2] - c.pos[2]]) < 1e-15);
+    if (onCharge) return { Ex: null, Ey: null, Ez: null, Emag: null };
+    const E = electricField(cs, pt);
+    return { Ex: E[0], Ey: E[1], Ez: E[2], Emag: norm(E) };
+  },
+  handles: ["point"],
+  readouts: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m" },
+  quotable: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m" },
+});
+
 export const Axes = defineComponent({ id: "axes", params: z.object({ length: z.number().positive().default(1.8) }), model: () => ({}), handles: [], readouts: {} });
 
 export const DimensionCallout = defineComponent({
@@ -298,4 +339,4 @@ export const PatchTiling = defineComponent({
   links: ["charges"],
 });
 
-export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling, ...vecComponents, ...mathComponents];
+export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, CoulombForce, EProbe, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling, ...vecComponents, ...mathComponents];

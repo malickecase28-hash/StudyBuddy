@@ -1,6 +1,6 @@
 "use client";
 
-import { PX, pathD, toSvg, type Evaluated } from "@forma/plate";
+import { PX, pathD, toSvg, toSvg3, type Evaluated } from "@forma/plate";
 import type { ComponentType, KeyboardEvent, PointerEvent } from "react";
 import { Tex } from "../Tex";
 import { usePlateStage } from "./stage-context";
@@ -11,23 +11,26 @@ export type ViewProps = { id: string; ev: Evaluated; appear: number; focused: bo
 
 type V3 = [number, number, number];
 type Item =
-  | { id: string; kind: "point"; q: number; pos: V3; draggable: boolean }
+  | { id: string; kind: "point"; q: number; pos: V3; label?: string; draggable: boolean }
   | { id: string; kind: "line"; rhoL: number; x: number; y: number }
   | { id: string; kind: "sheet"; rhoS: number; z0: number };
 
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const STEP = 0.1; // metres per arrow-key press
 const KEYS: Record<string, [number, number]> = { ArrowLeft: [-STEP, 0], ArrowRight: [STEP, 0], ArrowUp: [0, STEP], ArrowDown: [0, -STEP] };
+export const place = (p: readonly number[], k: number, oblique: boolean) => (oblique ? toSvg3(p.map((v) => v * k)) : toSvg(p.map((v) => v * k)));
 
 function ChargesView({ id, ev }: ViewProps) {
   const stage = usePlateStage();
   const items = ev.params.items as Item[];
+  const k = ev.params.drawScale as number;
+  const oblique = ev.params.oblique as boolean;
   const move = (itemId: string, pos: V3) => stage.edit(id, { items: items.map((it) => (it.id === itemId && it.kind === "point" ? { ...it, pos } : it)) });
   return (
     <g className="v-charges">
       {items.map((it) => {
         if (it.kind === "line") {
-          const [x] = toSvg([it.x, 0, 0]);
+          const [x] = place([it.x, 0, 0], k, oblique);
           return (
             <g key={it.id} role="img" aria-label={`Line charge ${it.rhoL} nC per metre`}>
               <line x1={x} x2={x} y1={-180} y2={180} className="ink-charge" strokeDasharray="6 4" />
@@ -36,7 +39,7 @@ function ChargesView({ id, ev }: ViewProps) {
           );
         }
         if (it.kind === "sheet") {
-          const [, y] = toSvg([0, 0, it.z0]);
+          const [, y] = place([0, 0, it.z0], k, oblique);
           return (
             <g key={it.id} role="img" aria-label={`Sheet charge ${it.rhoS} µC per square metre`}>
               <rect x={-260} y={y - 3} width={520} height={6} fill="url(#hatch-charge)" />
@@ -44,20 +47,20 @@ function ChargesView({ id, ev }: ViewProps) {
             </g>
           );
         }
-        const [x, y] = toSvg(it.pos);
-        const can = it.draggable && stage.editable(id);
-        const label = `${it.q > 0 ? "+" : ""}${it.q} µC`;
+        const [x, y] = place(it.pos, k, oblique);
+        const can = it.draggable && stage.editable(id) && !oblique;
+        const label = it.label ?? `${it.q > 0 ? "+" : ""}${it.q} µC`;
         const onPointerDown = (e: PointerEvent<SVGGElement>) => can && e.currentTarget.setPointerCapture(e.pointerId);
         const onPointerMove = (e: PointerEvent<SVGGElement>) => {
           if (!can || !e.currentTarget.hasPointerCapture(e.pointerId)) return;
           const [mx, , mz] = stage.toMetres(e.clientX, e.clientY);
-          move(it.id, [r2(mx), it.pos[1], r2(mz)]);
+          move(it.id, [r2(mx / k), it.pos[1], r2(mz / k)]);
         };
         const onKeyDown = (e: KeyboardEvent<SVGGElement>) => {
           const d = KEYS[e.key];
           if (!can || !d) return;
           e.preventDefault();
-          move(it.id, [r2(it.pos[0] + d[0]), it.pos[1], r2(it.pos[2] + d[1])]);
+          move(it.id, [r2(it.pos[0] + d[0] / k), it.pos[1], r2(it.pos[2] + d[1] / k)]);
         };
         const a11y = can
           ? { tabIndex: 0, role: "button", "aria-label": `${label} charge at x ${it.pos[0].toFixed(2)} m, z ${it.pos[2].toFixed(2)} m. Drag, or use the arrow keys, to move it.`, onPointerDown, onPointerMove, onKeyDown }
@@ -73,6 +76,51 @@ function ChargesView({ id, ev }: ViewProps) {
       })}
     </g>
   );
+}
+
+function fieldArrow(at: V3, vector: V3, k: number, oblique: boolean) {
+  const mag = Math.hypot(...vector);
+  if (!mag) return null;
+  const direction: V3 = [vector[0] / mag, vector[1] / mag, vector[2] / mag];
+  const from = place(at, k, oblique);
+  const to = place([at[0] + direction[0] * 0.01 / k, at[1] + direction[1] * 0.01 / k, at[2] + direction[2] * 0.01 / k], k, oblique);
+  const dx = to[0] - from[0], dy = to[1] - from[1];
+  const screenMag = Math.hypot(dx, dy);
+  if (!screenMag) return null;
+  return { x: from[0], y: from[1], dx: (dx / screenMag) * 70, dy: (dy / screenMag) * 70 };
+}
+
+function CoulombForceView({ ev }: ViewProps) {
+  const at = ev.model.at as V3 | undefined;
+  if (!at) return null;
+  const arrow = fieldArrow(at, [ev.model.Fx as number, ev.model.Fy as number, ev.model.Fz as number], ev.params.drawScale as number, ev.params.oblique as boolean);
+  if (!arrow) return null;
+  return <g className="v-coulomb-force" role="img" aria-label={`Force F on ${String(ev.params.on)}`}><line x1={arrow.x} y1={arrow.y} x2={arrow.x + arrow.dx} y2={arrow.y + arrow.dy} className="ink-charge" markerEnd="url(#arrow-charge)" /><text x={arrow.x + arrow.dx + 5} y={arrow.y + arrow.dy - 4} className="plate-label">F</text></g>;
+}
+
+function EProbeView({ id, ev }: ViewProps) {
+  const stage = usePlateStage();
+  const point = ev.params.point as V3;
+  const k = ev.params.drawScale as number;
+  const oblique = ev.params.oblique as boolean;
+  const [x, y] = place(point, k, oblique);
+  const vector = [ev.model.Ex, ev.model.Ey, ev.model.Ez].map((v) => typeof v === "number" ? v : 0) as V3;
+  const arrow = fieldArrow(point, vector, k, oblique);
+  const can = ev.params.draggable === true && stage.editable(id) && !oblique;
+  const move = (pos: V3) => stage.edit(id, { point: pos });
+  const onPointerDown = (e: PointerEvent<SVGGElement>) => can && e.currentTarget.setPointerCapture(e.pointerId);
+  const onPointerMove = (e: PointerEvent<SVGGElement>) => {
+    if (!can || !e.currentTarget.hasPointerCapture(e.pointerId)) return;
+    const [mx, , mz] = stage.toMetres(e.clientX, e.clientY);
+    move([r2(mx / k), point[1], r2(mz / k)]);
+  };
+  const onKeyDown = (e: KeyboardEvent<SVGGElement>) => {
+    const d = KEYS[e.key];
+    if (!can || !d) return;
+    e.preventDefault();
+    move([r2(point[0] + d[0] / k), point[1], r2(point[2] + d[1] / k)]);
+  };
+  return <g className={can ? "v-e-probe handle" : "v-e-probe"} transform={`translate(${x} ${y})`} {...(can ? { tabIndex: 0, role: "button", onPointerDown, onPointerMove, onKeyDown } : { role: "img" })} aria-label={`Field probe at x ${point[0]} m, y ${point[1]} m, z ${point[2]} m`}><path d="M-5 0H5M0 -5V5" className="ink-graphite" />{arrow && <><line x1={arrow.x - x} y1={arrow.y - y} x2={arrow.x - x + arrow.dx} y2={arrow.y - y + arrow.dy} className="ink-flux" markerEnd="url(#arrow-flux)" /><text x={arrow.x - x + arrow.dx + 5} y={arrow.y - y + arrow.dy - 4} className="plate-label">E</text></>}{can && <circle r={14} className="handle-ring" />}</g>;
 }
 
 function FieldArrowsView({ ev }: ViewProps) {
@@ -325,6 +373,8 @@ export function EquationView({ ev, onTerm }: { ev: Evaluated; onTerm?: (key: str
 
 export const views2d: Record<string, ComponentType<ViewProps>> = {
   charges: ChargesView,
+  "coulomb-force": CoulombForceView,
+  "e-probe": EProbeView,
   "field-arrows": FieldArrowsView,
   "field-profile": FieldProfileView,
   "gaussian-surface": GaussianSurfaceView,

@@ -18,10 +18,11 @@ const LABEL: Record<string, string> = {
   len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume",
   lambda: "Wavelength λ", si: "In SI base units", siM: "In metres", siM2: "In m²", siM3: "In m³", siC: "In coulombs", siHz: "In hertz", siV: "In volts", siF: "In farads", siN: "In newtons",
   g1: "∇, 1st component", g2: "∇, 2nd component", g3: "∇, 3rd component",
+  Fx: "Fₓ", Fy: "Fᵧ", Fz: "F_z", Fmag: "|F|", R: "Separation R", Ex: "Eₓ", Ey: "Eᵧ", Ez: "E_z", Emag: "|E|",
 };
 const SYS: Record<string, [string, string, string]> = { cart: ["x", "y", "z"], cyl: ["ρ", "φ", "z"], sph: ["r", "θ", "φ"] };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
-  flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge",
+  flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge", Fmag: "charge", Emag: "field",
   dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field",
 };
 const pretty = (unit: string) => unit.replace("^2", "²").replace("^3", "³");
