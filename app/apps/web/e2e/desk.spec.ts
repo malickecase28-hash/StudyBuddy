@@ -23,7 +23,7 @@ test("first run points at the readiness check", async ({ page }) => {
 });
 
 test("the footer sits at the bottom of a short page, and a classic continue has no empty thumbnail", async ({ page }) => {
-  await page.goto("/learn/em1.math.vectors/main");
+  await page.goto("/learn/em1.math.vectors/quick");
   await expect(page.locator("main").getByRole("heading").first()).toBeVisible({ timeout: 15_000 });
   await page.goto("/");
   await expect(page.getByRole("link", { name: "Continue →" })).toBeVisible();

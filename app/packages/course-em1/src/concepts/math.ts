@@ -5,11 +5,23 @@ const GL = "em1.electrostatics.gauss-law";
 
 export const vectors = {
   id: "em1.math.vectors",
-  title: "Vectors & the dot product",
+  title: "Vectors and coordinate systems",
   unit: 2,
-  objectives: ["Compute a dot product in components.", "Interpret A·B as how much of A points along B."],
+  objectives: [
+    "Write vectors in components; find magnitudes and unit vectors.",
+    "Form position and displacement vectors, with units.",
+    "Use dot and cross products: angles, projections and perpendiculars.",
+    "Convert points and vectors between cartesian, cylindrical and spherical coordinates.",
+    "Build dl, dS and dv in all three coordinate systems.",
+  ],
   prerequisites: [],
-  misconceptions: [],
+  misconceptions: [
+    { tag: "DISPLACEMENT_ORDER", description: "Writes R12 = r1 − r2 (start minus end).", remediation: "em1.math.vectors/main" },
+    { tag: "UNIT_VECTOR_LENGTH", description: "Forgets to divide by the magnitude, or divides by the sum of components.", remediation: "em1.math.vectors/main" },
+    { tag: "DOT_CROSS_CONFUSION", description: "Uses the dot product where a perpendicular vector (cross product) is needed.", remediation: "em1.math.vectors/main" },
+    { tag: "PHI_QUADRANT", description: "Takes φ straight from tan⁻¹(y/x) without placing the quadrant.", remediation: "em1.math.vectors/main" },
+    { tag: "ELEMENT_SCALE_FACTOR", description: "Drops ρ, r or sin θ from dl, dS or dv.", remediation: "em1.math.vectors/main" },
+  ],
   examLinks: [],
   sources: [src(SLIDES_2A, "Review of Vectors"), src(WENT, "§2.1, p. 12")],
   status: "verified",
@@ -17,7 +29,15 @@ export const vectors = {
   lessons: [
     {
       id: "main",
-      title: "The dot product, fast",
+      title: "Vectors and coordinate systems (in depth)",
+      minutes: 80,
+      blocks: [
+        { ...meta("vivid", src(SLIDES_2A, "Vector algebra")), id: "idea-vec-basics", type: "plate", plateId: "idea-vec-basics" },
+      ],
+    },
+    {
+      id: "quick",
+      title: "Quick refresher: the dot product",
       minutes: 6,
       blocks: [
         {
@@ -61,7 +81,6 @@ export const vectors = {
         },
       ],
     },
-    { id: "toolkit-preview", title: "Toolkit preview (developer)", minutes: 1, blocks: [{ ...meta("vivid", orig()), id: "toolkit-preview", type: "plate", plateId: "toolkit-preview" }] },
   ],
 };
 
