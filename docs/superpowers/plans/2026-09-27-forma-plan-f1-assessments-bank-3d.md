@@ -978,6 +978,11 @@ describe("vector3 and coord-frame", () => {
     const f = frameOf([{ id: "a", component: "vector3", params: { from: [0, 0, 0], to: [2, -3, 6], label: "A" }, visible: true }]);
     expect(f.a!.model).toMatchObject({ vx: 2, vy: -3, vz: 6, vmag: 7 });
   });
+  it("vector3 in metres keys its readouts by unit (MST R12 = 8, 0, −6 mm)", () => {
+    const f = frameOf([{ id: "r", component: "vector3", params: { from: [0.002, 0.002, 0.013], to: [0.01, 0.002, 0.007], label: "R12", unit: "m", drawScale: 150 }, visible: true }]);
+    expect(f.r!.model.vmagm as number).toBeCloseTo(0.01, 12);
+    expect("vmag" in f.r!.model).toBe(false);
+  });
   it("coord-frame shows only its system's coordinates", () => {
     const cyl = frameOf([{ id: "c", component: "coord-frame", params: { point: [1, 3, 5], system: "cyl" }, visible: true }]).c!.model;
     expect(cyl.pRho as number).toBeCloseTo(3.16228, 5);
@@ -1037,14 +1042,19 @@ export const Vector3 = defineComponent({
     label: z.string().min(1),
     tone: z.enum(["charge", "field", "flux", "surface", "ink"]).default("ink"),
     components: z.boolean().default(false),
+    /** "m" when from/to are positions in metres: readouts then carry the metre unit (vxm…). */
+    unit: z.enum(["", "m"]).default(""),
+    /** Drawing magnification only (tiny mm vectors or long ones); readouts always use the true values. */
+    drawScale: z.number().positive().default(1),
   }),
   model: (p) => {
     const d = [p.to[0] - p.from[0], p.to[1] - p.from[1], p.to[2] - p.from[2]] as const;
-    return { vx: d[0], vy: d[1], vz: d[2], vmag: Math.hypot(d[0], d[1], d[2]) };
+    const mag = Math.hypot(d[0], d[1], d[2]);
+    return p.unit === "m" ? { vxm: d[0], vym: d[1], vzm: d[2], vmagm: mag } : { vx: d[0], vy: d[1], vz: d[2], vmag: mag };
   },
   handles: [],
-  readouts: { vx: "", vy: "", vz: "", vmag: "" },
-  quotable: { vx: "", vy: "", vz: "", vmag: "" },
+  readouts: { vx: "", vy: "", vz: "", vmag: "", vxm: "m", vym: "m", vzm: "m", vmagm: "m" },
+  quotable: { vx: "", vy: "", vz: "", vmag: "", vxm: "m", vym: "m", vzm: "m", vmagm: "m" },
 });
 
 export const CoordFrame = defineComponent({
@@ -1054,6 +1064,8 @@ export const CoordFrame = defineComponent({
     system: z.enum(["cart", "cyl", "sph"]).default("cart"),
     unitVectors: z.boolean().default(true),
     draggable: z.boolean().default(false),
+    /** Drawing magnification only; readouts use the true point. */
+    drawScale: z.number().positive().default(1),
   }),
   model: (p) => {
     const pt = p.point as [number, number, number];
@@ -1120,8 +1132,9 @@ export function Axes3View({ ev }: ViewProps) {
 }
 
 export function Vector3View({ ev }: ViewProps) {
-  const p = ev.params as { from: number[]; to: number[]; label: string; tone: string; components: boolean };
-  const m = ev.model as { vmag: number };
+  const raw = ev.params as { from: number[]; to: number[]; label: string; tone: string; components: boolean; drawScale: number };
+  const p = { ...raw, from: raw.from.map((v) => v * raw.drawScale), to: raw.to.map((v) => v * raw.drawScale) };
+  const m = { vmag: (ev.model.vmag ?? ev.model.vmagm) as number };
   const [fx, fy, fz] = p.from as [number, number, number];
   const [tx, ty, tz] = p.to as [number, number, number];
   const dashed = (a: number[], b: number[]) => {
@@ -1147,10 +1160,13 @@ const SYS_LABELS = { cart: ["aₓ", "a_y", "a_z"], cyl: ["a_ρ", "a_φ", "a_z"],
 
 export function CoordFrameView({ id, ev }: ViewProps) {
   const stage = usePlateStage();
-  const p = ev.params as { point: [number, number, number]; system: "cart" | "cyl" | "sph"; unitVectors: boolean; draggable: boolean };
+  const raw = ev.params as { point: [number, number, number]; system: "cart" | "cyl" | "sph"; unitVectors: boolean; draggable: boolean; drawScale: number };
+  const k = raw.drawScale;
+  // Draw at k × the true point; edits divide back out so the model always holds the true coordinates.
+  const p = { ...raw, point: raw.point.map((v) => v * k) as [number, number, number] };
   const [x, y, z] = p.point;
   const can = p.draggable && stage.editable(id);
-  const move = (pt: [number, number, number]) => stage.edit(id, { point: pt.map(r2) });
+  const move = (pt: [number, number, number]) => stage.edit(id, { point: pt.map((v) => r2(v / k)) });
   const [sx, sy] = toSvg3(p.point);
   const foot = toSvg3([x, y, 0]);
   const origin = toSvg3([0, 0, 0]);
@@ -1201,6 +1217,7 @@ Details:
 
     ```ts
     vx: "x-component", vy: "y-component", vz: "z-component", vmag: "Magnitude",
+    vxm: "x-component", vym: "y-component", vzm: "z-component", vmagm: "Length",
     px: "x", py: "y", pz: "z", pRho: "ρ", pPhi: "φ", pR: "r", pTheta: "θ (from +z)",
     ```
 

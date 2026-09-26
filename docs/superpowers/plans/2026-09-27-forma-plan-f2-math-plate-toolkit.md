@@ -703,8 +703,8 @@ Co-Authored-By: Codex <noreply@openai.com>"
   - readouts: `{ f: "Hz", lambda: "m" }`. handles: `["f"]`.
 - **`unit-convert`**
   - params: `{ value: number, unit: string }`, using any unit `toSI` accepts.
-  - model: `{ si, dim, ok }`.
-  - readouts: `{ si: "" }`.
+  - model: `{ dim, ok }`, plus exactly one SI value keyed by its dimension. The keys are `siM` (m), `siM2` (m²), `siM3` (m³), `siC` (C), `siHz` (Hz), `siV` (V), `siF` (F) and `siN` (N); any other dimension goes to `si`, unitless. Keying by unit means text such as "0.007112 m" is backed by a readout.
+  - readouts: `{ siM: "m", siM2: "m^2", siM3: "m^3", siC: "C", siHz: "Hz", siV: "V", siF: "F", siN: "N", si: "" }`.
 
 - [ ] **Step 1: Write the failing test.** Append to `math.test.ts`:
 
@@ -722,12 +722,13 @@ describe("spectrum and unit-convert", () => {
   });
   it("converts the coax core 0.28 inch and the sphere diameter 12.8 cm to metres", () => {
     expect(model("unit-convert", { value: 0.28, unit: "in" })).toMatchObject({ dim: "m", ok: true });
-    expect(model("unit-convert", { value: 0.28, unit: "in" }).si as number).toBeCloseTo(0.007112, 12);
-    expect(model("unit-convert", { value: 12.8, unit: "cm" }).si as number).toBeCloseTo(0.128, 12);
-    expect(model("unit-convert", { value: 200, unit: "mC" }).si as number).toBeCloseTo(0.2, 12);
+    expect(model("unit-convert", { value: 0.28, unit: "in" }).siM as number).toBeCloseTo(0.007112, 12);
+    expect(model("unit-convert", { value: 12.8, unit: "cm" }).siM as number).toBeCloseTo(0.128, 12);
+    expect(model("unit-convert", { value: 200, unit: "mC" }).siC as number).toBeCloseTo(0.2, 12);
+    expect(model("unit-convert", { value: 5, unit: "cm^2" }).siM2 as number).toBeCloseTo(5e-4, 15);
   });
   it("flags a unit it cannot read instead of throwing", () => {
-    expect(model("unit-convert", { value: 3, unit: "furlong" })).toMatchObject({ ok: false, si: null });
+    expect(model("unit-convert", { value: 3, unit: "furlong" })).toMatchObject({ ok: false });
   });
 });
 ```
@@ -760,13 +761,15 @@ export const UnitConvert = defineComponent({
   model: (p) => {
     try {
       const q = toSI(p.value, p.unit);
-      return { si: q.value, dim: q.dim, ok: true };
+      const key = ({ m: "siM", "m^2": "siM2", "m^3": "siM3", C: "siC", Hz: "siHz", V: "siV", F: "siF", N: "siN" } as Record<string, string>)[q.dim] ?? "si";
+      return { [key]: q.value, dim: q.dim, ok: true } as Record<string, number | string | boolean>;
     } catch {
-      return { si: null, dim: "", ok: false };
+      return { dim: "", ok: false };
     }
   },
   handles: [],
-  readouts: { si: "" },
+  readouts: { siM: "m", siM2: "m^2", siM3: "m^3", siC: "C", siHz: "Hz", siV: "V", siF: "F", siN: "N", si: "" },
+  quotable: { siM: "m", siM2: "m^2", siM3: "m^3", siC: "C", siHz: "Hz", siV: "V", siF: "F", siN: "N" },
 });
 ```
 
@@ -1027,7 +1030,7 @@ export function SpectrumView({ id, ev }: ViewProps) {
 
 export function UnitConvertView({ ev }: ViewProps) {
   const p = ev.params as { value: number; unit: string };
-  const m = ev.model as { si: number | null; dim: string; ok: boolean };
+  const m = { ...(ev.model as { dim: string; ok: boolean }), si: Object.entries(ev.model).find(([k]) => k.startsWith("si"))?.[1] as number | undefined };
   return (
     <g className="v-unit-convert" role="img" aria-label={m.ok ? `${p.value} ${p.unit} equals ${m.si} ${m.dim}` : `${p.unit} is not a unit Forma reads`}>
       <text x={-200} y={-10} className="plate-label" style={{ fontSize: 22 }}>{`${p.value} ${p.unit}`}</text>
@@ -1060,7 +1063,7 @@ export function UnitConvertView({ ev }: ViewProps) {
     c1: "curl, 1st", c2: "curl, 2nd", c3: "curl, 3rd",
     boxFlux: "Net flux out of the box", boxRatio: "Flux ÷ box volume", circ: "Circulation round the loop", circRatio: "Circulation ÷ loop area",
     len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume",
-    lambda: "Wavelength λ", si: "In SI base units",
+    lambda: "Wavelength λ", si: "In SI base units", siM: "In metres", siM2: "In m²", siM3: "In m³", siC: "In coulombs", siHz: "In hertz", siV: "In volts", siF: "In farads", siN: "In newtons",
     g1: "∇, 1st component", g2: "∇, 2nd component", g3: "∇, 3rd component",
     ```
 
