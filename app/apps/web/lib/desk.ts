@@ -14,7 +14,7 @@ export function deskContinue(learner: LearnerState): DeskContinue {
     const block = lesson.blocks.find((b) => b.id === pos.blockId);
     if (isPlateLesson(lesson) && block?.type === "plate" && plates[block.plateId]) {
       const plate = plates[block.plateId]!;
-      const step = Math.min(pos.plateStep ?? 0, plate.steps.length - 1);
+      const step = Math.max(0, Math.min(pos.plateStep ?? 0, plate.steps.length - 1));
       return {
         href: conceptHref(concept.id, "learn", { lesson: lesson.id, block: block.id, step: String(step) }),
         title: plate.steps[step]!.title,

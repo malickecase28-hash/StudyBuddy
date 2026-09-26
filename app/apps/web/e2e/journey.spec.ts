@@ -21,6 +21,8 @@ test("return experience after time away", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("It's been 5 days.")).toBeVisible();
   await expect(page.getByText(/Recall ·/i).first()).toBeVisible();
+  await page.getByRole("button", { name: "Not now" }).click();
+  await expect(page.getByText("It's been 5 days.")).toHaveCount(0);
 });
 
 test("@perf lab stays usable on a 4x throttled CPU with low-power quality", async ({ page }) => {

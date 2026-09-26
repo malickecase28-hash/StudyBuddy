@@ -1,7 +1,7 @@
 "use client";
 
 import type { ToolId } from "@forma/engine";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Tex } from "@/components/Tex";
 import { conceptHref, formulaSheet, getConcept, lessonForPlate } from "@/lib/course";
@@ -92,11 +92,34 @@ export function ToolSplit({ children }: { children: ReactNode }) {
   const { tool, pinned, width, setWidth, close, togglePin } = useToolState();
   const { activeConceptId, toolExpanded, setToolExpanded } = useUi();
   const box = useRef<HTMLDivElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  const narrow = useNarrow();
   const label = tool ? TOOLS.find((x) => x.id === tool)!.label : "";
-  const cols = !tool ? "minmax(0, 1fr)" : toolExpanded ? "0 0 minmax(0, 1fr)" : `minmax(0, ${1 - width}fr) 12px minmax(0, ${width}fr)`;
+  // Hidden page and handle take no grid cells, so an expanded tool is the only (full-width) column.
+  const cols = !tool || toolExpanded ? "minmax(0, 1fr)" : `minmax(0, ${1 - width}fr) 12px minmax(0, ${width}fr)`;
+  const sheet = !!tool && (narrow || toolExpanded);
+
+  // Expansion belongs to the tool that was expanded; it never carries over to the next one.
+  useEffect(() => {
+    if (!tool && toolExpanded) setToolExpanded(false);
+  }, [tool, toolExpanded, setToolExpanded]);
+  // As a full-screen sheet, the tool takes focus; Escape closes it (unless a dialog already used the key).
+  useEffect(() => {
+    if (tool && narrow) closeButton.current?.focus();
+  }, [tool, narrow]);
+  useEffect(() => {
+    if (!tool) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented || document.querySelector("[role=dialog]")) return;
+      e.preventDefault();
+      close();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [tool, close]);
   return (
     <div ref={box} className="tool-split" style={{ gridTemplateColumns: cols }}>
-      <div className="tool-split-page" hidden={!!tool && toolExpanded}>
+      <div className="tool-split-page" hidden={!!tool && toolExpanded} inert={sheet}>
         {children}
       </div>
       {tool && (
@@ -127,11 +150,24 @@ export function ToolSplit({ children }: { children: ReactNode }) {
             <button className="btn text-sm" aria-pressed={toolExpanded} onClick={() => setToolExpanded(!toolExpanded)} aria-label={toolExpanded ? "Show the page again" : "Expand the tool"}>
               ⤢
             </button>
-            <button className="btn text-sm" onClick={close} aria-label={`Close ${label}`}>✕</button>
+            <button ref={closeButton} className="btn text-sm" onClick={close} aria-label={`Close ${label}`}>✕</button>
           </header>
           <ToolBody tool={tool} conceptId={activeConceptId} />
         </aside>
       )}
     </div>
   );
+}
+
+/** Below 900 px the tool pane is a full-screen sheet (matches the CSS breakpoint). */
+function useNarrow() {
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia("(max-width: 900px)");
+    const on = () => setNarrow(m.matches);
+    on();
+    m.addEventListener("change", on);
+    return () => m.removeEventListener("change", on);
+  }, []);
+  return narrow;
 }

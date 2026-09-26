@@ -30,6 +30,7 @@ export function DeskScreen() {
           <h2 id="welcome-back" className="text-xl">It&apos;s been {Math.floor(returnInfo.gapDays)} days.</h2>
           <p className="text-soft">Two quick recalls before you continue, so your place comes back.</p>
           <RetrievalQuiz count={2} onFinished={dismissWelcome} />
+          <button className="btn" onClick={dismissWelcome}>Not now</button>
         </section>
       )}
       <section className="desk-continue" data-plate={!!c.plate} aria-labelledby="continue-title">

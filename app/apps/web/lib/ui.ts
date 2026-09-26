@@ -33,7 +33,8 @@ export const useUi = create<{
   closePanel: () => set({ panel: null, toolExpanded: false }),
   setPalette: (paletteOpen) => set({ paletteOpen }),
   setActiveConcept: (activeConceptId) => set({ activeConceptId }),
-  setWorkspaceMode: (workspaceMode) => set({ workspaceMode }),
+  // A tool opened by hand belongs to the mode it was opened in; each mode then shows its own pinned tool.
+  setWorkspaceMode: (workspaceMode) => set((s) => (s.workspaceMode === workspaceMode ? {} : { workspaceMode, panel: null, toolExpanded: false })),
   setToolWidth: (w) => set({ toolWidth: Math.min(0.8, Math.max(0.2, w)) }),
   setToolExpanded: (toolExpanded) => set({ toolExpanded }),
 }));

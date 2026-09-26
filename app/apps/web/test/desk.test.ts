@@ -27,4 +27,7 @@ describe("deskContinue", () => {
     expect(deskContinue(at({ conceptId: G, lessonId: "gone", blockId: "x", branchStack: [] })).href).toBe(`/c/em1/${G}?mode=learn`);
     expect(deskContinue(at({ conceptId: "nope", lessonId: "x", blockId: "x", branchStack: [] })).href).toMatch(/^\/c\/em1\//);
   });
+  it("a corrupt negative step clamps to the first step instead of crashing", () => {
+    expect(deskContinue(at({ conceptId: G, lessonId: "main", blockId: "gauss", branchStack: [], plateStep: -3 })).plate).toEqual({ plateId: "gauss", step: 0 });
+  });
 });

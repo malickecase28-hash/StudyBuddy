@@ -21,6 +21,7 @@ test("a tool opens as a wide split without remounting the lesson, expands, and c
 
   await page.getByRole("button", { name: "Expand the tool" }).click();
   await expect(page.getByRole("complementary", { name: "Margin" })).toBeHidden();
+  expect((await pane.boundingBox())!.width).toBeGreaterThan(vw * 0.85);
   await page.getByRole("button", { name: "Show the page again" }).click();
   await page.getByRole("button", { name: "Close Working paper" }).click();
   await expect(pane).toHaveCount(0);
@@ -45,8 +46,24 @@ test.describe("phone", () => {
     const pane = page.getByRole("complementary", { name: "Tool: Formula sheet" });
     const box = (await pane.boundingBox())!;
     expect(box.width).toBeGreaterThanOrEqual(385);
-    await page.getByRole("button", { name: "Close Formula sheet" }).focus();
-    await page.keyboard.press("Enter");
+    await expect(page.getByRole("button", { name: "Close Formula sheet" })).toBeFocused();
+    await page.keyboard.press("Escape");
     await expect(pane).toHaveCount(0);
   });
+});
+
+test("an expanded tool doesn't leak into the next one, and switching mode shows that mode's tool", async ({ page }) => {
+  await open(page, concept(G, "mode=solve"));
+  await expect(page.getByRole("complementary", { name: "Tool: Working paper" })).toBeVisible();
+  await page.getByRole("button", { name: "Expand the tool" }).click();
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press("1");
+  await expect(page).toHaveURL(/mode=learn/);
+  await page.getByRole("button", { name: "Formula sheet" }).click();
+  const vw = page.viewportSize()!.width;
+  expect((await page.getByRole("complementary", { name: "Tool: Formula sheet" }).boundingBox())!.width).toBeLessThan(vw * 0.6);
+  await expect(page.getByRole("complementary", { name: "Margin" })).toBeVisible();
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press("2");
+  await expect(page.getByRole("complementary", { name: "Tool: Working paper" })).toBeVisible();
 });
