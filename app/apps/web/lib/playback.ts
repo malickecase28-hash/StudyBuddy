@@ -26,6 +26,7 @@ export function answeredFromHistory(history: readonly LearnEvent[], plate: Plate
       const mine = events.filter((e) => e.blockId === `${plate.id}.${i.id}`);
       const done =
         i.type === "predict-drag" ? mine.length > 0
+        : s.kind === "check" ? mine.some((e) => e.correct)
         : i.type === "choose" || i.type === "identify" ? mine.some((e) => e.correct) || mine.length >= 2
         : mine.some((e) => e.correct);
       return done ? [i.id] : [];

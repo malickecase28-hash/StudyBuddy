@@ -114,3 +114,4 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
   .tool-split .split-handle { display: none; }
   .tool-pane { position: fixed; inset: 0; z-index: 40; max-height: none; border-left: 0; }
 }
+.patch-edge { stroke: var(--surface); stroke-width: 7; stroke-linecap: round; }

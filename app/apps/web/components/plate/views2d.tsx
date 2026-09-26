@@ -175,6 +175,137 @@ function DimensionCalloutView({ ev }: ViewProps) {
   );
 }
 
+function UniformFieldView({ ev }: ViewProps) {
+  const d = ev.model.D as number[];
+  const m = ev.model.magnitude as number;
+  if (!m) return null;
+  const ux = d[0]! / m, uz = d[2]! / m;
+  const s = ev.params.spacing as number;
+  const L = 0.22;
+  const arrows: [number, number][] = [];
+  for (let x = -2.4; x <= 2.4 + 1e-9; x += s) for (let z = -1.7; z <= 1.7 + 1e-9; z += s) arrows.push([x, z]);
+  return (
+    <g className="v-uniform" role="img" aria-label={`Uniform field D of ${m.toFixed(2)} µC per square metre`}>
+      {arrows.map(([x, z], i) => {
+        const [x1, y1] = toSvg([x - (ux * L) / 2, 0, z - (uz * L) / 2]);
+        const [x2, y2] = toSvg([x + (ux * L) / 2, 0, z + (uz * L) / 2]);
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} className="ink-flux" markerEnd="url(#arrow-flux)" opacity={0.55} />;
+      })}
+    </g>
+  );
+}
+
+function FlatPatchView({ id, ev }: ViewProps) {
+  const stage = usePlateStage();
+  const p = ev.params as { center: number[]; size: number; normalAngle: number; showNormal: boolean; showShadow: boolean };
+  const n = ev.model.n as number[];
+  const t = [-n[2]!, 0, n[0]!];
+  const c = p.center;
+  const half = p.size / 2;
+  const [x1, y1] = toSvg([c[0]! - t[0]! * half, 0, c[2]! - t[2]! * half]);
+  const [x2, y2] = toSvg([c[0]! + t[0]! * half, 0, c[2]! + t[2]! * half]);
+  const [cx, cy] = toSvg(c);
+  const [nx, ny] = toSvg([c[0]! + n[0]! * 0.55, 0, c[2]! + n[2]! * 0.55]);
+  const can = stage.editable(id);
+  const turn = (deg: number) => stage.edit(id, { normalAngle: Math.round(deg * 2) / 2 });
+  const a11y = can
+    ? {
+        tabIndex: 0, role: "slider", "aria-label": "Patch tilt: angle of the normal from the +x axis. Arrow keys turn it by half a degree.",
+        "aria-valuenow": p.normalAngle, "aria-valuemin": -180, "aria-valuemax": 180, "aria-valuetext": `${p.normalAngle}°`,
+        onKeyDown: (e: KeyboardEvent<SVGGElement>) => {
+          const d = e.key === "ArrowRight" || e.key === "ArrowUp" ? 0.5 : e.key === "ArrowLeft" || e.key === "ArrowDown" ? -0.5 : 0;
+          if (!d) return;
+          e.preventDefault();
+          turn(p.normalAngle + d);
+        },
+        onPointerDown: (e: PointerEvent<SVGGElement>) => e.currentTarget.setPointerCapture(e.pointerId),
+        onPointerMove: (e: PointerEvent<SVGGElement>) => {
+          if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
+          const [mx, , mz] = stage.toMetres(e.clientX, e.clientY);
+          turn((Math.atan2(mz - c[2]!, mx - c[0]!) * 180) / Math.PI);
+        },
+      }
+    : { role: "img", "aria-label": `Flat patch, normal at ${p.normalAngle}° from the +x axis` };
+  return (
+    <g className={`v-patch${can ? " handle" : ""}`} {...a11y}>
+      <line x1={x1} y1={y1} x2={x2} y2={y2} className="patch-edge" />
+      {p.showNormal && (
+        <>
+          <line x1={cx} y1={cy} x2={nx} y2={ny} className="ink-surface" markerEnd="url(#arrow-surface)" />
+          <text x={nx + 6} y={ny} className="plate-label">n̂</text>
+        </>
+      )}
+      {p.showShadow && (() => {
+        // The patch's shadow on a wall facing the field: its edge projected across D (half-length size·|cos θ|/2).
+        const d = (p.size * Math.abs(Math.cos((((ev.model.theta as number | null) ?? 0) * Math.PI) / 180))) / 2;
+        const [sx1, sy1] = toSvg([c[0]! - 0.9, 0, c[2]! - d]);
+        const [sx2, sy2] = toSvg([c[0]! - 0.9, 0, c[2]! + d]);
+        return (
+          <g>
+            <line x1={sx1} y1={sy1} x2={sx2} y2={sy2} className="ink-graphite" strokeDasharray="4 3" strokeWidth={3} />
+            <text x={sx1 - 8} y={(sy1 + sy2) / 2} textAnchor="end" className="plate-label">A cos θ</text>
+          </g>
+        );
+      })()}
+      {can && <circle cx={cx} cy={cy} r={14} className="handle-ring" />}
+    </g>
+  );
+}
+
+const TONE_CLASS: Record<string, string> = { charge: "ink-charge", field: "ink-field", flux: "ink-flux", surface: "ink-surface", ink: "ink" };
+
+function VectorView({ ev }: ViewProps) {
+  const p = ev.params as { from: number[]; to: number[]; label: string; tone: string; arcTo?: number[] };
+  const [x1, y1] = toSvg(p.from);
+  const [x2, y2] = toSvg(p.to);
+  const arc = p.arcTo
+    ? (() => {
+        const a1 = Math.atan2(p.to[2]! - p.from[2]!, p.to[0]! - p.from[0]!);
+        const a2 = Math.atan2(p.arcTo[2]! - p.from[2]!, p.arcTo[0]! - p.from[0]!);
+        const r = 0.28;
+        const [ax1, ay1] = toSvg([p.from[0]! + r * Math.cos(a1), 0, p.from[2]! + r * Math.sin(a1)]);
+        const [ax2, ay2] = toSvg([p.from[0]! + r * Math.cos(a2), 0, p.from[2]! + r * Math.sin(a2)]);
+        const mid = (a1 + a2) / 2;
+        const [lx, ly] = toSvg([p.from[0]! + (r + 0.12) * Math.cos(mid), 0, p.from[2]! + (r + 0.12) * Math.sin(mid)]);
+        return (
+          <g>
+            <path d={`M${ax1} ${ay1} A${r * PX} ${r * PX} 0 0 ${a1 > a2 ? 1 : 0} ${ax2} ${ay2}`} fill="none" className="ink" />
+            <text x={lx} y={ly} className="plate-label">θ</text>
+          </g>
+        );
+      })()
+    : null;
+  return (
+    <g className="v-vector" role="img" aria-label={`Vector ${p.label}`}>
+      <line x1={x1} y1={y1} x2={x2} y2={y2} className={TONE_CLASS[p.tone] ?? "ink"} strokeWidth={2} markerEnd={`url(#arrow-${p.tone === "ink" ? "graphite" : p.tone})`} />
+      <text x={x2 + 6} y={y2 - 4} className="plate-label">{p.label}</text>
+      {arc}
+    </g>
+  );
+}
+
+function PatchTilingView({ ev }: ViewProps) {
+  const segs = ev.model.segments as { p: number[]; dn: number | null }[];
+  const max = Math.max(1e-30, ...segs.map((s) => Math.abs(s.dn ?? 0)));
+  const per = Math.max(1, Math.round(segs.length / (4 * Math.max(1, ev.params.n as number))));
+  return (
+    <g className="v-tiling" role="img" aria-label={`Surface split into ${String(ev.model.count)} patches`}>
+      {segs.map((s, i) => {
+        const b = segs[(i + 1) % segs.length]!;
+        const [x1, y1] = toSvg(s.p);
+        const [x2, y2] = toSvg(b.p);
+        const c = s.dn ?? 0;
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} className={c >= 0 ? "shade-out" : "shade-in"} strokeOpacity={0.15 + (0.85 * Math.abs(c)) / max} />;
+      })}
+      <path d={pathD(segs.map((s) => s.p))} className="ink-surface" fill="none" />
+      {segs.filter((_, i) => i % per === 0).map((s, i) => {
+        const [x, y] = toSvg(s.p);
+        return <circle key={i} cx={x} cy={y} r={2} className="fill-paper ink" />;
+      })}
+    </g>
+  );
+}
+
 /** HTML overlay: KaTeX with \htmlClass term keys. Clicking a term reports its key for focus links. */
 export function EquationView({ ev, onTerm }: { ev: Evaluated; onTerm?: (key: string) => void }) {
   return (
@@ -198,6 +329,10 @@ export const views2d: Record<string, ComponentType<ViewProps>> = {
   "faraday-spheres": FaradaySpheresView,
   axes: AxesView,
   "dimension-callout": DimensionCalloutView,
+  "uniform-field": UniformFieldView,
+  "flat-patch": FlatPatchView,
+  vector: VectorView,
+  "patch-tiling": PatchTilingView,
 };
 
 export const overlayViews = { equation: EquationView };

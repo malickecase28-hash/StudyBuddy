@@ -37,3 +37,12 @@ it("goals and experiments are credited once, not on every revisit", () => {
   expect(shouldCredit("drag-out", new Set(["drag-out"]))).toBe(false);
   expect([...attemptedIds([ans("gauss-lab.resize", true), ans("gauss.flux-guess", true)] as never, "gauss-lab")]).toEqual(["resize"]);
 });
+it("a check step answered wrongly in an earlier session stays locked", () => {
+  const plate = plates["flux-surface"]!;
+  const h = [
+    { type: "answer", conceptId: "c", blockId: "flux-surface.edge-on", blockType: "plate", dimensions: [], correct: false, attempt: 1, at: 1 },
+    { type: "answer", conceptId: "c", blockId: "flux-surface.edge-on", blockType: "plate", dimensions: [], correct: false, attempt: 2, at: 2 },
+    { type: "answer", conceptId: "c", blockId: "flux-surface.predict-45", blockType: "plate", dimensions: [], correct: false, attempt: 1, at: 3 },
+  ];
+  expect([...answeredFromHistory(h as never, plate)].sort()).toEqual(["predict-45"]);
+});

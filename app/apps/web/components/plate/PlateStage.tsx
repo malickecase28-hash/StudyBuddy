@@ -26,7 +26,7 @@ function PlateDefs() {
           <line x1="0" y1="0" x2="0" y2="6" style={{ stroke: `var(--${c})` }} strokeWidth="1" />
         </pattern>
       ))}
-      {(["flux", "surface", "graphite"] as const).map((c) => (
+      {(["flux", "surface", "graphite", "charge", "field"] as const).map((c) => (
         <marker key={c} id={`arrow-${c}`} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
           <path d="M0,0 L7,3.5 L0,7" fill="none" style={{ stroke: `var(--${c})` }} />
         </marker>
