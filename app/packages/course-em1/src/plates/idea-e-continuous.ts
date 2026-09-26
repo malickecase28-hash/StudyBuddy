@@ -68,7 +68,7 @@ export const ideaEContinuous = defineIdeaPlate({
         },
         {
           id: "mst", level: "exam", title: "MST 2023-24 Q3(b): a sheet at z = 5 m",
-          setup: { q: { items: [{ id: "s", kind: "sheet", rhoS: 120, z0: 5 }], drawScale: 0.2 }, ep: { point: [4, 5, 6], drawScale: 0.2 } },
+          setup: { q: { items: [{ id: "s", kind: "sheet", rhoS: 120, z0: 5 }], drawScale: 0.1 }, ep: { point: [4, 5, 6], drawScale: 0.1 } },
           problem: "An infinite plane at z = 5.00 m in free space carries ρS = 120 µC/m². (i) State the formula relating E, D and ε₀. (ii) Calculate E at P(4, 5, 6) m. (iii) Hence compute D there.",
           lines: [
             { text: "(i) In free space, D = ε₀E.", focus: ["eq"] },

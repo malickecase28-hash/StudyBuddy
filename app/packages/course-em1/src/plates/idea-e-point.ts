@@ -68,7 +68,7 @@ export const ideaEPoint = defineIdeaPlate({
         },
         {
           id: "finals", level: "exam", title: "Finals 2024-25 Q1(b)(ii): hence E_B",
-          setup: { q: { items: [pt("a", 2.5, [1 * nm, 2 * nm, 3 * nm], "qA = +2.5 µC")], oblique: true, drawScale: 2e8 }, ep: { point: [0, 2 * nm, 8 * nm], oblique: true, drawScale: 2e8 } },
+          setup: { q: { items: [pt("a", 2.5, [1 * nm, 2 * nm, 3 * nm], "qA = +2.5 µC")], oblique: true, drawScale: 1e8 }, ep: { point: [0, 2 * nm, 8 * nm], oblique: true, drawScale: 1e8 } },
           givens: [{ value: -3.8, unit: "µC" }],
           problem: "From part (i), F_AB = 6.440 × 10¹⁴ âₓ − 3.220 × 10¹⁵ âz N acts on qB = −3.8 µC at B(0, 2, 8) nm. Hence compute E_B, the field at qB's location.",
           lines: [
