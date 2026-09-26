@@ -42,7 +42,7 @@ pnpm --dir apps/web e2e --update-snapshots -g "key plate states"   # after an in
 | `/c/em1` | Course overview: concept map and units |
 | `/c/em1/<concept>?mode=learn\|solve\|explore\|revise` | A concept in one of the four modes (Learn plays plates; concepts not yet rebuilt open their classic lesson) |
 
-Shortcuts: ← → step · Space play/pause · 1–4 mode · P paper · N notebook · ⌘K / Ctrl+K search and jump. Shift-click a tool in the dock to pin it for the current mode.
+Shortcuts: ← → step · Space play/pause · 1–4 mode · P paper · N notebook · ⌘K / Ctrl+K search and jump. Tools open as a resizable split beside the page (Shift-click or Pin keeps one open per mode; ⤢ expands; on phones they open full-screen). The finals countdown lives on the Desk and in Revise only.
 
 ## What's in the prototype (the spec's 15 pieces)
 

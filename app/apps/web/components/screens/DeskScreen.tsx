@@ -32,8 +32,8 @@ export function DeskScreen() {
           <RetrievalQuiz count={2} onFinished={dismissWelcome} />
         </section>
       )}
-      <section className="desk-continue" aria-labelledby="continue-title">
-        {c.plate ? <PlateThumb plateId={c.plate.plateId} step={c.plate.step} label={`Where you stopped: ${c.title}`} /> : <div className="plate-thumb plate-thumb-empty" aria-hidden />}
+      <section className="desk-continue" data-plate={!!c.plate} aria-labelledby="continue-title">
+        {c.plate && <PlateThumb plateId={c.plate.plateId} step={c.plate.step} label={`Where you stopped: ${c.title}`} />}
         <div className="space-y-3">
           <p className="kicker">Continue</p>
           <h2 id="continue-title" className="text-3xl">{c.title}</h2>
