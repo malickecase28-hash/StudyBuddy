@@ -9,3 +9,5 @@ Task 3: Ruling: the Task 2 assertion expected only the first plate after adding 
 Task 3: complete (commits dbc595e..33017d0, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 13 files/212 tests).
 Task 4: Ruling: the planned curl requires tag MISSING_SCALE_FACTORS, but none of its checks detects that misconception — removed the per-idea requirement; the gradient and divergence ideas cover it in combined concept coverage — cost if wrong: curl alone no longer claims scale-factor misconception coverage.
 Task 4: complete (commits c1008ef..ada0cb5, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 13 files/219 tests).
+Task 5: Ruling: Readout formats the model's negative value as ASCII "-4", and adding the planned divergence axe screen exposed an unlabeled SVG rect attribute violation — asserted "-4" and moved the box label to an image-role group — cost if wrong: axe sees the box as a standalone image, and the test checks ASCII formatting.
+Task 5: complete (commits 77ce44a..b1a5627, tests: pnpm test && pnpm typecheck && web tsc && pnpm build && pnpm e2e → PASS, 60 files/493 tests; 38 e2e tests).
