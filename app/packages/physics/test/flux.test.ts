@@ -42,9 +42,9 @@ describe("Gauss's law numerically", () => {
     ];
     expect(enclosedCharge(charges, { kind: "sphere", center: vec(0, 0, 0), radius: 1 })).toBeCloseTo(-2e-6, 18);
   });
-  it("enclosedCharge rejects line charges", () => {
+  it("enclosedCharge rejects line charges in a blob", () => {
     expect(() =>
-      enclosedCharge([{ kind: "line", rhoL: 1e-9, x: 0, y: 0 }], { kind: "sphere", center: vec(0, 0, 0), radius: 1 }),
-    ).toThrow(/line/);
+      enclosedCharge([{ kind: "line", rhoL: 1e-9, x: 0, y: 0 }], { kind: "blob", center: vec(0, 0, 0), radius: 1, amplitude: 0.2, lobes: 3 }),
+    ).toThrow(/blob/);
   });
 });

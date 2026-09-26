@@ -6,7 +6,8 @@ export type Patch = { center: Vec3; dS: Vec3 };
 export type SurfaceShape =
   | { kind: "sphere"; center: Vec3; radius: number }
   | { kind: "cube"; center: Vec3; side: number }
-  | { kind: "blob"; center: Vec3; radius: number; amplitude: number; lobes: number };
+  | { kind: "blob"; center: Vec3; radius: number; amplitude: number; lobes: number }
+  | { kind: "cylinder"; center: Vec3; radius: number; height: number };
 
 type Param = {
   r: (u: number, v: number) => Vec3;
@@ -29,6 +30,19 @@ export function blobRadius(s: Extract<SurfaceShape, { kind: "blob" }>, theta: nu
 function params(shape: SurfaceShape): Param[] {
   if (shape.kind === "sphere") return [spherical(shape.center, () => shape.radius)];
   if (shape.kind === "blob") return [spherical(shape.center, (t, p) => blobRadius(shape, t, p))];
+  if (shape.kind === "cylinder") {
+    const c = shape.center;
+    const R = shape.radius;
+    const h = shape.height / 2;
+    const at = (x: number, y: number, z: number): Vec3 => add(c, [x, y, z]);
+    return [
+      // Side: r(z, φ) = (R cos φ, −R sin φ, z) so that r_z × r_φ points outward.
+      { r: (z, p) => at(R * Math.cos(p), -R * Math.sin(p), z), u: [-h, h], v: [0, 2 * Math.PI], vPeriodic: true },
+      // Top cap (+z) and bottom cap (−z; φ reversed for an outward normal).
+      { r: (rho, p) => at(rho * Math.cos(p), rho * Math.sin(p), h), u: [0, R], v: [0, 2 * Math.PI], vPeriodic: true },
+      { r: (rho, p) => at(rho * Math.cos(p), -rho * Math.sin(p), -h), u: [0, R], v: [0, 2 * Math.PI], vPeriodic: true },
+    ];
+  }
   const a = shape.side / 2;
   const c = shape.center;
   const face = (f: (u: number, v: number) => Vec3): Param => ({
@@ -84,9 +98,14 @@ export function contains(shape: SurfaceShape, p: Vec3): boolean {
   const d = sub(p, shape.center);
   if (shape.kind === "sphere") return norm(d) < shape.radius;
   if (shape.kind === "cube") return Math.max(Math.abs(d[0]), Math.abs(d[1]), Math.abs(d[2])) < shape.side / 2;
+  if (shape.kind === "cylinder") return Math.hypot(d[0], d[1]) < shape.radius && Math.abs(d[2]) < shape.height / 2;
   const r = norm(d);
   if (r === 0) return true;
   const theta = Math.acos(d[2] / r);
   const phi = Math.atan2(d[1], d[0]);
   return r < blobRadius(shape, theta, phi);
+}
+
+export function surfaceArea(shape: SurfaceShape, n = 24): number {
+  return surfacePatches(shape, n).reduce((s, p) => s + norm(p.dS), 0);
 }

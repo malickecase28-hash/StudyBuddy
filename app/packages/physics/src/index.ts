@@ -4,3 +4,4 @@ export * from "./charges";
 export * from "./quadrature";
 export * from "./surfaces";
 export * from "./flux";
+export * from "./potential";

@@ -4,13 +4,19 @@ import { add, norm, scale, sub, type Vec3 } from "./vec";
 export type PointCharge = { kind: "point"; q: number; pos: Vec3 };
 /** Infinite uniform line charge parallel to the z-axis through (x, y). */
 export type LineCharge = { kind: "line"; rhoL: number; x: number; y: number };
-export type Charge = PointCharge | LineCharge;
+/** Infinite uniform sheet charge on the plane z = z0. */
+export type SheetCharge = { kind: "sheet"; rhoS: number; z0: number };
+export type Charge = PointCharge | LineCharge | SheetCharge;
 
 function fieldOf(c: Charge, p: Vec3): Vec3 {
   if (c.kind === "point") {
     const r = sub(p, c.pos);
     const d = norm(r);
     return scale(r, (K_E * c.q) / (d * d * d));
+  }
+  if (c.kind === "sheet") {
+    const side = Math.sign(p[2] - c.z0);
+    return [0, 0, (side * c.rhoS) / (2 * EPS0)];
   }
   const rho: Vec3 = [p[0] - c.x, p[1] - c.y, 0];
   const d = norm(rho);
