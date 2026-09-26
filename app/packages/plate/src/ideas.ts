@@ -59,11 +59,11 @@ export function defineIdeaPlate(input: { id: string; title: string; instances: u
   return { plate, meta: { plateId: plate.id, ...(input.requires ? { requires: input.requires } : {}), ideas } };
 }
 
-export function stepLocation(meta: IdeaMeta, index: number): string {
+export function stepLocation(meta: IdeaMeta, index: number, first = 1): string {
   const n = meta.ideas.findIndex((i) => index >= i.start && index <= i.end);
   if (n < 0) return "";
   const idea = meta.ideas[n]!;
-  const head = `Idea ${n + 1} · ${idea.title}`;
+  const head = `Idea ${first + n} · ${idea.title}`;
   if (index <= idea.explain[1]) return `${head} · Explanation ${index - idea.start + 1} of ${idea.explain[1] - idea.start + 1}`;
   const e = idea.examples.findIndex((x) => index >= x.start && index <= x.end);
   if (e >= 0) {
@@ -75,9 +75,9 @@ export function stepLocation(meta: IdeaMeta, index: number): string {
 }
 
 /** Scrub-bar marks: each idea, each worked example, the first check, and the recap. */
-export function timelineMarks(meta: IdeaMeta): { index: number; label: string }[] {
+export function timelineMarks(meta: IdeaMeta, first = 1): { index: number; label: string }[] {
   return meta.ideas.flatMap((idea, n) => [
-    { index: idea.start, label: `${n + 1} ${idea.title}` },
+    { index: idea.start, label: `${first + n} ${idea.title}` },
     ...idea.examples.map((ex, k) => ({ index: ex.start, label: `Example ${k + 1}` })),
     ...(idea.checks[0] ? [{ index: idea.checks[0].index, label: "Check" }] : []),
     { index: idea.recap.index, label: "Recap" },

@@ -6,11 +6,11 @@ import { Readout } from "@forma/ui";
 
 const LABEL: Record<string, string> = {
   flux: "Ψ, flux out", enclosed: "Q enclosed", area: "Surface area", probeD: "|D| at probe", probeE: "|E| at probe",
-  outerQ: "Outer sphere", eMid: "|E| at 0.5 m", total: "Total charge",
+  outerQ: "Outer sphere", eMid: "|E| at 0.5 m", dMid: "|D| at 0.5 m", total: "Total charge",
   dPsi: "dΨ through the patch", Dn: "D·n̂", shadow: "Shadow A cos θ", theta: "θ (D to normal)", magnitude: "|D|", sum: "Σ D·dS over the patches", count: "Patches",
 };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
-  flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", total: "charge",
+  flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge",
   dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux",
 };
 const pretty = (unit: string) => unit.replace("^2", "²");

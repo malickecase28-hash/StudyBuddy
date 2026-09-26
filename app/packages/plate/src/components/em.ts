@@ -32,10 +32,11 @@ export const Charges = defineComponent({
     total: p.items.reduce((s, it) => (it.kind === "point" ? s + it.q : s), 0),
     qs: p.items.flatMap((it) => (it.kind === "point" ? [it.q] : [])),
     rhoSs: p.items.flatMap((it) => (it.kind === "sheet" ? [it.rhoS] : [])),
+    rhoLs: p.items.flatMap((it) => (it.kind === "line" ? [it.rhoL] : [])),
   }),
   handles: ["items"],
   readouts: { total: "µC" },
-  quotable: { qs: "µC", rhoSs: "µC/m^2" },
+  quotable: { qs: "µC", rhoSs: "µC/m^2", rhoLs: "nC/m" },
 });
 
 const chargesOf = (ctx: { link: (n: string) => { model: Record<string, unknown> } }) => ctx.link("charges").model.charges as Charge[];
@@ -205,11 +206,12 @@ export const FaradaySpheres = defineComponent({
   }),
   model: (p) => {
     const epsR = MATERIAL_EPS_R[p.material];
-    const d = (p.innerQ * 1e-6) / (4 * Math.PI * 0.25); // D at r = 0.5 m
-    return { outerQ: p.innerQ, epsR, eMid: d / (EPS0 * epsR) };
+    const dMid = p.innerQ / (4 * Math.PI * 0.25); // µC/m² at r = 0.5 m
+    return { outerQ: p.innerQ, epsR, eMid: (dMid * 1e-6) / (EPS0 * epsR), dMid, innerQ: p.innerQ, rMid: 0.5 };
   },
   handles: ["material"],
-  readouts: { outerQ: "µC", eMid: "V/m" },
+  readouts: { outerQ: "µC", eMid: "V/m", dMid: "µC/m^2" },
+  quotable: { innerQ: "µC", rMid: "m" },
 });
 
 export const Axes = defineComponent({ id: "axes", params: z.object({ length: z.number().positive().default(1.8) }), model: () => ({}), handles: [], readouts: {} });

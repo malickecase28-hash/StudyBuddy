@@ -24,6 +24,10 @@ const lesson = defineIdeaPlate({
 });
 
 describe("defineIdeaPlate", () => {
+  it("numbers ideas from a starting index (ideas spread over several plates)", () => {
+    expect(stepLocation(lesson.meta, 1, 3)).toBe("Idea 3 · First idea · Explanation 2 of 2");
+    expect(timelineMarks(lesson.meta, 3)[0]).toEqual({ index: 0, label: "3 First idea" });
+  });
   it("flattens ideas into kinded steps with a meta index", () => {
     expect(lesson.plate.steps.map((s) => `${s.kind}:${s.id}`)).toEqual([
       "explain:one-e1", "explain:one-e2", "work:one-x1", "work:one-x1-l1", "check:one-c1", "recap:one-recap",

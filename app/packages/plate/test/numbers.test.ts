@@ -24,6 +24,10 @@ describe("unbackedNumbers", () => {
     expect(unbackedNumbers("sizes 2-3 m", [c(3, "m")])).toEqual([]);
     expect(unbackedNumbers("about .5 m", [])).toEqual([]);
   });
+  it("reads line-charge units", () => {
+    expect(unbackedNumbers("ρL = 2000 nC/m", [c(2000, "nC/m")])).toEqual([]);
+    expect(unbackedNumbers("ρL = 3 µC/m", [])).toEqual(["3 µC/m"]);
+  });
   it("ignores unitless numbers, angles and vector components", () => {
     expect(unbackedNumbers("cos 60° = 0.5, D = 4x̂ + 3ẑ, 3 × 1 × 0.5", [])).toEqual([]);
   });

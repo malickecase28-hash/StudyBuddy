@@ -27,7 +27,7 @@ export type Backing = { value: number; unit: string };
 const normUnit = (u: string) => u.replace(/μ/g, "µ").replace("^2", "²");
 
 // A number (not part of a range like "2-3" or a bare ".5") followed by a physics unit.
-const WITH_UNIT = /(?<![\w.\-−])([−-]?\d+(?:\.\d+)?)\s*([µμ]C\/m²|[µμ]C\/m\^2|nC\/m²|nC\/m\^2|V\/m|[µμ]C|nC|m²|m\^2|C|m)(?![\w/²^])/g;
+const WITH_UNIT = /(?<![\w.\-−])([−-]?\d+(?:\.\d+)?)\s*([µμ]C\/m²|[µμ]C\/m\^2|nC\/m²|nC\/m\^2|[µμ]C\/m|nC\/m|V\/m|[µμ]C|nC|m²|m\^2|C|m)(?![\w/²^])/g;
 
 /** Numbers with a physics unit that no same-unit value matches: rounded to the written digits (or within 0.5%), and within 5%. */
 export function unbackedNumbers(text: string, candidates: readonly Backing[]): string[] {

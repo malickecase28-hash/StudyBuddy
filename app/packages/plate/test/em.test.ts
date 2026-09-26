@@ -52,4 +52,10 @@ describe("em components", () => {
     expect(f.far!.model.outerQ).toBe(2);
     expect(f.far!.model.epsR).toBeGreaterThan(1);
   });
+  it("faraday-spheres reports D halfway and exposes its given quantities", () => {
+    const f = frame(plate({}, [{ id: "a", kind: "point", q: 1, pos: [0, 0, 0] }]));
+    expect(f.far!.model.dMid as number).toBeCloseTo(2 / (4 * Math.PI * 0.25), 12);
+    expect(f.far!.model.rMid).toBe(0.5);
+    expect(f.far!.model.innerQ).toBe(2);
+  });
 });
