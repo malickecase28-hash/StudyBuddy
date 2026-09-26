@@ -12,6 +12,10 @@ const radialFlux = (a: number, R: number) =>
   }, 0);
 
 const truth: Record<string, (p: Record<string, number>) => number> = {
+  "grad-comp": (p) => 3 * p.a! * p.y! + 6 * p.b!,
+  "grad-cyl-phi": (p) => p.c! * Math.cos([0, 60, 120, 180][p.k!]! * Math.PI / 180),
+  "div-cart": (p) => p.p! * p.y0! + 2 * p.q! * p.y0! - p.s! * p.x0!,
+  "curl-z": (p) => p.b! * p.y0! - p.a! * p.z0!,
   "em-wavelength": (p) => 299_792_458 / (p.f! * 1e6),
   "unit-si-length": (p) => p.v! * [1e-3, 1e-6, 1e-2, 0.0254][p.k!]!,
   "vec-sum-mag": (p) => Math.hypot(p.a! + 5, p.b!, 3 - p.c!),
@@ -54,7 +58,7 @@ describe("question templates", () => {
         const v = instantiate(byId[id]!, seed);
         const authored = toSI(v.spec.answer.value, v.spec.answer.unit).value;
         const real = truth[id]!(v.params);
-        expect(Math.abs(authored - real) / Math.abs(real), `${v.key}`).toBeLessThan(0.005);
+        expect(Math.abs(authored - real), `${v.key}`).toBeLessThan(0.005 * Math.max(Math.abs(real), 1));
         expect(checkNumeric(v.spec, `${v.spec.answer.value} ${v.spec.answer.unit}`).correct).toBe(true);
       }
     });

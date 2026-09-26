@@ -284,5 +284,86 @@ const sphPatchArea = defineTemplate<{ rc: number; t: number; dp: number }>({
   tags: { concepts: ["em1.math.vectors"], misconceptions: ["ELEMENT_SCALE_FACTOR"], difficulty: 2 },
 });
 
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea];
+const CALC = "em1.math.vector-calculus";
+
+const gradComp = defineTemplate<{ a: number; b: number; y: number }>({
+  id: "grad-comp",
+  params: { a: { min: 2, max: 10, step: 2 }, b: { min: 1, max: 4, step: 1 }, y: { min: 1, max: 5, step: 1 } },
+  prompt: (p) => `V = ${p.a}xyz − ${p.b}x²z. Find ∂V/∂x, the x-component of ∇V, at P(−1, ${p.y}, 3).`,
+  solve: (p) => ({
+    answer: { value: 3 * p.a * p.y + 6 * p.b, unit: "" },
+    distractors: [{ value: 3 * p.a * p.y - 6 * p.b, unit: "", errorClass: "sign", feedback: "∂(−bx²z)/∂x = −2bxz, and x = −1 makes it +2bz. Substitute the sign of x carefully." }],
+  }),
+  hints: () => ["Treat y and z as constants.", "∂V/∂x = ayz − 2bxz.", "Now substitute x = −1, keeping the sign."],
+  worked: (p) => [
+    { text: `∂V/∂x = ${p.a}yz − ${2 * p.b}xz.` },
+    { text: `At (−1, ${p.y}, 3): ${p.a}(${p.y})(3) − ${2 * p.b}(−1)(3) = ${3 * p.a * p.y} + ${6 * p.b} = ${3 * p.a * p.y + 6 * p.b}.` },
+  ],
+  dimension: "computational",
+  tags: { concepts: [CALC], misconceptions: [], difficulty: 2 },
+});
+
+const PHIS = [0, 60, 120, 180];
+const gradCylPhi = defineTemplate<{ c: number; rho: number; k: number }>({
+  id: "grad-cyl-phi",
+  params: { c: { min: 1, max: 6, step: 1 }, rho: { min: 2, max: 5, step: 1 }, k: { min: 0, max: 3, step: 1 } },
+  prompt: (p) => `U = ${p.c}ρ sin φ + ρz. Find the φ-component of ∇U at (${p.rho}, ${PHIS[p.k]}°, 1).`,
+  solve: (p) => {
+    const cosp = Math.cos(PHIS[p.k]! * DEG);
+    return {
+      answer: { value: sig(p.c * cosp, 6), unit: "" },
+      distractors: [{ value: sig(p.rho * p.c * cosp, 6), unit: "", errorClass: "conceptual", tag: "MISSING_SCALE_FACTORS", feedback: "That's ∂U/∂φ without the 1/ρ. The φ-component of the gradient is (1/ρ)∂U/∂φ." }],
+    };
+  },
+  hints: () => ["The φ-component is (1/ρ)∂U/∂φ.", `∂U/∂φ = cρ cos φ.`, "The ρ cancels."],
+  worked: (p) => [
+    { text: `∂U/∂φ = ${p.c}ρ cos φ; divide by ρ: ${p.c} cos φ.` },
+    { text: `At φ = ${PHIS[p.k]}°: ${p.c} × ${sig(Math.cos(PHIS[p.k]! * DEG), 4)} = ${sig(p.c * Math.cos(PHIS[p.k]! * DEG), 6)}.` },
+  ],
+  dimension: "computational",
+  tags: { concepts: [CALC], misconceptions: ["MISSING_SCALE_FACTORS"], difficulty: 2 },
+});
+
+const divCart = defineTemplate<{ p: number; q: number; s: number; x0: number; y0: number }>({
+  id: "div-cart",
+  params: { p: { min: 1, max: 5, step: 1 }, q: { min: 1, max: 5, step: 1 }, s: { min: 1, max: 5, step: 1 }, x0: { min: -3, max: 3, step: 1 }, y0: { min: -3, max: 3, step: 1 } },
+  prompt: (v) => `A = ${v.p}xy âₓ + ${v.q}y² âᵧ − ${v.s}xz âz. Find ∇·A at (${v.x0}, ${v.y0}, 2).`,
+  solve: (v) => {
+    const ans = v.p * v.y0 + 2 * v.q * v.y0 - v.s * v.x0;
+    const wrong = v.p * v.y0 + v.q * v.y0 - v.s * v.x0;
+    return {
+      answer: { value: ans, unit: "" },
+      distractors: wrong !== ans ? [{ value: wrong, unit: "", errorClass: "arithmetic", feedback: "∂(qy²)/∂y = 2qy. The power comes down." }] : [],
+    };
+  },
+  hints: () => ["Differentiate each component along its own axis.", "∂(pxy)/∂x = py; ∂(qy²)/∂y = 2qy; ∂(−sxz)/∂z = −sx.", "Add, then substitute."],
+  worked: (v) => [
+    { text: `∇·A = ${v.p}y + ${2 * v.q}y − ${v.s}x.` },
+    { text: `At (${v.x0}, ${v.y0}, 2): ${v.p * v.y0} + ${2 * v.q * v.y0} − ${v.s * v.x0} = ${v.p * v.y0 + 2 * v.q * v.y0 - v.s * v.x0}.` },
+  ],
+  dimension: "computational",
+  tags: { concepts: [CALC], misconceptions: [], difficulty: 2 },
+});
+
+const curlZ = defineTemplate<{ a: number; b: number; x0: number; y0: number; z0: number }>({
+  id: "curl-z",
+  params: { a: { min: 1, max: 5, step: 1 }, b: { min: 1, max: 5, step: 1 }, x0: { min: -3, max: 3, step: 1 }, y0: { min: -3, max: 3, step: 1 }, z0: { min: -3, max: 3, step: 1 } },
+  prompt: (v) => `A = ${v.a}yz âₓ + ${v.b}xy âᵧ. Find the z-component of ∇ × A at (${v.x0}, ${v.y0}, ${v.z0}).`,
+  solve: (v) => {
+    const ans = v.b * v.y0 - v.a * v.z0;
+    return {
+      answer: { value: ans, unit: "" },
+      distractors: ans !== 0 ? [{ value: -ans, unit: "", errorClass: "sign", feedback: "(∇ × A)_z = ∂Aᵧ/∂x − ∂Aₓ/∂y, in that order." }] : [],
+    };
+  },
+  hints: () => ["(∇ × A)_z = ∂Aᵧ/∂x − ∂Aₓ/∂y.", "∂(bxy)/∂x = by; ∂(ayz)/∂y = az.", "Subtract in that order."],
+  worked: (v) => [
+    { text: `(∇ × A)_z = ${v.b}y − ${v.a}z.` },
+    { text: `At (${v.x0}, ${v.y0}, ${v.z0}): ${v.b * v.y0} − ${v.a * v.z0} = ${v.b * v.y0 - v.a * v.z0}.` },
+  ],
+  dimension: "computational",
+  tags: { concepts: [CALC], misconceptions: [], difficulty: 2 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));
