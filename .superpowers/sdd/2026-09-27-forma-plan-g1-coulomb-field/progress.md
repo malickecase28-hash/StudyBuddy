@@ -9,3 +9,6 @@ Task 3: Ruling: the MST Q1(b) prompt included the future positive-charge value b
 Task 3: complete (commits 0d23f26..9ae3be8, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 15 files/238 tests).
 
 Task 4: complete (commits cfdeaa1..04ea695, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 15 files/244 tests).
+Task 5: Ruling: the finals field example divides by qB, but the probe plate has no qB instance — added qB as a given for the example prompt and division step — cost if wrong: the given duplicates the charge already stated in the prompt.
+Task 5: Ruling: the linter rejected the hypothetical 1 C test charge and positive-charge trap magnitude because neither is on the current plate — removed those magnitudes while preserving the conceptual statements — cost if wrong: the answer no longer repeats the lecture's example test-charge value.
+Task 5: complete (commits 5442a21..ac87ccc, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 15 files/257 tests).
