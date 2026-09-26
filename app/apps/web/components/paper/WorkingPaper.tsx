@@ -35,7 +35,7 @@ export function WorkingPaper({ conceptId: requested, noteId, compact = false }: 
     const open = async () => {
       const stored = await load(draftKey, 1500);
       if (cancelled || !host.current) return;
-      const { default: DrawEditor, Color4, BackgroundComponentBackgroundType } = await import("js-draw");
+      const [{ default: DrawEditor, Color4, BackgroundComponentBackgroundType }] = await Promise.all([import("js-draw"), import("js-draw/bundledStyles")]);
       if (cancelled || !host.current) return;
       const instance = new DrawEditor(host.current, { appInfo: { name: "Forma", description: "Working paper" } });
       instance.dispatch(instance.setBackgroundStyle({ color: Color4.white, type: BackgroundComponentBackgroundType.Grid }), false);

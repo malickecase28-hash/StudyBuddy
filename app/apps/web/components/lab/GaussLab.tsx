@@ -219,10 +219,10 @@ function SizeSlider({ value, min, max, label, onChange }: { value: number; min: 
       </label>
       <div {...api.getControlProps()} className="relative flex h-5 flex-1 items-center">
         <div {...api.getTrackProps()} className="h-1 w-full rounded bg-line">
-          <div {...api.getRangeProps()} className="h-1 rounded" style={{ background: "var(--sem-surface)" }} />
+          <div {...api.getRangeProps()} className="h-1 rounded bg-[var(--sem-surface)]" />
         </div>
         {api.value.map((_, i) => (
-          <div key={i} {...api.getThumbProps({ index: i })} className="h-4 w-4 rounded-full border-2 bg-raised" style={{ borderColor: "var(--sem-surface)" }}>
+          <div key={i} {...api.getThumbProps({ index: i })} className="h-4 w-4 rounded-full border-2 border-[var(--sem-surface)] bg-raised">
             <input {...api.getHiddenInputProps({ index: i })} />
           </div>
         ))}

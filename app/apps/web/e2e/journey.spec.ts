@@ -56,3 +56,22 @@ test("workbench changes the physics and working paper restores from the notebook
   await page.getByRole("link", { name: "Open in working paper" }).click();
   await expect(page.getByLabel("Typed working")).toHaveValue("Flux follows enclosed charge.");
 });
+
+test("working paper's colour picker stays hidden and its colours parse", async ({ page }) => {
+  await page.goto("/paper?concept=em1.electrostatics.gauss-law");
+  await expect(page.getByRole("button", { name: "Save page to notebook" })).toBeEnabled();
+  await expect(page.locator(".clr-picker")).toBeHidden();
+  await expect(page.getByText(/NaN/)).toHaveCount(0);
+});
+
+test("the Desk lab's radius slider thumb follows its value", async ({ page }) => {
+  await page.goto("/");
+  const thumb = page.locator("[data-scope=slider][data-part=thumb]").first();
+  await expect(thumb).toBeVisible();
+  await thumb.focus();
+  await page.keyboard.press("End");
+  const right = (await thumb.boundingBox())!.x;
+  await page.keyboard.press("Home");
+  const left = (await thumb.boundingBox())!.x;
+  expect(right - left).toBeGreaterThan(60);
+});

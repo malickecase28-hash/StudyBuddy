@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "./tokens.css";
-@import "js-draw/Editor.css";
 
 @theme inline {
   --color-bg: var(--bg);
@@ -238,7 +237,7 @@ body {
   --foreground-color-2: var(--ink);
   --background-color-3: var(--grid);
   --foreground-color-3: var(--ink);
-  --selection-background-color: color-mix(in srgb, var(--flux) 20%, var(--paper-2));
+  --selection-background-color: var(--grid);
   --selection-foreground-color: var(--ink);
   --primary-action-foreground-color: var(--flux-text);
 }

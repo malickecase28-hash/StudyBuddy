@@ -4,7 +4,7 @@ import { DAY_MS } from "@forma/engine";
 import { Mark, Segmented, TitleBlock, Wordmark } from "@forma/ui";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { conceptHref, course, examDateMs, getConcept } from "@/lib/course";
 import { dueCount } from "@/lib/retrieval";
 import { useStudy } from "@/lib/store";
@@ -47,6 +47,7 @@ function TopBar() {
   const router = useRouter();
   const setPalette = useUi((s) => s.setPalette);
   const setLayout = useStudy((s) => s.setLayout);
+  const shortcut = useShortcutLabel();
   const [, , courseId, rawConcept] = path.split("/");
   const concept = rawConcept ? getConcept(decodeURIComponent(rawConcept)) : undefined;
   const mode = useUi((s) => s.workspaceMode);
@@ -77,12 +78,23 @@ function TopBar() {
         />
       )}
       <div className="topbar-end">
-        <button className="btn" onClick={() => setPalette(true)} aria-label="Search and jump (Control K)">⌘K</button>
+        <button className="btn" onClick={() => setPalette(true)} aria-label="Search and jump (Control K)">
+          Search <kbd className="label">{shortcut}</kbd>
+        </button>
         <SettingsDialog />
         <span className="label" title="Accounts arrive with sub-project 5">Guest</span>
       </div>
     </header>
   );
+}
+
+/** "Ctrl K" everywhere, "⌘K" on Apple devices (decided after mount, so server and client HTML match). */
+function useShortcutLabel() {
+  const [label, setLabel] = useState("Ctrl K");
+  useEffect(() => {
+    if (/Mac|iPhone|iPad/.test(navigator.userAgent)) setLabel("⌘K");
+  }, []);
+  return label;
 }
 
 function StatusFooter() {
