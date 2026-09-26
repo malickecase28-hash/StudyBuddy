@@ -2,12 +2,13 @@ import { Course } from "@forma/engine";
 import type { BankItem } from "./questions";
 import { assessmentsFor, EXAM_DATE } from "./assessments";
 import { coulomb, divergence, field, fluxDensity, lockedConcepts } from "./concepts/electrostatics";
+import { emWorld } from "./concepts/intro";
 import { gaussApplications } from "./concepts/gauss-applications";
 import { gaussLaw } from "./concepts/gauss-law";
 import { surfaceIntegrals, vectors } from "./concepts/math";
 
 /** Electromagnetics I (ELE3001) vertical slice. Parsed (and thereby validated) at import time. */
-const concepts = [vectors, surfaceIntegrals, coulomb, field, fluxDensity, gaussLaw, gaussApplications, divergence, ...lockedConcepts];
+const concepts = [emWorld, vectors, surfaceIntegrals, coulomb, field, fluxDensity, gaussLaw, gaussApplications, divergence, ...lockedConcepts];
 export const course = Course.parse({
   id: "em1",
   code: "ELE3001",

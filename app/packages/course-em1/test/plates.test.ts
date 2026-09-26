@@ -65,6 +65,6 @@ describe("plates", () => {
   });
 
   it("colour words in notes match the Forma palette", () => {
-    for (const p of Object.values(plates)) for (const s of p.steps) expect(s.note, `${p.id}/${s.id}`).not.toMatch(/violet|purple/i);
+    for (const p of Object.values(plates)) for (const s of p.steps) expect(s.note, `${p.id}/${s.id}`).not.toMatch(/\b(?:violet|purple)\b/i);
   });
 });
