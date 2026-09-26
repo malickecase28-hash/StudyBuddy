@@ -7,9 +7,10 @@ import { ideaClosed } from "./idea-closed";
 import { ideaFaraday } from "./idea-faraday";
 import { ideaGaussLaw } from "./idea-gauss-law";
 import { ideaSymmetry } from "./idea-symmetry";
+import { toolkitPreview } from "./toolkit-preview";
 
 export const plates: Record<string, PlateDef> = Object.fromEntries(
-  [faraday, gauss, whyArea, outsideCharge, normalDirection, dVsE, symmetry, fluxSurface.plate, ideaFaraday.plate, ideaClosed.plate, ideaGaussLaw.plate, ideaSymmetry.plate].map((p) => [p.id, p]),
+  [faraday, gauss, whyArea, outsideCharge, normalDirection, dVsE, symmetry, fluxSurface.plate, ideaFaraday.plate, ideaClosed.plate, ideaGaussLaw.plate, ideaSymmetry.plate, toolkitPreview].map((p) => [p.id, p]),
 );
 
 export const registry = new Registry().register(...emComponents);

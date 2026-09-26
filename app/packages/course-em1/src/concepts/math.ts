@@ -61,6 +61,7 @@ export const vectors = {
         },
       ],
     },
+    { id: "toolkit-preview", title: "Toolkit preview (developer)", minutes: 1, blocks: [{ ...meta("vivid", orig()), id: "toolkit-preview", type: "plate", plateId: "toolkit-preview" }] },
   ],
 };
 
@@ -227,3 +228,4 @@ export const surfaceIntegrals = {
     },
   ],
 };
+

@@ -5,3 +5,5 @@ Task 3: complete (commits b3a9407..HEAD, tests: pnpm vitest run packages/plate/t
 Task 4: complete (commits 0ce2b74..HEAD, tests: pnpm vitest run packages/plate/test/math.test.ts and pnpm vitest run packages/plate → 10 focused, 87 plate tests passed)
 Task 5: complete (commits e24e2bc..HEAD, tests: pnpm vitest run packages/plate and pnpm typecheck → 91 plate tests passed; typecheck clean)
 Task 6: complete (commits 73d0022..HEAD, tests: pnpm test, web tsc, pnpm build → 55 files / 388 tests passed; typecheck/build clean)
+Task 7: Ruling: The supplied e2e selector `.readouts, svg`.first() selected an earlier decorative svg, so its readout assertion could never pass — scoped assertions to `.readouts` and `.plate-svg` — test coverage now targets the intended content.
+Task 7: complete (commits 597289e..HEAD, tests: web build + pnpm e2e -g toolkit → 1 passed; pnpm e2e → 35/35 passed)
