@@ -66,6 +66,7 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .handle-ring { fill: none; stroke: var(--graphite); stroke-dasharray: 3 3; }
 .plate-instance[data-highlight="true"] { filter: drop-shadow(0 0 3px var(--focus)); }
 .plate-equation { position: absolute; left: 14px; top: 10px; padding: 4px 10px; background: color-mix(in srgb, var(--paper-2) 88%, transparent); font-size: 1.1rem; }
+.plate:has(.v-scalar-slice, .v-vector-slice) .plate-equation { left: auto; right: 14px; }
 .plate-equation [class*="t-"] { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .plate * { transition: none !important; animation: none !important; } }
 .readouts { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 10px 0; }
