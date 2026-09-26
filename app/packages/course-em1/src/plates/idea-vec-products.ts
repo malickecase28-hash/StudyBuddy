@@ -14,8 +14,8 @@ export const ideaVecProducts = defineIdeaPlate({
   requires: { objectives: [2], items: ["tutorial:tut-1.4", "tutorial:tut-1.5"], misconceptions: ["DOT_CROSS_CONFUSION"] },
   instances: [
     { id: "axes", component: "axes3", params: { length: 2 } },
-    { id: "a", ...v3([1, 0, 3], "A", "field", 0.3) },
-    { id: "b", ...v3([5, 2, -6], "B", "flux", 0.3) },
+    { id: "a", ...v3([1, 0, 3], "A", "field", 0.1) },
+    { id: "b", ...v3([5, 2, -6], "B", "flux", 0.1) },
     { id: "e", ...v3([0, 3, 4], "E", "field", 0.2) },
     { id: "f", ...v3([4, -10, 5], "F", "flux", 0.2) },
     { id: "n", ...v3([55, 16, -12], "E × F (drawn ÷50)", "surface", 0.02) },

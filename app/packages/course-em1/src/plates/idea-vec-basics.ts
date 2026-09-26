@@ -3,7 +3,7 @@ import { defineIdeaPlate } from "@forma/plate";
 import { templates } from "../templates";
 
 const R = String.raw;
-const K = 0.3; // drawing scale for A, B and their sums
+const K = 0.15; // drawing scale for A, B and their sums
 const choice = (id: string, label: string, correct: boolean, feedback: string, tag?: string) => ({ id, label, correct, feedback, ...(tag ? { tag } : {}) });
 const tpl = (id: string) => instantiate(templates.find((t) => t.id === id)!, 1);
 const sum = tpl("vec-sum-mag");

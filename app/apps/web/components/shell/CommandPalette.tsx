@@ -18,7 +18,7 @@ const typing = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.
 export function useShortcuts() {
   const router = useRouter();
   const path = usePathname();
-  const { setPalette, openPanel } = useUi();
+  const { setPalette, openPanel, setWorkspaceMode } = useUi();
   const setLayout = useStudy((s) => s.setLayout);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -34,14 +34,16 @@ export function useShortcuts() {
       if (mode && concept) {
         setLayout(mode, {});
         router.replace(conceptHref(concept.id, mode));
-      } else if (e.key === "p") openPanel("paper");
-      else if (e.key === "n") openPanel("notebook");
-      else return;
+      } else if (e.key === "p" || e.key === "n") {
+        const mode = MODE_KEYS[new URLSearchParams(window.location.search).get("mode") ?? ""];
+        if (mode) setWorkspaceMode(mode);
+        openPanel(e.key === "p" ? "paper" : "notebook");
+      } else return;
       e.preventDefault();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [path, router, setPalette, openPanel, setLayout]);
+  }, [path, router, setPalette, openPanel, setWorkspaceMode, setLayout]);
 }
 
 export function CommandPalette() {
