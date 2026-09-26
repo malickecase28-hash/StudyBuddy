@@ -63,7 +63,7 @@ export const ideaClosed = defineIdeaPlate({
         {
           id: "negative-off", level: "tutorial", title: "A negative charge, off-centre",
           setup: { surface: { shape: "cube", size: 2 }, q: { items: [point("q1", -3, [0.4, 0, 0.3])] } },
-          problem: "A −3 µC charge sits 0.4 m right of centre, inside a closed cube of side 2 m. Find the net outward flux, and say which way the field crosses the faces.",
+          problem: "A −3 µC charge sits 0.4 m right of and 0.3 m above centre, inside a closed cube of side 2 m. Find the net outward flux, and say which way the field crosses the faces.",
           lines: [
             { text: "The charge is inside the closed cube, so all of it counts, sign included: Ψ = −3 µC.", focus: ["surface"], claims: [{ instance: "surface", readout: "flux", value: -3, unit: "µC" }] },
             { text: "Negative net flux means the field crosses inward: D points toward the charge, against every outward normal. Moving the charge off-centre changes which faces carry more, not the total.", focus: ["surface", "field"] },

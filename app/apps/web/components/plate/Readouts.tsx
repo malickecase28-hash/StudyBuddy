@@ -20,7 +20,7 @@ export function PlateReadouts({ plate, frame, hidden = [] }: { plate: PlateDef; 
     const ev = frame[inst.id];
     if (!ev?.visible || ev.params.readout === false || (inst.component === "faraday-spheres" && ev.params.revealed !== true)) return [];
     return Object.entries(registry.get(inst.component).readouts)
-      .filter(([name]) => !hidden.some((h) => h.instance === inst.id && h.readout === name))
+      .filter(([name]) => name in ev.model && !hidden.some((h) => h.instance === inst.id && h.readout === name))
       .map(([name, unit]) => ({ key: `${inst.id}.${name}`, name, unit, value: typeof ev.model[name] === "number" ? (ev.model[name] as number) : null }));
   });
   if (!rows.length) return null;

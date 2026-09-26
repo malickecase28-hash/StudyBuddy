@@ -31,7 +31,7 @@ export const ideaGaussLaw = defineIdeaPlate({
         },
         {
           id: "bigger", title: "Bigger surface, same flux", patch: { surface: { size: 1.8 }, field: { probe: 1.8 } }, focus: ["surface"],
-          note: "Grow the sphere to 1.8 m. Its area grows 3.24 times, to 40.72 m². But D on it falls as 1/r², also 3.24 times, to 0.0491 µC/m². Area up, D down, and the product is unchanged: the flux is still 2 µC. A bigger surface does not catch more flux, because every field line from the charge crosses any closed surface around it exactly once.",
+          note: "Grow the sphere to 1.8 m. Its area grows 3.24 times, to 40.72 m². But D on it falls as 1/r², also 3.24 times, to 0.0491 µC/m². Area up, D down, and the product is unchanged: the flux is still 2 µC. A bigger surface does not catch more flux, because every field line from the charge leaves any closed surface around it a net once: out, minus any times it dips back in.",
           claims: [{ instance: "surface", readout: "area", value: 40.715, unit: "m^2" }, { instance: "field", readout: "probeD", value: 0.049122, unit: "µC/m^2" }, { instance: "surface", readout: "flux", value: 2, unit: "µC" }],
         },
         {
@@ -92,7 +92,7 @@ export const ideaGaussLaw = defineIdeaPlate({
         },
       ],
       asks: [
-        { id: "bigger", q: "Doesn't a bigger surface catch more flux?", tags: ["FLUX_SCALES_WITH_AREA"], show: ["q", "field", "surface"], patch: { surface: { shape: "sphere", size: 1.8 }, q: { items: [point("q1", 2, [0, 0, 0])] } }, focus: ["surface"], a: "No. Area grows as r², but D from the charge falls as 1/r², so their product stays fixed. Every field line from the charge crosses any closed surface around it exactly once." },
+        { id: "bigger", q: "Doesn't a bigger surface catch more flux?", tags: ["FLUX_SCALES_WITH_AREA"], show: ["q", "field", "surface"], patch: { surface: { shape: "sphere", size: 1.8 }, q: { items: [point("q1", 2, [0, 0, 0])] } }, focus: ["surface"], a: "No. Area grows as r², but D from the charge falls as 1/r², so their product stays fixed. Every field line from the charge leaves any closed surface around it a net once, however the surface bulges." },
         { id: "outside", q: "Why don't charges outside count?", tags: ["OUTSIDE_CHARGE_CONTRIBUTES"], a: "Their field enters the closed surface somewhere and leaves somewhere else. In the net flux, entering is negative and leaving is positive, and for a charge outside they cancel exactly." },
         { id: "on-surface", q: "What if a charge sits exactly on the surface?", a: "Then it is neither inside nor outside, and the integral is not well defined there. Forma counts half of it (a smooth surface catches half its field), but in exams choose surfaces that avoid this." },
         { id: "shape", q: "Does the shape of the surface matter?", a: "Not for the total. Shape changes how the flux is shared between patches, and so decides whether you can work the integral out easily, but never ∮ D · dS itself." },

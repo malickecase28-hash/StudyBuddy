@@ -21,6 +21,13 @@ describe("Gauss's law, concept-wide", () => {
   });
   it("names the gap when an idea is missing", () => {
     expect(coverageGaps(merged(mainPlates.filter((p) => p !== "idea-symmetry")))).toContain("objective 3: no idea teaches it");
+    // flux-surface and idea-closed both teach objective 2; each still owns required content of its own.
+    for (const p of ["idea-faraday", "idea-gauss-law", "idea-symmetry"]) expect(coverageGaps(merged(mainPlates.filter((x) => x !== p))), p).not.toEqual([]);
+  });
+  it("teaches nothing false about field lines crossing closed surfaces", () => {
+    const text = JSON.stringify(mainPlates.map((id) => ideaPlates[id]!.plate));
+    expect(text).not.toMatch(/crosses any closed surface[^.]*exactly once/);
+    expect(text).not.toMatch(/0\.4 m right of centre, inside/);
   });
   it("keeps the short tour for review", () => {
     expect(concept.lessons.find((l) => l.id === "quick")!.blocks.map((b) => b.id)).toEqual(["faraday", "gauss"]);

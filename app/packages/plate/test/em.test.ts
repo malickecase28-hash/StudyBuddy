@@ -52,6 +52,10 @@ describe("em components", () => {
     expect(f.far!.model.outerQ).toBe(2);
     expect(f.far!.model.epsR).toBeGreaterThan(1);
   });
+  it("charges report a total only when every item is a point charge (a line or sheet has no finite total)", () => {
+    expect(frame(plate({}, [{ id: "a", kind: "point", q: 1, pos: [0, 0, 0] }])).q!.model.total).toBe(1);
+    expect(frame(plate({ shape: "cylinder" }, [{ id: "l", kind: "line", rhoL: 2000, x: 0, y: 0 }])).q!.model.total).toBeUndefined();
+  });
   it("faraday-spheres reports D halfway and exposes its given quantities", () => {
     const f = frame(plate({}, [{ id: "a", kind: "point", q: 1, pos: [0, 0, 0] }]));
     expect(f.far!.model.dMid as number).toBeCloseTo(2 / (4 * Math.PI * 0.25), 12);

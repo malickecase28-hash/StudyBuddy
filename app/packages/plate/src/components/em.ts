@@ -29,7 +29,8 @@ export const Charges = defineComponent({
   model: (p) => ({
     charges: p.items.map(toSI),
     items: p.items,
-    total: p.items.reduce((s, it) => (it.kind === "point" ? s + it.q : s), 0),
+    // A line or sheet charge has no finite total: report one only for point charges.
+    ...(p.items.every((it) => it.kind === "point") ? { total: p.items.reduce((s, it) => (it.kind === "point" ? s + it.q : s), 0) } : {}),
     qs: p.items.flatMap((it) => (it.kind === "point" ? [it.q] : [])),
     rhoSs: p.items.flatMap((it) => (it.kind === "sheet" ? [it.rhoS] : [])),
     rhoLs: p.items.flatMap((it) => (it.kind === "line" ? [it.rhoL] : [])),
