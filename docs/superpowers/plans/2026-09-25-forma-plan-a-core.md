@@ -813,11 +813,9 @@ git add packages/engine pnpm-lock.yaml && git commit -m "feat(engine): symbolic 
   - `defaultWorkspace(): LearnerState["workspace"]`
   - `migrate(raw)` accepts v1 (upgraded in place) and v2
 
-- [ ] **Step 1: Write the failing tests**: append to `test/learner-state.test.ts`:
+- [ ] **Step 1: Write the failing tests**: add `defaultWorkspace` to the existing `import { … } from "../src";` line at the top of `test/learner-state.test.ts`, then append:
 
 ```ts
-import { defaultWorkspace } from "../src";
-
 describe("v2", () => {
   it("initial state is v2 with a default workspace", () => {
     const s = initialState();
@@ -1756,7 +1754,7 @@ export const instanceTerms = (plate: PlateDef, instanceId: string): string[] =>
 
 ```ts
 import type { Registry } from "./component";
-import { diffStates, isEmptyDiff, stateAt, type PlateDef } from "./plate";
+import { applyStep, diffStates, initialState, isEmptyDiff, type PlateDef } from "./plate";
 import { createEvaluator, type SceneState } from "./scene";
 
 export type PlateIssue = { plate: string; step?: string; level: "error" | "warning"; message: string };
@@ -1794,12 +1792,18 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
 
   const evaluate = createEvaluator(registry, plate.instances);
   let prev: SceneState | null = null;
-  plate.steps.forEach((step, i) => {
+  let running = initialState(plate);
+  let broken = false;
+  plate.steps.forEach((step) => {
+    if (broken) return;
     let state: SceneState;
     try {
-      state = stateAt(plate, i);
+      // Build states step by step so an error is attributed to the step that caused it.
+      state = applyStep(running, step);
+      running = state;
     } catch (e) {
       add("error", (e as Error).message, step.id);
+      broken = true;
       return;
     }
     let frame;
@@ -2533,7 +2537,7 @@ export const dVsE = PlateDef.parse({
       note: "Put the charge in a material with ε_r = 4. D stays 0.159 µC/m², set by free charge alone. E drops to a quarter.",
       claims: [
         { instance: "field", readout: "probeD", value: 0.159155, unit: "µC/m^2" },
-        { instance: "field", readout: "probeE", value: 4494.4, unit: "V/m" },
+        { instance: "field", readout: "probeE", value: 4493.8, unit: "V/m" },
       ],
     },
   ],
@@ -2563,7 +2567,7 @@ export const symmetry = PlateDef.parse({
 });
 ```
 
-(The `oil` claim: E = D/(ε₀ε_r) = (2×10⁻⁶/(4π))/(8.854×10⁻¹²·4) = 4494.4 V/m.)
+(The `oil` claim: E = D/(ε₀ε_r) = (2×10⁻⁶/(4π))/(8.8541878128×10⁻¹²·4) = 4493.8 V/m.)
 
 - [ ] **Step 8: Index the plates and the registry**: `src/plates/index.ts`
 
@@ -2656,7 +2660,9 @@ In `apps/web/components/blocks/BlockView.tsx`, add to the `render` switch:
       );
 ```
 
-In `apps/web/e2e/journey.spec.ts`, change `test("full learning journey", …)` to `test.fixme("full learning journey", …)` and add the comment `// Rewritten for plate lessons in Plan B.` above it.
+In `apps/web/e2e/journey.spec.ts`:
+- change `test("full learning journey", …)` to `test.fixme("full learning journey", …)`, with the comment `// Rewritten for plate lessons in Plan B.` above it;
+- in the remaining tests ("return experience", "@perf lab …"), replace `/learn/em1.electrostatics.gauss-law/main"` with `/learn/em1.electrostatics.gauss-law/main-classic"` so they keep exercising the classic renderer until Plan B.
 
 - [ ] **Step 12: Run everything**
 
