@@ -492,7 +492,7 @@ describe("question bank", () => {
       "mst-2324-q1a", "mst-2324-q1b", "mst-2324-q2a", "mst-2324-q2b", "mst-2324-q2c", "mst-2324-q3a", "mst-2324-q3b",
       "mst-2324-q4a", "mst-2324-q4b", "mst-2324-q4c", "mst-2324-q5a", "mst-2324-q5b",
       "f2425-q1a", "f2425-q1b", "f2425-q1c", "f2425-q2a", "f2425-q2b", "f2425-q3a", "f2425-q3b", "f2425-q4a", "f2425-q4b", "f2425-q4c",
-      "f2324-q2b",
+      "f2324-q1a", "f2324-q1b", "f2324-q2a", "f2324-q2b", "f2324-q3a", "f2324-q3b", "f2324-q3c", "f2324-q4a", "f2324-q4b", "f2324-q4c",
       "ict2-2425-q1", "ict2-2425-q2", "ict2-2425-q3",
       "hw-2324-2.1", "hw-2324-2.2", "hw-2324-2.3", "hw-2324-2.4", "hw-2324-2.5", "hw-2324-2.6",
       "hw03-2425-3.1a", "hw03-2425-3.1b", "hw03-2425-3.2", "hw03-2425-3.3",
@@ -647,13 +647,21 @@ export const questionBank: BankItem[] = [
   { id: "f2425-q4b", source: "f2425", kind: "finals", paper: F2425, question: "Q4(b)", marks: 5, text: "From the principle of conservation of charge, prove the continuity equation in point form, ∇·J = −∂ρv/∂t.", concepts: w([K.cur, 1]) },
   { id: "f2425-q4c", source: "f2425", kind: "finals", paper: F2425, question: "Q4(c)", marks: 5, text: "State Poynting's theorem and comment on how it supports an important conservation law.", concepts: w([K.wave, 1]) },
 
-  // Finals 2023-24 (catalog: f2324), kept from the old list
+  // Finals 2023-24, Sem 1 (catalog: f2324)
+  { id: "f2324-q1a", source: "f2324", kind: "finals", paper: F2324, question: "Q1(a)", marks: 7, text: "Calculate the force that Q1 = −10 µC at A(0, 3, 7) nm exerts on Q2 = +8 µC at B(2, 0, 1) nm, in a vacuum.", concepts: w([K.coul, 0.8], [K.vec, 0.2]) },
+  { id: "f2324-q1b", source: "f2324", kind: "finals", paper: F2324, question: "Q1(b)", marks: 18, text: "In a region where V = r³ sin θ cos φ volts: (i) find D at P(5, π/3, −π/2); (ii) calculate the energy required to move a 10 µC charge from X(2, 0°, 100°) to Y(5, 45°, 90°).", concepts: w([K.pot, 0.7], [K.calc, 0.3]) },
+  { id: "f2324-q2a", source: "f2324", kind: "finals", paper: F2324, question: "Q2(a)", marks: 13, text: "Region 1 (x < 0) is free space; region 2 (x > 0) is a dielectric with εr2 = 3.5. Given D1 = 3ax − 4ay + 6az C·m⁻², compute (i) E2 and (ii) the angle θ1.", concepts: w([K.diel, 1]) },
   {
     id: "f2324-q2b", source: "f2324", kind: "finals", paper: F2324, question: "Q2(b)", marks: 12,
-    text: "An electric field E(r) in a vacuum is given in spherical coordinates. (i) State Gauss's law. Compute the charge density ρ_v at (ii) r = 2 m and (iii) r = 5 m.",
+    text: "In a vacuum, E(r) = πr² for 0 < r ≤ 3 m and 6π/r³ for r > 3 m (N·C⁻¹, radial). (i) State Gauss's law. Compute ρv at (ii) r = 2 m and (iii) r = 5 m.",
     concepts: w([K.gauss, 0.4], [K.div, 0.6]),
-    practice: "em1.electrostatics.divergence/main",
   },
+  { id: "f2324-q3a", source: "f2324", kind: "finals", paper: F2324, question: "Q3(a)", marks: 4, text: "State Maxwell's equations for static electromagnetic fields in point form.", concepts: w([K.dyn, 0.5], [K.div, 0.25], [K.amp, 0.25]) },
+  { id: "f2324-q3b", source: "f2324", kind: "finals", paper: F2324, question: "Q3(b)", marks: 6, text: "A vertical hollow conducting cylinder has inner radius r and outer radius R and carries current I along the z-axis. Develop an expression for H everywhere.", concepts: w([K.amp, 1]) },
+  { id: "f2324-q3c", source: "f2324", kind: "finals", paper: F2324, question: "Q3(c)", marks: 15, text: "H1 = 2ax + 3ay − az A·m⁻¹ in the region y − x − 2 ≤ 0, where μ1 = μ0. Calculate (i) M1 and B1, (ii) H2 and B2 in y − x − 2 > 0, where μ2 = 3μ0.", concepts: w([K.amp, 1]) },
+  { id: "f2324-q4a", source: "f2324", kind: "finals", paper: F2324, question: "Q4(a)", marks: 15, text: "A long, straight, nonmagnetic conductor of radius 0.50 mm carries a uniform d.c. current of 8.0 A along z. Within the conductor: (i) find J; (ii) compute H and B (Ampère's law); (iii) show that ∇ × H = J.", concepts: w([K.amp, 0.8], [K.calc, 0.2]) },
+  { id: "f2324-q4b", source: "f2324", kind: "finals", paper: F2324, question: "Q4(b)", marks: 5, text: "With an appropriate diagram, describe the principle of electromagnetic wave propagation in dielectrics.", concepts: w([K.wave, 1]) },
+  { id: "f2324-q4c", source: "f2324", kind: "finals", paper: F2324, question: "Q4(c)", marks: 5, text: "Briefly describe the transmission of electromagnetic wave power using Poynting's theorem.", concepts: w([K.wave, 1]) },
 
   // ICT 02, 18 Nov 2024 (catalog: ict2-2425; solved by hand, so exact data comes from the source in content plans)
   { id: "ict2-2425-q1", source: "ict2-2425", kind: "ict", paper: ICT2, question: "Q1", text: "(a) State Biot-Savart's law and use it to find H on the axis of an N-turn circular coil. (b) State Ampère's circuital law in point and integral form, and use it to find H and J for a current-carrying conductor (see source).", concepts: w([K.amp, 1]) },
@@ -665,7 +673,7 @@ export const questionBank: BankItem[] = [
   { id: "hw-2324-2.2", source: "hw02-2324", kind: "hw", paper: HW2324, question: "2.2", marks: 12, seenIn: ["hw02-2324", "hw01-2425"], text: "Evaluate the divergence of three vector fields, one each in rectangular, cylindrical and spherical coordinates (see source).", concepts: w([K.calc, 1]) },
   { id: "hw-2324-2.3", source: "hw02-2324", kind: "hw", paper: HW2324, question: "2.3", marks: 9, seenIn: ["hw02-2324", "hw01-2425"], text: "(a) State Coulomb's law in vector form for two point charges. (b) Define electric field intensity, E. (c) State Gauss's law, and deduce Coulomb's law from it.", concepts: w([K.coul, 0.4], [K.field, 0.2], [K.gauss, 0.4]) },
   { id: "hw-2324-2.4", source: "hw02-2324", kind: "hw", paper: HW2324, question: "2.4", marks: 10, seenIn: ["hw02-2324", "hw01-2425"], text: "(a) Q1 = 5 µC and Q2 = −4 µC are at (2, 1, 3) cm and (−4, 0, 6) cm. Determine the force on Q1. (b) Calculate the field intensity 2.45 nm from a −6.76 µC point charge.", concepts: w([K.coul, 0.6], [K.field, 0.4]) },
-  { id: "hw-2324-2.5", source: "hw02-2324", kind: "hw", paper: HW2324, question: "2.5", marks: 21, seenIn: ["hw02-2324", "hw01-2425"], text: "Determine the total charge: (a) on the line 1 < x < 5 m with ρL = 12x² mC/m; (b) on the cylinder 0 < z < 7 m, ρ = 4 m, with ρS = πρz² pC/m²; (c) within the sphere r = 5.25 m for the given ρv (see source).", concepts: w([K.gapp, 0.6], [K.vec, 0.4]) },
+  { id: "hw-2324-2.5", source: "hw02-2324", kind: "hw", paper: HW2324, question: "2.5", marks: 21, seenIn: ["hw02-2324", "hw01-2425"], text: "Determine the total charge: (a) on the line 1 < x < 5 m with ρL = 12x² mC/m; (b) on the cylinder 0 < z < 7 m, ρ = 4 m, with ρS = πρz² pC/m²; (c) within the sphere r = 5.25 m if ρv = 3.05/(r sin θ) C/m³.", concepts: w([K.gapp, 0.6], [K.vec, 0.4]) },
   { id: "hw-2324-2.6", source: "hw02-2324", kind: "hw", paper: HW2324, question: "2.6", marks: 18, seenIn: ["hw02-2324", "hw01-2425"], text: "Given D = 3xy ax + x² ay C/m², calculate (a) the volume charge density ρv, (b) the total flux through the surface 0 < x, y < 1 m at z = −3 m, (c) the total charge in the region 0 < x, y, z < 2 m.", concepts: w([K.div, 0.6], [K.gauss, 0.4]) },
 
   // HW03 2024-25 (catalog: hw03-2425)
@@ -874,7 +882,7 @@ test("the question bank filters by assessment and never links to a missing lesso
   await open(page, "/past-papers");
   await expect(page.getByRole("heading", { level: 1, name: "Question bank" })).toBeVisible();
   const all = await page.locator("article").count();
-  expect(all).toBeGreaterThanOrEqual(39);
+  expect(all).toBeGreaterThanOrEqual(48);
   await page.getByRole("radio", { name: "ICT 1" }).check();
   await expect(page.getByText("Mid-semester test 2023-24 · Q1(b)")).toBeVisible();
   await expect(page.getByText("HW04 2024-25 · 4.2")).toHaveCount(0);
