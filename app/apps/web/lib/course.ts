@@ -24,8 +24,23 @@ export function splitRef(ref: string): { conceptId: string; lessonId: string } {
   return { conceptId, lessonId };
 }
 
-export const lessonHref = (conceptId: string, lessonId: string, extra = "") =>
-  `/learn/${encodeURIComponent(conceptId)}/${encodeURIComponent(lessonId)}${extra}`;
+export const isPlateLesson = (l: Lesson) => l.blocks.length > 0 && l.blocks.every((b) => b.type === "plate");
+
+export const conceptHref = (conceptId: string, mode = "learn", query: Record<string, string> = {}) =>
+  `/c/${course.id}/${encodeURIComponent(conceptId)}?${new URLSearchParams({ mode, ...query }).toString()}`;
+
+/** Plate lessons live in the concept workspace; classic block lessons keep their v1 route. */
+export function lessonHref(conceptId: string, lessonId: string, extra = "") {
+  const lesson = getLesson(conceptId, lessonId);
+  if (lesson && isPlateLesson(lesson)) {
+    const base = conceptHref(conceptId, "learn", { lesson: lessonId });
+    return extra ? `${base}&${extra.replace(/^\?/, "")}` : base;
+  }
+  return `/learn/${encodeURIComponent(conceptId)}/${encodeURIComponent(lessonId)}${extra}`;
+}
+
+export const lessonForPlate = (conceptId: string, plateId: string) =>
+  getConcept(conceptId)?.lessons.find((l) => l.blocks.some((b) => b.type === "plate" && b.plateId === plateId))?.id;
 
 /** The concept's primary lesson (first one); remediation lessons follow it. */
 export const mainLesson = (c: Concept) => c.lessons[0];

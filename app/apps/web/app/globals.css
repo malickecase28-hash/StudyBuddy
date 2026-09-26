@@ -17,12 +17,12 @@
   --color-confirmed: var(--sem-confirmed);
   --font-read: var(--font-read);
   --font-ui: var(--font-ui);
+  --font-mono: var(--font-mono);
 }
 
 html,
 body {
-  background: var(--bg);
-  background-image: radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--sem-field) 8%, transparent), transparent 48rem);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-ui);
 }
@@ -42,22 +42,22 @@ body {
 /* Semantic term colouring (prose spans and KaTeX \htmlClass terms). */
 .sem-charge,
 .t-charge {
-  color: var(--sem-charge);
+  color: var(--charge-text);
 }
 .sem-field,
 .t-field {
-  color: var(--sem-field);
+  color: var(--field-text);
 }
 .sem-flux,
 .t-flux {
-  color: var(--sem-flux);
+  color: var(--flux-text);
 }
 .sem-surface,
 .t-surface {
-  color: var(--sem-surface);
+  color: var(--surface-text);
 }
 .sem-confirmed {
-  color: var(--sem-confirmed);
+  color: var(--ok-text);
 }
 .sem-charge,
 .sem-field,
