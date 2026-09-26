@@ -1,4 +1,5 @@
 import { cartOf, gaussLegendre, nativeOf, scalarFields, vectorFields, type Vec3 } from "@forma/physics";
+import { toSI } from "@forma/engine";
 import { z } from "zod";
 import { defineComponent } from "../component";
 
@@ -35,9 +36,9 @@ export function boxFlux(F: (p: Vec3) => Vec3, c: Vec3, s: number): number {
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
           const p = [c[0], c[1], c[2]];
-          p[axis] = c[axis] + sign * h;
-          p[u] = c[u] + h * nodes[i]!;
-          p[v] = c[v] + h * nodes[j]!;
+          p[axis] = c[axis]! + sign * h;
+          p[u] = c[u]! + h * nodes[i]!;
+          p[v] = c[v]! + h * nodes[j]!;
           sum += weights[i]! * weights[j]! * h * h * sign * F(p as unknown as Vec3)[axis]!;
         }
       }
@@ -58,8 +59,8 @@ export function loopCirculation(F: (p: Vec3) => Vec3, c: Vec3, s: number, u: num
   for (const [fa, fo, ma, dir] of edges) {
     for (let i = 0; i < 4; i++) {
       const p = [c[0], c[1], c[2]];
-      p[fa] = c[fa] + fo;
-      p[ma] = c[ma] + h * nodes[i]!;
+      p[fa] = c[fa]! + fo;
+      p[ma] = c[ma]! + h * nodes[i]!;
       sum += weights[i]! * h * dir * F(p as unknown as Vec3)[ma]!;
     }
   }
@@ -143,4 +144,33 @@ export const CoordRegion = defineComponent({
   quotable: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3" },
 });
 
-export const mathComponents = [ScalarSlice, VectorSlice, CoordRegion];
+export const C0 = 299_792_458;
+const BANDS: [number, string][] = [[3e8, "Radio"], [3e11, "Microwave"], [4e14, "Infrared"], [7.9e14, "Visible"], [3e16, "Ultraviolet"], [3e19, "X-ray"], [Infinity, "Gamma"]];
+
+export const Spectrum = defineComponent({
+  id: "spectrum",
+  params: z.object({ f: z.number().positive().default(2.45e9), draggable: z.boolean().default(false) }),
+  model: (p) => ({ f: p.f, lambda: C0 / p.f, band: BANDS.find(([top]) => p.f < top)![1] }),
+  handles: ["f"],
+  readouts: { f: "Hz", lambda: "m" },
+  quotable: { f: "Hz", lambda: "m" },
+});
+
+export const UnitConvert = defineComponent({
+  id: "unit-convert",
+  params: z.object({ value: z.number(), unit: z.string().min(1) }),
+  model: (p) => {
+    try {
+      const q = toSI(p.value, p.unit);
+      const key = ({ m: "siM", "m^2": "siM2", "m^3": "siM3", C: "siC", Hz: "siHz", V: "siV", F: "siF", N: "siN" } as Record<string, string>)[q.dim] ?? "si";
+      return { [key]: q.value, dim: q.dim, ok: true } as Record<string, number | string | boolean>;
+    } catch {
+      return { dim: "", ok: false };
+    }
+  },
+  handles: [],
+  readouts: { siM: "m", siM2: "m^2", siM3: "m^3", siC: "C", siHz: "Hz", siV: "V", siF: "F", siN: "N", si: "" },
+  quotable: { siM: "m", siM2: "m^2", siM3: "m^3", siC: "C", siHz: "Hz", siV: "V", siF: "F", siN: "N" },
+});
+
+export const mathComponents = [ScalarSlice, VectorSlice, CoordRegion, Spectrum, UnitConvert];

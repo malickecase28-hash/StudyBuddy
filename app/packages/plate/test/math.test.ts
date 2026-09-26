@@ -66,3 +66,26 @@ describe("coord-region", () => {
     expect(m.len3 as number).toBeCloseTo(2 * Math.sin(30 * d) * d, 12);
   });
 });
+
+describe("spectrum and unit-convert", () => {
+  it("Wi-Fi at 2.45 GHz is a 12.2 cm microwave", () => {
+    const m = model("spectrum", { f: 2.45e9 });
+    expect(m.band).toBe("Microwave");
+    expect(m.lambda as number).toBeCloseTo(0.12236, 5);
+  });
+  it("green light at 5.45e14 Hz is visible, 550 nm", () => {
+    const m = model("spectrum", { f: 5.45e14 });
+    expect(m.band).toBe("Visible");
+    expect(m.lambda as number).toBeCloseTo(5.5008e-7, 10);
+  });
+  it("converts the coax core 0.28 inch and the sphere diameter 12.8 cm to metres", () => {
+    expect(model("unit-convert", { value: 0.28, unit: "in" })).toMatchObject({ dim: "m", ok: true });
+    expect(model("unit-convert", { value: 0.28, unit: "in" }).siM as number).toBeCloseTo(0.007112, 12);
+    expect(model("unit-convert", { value: 12.8, unit: "cm" }).siM as number).toBeCloseTo(0.128, 12);
+    expect(model("unit-convert", { value: 200, unit: "mC" }).siC as number).toBeCloseTo(0.2, 12);
+    expect(model("unit-convert", { value: 5, unit: "cm^2" }).siM2 as number).toBeCloseTo(5e-4, 15);
+  });
+  it("flags a unit it cannot read instead of throwing", () => {
+    expect(model("unit-convert", { value: 3, unit: "furlong" })).toMatchObject({ ok: false });
+  });
+});

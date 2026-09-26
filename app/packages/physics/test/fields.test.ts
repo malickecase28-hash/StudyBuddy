@@ -21,7 +21,7 @@ describe("vector fields: analytic divergence and curl = finite differences (cart
   for (const v of Object.values(vectorFields)) {
     it(v.id, () => {
       const F = (p: Vec3) => cartOf(v.F(nativeOf(p, v.system)), p, v.system);
-      const d = (p: Vec3, comp: number, k: number) => (F(shift(p, k, H))[comp] - F(shift(p, k, -H))[comp]) / (2 * H);
+      const d = (p: Vec3, comp: number, k: number) => (F(shift(p, k, H))[comp]! - F(shift(p, k, -H))[comp]!) / (2 * H);
       for (const p of pts) {
         expect(v.div(nativeOf(p, v.system))).toBeCloseTo(d(p, 0, 0) + d(p, 1, 1) + d(p, 2, 2), 5);
         const c = cartOf(v.curl(nativeOf(p, v.system)), p, v.system);
