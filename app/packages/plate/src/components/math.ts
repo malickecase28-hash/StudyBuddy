@@ -103,4 +103,44 @@ export const VectorSlice = defineComponent({
   quotable: { F1: "", F2: "", F3: "", div: "", c1: "", c2: "", c3: "", boxRatio: "", circRatio: "" },
 });
 
-export const mathComponents = [ScalarSlice, VectorSlice];
+const Range = z.tuple([z.number(), z.number()]).refine(([a, b]) => b > a, "range must increase");
+const DEG = Math.PI / 180;
+
+export const CoordRegion = defineComponent({
+  id: "coord-region",
+  params: z.object({
+    system: z.enum(["cart", "cyl", "sph"]),
+    ranges: z.tuple([Range, Range, Range]),
+    face: z.union([z.literal(0), z.literal(1), z.literal(2), z.null()]).default(null),
+    faceAt: z.enum(["max", "min"]).default("max"),
+    /** Drawing magnification only (a 7 m cylinder or a 25 cm patch); readouts use the true region. */
+    drawScale: z.number().positive().default(1),
+  }),
+  model: (p) => {
+    const [[a1, b1], [a2, b2], [a3, b3]] = p.ranges;
+    const pick = (a: number, b: number) => (p.faceAt === "max" ? b : a);
+    if (p.system === "cart") {
+      const [dx, dy, dz] = [b1 - a1, b2 - a2, b3 - a3];
+      const area = p.face === null ? undefined : [dy * dz, dx * dz, dx * dy][p.face];
+      return { len1: dx, len2: dy, len3: dz, volume: dx * dy * dz, ...(area === undefined ? {} : { area }) };
+    }
+    if (p.system === "cyl") {
+      const dphi = (b2 - a2) * DEG, dz = b3 - a3;
+      const area = p.face === null ? undefined : [pick(a1, b1) * dphi * dz, (b1 - a1) * dz, 0.5 * (b1 * b1 - a1 * a1) * dphi][p.face];
+      return { len1: b1 - a1, len2: a1 * dphi, len3: dz, volume: 0.5 * (b1 * b1 - a1 * a1) * dphi * dz, ...(area === undefined ? {} : { area }) };
+    }
+    const ta = a2 * DEG, tb = b2 * DEG, dth = tb - ta, dphi = (b3 - a3) * DEG;
+    const rs = pick(a1, b1), ts = pick(ta, tb);
+    const area = p.face === null ? undefined : [rs * rs * (Math.cos(ta) - Math.cos(tb)) * dphi, 0.5 * (b1 * b1 - a1 * a1) * Math.sin(ts) * dphi, 0.5 * (b1 * b1 - a1 * a1) * dth][p.face];
+    return {
+      len1: b1 - a1, len2: a1 * dth, len3: a1 * Math.sin(ta) * dphi,
+      volume: ((b1 ** 3 - a1 ** 3) / 3) * (Math.cos(ta) - Math.cos(tb)) * dphi,
+      ...(area === undefined ? {} : { area }),
+    };
+  },
+  handles: [],
+  readouts: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3" },
+  quotable: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3" },
+});
+
+export const mathComponents = [ScalarSlice, VectorSlice, CoordRegion];

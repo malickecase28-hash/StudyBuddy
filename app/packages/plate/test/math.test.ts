@@ -43,3 +43,26 @@ describe("vector-slice", () => {
     expect(m).toMatchObject({ F1: 1, F2: 0, F3: 0, div: 0 });
   });
 });
+
+describe("coord-region", () => {
+  it("MST Q3(a): the spherical patch r = 25 cm, 0 < θ < 60°, 30° < φ < 45°", () => {
+    const m = model("coord-region", { system: "sph", ranges: [[0, 0.25], [0, 60], [30, 45]], face: 0 });
+    expect(m.area as number).toBeCloseTo(0.00818123, 8);
+  });
+  it("HW02 2.5(b): the cylinder side ρ = 4 m, 0 < z < 7 m", () => {
+    const m = model("coord-region", { system: "cyl", ranges: [[0, 4], [0, 360], [0, 7]], face: 0 });
+    expect(m.area as number).toBeCloseTo(175.929, 3);
+  });
+  it("volumes in all three systems", () => {
+    expect(model("coord-region", { system: "cart", ranges: [[0, 2], [0, 2], [0, 2]] }).volume).toBe(8);
+    expect(model("coord-region", { system: "cyl", ranges: [[0, 0.2], [0, 180], [-4, -2]] }).volume as number).toBeCloseTo(0.04 * Math.PI * 2 / 2, 12);
+    expect(model("coord-region", { system: "sph", ranges: [[0, 5.25], [0, 180], [0, 360]] }).volume as number).toBeCloseTo(606.131, 3);
+  });
+  it("edge lengths of a small spherical element carry the scale factors", () => {
+    const m = model("coord-region", { system: "sph", ranges: [[2, 2.1], [30, 31], [0, 1]] });
+    const d = Math.PI / 180;
+    expect(m.len1 as number).toBeCloseTo(0.1, 12);
+    expect(m.len2 as number).toBeCloseTo(2 * d, 12);
+    expect(m.len3 as number).toBeCloseTo(2 * Math.sin(30 * d) * d, 12);
+  });
+});
