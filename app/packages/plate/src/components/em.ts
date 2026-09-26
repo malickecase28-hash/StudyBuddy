@@ -1,5 +1,5 @@
 import {
-  EPS0, contains, dot, electricField, enclosedCharge, fluxDensity, norm, scale, surfaceArea, surfacePatches,
+  EPS0, contains, dot, electricField, enclosedCharge, fluxDensity, fluxThrough, norm, scale, surfaceArea, surfacePatches,
   type Charge, type SurfaceShape, type Vec3,
 } from "@forma/physics";
 import { z } from "zod";
@@ -219,4 +219,74 @@ export const DimensionCallout = defineComponent({
   readouts: {},
 });
 
-export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, Axes, DimensionCallout];
+export const UniformField = defineComponent({
+  id: "uniform-field",
+  params: z.object({ Dx: z.number().default(3), Dz: z.number().default(0), spacing: z.number().positive().default(0.45) }),
+  model: (p) => {
+    const D: Vec3 = [p.Dx, 0, p.Dz];
+    return { D, magnitude: norm(D), directionDeg: (Math.atan2(p.Dz, p.Dx) * 180) / Math.PI };
+  },
+  handles: ["Dx", "Dz"],
+  readouts: { magnitude: "µC/m^2" },
+});
+
+export const FlatPatch = defineComponent({
+  id: "flat-patch",
+  params: z.object({
+    center: V3.default([0, 0, 0]),
+    size: z.number().positive().default(1),
+    depth: z.number().positive().optional(),
+    normalAngle: z.number().default(0),
+    showNormal: z.boolean().default(true),
+    showShadow: z.boolean().default(false),
+  }),
+  model: (p, ctx) => {
+    const D = ctx.link("field").model.D as Vec3;
+    const a = (p.normalAngle * Math.PI) / 180;
+    const n: Vec3 = [Math.cos(a), 0, Math.sin(a)];
+    const area = p.size * (p.depth ?? p.size);
+    const Dn = dot(D, n);
+    const mag = norm(D);
+    const theta = mag > 0 ? (Math.acos(Math.max(-1, Math.min(1, Dn / mag))) * 180) / Math.PI : null;
+    return { n, area, Dn, dPsi: Dn * area, theta, shadow: mag > 0 ? (area * Math.abs(Dn)) / mag : 0 };
+  },
+  handles: ["normalAngle", "size", "center"],
+  readouts: { dPsi: "µC", Dn: "µC/m^2", area: "m^2", shadow: "m^2", theta: "°" },
+  links: ["field"],
+});
+
+export const Vector = defineComponent({
+  id: "vector",
+  params: z.object({
+    from: V3,
+    to: V3,
+    label: z.string().min(1),
+    tone: z.enum(["charge", "field", "flux", "surface", "ink"]).default("ink"),
+    arcTo: V3.optional(),
+  }),
+  model: () => ({}),
+  handles: [],
+  readouts: {},
+});
+
+export const PatchTiling = defineComponent({
+  id: "patch-tiling",
+  params: z.object({ shape: z.enum(["sphere", "cube"]).default("sphere"), center: V3.default([0, 0, 0]), size: z.number().positive().default(1), n: int(1, 48, 2) }),
+  model: (p, ctx) => {
+    const cs = chargesOf(ctx);
+    const center = p.center as Vec3;
+    const shape: SurfaceShape = p.shape === "cube" ? { kind: "cube", center, side: p.size } : { kind: "sphere", center, radius: p.size };
+    const pts = outlineOf(shape, Math.max(8, 4 * p.n));
+    const normals = outlineNormals(pts, center);
+    const segments = pts.map((pt, i) => {
+      const v = dot(fluxDensity(cs, pt), normals[i]!) * 1e6;
+      return { p: pt, dn: Number.isFinite(v) ? v : null };
+    });
+    return { sum: fluxThrough(cs, surfacePatches(shape, p.n)) * 1e6, count: surfacePatches(shape, p.n).length, segments };
+  },
+  handles: ["n"],
+  readouts: { sum: "µC", count: "" },
+  links: ["charges"],
+});
+
+export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling];
