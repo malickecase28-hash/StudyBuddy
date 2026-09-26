@@ -207,6 +207,15 @@ A step change produces a diff, played in this order:
 - Explore mode has no authored steps.
 - "Save to notebook" snapshots params and restores them exactly.
 
+### 4.7 Narration-ready (hooks only; the audio pipeline is sub-project 7)
+Narration is authored and generated at build time, then played back deterministically. There is no TTS inference at runtime. This spec builds only the hooks:
+- **Cue tracks:** besides the step-to-step diff, a step may carry a time-based cue track (`{ t, action: highlight | show | hide | tween | camera, target, params }`). The timeline plays cues against a clock that a narration segment can drive later. Without audio, the same cues play on a silent clock at reading pace.
+- **Pause points** are ordinary interaction steps: playback stops, the learner answers, and branching picks the next segment.
+- **Math speech:** every `Equation` term and expression carries `display` (LaTeX), `speech` ("the closed surface integral of D dot d S") and `shortSpeech` ("the flux integral"). Speech is never derived from LaTeX.
+- **Schema:** each step reserves `narration?: { transcript, captions?, audio?: { src, durationMs }, cues[] }`.
+- **Fallback reader:** browser `speechSynthesis` can read a margin note or transcript on request ("Read this" 🔊). Off by default. Consistency across devices isn't guaranteed.
+- **Lint:** warns when a transcript repeats the on-screen margin note verbatim (above 60% token overlap). Narration teaches *alongside* the plate; it doesn't read it aloud.
+
 ### 4.6 Performance and fallback
 - Models are memoised and heavy ones run off the render loop.
 - Quality tiers control arrow density, patch count and DPR.
@@ -280,6 +289,7 @@ A step change produces a diff, played in this order:
 - **Sub-project 4:** Quickdraw working paper (paper and canvas modes, stroke storage we own), rich notebook, calculator (JupyterLite / Pyodide).
 - **Sub-project 5:** accounts (Portfolio auth pattern), sync, hosting, email reminders, analytics.
 - **Sub-project 6:** rebuild of the remaining EMag concepts.
+- **Sub-project 7:** narration production (audition Chatterbox and Kokoro-82M; Kitten TTS and Parler-TTS as candidates; review workflow; Opus/AAC segments), the narration player (speed 0.75–2×, captions, "repeat concept", guided vs "read this"), and 2–4 curated narrators.
 - Desktop and mobile apps.
 - Replacing restricted UTech material with original content before public launch.
 
