@@ -15,7 +15,7 @@ export type ExampleInput = {
 export type AskInput = { id: string; q: string; a: string; patch?: Patch; show?: string[]; hide?: string[]; focus?: string[]; tags?: string[]; narration?: { transcript: string; captions?: { t: number; text: string }[]; audio?: { src: string; durationMs: number } } };
 export type IdeaInput = {
   id: string; title: string; objectives: number[]; explain: StepInput[]; examples: ExampleInput[]; asks: AskInput[];
-  checks: (StepInput & { covers?: string[] })[]; recap: { points: string[]; traps: string[] };
+  checks: (StepInput & { covers?: string[] })[]; recap: { points: string[]; traps: string[]; givens?: { value: number; unit: string }[] };
 };
 export type Requires = { objectives: number[]; items: string[]; misconceptions: string[] };
 export type IdeaIndex = {
@@ -52,7 +52,7 @@ export function defineIdeaPlate(input: { id: string; title: string; instances: u
       steps.push({ ...c, id: `${idea.id}-${c.id}`, kind: "check", idea: idea.id });
       return { index: steps.length - 1, id: (c.interaction as { id: string }).id, covers: covers ?? [], tags: tagsOf(c.interaction) };
     });
-    steps.push({ id: `${idea.id}-recap`, title: `Recap · ${idea.title}`, kind: "recap", idea: idea.id, note: idea.recap.points.join(" ") });
+    steps.push({ id: `${idea.id}-recap`, title: `Recap · ${idea.title}`, kind: "recap", idea: idea.id, note: idea.recap.points.join(" "), givens: idea.recap.givens ?? [] });
     ideas.push({ id: idea.id, title: idea.title, objectives: idea.objectives, start, end: steps.length - 1, explain: [start, explainEnd], examples, asks: idea.asks, checks, recap: { index: steps.length - 1, ...idea.recap } });
   }
   const plate = PlateDef.parse({ id: input.id, title: input.title, instances: input.instances, bindings: input.bindings ?? {}, steps });

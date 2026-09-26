@@ -27,7 +27,10 @@ export const emWorld = {
       id: "main",
       title: "EM in the world, and SI units (in depth)",
       minutes: 35,
-      blocks: [{ ...meta("vivid", src(UNIT1, "pp. 3-12")), id: "idea-em-world", type: "plate" as const, plateId: "idea-em-world" }],
+      blocks: [
+        { ...meta("vivid", src(UNIT1, "pp. 3-12")), id: "idea-em-world", type: "plate" as const, plateId: "idea-em-world" },
+        { ...meta("vivid", src(UNIT1, "units")), id: "idea-units", type: "plate" as const, plateId: "idea-units" },
+      ],
     },
   ],
 };
