@@ -1,4 +1,5 @@
 import type { Registry } from "./component";
+import { toSI } from "@forma/engine";
 import { applyStep, diffStates, initialState, isEmptyDiff, stateAt, type PlateDef } from "./plate";
 import { createEvaluator, type Frame, type SceneState } from "./scene";
 import { frameAt } from "./timeline";
@@ -24,10 +25,21 @@ export function numbersOf(x: unknown, out: number[] = []): number[] {
 }
 
 export type Backing = { value: number; unit: string };
-const normUnit = (u: string) => u.replace(/μ/g, "µ").replace("^2", "²");
+const normUnit = (u: string) => u.replace(/μ/g, "µ").replace("^2", "²").replace("³", "^3").replace(/inches/g, "inch");
 
 // A number (not part of a range like "2-3" or a bare ".5") followed by a physics unit.
-const WITH_UNIT = /(?<![\w.\-−])([−-]?\d+(?:\.\d+)?)\s*([µμ]C\/m²|[µμ]C\/m\^2|nC\/m²|nC\/m\^2|[µμ]C\/m|nC\/m|V\/m|[µμ]C|nC|m²|m\^2|C|m)(?![\w/²^])/g;
+const WITH_UNIT = /(?<![\w.\-−])([−-]?\d+(?:\.\d+)?)\s*([µμ]C\/m²|[µμ]C\/m\^2|nC\/m²|nC\/m\^2|[µμ]C\/m|nC\/m|V\/m|[kMGT]?Hz|[µμ]C|nC|m³|m\^3|m²|m\^2|inch(?:es)?|C|m)(?![\w/²^])/g;
+
+/** The backing value expressed in the written unit, or null when the dimensions differ. */
+const inUnit = (c: Backing, unit: string): number | null => {
+  if (normUnit(c.unit) === unit) return c.value;
+  try {
+    const a = toSI(c.value, c.unit), b = toSI(1, unit);
+    return a.dim === b.dim ? a.value / b.value : null;
+  } catch {
+    return null;
+  }
+};
 
 /** Numbers with a physics unit that no same-unit value matches: rounded to the written digits (or within 0.5%), and within 5%. */
 export function unbackedNumbers(text: string, candidates: readonly Backing[]): string[] {
@@ -37,13 +49,13 @@ export function unbackedNumbers(text: string, candidates: readonly Backing[]): s
     const value = Number(raw);
     const unit = normUnit(m[2]!);
     const decimals = (raw.split(".")[1] ?? "").length;
-    const backed = candidates.some(
-      (c) =>
-        normUnit(c.unit) === unit &&
+    const backed = candidates.some((c) => {
+      const v = inUnit(c, unit);
+      return v !== null &&
         // Rounded to the written digits (or within 0.5%), and never more than 5% from the true value.
-        (Math.abs(Number(c.value.toFixed(decimals)) - value) < 1e-9 || Math.abs(c.value - value) <= 0.005 * Math.abs(value)) &&
-        Math.abs(c.value - value) <= 0.05 * Math.max(Math.abs(c.value), 1e-12),
-    );
+        (Math.abs(Number(v.toFixed(decimals)) - value) < 1e-9 || Math.abs(v - value) <= 0.005 * Math.abs(value)) &&
+        Math.abs(v - value) <= 0.05 * Math.max(Math.abs(v), 1e-12);
+    });
     if (!backed) out.push(m[0].replace(/\s+/g, " "));
   }
   return out;

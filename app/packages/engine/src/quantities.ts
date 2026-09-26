@@ -3,6 +3,7 @@ export type Quantity = { value: number; dim: string };
 /** Base units and the canonical dimension they map to. */
 const BASE: Record<string, string> = {
   "": "1",
+  Hz: "Hz",
   "°": "°",
   C: "C",
   m: "m",
@@ -19,7 +20,7 @@ const BASE: Record<string, string> = {
   F: "F",
 };
 
-const PREFIX: Record<string, number> = { p: 1e-12, n: 1e-9, "µ": 1e-6, u: 1e-6, m: 1e-3, c: 1e-2, k: 1e3, M: 1e6 };
+const PREFIX: Record<string, number> = { p: 1e-12, n: 1e-9, "µ": 1e-6, u: 1e-6, m: 1e-3, c: 1e-2, k: 1e3, M: 1e6, G: 1e9, T: 1e12 };
 
 function normalizeUnit(u: string): string {
   return u.replace(/\s+/g, "").replace(/²/g, "^2").replace(/³/g, "^3").replace(/μ/g, "µ");
@@ -28,6 +29,7 @@ function normalizeUnit(u: string): string {
 /** Resolve a unit string to [SI factor, canonical dimension], or null. */
 function resolveUnit(raw: string): [number, string] | null {
   const u = normalizeUnit(raw);
+  if (u === "in" || u === "inch") return [0.0254, "m"];
   const exact = BASE[u];
   if (exact !== undefined) return [1, exact];
   const prefix = PREFIX[u[0] ?? ""];

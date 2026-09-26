@@ -30,4 +30,10 @@ describe("parseQuantity", () => {
     expect(toSI(4, "µC")).toEqual({ value: 4e-6, dim: "C" });
     expect(() => toSI(1, "parsec")).toThrow();
   });
+  it("converts inches, gigahertz and cubic centimetres", () => {
+    expect(toSI(0.28, "in").value).toBeCloseTo(0.007112, 12);
+    expect(toSI(0.28, "in").dim).toBe("m");
+    expect(toSI(2.45, "GHz")).toEqual({ value: 2.45e9, dim: "Hz" });
+    expect(toSI(5, "cm^3").value).toBeCloseTo(5e-6, 15);
+  });
 });

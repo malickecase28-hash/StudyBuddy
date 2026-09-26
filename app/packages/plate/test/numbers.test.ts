@@ -28,6 +28,13 @@ describe("unbackedNumbers", () => {
     expect(unbackedNumbers("ρL = 2000 nC/m", [c(2000, "nC/m")])).toEqual([]);
     expect(unbackedNumbers("ρL = 3 µC/m", [])).toEqual(["3 µC/m"]);
   });
+  it("reads volumes, frequencies and inches as their own units", () => {
+    expect(unbackedNumbers("V = 0.0082 m³", [c(0.0082, "m^3")])).toEqual([]);
+    expect(unbackedNumbers("V = 0.0082 m³", [c(0.0082, "m")])).toEqual(["0.0082 m³"]);
+    expect(unbackedNumbers("Wi-Fi at 2.45 GHz", [c(2.45e9, "Hz")])).toEqual([]);
+    expect(unbackedNumbers("a 0.28 inch core", [c(0.007112, "m")])).toEqual([]);
+    expect(unbackedNumbers("the 6 in region 1", [])).toEqual([]);
+  });
   it("ignores unitless numbers, angles and vector components", () => {
     expect(unbackedNumbers("cos 60° = 0.5, D = 4x̂ + 3ẑ, 3 × 1 × 0.5", [])).toEqual([]);
   });
