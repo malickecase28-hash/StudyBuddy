@@ -120,7 +120,7 @@ The pnpm monorepo is renamed. The v1 packages are renamed, not rewritten.
 **Dependency rules:**
 - `physics` depends on nothing.
 - `engine` depends only on `physics` types.
-- `plate` depends on `physics` and `ui`.
+- `plate` core depends on `physics` and on `engine` (interaction and schema types only). Component views that render inside React are registered by the app, using `ui`.
 - Courses depend on `engine`, `plate` and `physics`.
 - Only apps depend on React DOM specifics.
 
