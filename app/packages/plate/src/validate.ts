@@ -1,5 +1,5 @@
 import type { Registry } from "./component";
-import { applyStep, diffStates, initialState, isEmptyDiff, type PlateDef } from "./plate";
+import { applyStep, diffStates, initialState, isEmptyDiff, stateAt, type PlateDef } from "./plate";
 import { createEvaluator, type Frame, type SceneState } from "./scene";
 import { frameAt } from "./timeline";
 
@@ -23,20 +23,53 @@ export function numbersOf(x: unknown, out: number[] = []): number[] {
   return out;
 }
 
-const WITH_UNIT = /([−-]?\d+(?:\.\d+)?)\s*(µC\/m²|µC\/m\^2|nC\/m²|nC\/m\^2|V\/m|µC|nC|m²|m\^2|m)(?![\w/²^])/g;
+export type Backing = { value: number; unit: string };
+const normUnit = (u: string) => u.replace(/μ/g, "µ").replace("^2", "²");
 
-/** Numbers followed by a physics unit that no candidate value matches at the written precision (or within 0.5%). */
-export function unbackedNumbers(text: string, candidates: readonly number[]): string[] {
+// A number (not part of a range like "2-3" or a bare ".5") followed by a physics unit.
+const WITH_UNIT = /(?<![\w.\-−])([−-]?\d+(?:\.\d+)?)\s*([µμ]C\/m²|[µμ]C\/m\^2|nC\/m²|nC\/m\^2|V\/m|[µμ]C|nC|m²|m\^2|C|m)(?![\w/²^])/g;
+
+/** Numbers with a physics unit that no same-unit value matches: rounded to the written digits (or within 0.5%), and within 5%. */
+export function unbackedNumbers(text: string, candidates: readonly Backing[]): string[] {
   const out: string[] = [];
   for (const m of text.matchAll(WITH_UNIT)) {
     const raw = m[1]!.replace("−", "-");
     const value = Number(raw);
+    const unit = normUnit(m[2]!);
     const decimals = (raw.split(".")[1] ?? "").length;
-    const backed = candidates.some((c) => Math.abs(Number(c.toFixed(decimals)) - value) < 1e-9 || Math.abs(c - value) <= 0.005 * Math.abs(value));
+    const backed = candidates.some(
+      (c) =>
+        normUnit(c.unit) === unit &&
+        // Rounded to the written digits (or within 0.5%), and never more than 5% from the true value.
+        (Math.abs(Number(c.value.toFixed(decimals)) - value) < 1e-9 || Math.abs(c.value - value) <= 0.005 * Math.abs(value)) &&
+        Math.abs(c.value - value) <= 0.05 * Math.max(Math.abs(c.value), 1e-12),
+    );
     if (!backed) out.push(m[0].replace(/\s+/g, " "));
   }
   return out;
 }
+
+/**
+ * What a sentence about this plate state may quote: the declared readouts of visible instances (with their units),
+ * the numeric params of visible instances as lengths in metres (sizes, positions, given dimensions), and the step's claims.
+ */
+export function backingFromFrame(registry: Registry, plate: PlateDef, frame: Frame, claims: readonly { value: number; unit: string }[] = []): Backing[] {
+  const out: Backing[] = claims.map((c) => ({ value: c.value, unit: c.unit }));
+  for (const inst of plate.instances) {
+    const ev = frame[inst.id];
+    if (!ev?.visible || !registry.has(inst.component)) continue;
+    for (const [name, unit] of Object.entries(registry.get(inst.component).readouts)) {
+      const v = ev.model[name];
+      if (typeof v === "number" && Number.isFinite(v)) out.push({ value: v, unit });
+    }
+    for (const [key, unit] of Object.entries(registry.get(inst.component).quotable ?? {})) for (const v of numbersOf(ev.model[key])) out.push({ value: v, unit });
+    for (const v of numbersOf(ev.params)) out.push({ value: v, unit: "m" });
+  }
+  return out;
+}
+
+export const backingValues = (registry: Registry, plate: PlateDef, index: number): Backing[] =>
+  backingFromFrame(registry, plate, createEvaluator(registry, plate.instances)(stateAt(plate, index)), [...(plate.steps[index]?.claims ?? []), ...(plate.steps[index]?.givens ?? [])]);
 
 /** Structural, physics and text-discipline checks for one plate. Never throws. */
 export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[] {
@@ -139,8 +172,7 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
         add("error", `claim ${c.instance}.${c.readout} says ${c.value} ${c.unit} but the model gives ${v}`, step.id);
       }
     }
-    const candidates = [...numbersOf(frame), ...step.claims.map((c) => c.value)];
-    for (const n of unbackedNumbers(step.note, candidates)) add("warning", `unbacked number "${n}" in the note`, step.id);
+    for (const n of unbackedNumbers(step.note, backingFromFrame(registry, plate, frame, [...step.claims, ...step.givens]))) add("warning", `unbacked number "${n}" in the note`, step.id);
     const words = wordCount(step.note);
     if (words > 180) add("warning", `margin note has ${words} words (budget 180)`, step.id);
     if (step.kind !== "recap" && prev && isEmptyDiff(diffStates(prev, state)) && !step.interaction && step.focus.length === 0 && step.cues.length === 0) {

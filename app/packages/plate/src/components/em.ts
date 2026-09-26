@@ -30,9 +30,12 @@ export const Charges = defineComponent({
     charges: p.items.map(toSI),
     items: p.items,
     total: p.items.reduce((s, it) => (it.kind === "point" ? s + it.q : s), 0),
+    qs: p.items.flatMap((it) => (it.kind === "point" ? [it.q] : [])),
+    rhoSs: p.items.flatMap((it) => (it.kind === "sheet" ? [it.rhoS] : [])),
   }),
   handles: ["items"],
   readouts: { total: "µC" },
+  quotable: { qs: "µC", rhoSs: "µC/m^2" },
 });
 
 const chargesOf = (ctx: { link: (n: string) => { model: Record<string, unknown> } }) => ctx.link("charges").model.charges as Charge[];
@@ -224,10 +227,11 @@ export const UniformField = defineComponent({
   params: z.object({ Dx: z.number().default(3), Dz: z.number().default(0), spacing: z.number().positive().default(0.45) }),
   model: (p) => {
     const D: Vec3 = [p.Dx, 0, p.Dz];
-    return { D, magnitude: norm(D), directionDeg: (Math.atan2(p.Dz, p.Dx) * 180) / Math.PI };
+    return { D, magnitude: norm(D), directionDeg: (Math.atan2(p.Dz, p.Dx) * 180) / Math.PI, Dx: p.Dx, Dz: p.Dz };
   },
   handles: ["Dx", "Dz"],
   readouts: { magnitude: "µC/m^2" },
+  quotable: { Dx: "µC/m^2", Dz: "µC/m^2" },
 });
 
 export const FlatPatch = defineComponent({

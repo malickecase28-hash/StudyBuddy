@@ -43,3 +43,11 @@ describe("idea lessons", () => {
     });
   }
 });
+
+it("the 'curved' ask shows the charge and its tiled sphere, not the uniform field and patch", async () => {
+  const { askState } = await import("@forma/plate");
+  const c = ideaPlates["flux-surface"]!;
+  const idea = c.meta.ideas[0]!;
+  const s = askState(c.plate, idea, idea.asks.find((a) => a.id === "curved")!);
+  expect([s.q!.visible, s.tiles!.visible, s.field!.visible, s.patch!.visible]).toEqual([true, true, false, false]);
+});

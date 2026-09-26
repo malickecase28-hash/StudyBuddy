@@ -105,7 +105,7 @@ export const fluxSurface = defineIdeaPlate({
       asks: [
         { id: "why-cos", q: "Why cos θ and not sin θ?", show: ["field", "patch"], patch: { field: { Dx: 3, Dz: 0 }, patch: { size: 1, depth: 1, normalAngle: 60, showShadow: true } }, focus: ["patch"],
           a: "Because θ is measured from the normal, not from the face of the patch. Square-on means θ = 0°, when everything passes, and cos 0° = 1. Measuring from the face instead needs sin, which gives the same number, but mixing the two conventions is the most common slip. Forma always measures from the normal." },
-        { id: "curved", q: "What if the patch is curved?", show: ["q", "tiles"], patch: { tiles: { n: 12 } }, focus: ["tiles"],
+        { id: "curved", q: "What if the patch is curved?", show: ["q", "tiles"], hide: ["field", "patch"], patch: { tiles: { n: 12 } }, focus: ["tiles"],
           a: "Cut it into pieces small enough to be flat, work out D · dS on each, and add them. The integral ∫S D · dS is exactly that sum, with the pieces shrunk until the answer stops changing." },
         { id: "units", q: "Why is flux measured in coulombs?",
           a: "D is in coulombs per square metre and area is in square metres, so D · S is in coulombs. Flux counts the charge-worth of field passing through, which is why Gauss's law can set it equal to a charge." },
@@ -140,6 +140,7 @@ export const fluxSurface = defineIdeaPlate({
         {
           id: "tilt-to-3", title: "Check: tilt to a target", patch: { patch: { size: 2, depth: 2, normalAngle: 60 } },
           note: "Now do it by hand: turn the square until the readout says 3 µC.",
+          givens: [{ value: 3, unit: "µC" }],
           interaction: { id: "tilt-to-3", type: "manipulate-goal", goal: "Turn the 2 m square until exactly 3 µC passes through it (within 2%). Drag the patch, or focus it and use the arrow keys.", check: "patch-flux-3", dimension: "application" },
         },
         {

@@ -3,7 +3,7 @@
 import { checks, course, plates, registry, templates } from "@forma/course-em1";
 import { instantiate, pickRoute, seedOf, type Block, type Effect, type Interaction } from "@forma/engine";
 import {
-  applyCues, applyOverrides, askState, createEvaluator, frameAt, hiddenReadouts, lockIndex, readAloudText, stateAt, stepLocation, termTargets, timelineMarks,
+  applyCues, applyOverrides, askState, createEvaluator, frameAt, hiddenReadouts, lockIndex, readAloudText, stateAt, stepLocation, stillFrame, termTargets, timelineMarks,
   type Frame, type Overrides, type PlateDef,
 } from "@forma/plate";
 import { MarginNote, Timeline } from "@forma/ui";
@@ -120,6 +120,20 @@ function PlateRun({
   const learner = useStudy((s) => s.learner);
   const nextVariant = useStudy((s) => s.nextVariant);
   const [askOpen, setAskOpen] = useState<string | null>(initialAsk ?? null);
+  // ⌘K can open a question while this lesson is already on screen: follow the URL's ask.
+  useEffect(() => {
+    if (initialAsk) setAskOpen(initialAsk);
+  }, [initialAsk]);
+  const openAsk = useCallback((id: string | null) => {
+    setAskOpen(id);
+    if (id === null && typeof window !== "undefined") {
+      const u = new URL(window.location.href);
+      if (u.searchParams.has("ask")) {
+        u.searchParams.delete("ask");
+        window.history.replaceState(window.history.state, "", u);
+      }
+    }
+  }, []);
   const [misses, setMisses] = useState<Record<string, number>>({});
   const ask = askOpen ? meta?.ideas.flatMap((x) => x.asks.map((a) => ({ a, x }))).find((y) => y.a.id === askOpen) : undefined;
 
@@ -134,9 +148,12 @@ function PlateRun({
   // Frame: timeline state → learner overrides → authored reveal → cue track.
   const tl = frameAt(plate, pb.pos, { reducedMotion: reduced });
   // An open ask previews its own plate state; the learner's overrides stay layered and untouched.
-  let state = ask ? applyOverrides(askState(plate, ask.x, ask.a), overrides) : applyOverrides(tl.state, overrides);
-  if (revealed?.step === index) state = applyOverrides(state, revealed.o);
-  const cued = applyCues(state, step.cues, cueMs);
+  // An open ask shows its own authored state alone: the learner's edits, reveals and cues stay untouched underneath.
+  const askView = ask ? askState(plate, ask.x, ask.a) : null;
+  let state = askView ?? applyOverrides(tl.state, overrides);
+  if (!askView && revealed?.step === index) state = applyOverrides(state, revealed.o);
+  const cued = askView ? { state, highlight: [] as string[], camera: null } : applyCues(state, step.cues, cueMs);
+  const stageTimeline = askView ? stillFrame(askView, ask?.a.focus ?? []) : tl;
   let frame: Frame;
   try {
     frame = evaluate(cued.state);
@@ -258,8 +275,8 @@ function PlateRun({
       <Split ratio={split} onRatio={onSplit} label="Resize the plate and the margin">
         <div className="space-y-2">
           <PlateStage
-            plate={plate} timeline={tl} frame={frame} label={`${plate.title}, §${index + 1}: ${step.title}`}
-            highlight={[...highlight, ...cued.highlight]} editable={editable} onEdit={onEdit}
+            plate={plate} timeline={stageTimeline} frame={frame} label={`${plate.title}, §${index + 1}: ${step.title}`}
+            highlight={[...highlight, ...cued.highlight]} editable={askView ? [] : editable} onEdit={onEdit}
             onTerm={(k) => setHighlight(termTargets(plate, k))}
           />
           <PlateReadouts plate={plate} frame={frame} hidden={hiddenReadouts(plate, index, answered)} />
@@ -320,7 +337,7 @@ function PlateRun({
               )}
             </div>
           )}
-          {idea && <AsksList asks={idea.asks} open={askOpen} onOpen={setAskOpen} />}
+          {idea && <AsksList asks={idea.asks} open={askOpen} onOpen={openAsk} />}
           {offers.map((o) => (
             <div key={o.key} className="fb fb-again text-sm" role="status">
               ↺ {o.text} <Link className="underline" href={o.href}>Take the detour</Link>

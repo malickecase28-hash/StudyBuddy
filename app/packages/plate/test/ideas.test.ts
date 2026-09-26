@@ -61,3 +61,27 @@ describe("defineIdeaPlate", () => {
     ]);
   });
 });
+
+describe("previews and narration slots", () => {
+  it("a still frame shows exactly what a state makes visible, with the given focus", async () => {
+    const { stillFrame, stateAt } = await import("../src");
+    const f = stillFrame(stateAt(lesson.plate, 0), ["a"]);
+    expect(f.opacity.a).toBe(1);
+    expect(f.appear.a).toBe(1);
+    expect(f.focus).toEqual(["a"]);
+  });
+  it("worked lines and asks can carry narration", () => {
+    const n = defineIdeaPlate({
+      id: "n", title: "N", instances: [{ id: "a", component: "src", params: { q: 1 } }],
+      ideas: [{
+        id: "i", title: "I", objectives: [],
+        explain: [{ id: "e", title: "E", show: ["a"], note: "n" }],
+        examples: [{ id: "x", level: "basic", title: "X", problem: "p", setup: { a: { q: 2 } }, lines: [{ text: "l", focus: ["a"], narration: { transcript: "Now the first line, spoken." } }] }],
+        asks: [{ id: "k", q: "q?", a: "a.", narration: { transcript: "Spoken answer." } }],
+        checks: [], recap: { points: ["p"], traps: [] },
+      }],
+    });
+    expect(n.plate.steps.find((s) => s.id === "i-x-l1")!.narration?.transcript).toBe("Now the first line, spoken.");
+    expect(n.meta.ideas[0]!.asks[0]!.narration?.transcript).toBe("Spoken answer.");
+  });
+});

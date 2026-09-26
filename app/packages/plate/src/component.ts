@@ -12,6 +12,8 @@ export type ComponentDef<P, M> = {
   handles: readonly string[];
   /** Model values the plate may display, with their units. */
   readouts: Readonly<Record<string, string>>;
+  /** Model values text may quote though they are not displayed readouts (model key → unit; number or number[]). */
+  quotable?: Readonly<Record<string, string>>;
   /** Named upstream inputs (instance links). */
   links?: readonly string[];
 };

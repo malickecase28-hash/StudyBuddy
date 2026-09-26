@@ -47,6 +47,12 @@ test("an idea teaches, works examples line by line, answers asks, gates checks, 
   await tilt.focus();
   for (let k = 0; k < 31; k++) await page.keyboard.press("ArrowRight");
   await expect(page.getByText("Done. Look at the readouts.")).toBeVisible();
+  // An ask shows its own plate state even with the learner's edits in place, then gives the edits back untouched.
+  await page.getByText("Questions students ask (8)").click();
+  await page.getByRole("button", { name: "Can flux be negative?" }).click();
+  await expect(page.locator(".readouts")).toContainText("-2.598");
+  await page.getByRole("button", { name: "Back to the step" }).click();
+  await expect(page.locator(".readouts")).toContainText("3.005"); // 12 cos 75.5° = 3.0046
   await next(page);
 
   await margin(page, "Check: your own numbers");
@@ -93,4 +99,22 @@ test("a long lesson's scrub bar shows marks, not one tick per step", async ({ pa
   const ticks = page.locator(".timeline-ticks button");
   expect(await ticks.count()).toBeLessThan(12);
   await expect(page.locator(".timeline-ticks")).toContainText("Example 1");
+});
+
+test("an ask previews instances hidden at the current step", async ({ page }) => {
+  await open(page, url);
+  await margin(page, "A steady stream of D");
+  await page.getByText("Questions students ask (8)").click();
+  await page.getByRole("button", { name: "What if the patch is curved?" }).click();
+  await expect(page.locator('[data-instance="tiles"]')).toHaveAttribute("opacity", "1");
+  await expect(page.locator('[data-instance="field"]')).toHaveCount(0);
+});
+
+test("⌘K opens a question from inside its own lesson", async ({ page }) => {
+  await open(page, url);
+  await margin(page, "A steady stream of D");
+  await page.keyboard.press("Control+k");
+  await page.getByRole("combobox").fill("negative flux");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("region", { name: "Can flux be negative?" })).toBeVisible();
 });

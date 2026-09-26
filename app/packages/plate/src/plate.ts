@@ -51,6 +51,8 @@ export const Step = z.object({
   derivation: z.string().optional(),
   interaction: Interaction.optional(),
   claims: z.array(Claim).default([]),
+  /** Values the note states that the plate does not display (e.g. a goal's target), with units. */
+  givens: z.array(z.object({ value: z.number(), unit: z.string() })).default([]),
   cues: z.array(Cue).default([]),
   narration: Narration.optional(),
 });

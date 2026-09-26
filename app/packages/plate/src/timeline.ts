@@ -97,3 +97,9 @@ export function applyCues(state: SceneState, cues: readonly Cue[], tMs: number):
   }
   return { state: next, highlight: [...highlight], camera };
 }
+
+/** A settled frame for an arbitrary state (e.g. an ask preview): visible instances fully drawn, the rest hidden. */
+export function stillFrame(state: SceneState, focus: readonly string[] = []): TimelineFrame {
+  const vis = Object.fromEntries(Object.entries(state).map(([id, s]) => [id, s.visible ? 1 : 0]));
+  return { state, appear: { ...vis }, opacity: { ...vis }, focus: [...focus], stepIndex: 0, fraction: 0 };
+}

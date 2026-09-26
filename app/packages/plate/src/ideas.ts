@@ -1,18 +1,18 @@
 import type { Registry } from "./component";
 import { applyStep, PlateDef, stateAt } from "./plate";
 import { createEvaluator, type SceneState } from "./scene";
-import { numbersOf, unbackedNumbers, wordCount, type PlateIssue } from "./validate";
+import { backingFromFrame, unbackedNumbers, wordCount, type PlateIssue } from "./validate";
 
 type Patch = Record<string, Record<string, unknown>>;
 export type StepInput = {
   id: string; title: string; note: string; patch?: Patch; show?: string[]; hide?: string[]; focus?: string[];
-  why?: string; derivation?: string; interaction?: unknown; claims?: unknown[]; cues?: unknown[]; narration?: unknown; latex?: string;
+  why?: string; derivation?: string; interaction?: unknown; claims?: unknown[]; givens?: { value: number; unit: string }[]; cues?: unknown[]; narration?: unknown; latex?: string;
 };
 export type ExampleInput = {
   id: string; level: "basic" | "tutorial" | "exam"; title: string; problem: string; setup: Patch; show?: string[]; hide?: string[];
-  lines: { text: string; latex?: string; focus?: string[]; patch?: Patch; claims?: unknown[] }[]; trap?: string; covers?: string[];
+  lines: { text: string; latex?: string; focus?: string[]; patch?: Patch; claims?: unknown[]; givens?: { value: number; unit: string }[]; narration?: unknown; cues?: unknown[] }[]; trap?: string; covers?: string[];
 };
-export type AskInput = { id: string; q: string; a: string; patch?: Patch; show?: string[]; hide?: string[]; focus?: string[]; tags?: string[] };
+export type AskInput = { id: string; q: string; a: string; patch?: Patch; show?: string[]; hide?: string[]; focus?: string[]; tags?: string[]; narration?: { transcript: string; captions?: { t: number; text: string }[]; audio?: { src: string; durationMs: number } } };
 export type IdeaInput = {
   id: string; title: string; objectives: number[]; explain: StepInput[]; examples: ExampleInput[]; asks: AskInput[];
   checks: (StepInput & { covers?: string[] })[]; recap: { points: string[]; traps: string[] };
@@ -44,7 +44,7 @@ export function defineIdeaPlate(input: { id: string; title: string; instances: u
       const s0 = steps.length;
       steps.push({ id: `${idea.id}-${ex.id}`, title: ex.title, kind: "work", idea: idea.id, note: ex.problem, patch: ex.setup, show: ex.show ?? [], hide: ex.hide ?? [] });
       ex.lines.forEach((ln, k) =>
-        steps.push({ id: `${idea.id}-${ex.id}-l${k + 1}`, title: `${ex.title} · line ${k + 1}`, kind: "work", idea: idea.id, note: ln.text, focus: ln.focus ?? [], patch: ln.patch ?? {}, claims: ln.claims ?? [], ...(ln.latex ? { latex: ln.latex } : {}) }),
+        steps.push({ id: `${idea.id}-${ex.id}-l${k + 1}`, title: `${ex.title} · line ${k + 1}`, kind: "work", idea: idea.id, note: ln.text, focus: ln.focus ?? [], patch: ln.patch ?? {}, claims: ln.claims ?? [], givens: ln.givens ?? [], ...(ln.latex ? { latex: ln.latex } : {}), ...(ln.narration ? { narration: ln.narration } : {}), ...(ln.cues ? { cues: ln.cues } : {}) }),
       );
       return { id: ex.id, level: ex.level, title: ex.title, start: s0, end: steps.length - 1, ...(ex.trap ? { trap: ex.trap } : {}), covers: ex.covers ?? [] };
     });
@@ -107,7 +107,7 @@ export function coverageGaps(meta: IdeaMeta): string[] {
 export function askState(plate: PlateDef, idea: IdeaIndex, ask: AskInput): SceneState {
   return applyStep(stateAt(plate, idea.end), {
     id: "ask", title: "ask", kind: "ask", note: ask.a, patch: ask.patch ?? {}, show: ask.show ?? [], hide: ask.hide ?? [], focus: ask.focus ?? [],
-    view: "2d", claims: [], cues: [],
+    view: "2d", claims: [], givens: [], cues: [],
   } as PlateDef["steps"][number]);
 }
 
@@ -121,13 +121,13 @@ export function validateIdeas(registry: Registry, { plate, meta }: CompiledIdeas
       if (w > 80) warn(`ask ${ask.id} has ${w} words (budget 80)`);
       try {
         const frame = evaluate(askState(plate, idea, ask));
-        for (const n of unbackedNumbers(ask.a, numbersOf(frame))) warn(`ask ${ask.id}: unbacked number "${n}"`);
+        for (const n of unbackedNumbers(ask.a, backingFromFrame(registry, plate, frame))) warn(`ask ${ask.id}: unbacked number "${n}"`);
       } catch (e) {
         issues.push({ plate: plate.id, level: "error", message: `ask ${ask.id} does not evaluate: ${(e as Error).message}` });
       }
     }
     for (const ex of idea.examples)
-      if (ex.trap) for (const n of unbackedNumbers(ex.trap, numbersOf(evaluate(stateAt(plate, ex.end))))) warn(`example ${ex.id} trap: unbacked number "${n}"`);
+      if (ex.trap) for (const n of unbackedNumbers(ex.trap, backingFromFrame(registry, plate, evaluate(stateAt(plate, ex.end))))) warn(`example ${ex.id} trap: unbacked number "${n}"`);
   }
   return issues;
 }
