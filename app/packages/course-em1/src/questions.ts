@@ -76,11 +76,20 @@ export const questionBank: BankItem[] = [
   { id: "f2425-q4c", source: "f2425", kind: "finals", paper: F2425, question: "Q4(c)", marks: 5, text: "State Poynting's theorem and comment on how it supports an important conservation law.", concepts: w([K.wave, 1]) },
 
   // Finals 2023-24, Sem 1 (catalog: f2324)
+  { id: "f2324-q1a", source: "f2324", kind: "finals", paper: F2324, question: "Q1(a)", marks: 7, text: "Calculate the force that Q1 = −10 µC at A(0, 3, 7) nm exerts on Q2 = +8 µC at B(2, 0, 1) nm, in a vacuum.", concepts: w([K.coul, 0.8], [K.vec, 0.2]) },
+  { id: "f2324-q1b", source: "f2324", kind: "finals", paper: F2324, question: "Q1(b)", marks: 18, text: "In a region where V = r³ sin θ cos φ volts: (i) find D at P(5, π/3, −π/2); (ii) calculate the energy required to move a 10 µC charge from X(2, 0°, 100°) to Y(5, 45°, 90°).", concepts: w([K.pot, 0.7], [K.calc, 0.3]) },
+  { id: "f2324-q2a", source: "f2324", kind: "finals", paper: F2324, question: "Q2(a)", marks: 13, text: "Region 1 (x < 0) is free space; region 2 (x > 0) is a dielectric with εr2 = 3.5. Given D1 = 3ax − 4ay + 6az C·m⁻², compute (i) E2 and (ii) the angle θ1.", concepts: w([K.diel, 1]) },
   {
     id: "f2324-q2b", source: "f2324", kind: "finals", paper: F2324, question: "Q2(b)", marks: 12,
     text: "In a vacuum, E(r) = πr² for 0 < r ≤ 3 m and 6π/r³ for r > 3 m (N·C⁻¹, radial). (i) State Gauss's law. Compute ρv at (ii) r = 2 m and (iii) r = 5 m.",
     concepts: w([K.gauss, 0.4], [K.div, 0.6]),
   },
+  { id: "f2324-q3a", source: "f2324", kind: "finals", paper: F2324, question: "Q3(a)", marks: 4, text: "State Maxwell's equations for static electromagnetic fields in point form.", concepts: w([K.dyn, 0.5], [K.div, 0.25], [K.amp, 0.25]) },
+  { id: "f2324-q3b", source: "f2324", kind: "finals", paper: F2324, question: "Q3(b)", marks: 6, text: "A vertical hollow conducting cylinder has inner radius r and outer radius R and carries current I along the z-axis. Develop an expression for H everywhere.", concepts: w([K.amp, 1]) },
+  { id: "f2324-q3c", source: "f2324", kind: "finals", paper: F2324, question: "Q3(c)", marks: 15, text: "H1 = 2ax + 3ay − az A·m⁻¹ in the region y − x − 2 ≤ 0, where μ1 = μ0. Calculate (i) M1 and B1, (ii) H2 and B2 in y − x − 2 > 0, where μ2 = 3μ0.", concepts: w([K.amp, 1]) },
+  { id: "f2324-q4a", source: "f2324", kind: "finals", paper: F2324, question: "Q4(a)", marks: 15, text: "A long, straight, nonmagnetic conductor of radius 0.50 mm carries a uniform d.c. current of 8.0 A along z. Within the conductor: (i) find J; (ii) compute H and B (Ampère's law); (iii) show that ∇ × H = J.", concepts: w([K.amp, 0.8], [K.calc, 0.2]) },
+  { id: "f2324-q4b", source: "f2324", kind: "finals", paper: F2324, question: "Q4(b)", marks: 5, text: "With an appropriate diagram, describe the principle of electromagnetic wave propagation in dielectrics.", concepts: w([K.wave, 1]) },
+  { id: "f2324-q4c", source: "f2324", kind: "finals", paper: F2324, question: "Q4(c)", marks: 5, text: "Briefly describe the transmission of electromagnetic wave power using Poynting's theorem.", concepts: w([K.wave, 1]) },
 
   // ICT 02, 18 Nov 2024 (catalog: ict2-2425; solved by hand, so exact data comes from the source in content plans)
   { id: "ict2-2425-q1", source: "ict2-2425", kind: "ict", paper: ICT2, question: "Q1", text: "(a) State Biot-Savart's law and use it to find H on the axis of an N-turn circular coil. (b) State Ampère's circuital law in point and integral form, and use it to find H and J for a current-carrying conductor (see source).", concepts: w([K.amp, 1]) },

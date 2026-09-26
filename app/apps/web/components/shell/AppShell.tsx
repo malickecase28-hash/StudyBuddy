@@ -15,7 +15,7 @@ import { ToolSplit } from "./ToolPanel";
 
 const MODES = [["learn", "Learn"], ["solve", "Solve"], ["explore", "Explore"], ["revise", "Revise"]] as const;
 const PAGES: Record<string, string> = {
-  "/courses": "Library", "/notebook": "Notebook", "/dashboard": "Progress", "/past-papers": "Past papers",
+  "/courses": "Library", "/notebook": "Notebook", "/dashboard": "Progress", "/past-papers": "Question bank",
   "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Working paper", "/lab": "Classic lab", "/map": "Concept map",
 };
 

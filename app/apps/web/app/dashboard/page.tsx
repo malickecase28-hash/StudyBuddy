@@ -2,7 +2,7 @@
 
 import { DIMENSIONS } from "@forma/engine";
 import Link from "next/link";
-import { course, getConcept, lessonHref, mainLesson, misconceptionInfo, pastPapers, splitRef } from "@/lib/course";
+import { course, getConcept, lessonHref, mainLesson, misconceptionInfo, questionBank, splitRef } from "@/lib/course";
 import { conceptProgress, pct, STATE_GLYPH } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
 
@@ -128,8 +128,8 @@ export default function DashboardPage() {
       </div>
 
       <section className="card space-y-3">
-        <p className="label">Exam coverage</p>
-        {pastPapers.map((q) => {
+        <p className="label">Question bank coverage</p>
+        {questionBank.filter((q) => q.marks !== undefined).map((q) => {
           const readiness = q.concepts.reduce((s, c) => s + c.weight * conceptProgress(learner, c.conceptId).mastery, 0);
           return (
             <div key={q.id} className="flex items-center gap-3 text-sm">

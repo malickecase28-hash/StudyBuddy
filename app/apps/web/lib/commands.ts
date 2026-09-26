@@ -28,7 +28,7 @@ export function buildCommands({ dueReviews }: { dueReviews: number }): PaletteCo
   const pages = (
     [
       ["/", "Desk"], ["/courses", "Library"], [`/c/${course.id}`, `${course.title} overview`], ["/notebook", "Notebook"],
-      ["/dashboard", "Progress dashboard"], ["/past-papers", "Past papers"], ["/review", `Due reviews (${dueReviews})`], ["/diagnostic", "Readiness check"],
+      ["/dashboard", "Progress dashboard"], ["/past-papers", "Question bank"], ["/review", `Due reviews (${dueReviews})`], ["/diagnostic", "Readiness check"],
     ] as const
   ).map(([href, label]) => ({ id: `p:${href}`, label, group: "Pages", action: { kind: "href" as const, href } }));
   return [...concepts, ...tools, ...formulas, ...questions, ...pages];
