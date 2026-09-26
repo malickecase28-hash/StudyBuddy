@@ -23,8 +23,9 @@ describe("G1 electric-field lesson", () => {
       "Find E from infinite line and sheet charges.",
     ]);
     expect(field.lessons.map((lesson) => lesson.id)).toEqual(["main", "quick"]);
-    expect(field.lessons[0]!.blocks.map((block) => "plateId" in block ? block.plateId : null).filter(Boolean)).toEqual(["idea-e-point", "idea-e-superposition"]);
+    expect(field.lessons[0]!.blocks.map((block) => "plateId" in block ? block.plateId : null).filter(Boolean)).toEqual(["idea-e-point", "idea-e-superposition", "idea-e-continuous"]);
     expect(ideaPlates["idea-e-point"]?.meta.ideas.map((idea) => idea.id)).toEqual(["e-point"]);
     expect(ideaPlates["idea-e-superposition"]?.meta.ideas.map((idea) => idea.id)).toEqual(["e-superposition"]);
+    expect(ideaPlates["idea-e-continuous"]?.meta.ideas.map((idea) => idea.id)).toEqual(["e-continuous"]);
   });
 });

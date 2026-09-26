@@ -81,7 +81,7 @@ export const field = {
       id: "main",
       title: "The electric field (in depth)",
       minutes: 70,
-      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 16-28")), id: "idea-e-point", type: "plate" as const, plateId: "idea-e-point" }, { ...meta("vivid", src(SLIDES, "pp. 16-28")), id: "idea-e-superposition", type: "plate" as const, plateId: "idea-e-superposition" }],
+      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 16-28")), id: "idea-e-point", type: "plate" as const, plateId: "idea-e-point" }, { ...meta("vivid", src(SLIDES, "pp. 16-28")), id: "idea-e-superposition", type: "plate" as const, plateId: "idea-e-superposition" }, { ...meta("vivid", src(SLIDES, "p. 27")), id: "idea-e-continuous", type: "plate" as const, plateId: "idea-e-continuous" }],
     },
     {
       id: "quick",
