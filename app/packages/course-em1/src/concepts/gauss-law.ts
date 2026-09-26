@@ -58,6 +58,20 @@ export const gaussLaw = {
   lessons: [
     {
       id: "main",
+      title: "Electric flux → Gauss's law",
+      minutes: 25,
+      blocks: [
+        { ...meta("vivid", src(SLIDES, "pp. 29-30")), id: "faraday", type: "plate", plateId: "faraday" },
+        { ...meta("vivid", src(SLIDES, "pp. 31-38")), id: "gauss", type: "plate", plateId: "gauss" },
+      ],
+    },
+    { id: "why-area", title: "Detour: why a bigger surface doesn't catch more flux", minutes: 3, blocks: [{ ...meta("vivid", orig()), id: "why-area-p", type: "plate", plateId: "why-area-plate" }] },
+    { id: "outside-charge", title: "Detour: charges outside the surface", minutes: 3, blocks: [{ ...meta("vivid", orig()), id: "outside-charge-p", type: "plate", plateId: "outside-charge-plate" }] },
+    { id: "normal-direction", title: "Detour: which way dS points", minutes: 3, blocks: [{ ...meta("vivid", src(WENT, "§2.6, p. 44")), id: "normal-direction-p", type: "plate", plateId: "normal-direction-plate" }] },
+    { id: "d-vs-e", title: "Detour: D versus E in a material", minutes: 3, blocks: [{ ...meta("vivid", src(SLIDES, "pp. 30-34")), id: "d-vs-e-p", type: "plate", plateId: "d-vs-e-plate" }] },
+    { id: "symmetry", title: "Detour: when Gauss's law finds D", minutes: 3, blocks: [{ ...meta("vivid", src(WENT, "§2.7, p. 47")), id: "symmetry-p", type: "plate", plateId: "symmetry-plate" }] },
+    {
+      id: "main-classic",
       title: "Electric flux → Gauss's Law",
       minutes: 30,
       blocks: [
@@ -478,7 +492,7 @@ export const gaussLaw = {
     },
     // ── Remediation lessons ───────────────────────────────────────────────────
     {
-      id: "why-area",
+      id: "why-area-classic",
       title: "Detour: why a bigger surface doesn't catch more flux",
       minutes: 3,
       blocks: [
@@ -518,7 +532,7 @@ export const gaussLaw = {
       ],
     },
     {
-      id: "outside-charge",
+      id: "outside-charge-classic",
       title: "Detour: charges outside the surface",
       minutes: 3,
       blocks: [
@@ -560,7 +574,7 @@ export const gaussLaw = {
       ],
     },
     {
-      id: "normal-direction",
+      id: "normal-direction-classic",
       title: "Detour: which way dS points",
       minutes: 3,
       blocks: [
@@ -598,7 +612,7 @@ export const gaussLaw = {
       ],
     },
     {
-      id: "d-vs-e",
+      id: "d-vs-e-classic",
       title: "Detour: D versus E in a material",
       minutes: 4,
       blocks: [
@@ -624,7 +638,7 @@ export const gaussLaw = {
       ],
     },
     {
-      id: "symmetry",
+      id: "symmetry-classic",
       title: "Detour: when Gauss's law finds D",
       minutes: 4,
       blocks: [

@@ -111,6 +111,9 @@ importers:
       '@forma/physics':
         specifier: workspace:*
         version: link:../physics
+      '@forma/plate':
+        specifier: workspace:*
+        version: link:../plate
       zod:
         specifier: ^4.6.5
         version: 4.6.5

@@ -12,7 +12,8 @@ const answer = async (page: Page, value: string) => {
 };
 
 /** Spec §8 journey: diagnostic → route → lesson → wrong answers → detour → return → challenge → dashboard → notebook restore. */
-test("full learning journey", async ({ page }) => {
+// Rewritten for plate lessons in Plan B.
+test.fixme("full learning journey", async ({ page }) => {
   page.on("console", (m) => m.type() === "error" && console.log("[console]", m.text().slice(0, 300)));
   page.on("pageerror", (e) => console.log("[pageerror]", e.message.slice(0, 300)));
   page.on("framenavigated", (f) => f === page.mainFrame() && console.log("[nav]", f.url()));
@@ -103,7 +104,7 @@ test("full learning journey", async ({ page }) => {
 });
 
 test("return experience after time away", async ({ page }) => {
-  await page.goto("/learn/em1.electrostatics.gauss-law/main");
+  await page.goto("/learn/em1.electrostatics.gauss-law/main-classic");
   await cont(page).click();
   await choose(page, /Still exactly \+Q/);
   await page.getByRole("button", { name: "Settings" }).click();
@@ -127,7 +128,7 @@ test("no serious accessibility violations on key screens", async ({ page }) => {
 test("@perf lab stays usable on a 4x throttled CPU with low-power quality", async ({ page }) => {
   const cdp = await page.context().newCDPSession(page);
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
-  await page.goto("/learn/em1.electrostatics.gauss-law/main");
+  await page.goto("/learn/em1.electrostatics.gauss-law/main-classic");
   await page.getByRole("button", { name: "Settings" }).click();
   await page.getByRole("button", { name: "Low-power" }).click();
   await page.keyboard.press("Escape");

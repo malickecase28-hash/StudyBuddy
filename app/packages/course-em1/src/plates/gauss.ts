@@ -1,0 +1,125 @@
+import { PlateDef } from "@forma/plate";
+
+const eq = (latex: string) => ({
+  latex,
+  terms: [
+    { key: "t-flux", speech: "psi, the electric flux" },
+    { key: "t-surface", speech: "over the closed surface S" },
+    { key: "t-charge", speech: "Q enclosed" },
+  ],
+  speech: "psi equals the closed surface integral of D dot d S, which equals the charge enclosed",
+  shortSpeech: "Gauss's law",
+});
+
+export const gauss = PlateDef.parse({
+  id: "gauss",
+  title: "Electric flux → Gauss's law",
+  instances: [
+    { id: "q", component: "charges", params: { items: [{ id: "q1", kind: "point", q: 2, pos: [0, 0, 0] }] } },
+    { id: "field", component: "field-arrows", params: { grid: 5, probe: 1 }, links: { charges: "q" } },
+    { id: "profile", component: "field-profile", params: { rMin: 0.3, rMax: 3 }, links: { charges: "q" } },
+    { id: "surface", component: "gaussian-surface", params: { shape: "sphere", size: 1 }, links: { charges: "q" } },
+    { id: "eq", component: "equation", params: eq(String.raw`\htmlClass{t-flux}{\Psi}`) },
+  ],
+  bindings: { "t-flux": ["surface", "field"], "t-surface": ["surface"], "t-charge": ["q"], "t-field": ["field"] },
+  steps: [
+    {
+      id: "charge",
+      title: "§1 Charge",
+      show: ["q"],
+      focus: ["q"],
+      note: "One point charge, +2 µC. Everything in this lesson is a way of counting what spreads out from it.",
+      claims: [{ instance: "q", readout: "total", value: 2, unit: "µC" }],
+    },
+    {
+      id: "field",
+      title: "§2 Field",
+      show: ["field", "profile"],
+      focus: ["field"],
+      note: "D points away from the charge and weakens with distance: twice as far, a quarter as strong. Arrows show D in space; the curve plots |D| against r.",
+      claims: [{ instance: "field", readout: "probeD", value: 0.159155, unit: "µC/m^2" }],
+      why: "D = Q/(4πr²): the same flux spread over a sphere whose area grows as r².",
+    },
+    {
+      id: "surface",
+      title: "§3 Surface",
+      show: ["surface"],
+      hide: ["profile"],
+      patch: { surface: { showNormals: true } },
+      focus: ["surface"],
+      note: "Wrap the charge in a closed surface and chop it into patches. Each patch has an outward normal dS and lets through only the part of D that pierces it.",
+      claims: [{ instance: "surface", readout: "area", value: 12.566, unit: "m^2" }],
+      interaction: {
+        id: "normal-direction",
+        type: "choose",
+        prompt: "On a closed surface, dS points…",
+        options: [
+          { id: "out", label: "Always outward", correct: true, feedback: "Right. That fixed convention gives Ψ its sign." },
+          { id: "along", label: "Along D, whichever way D points", correct: false, feedback: "Then flux could never be negative. The normal is fixed outward.", tag: "SURFACE_NORMAL_DIRECTION" },
+          { id: "in", label: "Inward, toward the charge", correct: false, feedback: "The convention is outward.", tag: "SURFACE_NORMAL_DIRECTION" },
+        ],
+        dimension: "recognition",
+      },
+    },
+    {
+      id: "flux",
+      title: "§4 Flux",
+      show: ["eq"],
+      patch: { surface: { shading: true }, eq: eq(String.raw`\htmlClass{t-flux}{\Psi}=\oint_{\htmlClass{t-surface}{S}}\mathbf D\cdot d\mathbf S`) },
+      focus: ["surface"],
+      note: "Add up every patch and you get the flux Ψ. Now predict: if the sphere's radius doubles, what will Ψ read?",
+      claims: [{ instance: "surface", readout: "flux", value: 2, unit: "µC" }],
+      interaction: {
+        id: "flux-guess",
+        type: "predict-drag",
+        prompt: "Drag Ψ to your prediction for a sphere of radius 2 m",
+        target: { instance: "surface", readout: "flux" },
+        range: [0, 10],
+        unit: "µC",
+        reveal: { surface: { size: 2 } },
+        dimension: "conceptual",
+        feedback: { close: "Unchanged. Area ×4, D ÷4: they cancel exactly.", far: "The area grows as r², but D falls as 1/r². Watch them cancel." },
+        tag: "FLUX_SCALES_WITH_AREA",
+      },
+    },
+    {
+      id: "law",
+      title: "§5 The law",
+      patch: {
+        surface: { size: 2 },
+        q: { items: [{ id: "q1", kind: "point", q: 2, pos: [0, 0, 0] }, { id: "q2", kind: "point", q: 3, pos: [0.8, 0, 0.3], draggable: true }] },
+        eq: eq(String.raw`\htmlClass{t-flux}{\Psi}=\oint_{\htmlClass{t-surface}{S}}\mathbf D\cdot d\mathbf S=\htmlClass{t-charge}{Q_{\mathrm{enc}}}`),
+      },
+      focus: ["q", "surface"],
+      note: "Only enclosed charge counts. Drag the second charge out of the surface and watch Ψ fall back to exactly the charge left inside.",
+      claims: [
+        { instance: "surface", readout: "enclosed", value: 5, unit: "µC" },
+        { instance: "surface", readout: "flux", value: 5, unit: "µC" },
+      ],
+      interaction: { id: "drag-out", type: "manipulate-goal", goal: "Drag the +3 µC charge outside the sphere.", check: "outside-zero", dimension: "conceptual" },
+      derivation: "Flux from an outside charge enters the surface somewhere (D·dS < 0) and leaves somewhere else (D·dS > 0). Every line that enters also leaves, so the net contribution is zero.",
+    },
+    {
+      id: "prove",
+      title: "§6 Prove it",
+      patch: {
+        surface: { shape: "cube", size: 2, readout: false, shading: false },
+        q: { items: [{ id: "q1", kind: "point", q: 4, pos: [0.3, 0, 0] }] },
+      },
+      focus: ["surface"],
+      note: "A 4 µC charge sits 0.3 m off-centre inside a closed cube of side 2 m. What flux leaves the cube?",
+      claims: [{ instance: "surface", readout: "flux", value: 4, unit: "µC" }],
+      interaction: {
+        id: "cube-flux",
+        type: "numeric",
+        prompt: "Total flux leaving the cube?",
+        answer: { value: 4, unit: "µC" },
+        distractors: [
+          { value: 0.667, unit: "µC", errorClass: "conceptual", tag: "GAUSS_WITHOUT_SYMMETRY", feedback: "Splitting it into six equal faces needs the charge at the centre, and you don't need the faces at all." },
+        ],
+        hints: ["Which charge does the cube enclose?", "Where it sits inside doesn't matter.", "Ψ = Q_enc."],
+        dimension: "computational",
+      },
+    },
+  ],
+});

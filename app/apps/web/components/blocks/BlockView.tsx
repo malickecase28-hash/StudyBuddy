@@ -47,6 +47,12 @@ function render(block: Block, ctx: BlockCtx): ReactNode {
       return <RemediateView block={block} />;
     case "retrieval":
       return <RetrievalView block={block} ctx={ctx} />;
+    case "plate":
+      return (
+        <p className="rounded-md border border-line p-3 text-sm text-soft">
+          This part uses Forma's new plate engine, which the next build of the interface renders. Open “{block.plateId}” in the classic lesson meanwhile.
+        </p>
+      );
   }
 }
 

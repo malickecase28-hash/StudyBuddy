@@ -6,6 +6,7 @@
   "exports": { ".": "./src/index.ts" },
   "dependencies": {
     "@forma/engine": "workspace:*",
+    "@forma/plate": "workspace:*",
     "@forma/physics": "workspace:*",
     "zod": "^4.6.5"
   }
