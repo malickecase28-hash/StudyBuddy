@@ -14,7 +14,7 @@ const fmt = (spec: NumericSpec) => `${spec.answer.value} ${spec.answer.unit}`;
  * One numeric answer with graded support: hints on request, the worked step after
  * repeated misses (or when a rule fires), and named error classes in feedback.
  */
-function NumericField({
+export function NumericField({
   spec,
   prompt,
   hints,
