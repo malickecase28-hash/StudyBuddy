@@ -1,0 +1,10 @@
+{
+  "name": "@forma/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./forma.css": "./src/forma.css" },
+  "dependencies": { "@zag-js/dialog": "1.44.0", "@zag-js/react": "1.44.0" },
+  "peerDependencies": { "react": "19.3.0" },
+  "devDependencies": { "@types/react": "^19.3.0", "react": "19.3.0" }
+}
