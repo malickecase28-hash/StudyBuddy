@@ -36,11 +36,22 @@ export const Concept = z.object({
 });
 export type Concept = z.infer<typeof Concept>;
 
+export const Assessment = z.object({
+  id: Id,
+  title: z.string().min(1),
+  short: z.string().min(1),
+  date: z.iso.date(),
+  weight: z.number().positive().max(100),
+  scope: z.object({ concepts: z.array(ConceptId).min(1) }),
+});
+export type Assessment = z.infer<typeof Assessment>;
+
 export const Course = z.object({
   id: Id,
   code: z.string().min(1),
   title: z.string().min(1),
   examDate: z.iso.date(),
+  assessments: z.array(Assessment).default([]),
   units: z.array(z.object({ number: z.number().int().nonnegative(), title: z.string().min(1) })),
   concepts: z.array(Concept),
 });

@@ -3,6 +3,7 @@ export type Quantity = { value: number; dim: string };
 /** Base units and the canonical dimension they map to. */
 const BASE: Record<string, string> = {
   "": "1",
+  "°": "°",
   C: "C",
   m: "m",
   "m^2": "m^2",

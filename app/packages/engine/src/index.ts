@@ -7,6 +7,7 @@ export * from "./schema/diagnostic";
 export * from "./answer";
 export * from "./mastery";
 export * from "./scheduler";
+export * from "./assessments";
 export * from "./events";
 export * from "./learner-state";
 export * from "./reducer";
