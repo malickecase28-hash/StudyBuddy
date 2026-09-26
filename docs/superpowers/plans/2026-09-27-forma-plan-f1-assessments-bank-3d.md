@@ -1,6 +1,6 @@
 # Forma Plan F1: Codex Brief, Assessments, Question Bank, and 3D Vector Plates
 
-> **For agentic workers (Codex):** Read `AGENTS.md` at the repo root first (Task 1 creates it; if it already exists, read it). Execute this plan task by task, in order. Every step has an exact command and an `Expected:` line. Compare real output against it. Steps use checkbox (`- [ ]`) syntax. Do not skip the failing-test steps. Do not edit tests to make them pass unless a step says to.
+> **For agentic workers (Codex):** Read `AGENTS.md` at the repo root first. Execute this plan task by task, in order. Every step has an exact command and an `Expected:` line. Compare real output against it. Steps use checkbox (`- [ ]`) syntax. Do not skip the failing-test steps. Do not edit tests to make them pass unless a step says to.
 
 **Goal:**
 - Give Codex a standing brief.
@@ -82,9 +82,9 @@ app/apps/web/components/plate/{views2d,Readouts}.tsx      MOD  register 3D views
 
 ### Task 1: The Codex brief (`AGENTS.md`)
 
-**Files:** Create: `AGENTS.md` (at the repo root, `F:\StudyBuddy\AGENTS.md`).
+**Files:** `AGENTS.md` at the repo root **already exists**: Claude committed it before handoff so Codex could read it first. This task only checks it.
 
-- [ ] **Step 1: Write `AGENTS.md`**
+- [ ] **Step 1: Check `AGENTS.md`.** It must match the text below exactly. If it differs, restore this text. If it matches, skip Step 2 and log `Task 1: complete (already present)`.
 
 ````markdown
 # AGENTS.md — Forma (StudyBuddy)
