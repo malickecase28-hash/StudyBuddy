@@ -632,6 +632,8 @@ export const CoordRegion = defineComponent({
     ranges: z.tuple([Range, Range, Range]),
     face: z.union([z.literal(0), z.literal(1), z.literal(2), z.null()]).default(null),
     faceAt: z.enum(["max", "min"]).default("max"),
+    /** Drawing magnification only (a 7 m cylinder or a 25 cm patch); readouts use the true region. */
+    drawScale: z.number().positive().default(1),
   }),
   model: (p) => {
     const [[a1, b1], [a2, b2], [a3, b3]] = p.ranges;
@@ -942,7 +944,9 @@ function point(system: "cart" | "cyl" | "sph", u: [number, number, number]): Vec
 }
 
 export function CoordRegionView({ ev }: ViewProps) {
-  const p = ev.params as { system: "cart" | "cyl" | "sph"; ranges: [number, number][]; face: 0 | 1 | 2 | null; faceAt: "max" | "min" };
+  const p = ev.params as { system: "cart" | "cyl" | "sph"; ranges: [number, number][]; face: 0 | 1 | 2 | null; faceAt: "max" | "min"; drawScale: number };
+  const k = p.drawScale;
+  const proj = (u: [number, number, number]) => toSvg3(point(p.system, u).map((v) => v * k));
   const curves: string[] = [];
   const N = 24;
   for (let k = 0; k < 3; k++) {
@@ -954,7 +958,7 @@ export function CoordRegionView({ ev }: ViewProps) {
         u[k] = p.ranges[k]![0] + ((p.ranges[k]![1] - p.ranges[k]![0]) * s) / N;
         u[o1] = p.ranges[o1]![e1]!;
         u[o2] = p.ranges[o2]![e2]!;
-        const [x, y] = toSvg3(point(p.system, u));
+        const [x, y] = proj(u);
         pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
       }
       curves.push(pts.join(" "));
@@ -972,7 +976,7 @@ export function CoordRegionView({ ev }: ViewProps) {
         u[k] = fixed;
         u[o1] = a + ((b - a) * s) / N;
         u[o2] = c + ((d - c) * s) / N;
-        const [x, y] = toSvg3(point(p.system, u));
+        const [x, y] = proj(u);
         ring.push(`${x.toFixed(1)},${y.toFixed(1)}`);
       }
     };
