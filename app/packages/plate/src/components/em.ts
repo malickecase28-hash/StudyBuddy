@@ -4,6 +4,7 @@ import {
 } from "@forma/physics";
 import { z } from "zod";
 import { vecComponents } from "./vec";
+import { mathComponents } from "./math";
 import { defineComponent, type AnyComponent } from "../component";
 import { outline as outlineOf, outlineNormals } from "../geometry2d";
 
@@ -297,4 +298,4 @@ export const PatchTiling = defineComponent({
   links: ["charges"],
 });
 
-export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling, ...vecComponents];
+export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling, ...vecComponents, ...mathComponents];
