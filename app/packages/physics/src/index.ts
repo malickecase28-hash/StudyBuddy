@@ -6,3 +6,4 @@ export * from "./surfaces";
 export * from "./flux";
 export * from "./potential";
 export * from "./coords";
+export * from "./fields";
