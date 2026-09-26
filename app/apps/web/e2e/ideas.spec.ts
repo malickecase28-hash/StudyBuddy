@@ -1,18 +1,18 @@
 import { expect, test } from "@playwright/test";
 import { choose, concept, G, margin, next, open } from "./helpers";
 
-const url = concept(G, "mode=learn&lesson=flux-surface");
+const url = concept(G, "mode=learn&lesson=main&block=flux-surface");
 const kicker = (page: import("@playwright/test").Page) => page.getByRole("complementary", { name: "Margin" }).locator(".kicker").first();
 
 test("an idea teaches, works examples line by line, answers asks, gates checks, and saves a recap", async ({ page }) => {
   await open(page, url);
   await margin(page, "A steady stream of D");
-  await expect(kicker(page)).toHaveText("Idea 1 · Flux through a surface · Explanation 1 of 7");
+  await expect(kicker(page)).toHaveText("Idea 2 · Flux through a surface · Explanation 1 of 7");
   for (let k = 0; k < 7; k++) await next(page);
   await margin(page, "A 2 m square at 60°");
   await next(page);
   await next(page);
-  await expect(kicker(page)).toHaveText("Idea 1 · Flux through a surface · Worked example 1 of 3 · line 2");
+  await expect(kicker(page)).toHaveText("Idea 2 · Flux through a surface · Worked example 1 of 3 · line 2");
   await next(page);
   await expect(page.getByRole("note")).toContainText("about 1.7 times too big");
 

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { concept, G, margin, next, open } from "./helpers";
 
 test("the Desk continues to the exact plate step, and the countdown lives only there and in Revise", async ({ page }) => {
-  await open(page, concept(G, "mode=learn&lesson=main&block=gauss"));
+  await open(page, concept(G, "mode=learn&lesson=quick&block=gauss"));
   await margin(page, "§1 Charge");
   await next(page);
   await margin(page, "§2 Field");

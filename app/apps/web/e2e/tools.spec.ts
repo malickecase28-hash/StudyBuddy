@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { choose, concept, G, margin, next, open } from "./helpers";
 
 test("a tool opens as a wide split without remounting the lesson, expands, and closes", async ({ page }) => {
-  await open(page, concept(G, "mode=learn&lesson=main&block=gauss&step=2"));
+  await open(page, concept(G, "mode=learn&lesson=quick&block=gauss&step=2"));
   await margin(page, "§3 Surface");
   await choose(page, "Always outward");
   await next(page);

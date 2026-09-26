@@ -6,7 +6,7 @@ const SCREENS = [
   "/", "/courses", "/c/em1",
   concept(G, "mode=learn"), concept(G, "mode=solve"), concept(G, "mode=explore"), concept(G, "mode=revise"),
   concept("em1.electrostatics.gauss-applications", "mode=learn"), "/notebook", "/review",
-  concept(G, "mode=learn&lesson=flux-surface"), `/c/em1/${G}/sheet`,
+  concept(G, "mode=learn&lesson=main&block=flux-surface"), concept(G, "mode=learn&lesson=main&block=idea-symmetry"), `/c/em1/${G}/sheet`,
 ];
 
 for (const theme of ["Paper", "Blueprint"] as const)

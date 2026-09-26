@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { choose, concept, G, margin, next, open } from "./helpers";
 
 test("learn: Faraday hook and the six-step Gauss plate, keyboard-first", async ({ page }) => {
-  await open(page, concept(G, "mode=learn"));
+  await open(page, concept(G, "mode=learn&lesson=quick"));
   await margin(page, "One charge, four materials");
   await choose(page, "Exactly +Q");
   await next(page);
@@ -41,7 +41,7 @@ test("learn: Faraday hook and the six-step Gauss plate, keyboard-first", async (
 });
 
 test("learn: two wrong normals open the detour, which returns to the same step", async ({ page }) => {
-  await open(page, concept(G, "mode=learn&lesson=main&block=gauss&step=2"));
+  await open(page, concept(G, "mode=learn&lesson=quick&block=gauss&step=2"));
   await margin(page, "§3 Surface");
   await choose(page, "Along D, whichever way D points");
   await choose(page, "Inward, toward the charge");
@@ -51,7 +51,7 @@ test("learn: two wrong normals open the detour, which returns to the same step",
   await next(page);
   await choose(page, "Negative");
   await page.getByRole("link", { name: "Back to where you were →" }).click();
-  await expect(page).toHaveURL(/lesson=main.*step=2/);
+  await expect(page).toHaveURL(/lesson=quick.*step=2/);
   await margin(page, "§3 Surface");
 });
 
@@ -64,7 +64,7 @@ test("pre-rendered pages ship the shell, so first paint is not blank", async ({ 
 });
 
 test("a restored snapshot keeps later steps live", async ({ page }) => {
-  await open(page, concept(G, "mode=learn&lesson=main&block=gauss&step=4"));
+  await open(page, concept(G, "mode=learn&lesson=quick&block=gauss&step=4"));
   await margin(page, "§3 Surface"); // locked: §3 and §4 must be answered first
   await choose(page, "Always outward");
   await next(page);
