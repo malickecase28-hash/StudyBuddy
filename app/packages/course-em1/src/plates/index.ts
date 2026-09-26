@@ -6,15 +6,16 @@ import { gauss } from "./gauss";
 import { ideaClosed } from "./idea-closed";
 import { ideaFaraday } from "./idea-faraday";
 import { ideaGaussLaw } from "./idea-gauss-law";
+import { ideaSymmetry } from "./idea-symmetry";
 
 export const plates: Record<string, PlateDef> = Object.fromEntries(
-  [faraday, gauss, whyArea, outsideCharge, normalDirection, dVsE, symmetry, fluxSurface.plate, ideaFaraday.plate, ideaClosed.plate, ideaGaussLaw.plate].map((p) => [p.id, p]),
+  [faraday, gauss, whyArea, outsideCharge, normalDirection, dVsE, symmetry, fluxSurface.plate, ideaFaraday.plate, ideaClosed.plate, ideaGaussLaw.plate, ideaSymmetry.plate].map((p) => [p.id, p]),
 );
 
 export const registry = new Registry().register(...emComponents);
 
 /** Plates authored as ideas (Explain → Work → Ask → Check → Recap), with their index. */
-export const ideaPlates: Record<string, CompiledIdeas> = { [fluxSurface.plate.id]: fluxSurface, [ideaFaraday.plate.id]: ideaFaraday, [ideaClosed.plate.id]: ideaClosed, [ideaGaussLaw.plate.id]: ideaGaussLaw };
+export const ideaPlates: Record<string, CompiledIdeas> = { [fluxSurface.plate.id]: fluxSurface, [ideaFaraday.plate.id]: ideaFaraday, [ideaClosed.plate.id]: ideaClosed, [ideaGaussLaw.plate.id]: ideaGaussLaw, [ideaSymmetry.plate.id]: ideaSymmetry };
 
 /** Until the interface renders plates, each plate's block-based "-classic" lesson stands in for it. */
 export const classicLesson: Record<string, string> = Object.fromEntries(
