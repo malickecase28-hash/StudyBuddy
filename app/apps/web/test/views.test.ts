@@ -19,3 +19,8 @@ it("every declared readout has a human label", () => {
   const src = read(fileURLToPath(new URL("../components/plate/Readouts.tsx", import.meta.url)), "utf8");
   for (const c of all) for (const name of Object.keys(c.readouts)) expect(src, `${c.id}.${name}`).toMatch(new RegExp(`\\b${name}: "`));
 });
+
+it("global styles use theme tokens, never hex colours", () => {
+  const css = read(fileURLToPath(new URL("../app/globals.css", import.meta.url)), "utf8");
+  expect(css.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []).toEqual([]);
+});

@@ -139,7 +139,7 @@ function PlateRun({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
-      const t = e.target as HTMLElement;
+      const t = e.target instanceof Element ? e.target : document.body;
       if (t.closest("input, textarea, select, [contenteditable='true'], [role='separator'], [role='radiogroup'], .handle")) return;
       if (e.key === "ArrowRight") pb.go(index + 1);
       else if (e.key === "ArrowLeft") pb.go(index - 1);

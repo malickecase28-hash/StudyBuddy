@@ -133,12 +133,12 @@ body {
   cursor: not-allowed;
 }
 .btn-primary {
-  background: #0e6e70;
-  color: #ffffff;
-  border-color: #0e6e70;
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 .btn-primary:hover {
-  background: #095457;
+  background: color-mix(in srgb, var(--ink) 85%, var(--flux));
 }
 
 .choice {
@@ -215,16 +215,16 @@ body {
   color: var(--bg-raised);
 }
 .studio-hero {
-  background: #112a2c;
-  color: #f6faf7;
+  background: var(--ink);
+  color: var(--paper);
   border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 28px 60px -45px #061e1e;
+  box-shadow: 0 28px 60px -45px color-mix(in srgb, var(--ink) 80%, transparent);
 }
-.studio-hero .label { color: #87c9c4; }
-.studio-hero .btn:not(.btn-primary) { background: #244346; color: #f6faf7; border-color: #426163; }
-.studio-hero .btn:not(.btn-primary):hover { background: #315457; }
-.studio-hero .lab-shell { border: 1px solid #466264; }
+.studio-hero .label { color: var(--grid); }
+.studio-hero .btn:not(.btn-primary) { background: color-mix(in srgb, var(--paper) 14%, var(--ink)); color: var(--paper); border-color: color-mix(in srgb, var(--paper) 35%, var(--ink)); }
+.studio-hero .btn:not(.btn-primary):hover { background: color-mix(in srgb, var(--paper) 24%, var(--ink)); }
+.studio-hero .lab-shell { border: 1px solid color-mix(in srgb, var(--paper) 35%, var(--ink)); }
 .studio-hero .lab-shell { color: var(--ink); }
 .studio-hero .lab-shell .btn { background: var(--bg-raised); color: var(--ink); border-color: var(--line); }
 .studio-hero .lab-shell .btn:hover { background: var(--bg-sunken); }
@@ -232,15 +232,15 @@ body {
 .workspace-route li:last-child { border-bottom: 0; }
 .working-paper .imageEditorContainer {
   color-scheme: light;
-  --background-color-1: #ffffff;
-  --foreground-color-1: #142b2b;
-  --background-color-2: #eef3f1;
-  --foreground-color-2: #142b2b;
-  --background-color-3: #e2eae6;
-  --foreground-color-3: #142b2b;
-  --selection-background-color: #ccebe6;
-  --selection-foreground-color: #142b2b;
-  --primary-action-foreground-color: #0e6e70;
+  --background-color-1: var(--paper-2);
+  --foreground-color-1: var(--ink);
+  --background-color-2: var(--paper);
+  --foreground-color-2: var(--ink);
+  --background-color-3: var(--grid);
+  --foreground-color-3: var(--ink);
+  --selection-background-color: color-mix(in srgb, var(--flux) 20%, var(--paper-2));
+  --selection-foreground-color: var(--ink);
+  --primary-action-foreground-color: var(--flux-text);
 }
 
 @media (prefers-reduced-motion: reduce) {

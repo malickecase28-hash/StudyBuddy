@@ -2,6 +2,7 @@ import { course, diagnostic, formulaSheet, pastPapers } from "@forma/course-em1"
 import { topoOrder, type Concept, type Lesson } from "@forma/engine";
 
 export { course, diagnostic, formulaSheet, pastPapers };
+export { templatesFor } from "@forma/course-em1";
 
 export const conceptById = new Map(course.concepts.map((c) => [c.id, c]));
 export const examDateMs = Date.parse(`${course.examDate}T09:00:00-05:00`);
