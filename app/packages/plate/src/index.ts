@@ -1,3 +1,4 @@
 export * from "./component";
 export * from "./lerp";
 export * from "./scene";
+export * from "./plate";
