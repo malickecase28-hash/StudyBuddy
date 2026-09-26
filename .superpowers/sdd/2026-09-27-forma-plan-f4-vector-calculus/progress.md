@@ -8,4 +8,4 @@ Task 2: complete (commits 1d43dea..dc9113f, tests: pnpm vitest run packages/cour
 Task 3: Ruling: the Task 2 assertion expected only the first plate after adding divergence — expanded it to include the second plate — cost if wrong: none beyond maintaining the progressive registration assertion.
 Task 3: complete (commits dbc595e..33017d0, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 13 files/212 tests).
 Task 4: Ruling: the planned curl requires tag MISSING_SCALE_FACTORS, but none of its checks detects that misconception — removed the per-idea requirement; the gradient and divergence ideas cover it in combined concept coverage — cost if wrong: curl alone no longer claims scale-factor misconception coverage.
-Task 4: complete (commits c1008ef..HEAD, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 13 files/219 tests).
+Task 4: complete (commits c1008ef..ada0cb5, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 13 files/219 tests).
