@@ -7,3 +7,5 @@ Task 5: complete (commits e24e2bc..HEAD, tests: pnpm vitest run packages/plate a
 Task 6: complete (commits 73d0022..HEAD, tests: pnpm test, web tsc, pnpm build → 55 files / 388 tests passed; typecheck/build clean)
 Task 7: Ruling: The supplied e2e selector `.readouts, svg`.first() selected an earlier decorative svg, so its readout assertion could never pass — scoped assertions to `.readouts` and `.plate-svg` — test coverage now targets the intended content.
 Task 7: complete (commits 597289e..HEAD, tests: web build + pnpm e2e -g toolkit → 1 passed; pnpm e2e → 35/35 passed)
+Task 8: Ruling: The generic plate lesson mapping sent the developer preview to a nonexistent main-classic lesson — explicitly map toolkit-preview to its lesson — keeps question-bank links valid.
+Task 8: verification — pnpm test 55 files / 390 tests passed; pnpm typecheck, web tsc, pnpm build passed; pnpm e2e 35/35 passed; visual review at 1360×900 confirmed arrows, spherical patch, and microwave marker.

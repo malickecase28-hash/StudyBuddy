@@ -20,5 +20,5 @@ export const ideaPlates: Record<string, CompiledIdeas> = { [fluxSurface.plate.id
 
 /** Until the interface renders plates, each plate's block-based "-classic" lesson stands in for it. */
 export const classicLesson: Record<string, string> = Object.fromEntries(
-  Object.keys(plates).map((id) => [id, id.endsWith("-plate") ? id.replace(/-plate$/, "-classic") : "main-classic"]),
+  Object.keys(plates).map((id) => [id, id === toolkitPreview.id ? "toolkit-preview" : id.endsWith("-plate") ? id.replace(/-plate$/, "-classic") : "main-classic"]),
 );
