@@ -6,3 +6,5 @@ export * from "./timeline";
 export * from "./focus";
 export * from "./validate";
 export * from "./components/em";
+export * from "./geometry2d";
+export * from "./playback";

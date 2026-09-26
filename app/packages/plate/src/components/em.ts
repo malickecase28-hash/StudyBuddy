@@ -4,6 +4,7 @@ import {
 } from "@forma/physics";
 import { z } from "zod";
 import { defineComponent, type AnyComponent } from "../component";
+import { outline as outlineOf, outlineNormals } from "../geometry2d";
 
 const V3 = z.tuple([z.number(), z.number(), z.number()]);
 /** Integer params round on parse, so timeline tweens between two integers stay valid mid-transition. */
@@ -163,7 +164,14 @@ export const GaussianSurface = defineComponent({
       const n = scale(pt.dS, 1 / a);
       return { center: pt.center, normal: n, area: a, contribution: dot(fluxDensity(regular, pt.center), pt.dS) * 1e6 };
     });
-    return { flux: flux * 1e6, enclosed: (enclosed + halfOnSurface) * 1e6, area: surfaceArea(shape, 16), onSurface: onSurface.length > 0, patches };
+    const pts = outlineOf(shape, 96);
+    const normals = outlineNormals(pts, shape.center);
+    const outline = pts.map((pt, i) => {
+      const n = normals[i]!;
+      const dn = dot(fluxDensity(regular, pt), n) * 1e6;
+      return { p: pt, n, dn: Number.isFinite(dn) ? dn : null };
+    });
+    return { flux: flux * 1e6, enclosed: (enclosed + halfOnSurface) * 1e6, area: surfaceArea(shape, 16), onSurface: onSurface.length > 0, patches, outline };
   },
   handles: ["size", "shape", "center"],
   readouts: { flux: "µC", enclosed: "µC", area: "m^2" },
