@@ -115,7 +115,11 @@ export function VectorSliceView({ id, ev }: ViewProps) {
         const v = cartOf(f.F(nativeOf(q, f.system)), q, f.system);
         return <PlaneArrow key={i} a={a} b={b} da={v[0]} db={p.plane === "xz" ? v[2] : v[1]} tone="flux" />;
       })}
-      {p.box > 0 && <rect x={px - (p.box * PX) / 2} y={py - (p.box * PX) / 2} width={p.box * PX} height={p.box * PX} fill="url(#hatch-surface)" className="ink" aria-label={`Flux box, side ${p.box} m`} />}
+      {p.box > 0 && (
+        <g role="img" aria-label={`Flux box, side ${p.box} m`}>
+          <rect x={px - (p.box * PX) / 2} y={py - (p.box * PX) / 2} width={p.box * PX} height={p.box * PX} fill="url(#hatch-surface)" className="ink" />
+        </g>
+      )}
       {p.loop > 0 && (
         <g aria-label={`Circulation loop, side ${p.loop} m, counter-clockwise`}>
           <rect x={px - (p.loop * PX) / 2} y={py - (p.loop * PX) / 2} width={p.loop * PX} height={p.loop * PX} fill="none" style={{ stroke: "var(--surface)" }} strokeWidth={1.6} />

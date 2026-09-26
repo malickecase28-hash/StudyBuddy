@@ -9,12 +9,13 @@ const merged = (conceptId: string, plates: string[]): IdeaMeta => {
   return { plateId: conceptId, requires: { objectives: c.objectives.map((_, i) => i), items, misconceptions: c.misconceptions.map((m) => m.tag) }, ideas: plates.flatMap((p) => ideaPlates[p]!.meta.ideas) };
 };
 
-describe("F3 concepts", () => {
+describe("F3/F4 concepts", () => {
   it("Unit 1's main lesson is two ideas; vectors' is four", () => {
     expect(mainOf("em1.intro.em-world")).toEqual(["idea-em-world", "idea-units"]);
     expect(mainOf("em1.math.vectors")).toEqual(["idea-vec-basics", "idea-vec-products", "idea-coords", "idea-elements"]);
+    expect(mainOf("em1.math.vector-calculus")).toEqual(["idea-gradient", "idea-divergence", "idea-curl"]);
   });
-  for (const id of ["em1.intro.em-world", "em1.math.vectors"]) {
+  for (const id of ["em1.intro.em-world", "em1.math.vectors", "em1.math.vector-calculus"]) {
     it(`${id}: full coverage, and every idea is load-bearing`, () => {
       const plates = mainOf(id);
       expect(coverageGaps(merged(id, plates))).toEqual([]);
