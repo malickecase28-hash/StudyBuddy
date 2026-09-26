@@ -488,7 +488,7 @@ const lesson = defineIdeaPlate({
   ideas: [{
     id: "one", title: "First idea", objectives: [0],
     explain: [{ id: "e1", title: "E1", show: ["a"], note: "q is 1 µC." }, { id: "e2", title: "E2", patch: { a: { q: 2 } }, note: "Now 2 µC." }],
-    examples: [{ id: "x1", level: "basic", title: "Ex", problem: "Find q.", setup: { a: { q: 3 } }, lines: [{ text: "It reads 3 µC.", focus: ["a"] }], trap: "Not 30 µC.", covers: ["past:q1"] }],
+    examples: [{ id: "x1", level: "basic", title: "Ex", problem: "Find q.", setup: { a: { q: 3 } }, lines: [{ text: "It reads 3 µC.", focus: ["a"] }], trap: "Not q squared.", covers: ["past:q1"] }],
     asks: [{ id: "k1", q: "Why?", a: "Because 4 µC.", patch: { a: { q: 4 } }, tags: ["SIGN_SLIP"] }],
     checks: [{ id: "c1", title: "Check", note: "Answer.", interaction: choose("c1", "SIGN_SLIP") }],
     recap: { points: ["q is what the plate says."], traps: ["Reading the wrong readout."] },
@@ -502,7 +502,7 @@ describe("defineIdeaPlate", () => {
     ]);
     const idea = lesson.meta.ideas[0]!;
     expect(idea).toMatchObject({ start: 0, end: 5, explain: [0, 1], checks: [{ index: 4, id: "c1", covers: [], tags: ["SIGN_SLIP"] }] });
-    expect(idea.examples[0]).toMatchObject({ start: 2, end: 3, trap: "Not 30 µC." });
+    expect(idea.examples[0]).toMatchObject({ start: 2, end: 3, trap: "Not q squared." });
   });
   it("says where the learner is, and marks the timeline", () => {
     expect(stepLocation(lesson.meta, 1)).toBe("Idea 1 · First idea · Explanation 2 of 2");
@@ -680,11 +680,7 @@ export function validateIdeas(registry: Registry, { plate, meta }: CompiledIdeas
 
 Append to `src/index.ts`: `export * from "./ideas";`
 
-(The test's trap "Not 30 µC." is backed? No, nothing on the plate is 30, so `validateIdeas` would warn. Change the fixture trap to `"Not q squared."` so the "passes" case has no numbers. The ask "Because 4 µC." is backed by its patch `q: 4`.)
-
-- [ ] **Step 4: Fix the fixture as noted, then run tests**
-
-In `ideas.test.ts`, replace `trap: "Not 30 µC."` with `trap: "Not q squared."` and the expectation `trap: "Not 30 µC."` with `trap: "Not q squared."`.
+- [ ] **Step 4: Run tests**
 
 Run: `pnpm vitest run packages/plate && pnpm typecheck`
 Expected: PASS.
@@ -1004,7 +1000,7 @@ export const fluxSurface = defineIdeaPlate({
       checks: [
         {
           id: "edge-on", title: "Check: edge-on", show: ["field", "patch"], hide: PLATE_ONLY, patch: { field: { Dx: 3, Dz: 0 }, patch: { size: 1, normalAngle: 0, showShadow: false, center: [0.3, 0, 0] } },
-          note: "Four quick checks, on the plate and in the margin. Get each right to move on.",
+          note: "Five quick checks, on the plate and in the margin. Get each right to move on.",
           interaction: { id: "edge-on", type: "choose", prompt: "A patch is turned until its normal is perpendicular to D. The flux through it is…", dimension: "conceptual",
             options: [
               choice("zero", "Zero", true, "Right: the field skims along the face, and cos 90° = 0."),
@@ -1194,7 +1190,8 @@ function FlatPatchView({ id, ev }: ViewProps) {
         </>
       )}
       {p.showShadow && (() => {
-        const d = (ev.model.shadow as number) / 2 / (p.depth as number | undefined ?? p.size) * 1;
+        // The patch's shadow on a wall facing the field: its edge projected across D (half-length size·|cos θ|/2).
+        const d = (p.size * Math.abs(Math.cos((((ev.model.theta as number | null) ?? 0) * Math.PI) / 180))) / 2;
         const [sx1, sy1] = toSvg([c[0]! - 0.9, 0, c[2]! - d]);
         const [sx2, sy2] = toSvg([c[0]! - 0.9, 0, c[2]! + d]);
         return (
@@ -1263,8 +1260,6 @@ function PatchTilingView({ ev }: ViewProps) {
   );
 }
 ```
-
-`FlatPatchView`'s shadow half-length is `shadow / (2 × depth)`, which is the edge's projection (`size × |cos θ| / 2`). Simplify the expression to `const d = (p.size * Math.abs(Math.cos(((ev.model.theta as number) * Math.PI) / 180))) / 2;` and drop the depth term. It is exactly the in-plane shadow.
 
 Add to `forma.css`: `.patch-edge { stroke: var(--surface); stroke-width: 7; stroke-linecap: round; }`.
 
@@ -1733,7 +1728,7 @@ test("an idea teaches, works examples line by line, answers asks, gates checks, 
   await expect(page.locator(".readouts")).toContainText("6");
 
   // Walk through the remaining worked examples to the first check.
-  for (let k = 0; k < 10; k++) await next(page);
+  for (let k = 0; k < 11; k++) await next(page);
   await margin(page, "Check: edge-on");
   await next(page); // locked
   await margin(page, "Check: edge-on");
@@ -1806,7 +1801,7 @@ test("a long lesson's scrub bar shows marks, not one tick per step", async ({ pa
 
 Notes for the executor:
 - The explain count (7), the example line counts (3, 3, 5) and the tilt presses (31 × 0.5° from 60° to 75.5°) come from Task 6's content. If Task 6 changes the content, update these numbers.
-- The step after example 1's last line: 10 more steps are the example 2 problem plus 3 lines, and the example 3 problem plus 5 lines, then one step onto the first check.
+- After example 1's last line, 11 steps reach the first check: the example 2 problem plus 3 lines (4), the example 3 problem plus 5 lines (6), and 1 onto the check.
 - The "Check" button on the choose interaction and the NumericField's "Check" share a name. Choose's is used only on choose steps.
 
 - [ ] **Step 2: Run the spec, then the whole suite**
