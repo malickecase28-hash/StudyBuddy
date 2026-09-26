@@ -12,3 +12,5 @@ Task 4: complete (commits cfdeaa1..04ea695, tests: pnpm vitest run packages/cour
 Task 5: Ruling: the finals field example divides by qB, but the probe plate has no qB instance — added qB as a given for the example prompt and division step — cost if wrong: the given duplicates the charge already stated in the prompt.
 Task 5: Ruling: the linter rejected the hypothetical 1 C test charge and positive-charge trap magnitude because neither is on the current plate — removed those magnitudes while preserving the conceptual statements — cost if wrong: the answer no longer repeats the lecture's example test-charge value.
 Task 5: complete (commits 5442a21..ac87ccc, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 15 files/257 tests).
+Task 6: Ruling: the line and sheet prompts state future probe locations before those locations appear on the plate — added the exact 0.5 m and 1.8 m values as example givens — cost if wrong: the givens repeat problem data, but keep each stated distance lint-backed at the prompt step.
+Task 6: complete (commits 93441a7..d4825b2, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → PASS, 15 files/263 tests).
