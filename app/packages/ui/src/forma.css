@@ -89,3 +89,8 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .status-footer { padding: 8px 16px; border-top: 1.5px solid var(--ink); }
 .title-strip { border-top: 1.5px solid var(--ink); padding-top: 10px; }
 @media (max-width: 900px) { .crumbs { display: none; } .tool-panel { position: fixed; inset: auto 0 0 0; width: auto; max-width: none; max-height: 60vh; z-index: 30; } }
+.palette { width: min(640px, 100%); background: var(--paper-2); border: 1.5px solid var(--ink); }
+.palette-input { width: 100%; padding: 12px 14px; font-size: 1rem; border-bottom: 1.5px solid var(--ink); background: transparent; }
+.palette-list { max-height: 50vh; overflow-y: auto; }
+.palette-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 14px; cursor: pointer; }
+.palette-list li[aria-selected="true"] { background: var(--grid); }
