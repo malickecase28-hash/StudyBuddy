@@ -1,4 +1,4 @@
-import { F2324, F2425, SLIDES, WENT } from "./sources";
+import { SLIDES, WENT } from "./sources";
 
 /** Formula-sheet entries shown in the context drawer. */
 export const formulaSheet = [
@@ -11,33 +11,4 @@ export const formulaSheet = [
   { id: "ds-sphere", title: "Sphere surface element", latex: String.raw`d\mathbf S=r^2\sin\theta\,d\theta\,d\phi\,\mathbf a_r`, source: `${WENT}, §2.3` },
   { id: "div", title: "Point form", latex: String.raw`\nabla\cdot\mathbf D=\rho_v`, source: `${SLIDES}, p. 39` },
   { id: "eps0", title: "Permittivity of free space", latex: String.raw`\varepsilon_0=8.854\times10^{-12}\ \mathrm{F/m}`, source: `${SLIDES}, p. 12` },
-];
-
-/** Past-paper questions with the concepts they test (weights sum to 1). */
-export const pastPapers = [
-  {
-    id: "f2425-q2a",
-    paper: F2425,
-    question: "Q2(a)",
-    marks: 8,
-    text: "In a region of free space, D = 5.0r² a_r (nC/m²). A sphere of radius r = 10.0 m is centred at the origin. (i) Compute Q_T, the total charge inside the sphere. (ii) Stating your reason, deduce the total electric flux leaving the sphere.",
-    concepts: [
-      { conceptId: "em1.electrostatics.gauss-law", weight: 0.5 },
-      { conceptId: "em1.electrostatics.gauss-applications", weight: 0.3 },
-      { conceptId: "em1.math.surface-integrals", weight: 0.2 },
-    ],
-    practice: "em1.electrostatics.gauss-applications/past-paper",
-  },
-  {
-    id: "f2324-q2b",
-    paper: F2324,
-    question: "Q2(b)",
-    marks: 12,
-    text: "An electric field E(r) in a vacuum is given in spherical coordinates. (i) State Gauss's law. Compute the charge density ρ_v at (ii) r = 2 m and (iii) r = 5 m.",
-    concepts: [
-      { conceptId: "em1.electrostatics.gauss-law", weight: 0.4 },
-      { conceptId: "em1.electrostatics.divergence", weight: 0.6 },
-    ],
-    practice: "em1.electrostatics.divergence/main",
-  },
 ];

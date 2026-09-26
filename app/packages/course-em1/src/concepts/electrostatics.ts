@@ -243,6 +243,9 @@ const locked = (id: string, title: string, unit: number) => ({
 });
 
 export const lockedConcepts = [
+  locked("em1.intro.em-world", "EM in the world, and SI units", 1),
+  locked("em1.math.vector-calculus", "Gradient, divergence and curl", 2),
+  locked("em1.electrostatics.current", "Current density, continuity and Ohm's law", 2),
   locked("em1.electrostatics.potential", "Electric potential", 2),
   locked("em1.electrostatics.dielectrics", "Dielectrics & boundaries", 2),
   locked("em1.electrostatics.capacitance", "Capacitance", 2),
