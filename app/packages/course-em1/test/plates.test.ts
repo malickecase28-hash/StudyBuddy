@@ -1,4 +1,4 @@
-import { createEvaluator, stateAt, validatePlate } from "@forma/plate";
+import { createEvaluator, readAloudText, stateAt, validatePlate } from "@forma/plate";
 import { describe, expect, it } from "vitest";
 import { checks, classicLesson, course, plates, registry } from "../src";
 
@@ -54,5 +54,17 @@ describe("plates", () => {
     const items = (moved.q!.params.items as { id: string; pos: number[]; draggable?: boolean }[]).map((it) => (it.draggable ? { ...it, pos: [3, 0, 0] } : it));
     moved.q!.params = { ...moved.q!.params, items };
     expect(checks["outside-zero"]!(ev(moved), start)).toBe(true);
+  });
+  it("gauss equation speech matches what each stage shows", () => {
+    const g = plates.gauss!;
+    const flux = g.steps.findIndex((s) => s.id === "flux");
+    const law = g.steps.findIndex((s) => s.id === "law");
+    expect(readAloudText(g, flux)).toMatch(/closed surface integral/);
+    expect(readAloudText(g, flux)).not.toMatch(/enclosed/);
+    expect(readAloudText(g, law)).toMatch(/charge enclosed/);
+  });
+
+  it("colour words in notes match the Forma palette", () => {
+    for (const p of Object.values(plates)) for (const s of p.steps) expect(s.note, `${p.id}/${s.id}`).not.toMatch(/violet|purple/i);
   });
 });

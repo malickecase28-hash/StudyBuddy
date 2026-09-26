@@ -24,4 +24,5 @@ export { formulaSheet, pastPapers } from "./reference";
 export * from "./lab";
 export { classicLesson, plates, registry } from "./plates";
 export { checks, type Check } from "./checks";
-export { templates } from "./templates";
+export { templates, templatesFor } from "./templates";
+export * from "./labs";

@@ -1,14 +1,14 @@
 import { PlateDef } from "@forma/plate";
 
-const eq = (latex: string) => ({
+const eq = (latex: string, speech: string, shortSpeech: string) => ({
   latex,
   terms: [
     { key: "t-flux", speech: "psi, the electric flux" },
     { key: "t-surface", speech: "over the closed surface S" },
     { key: "t-charge", speech: "Q enclosed" },
   ],
-  speech: "psi equals the closed surface integral of D dot d S, which equals the charge enclosed",
-  shortSpeech: "Gauss's law",
+  speech,
+  shortSpeech,
 });
 
 export const gauss = PlateDef.parse({
@@ -19,7 +19,7 @@ export const gauss = PlateDef.parse({
     { id: "field", component: "field-arrows", params: { grid: 5, probe: 1 }, links: { charges: "q" } },
     { id: "profile", component: "field-profile", params: { rMin: 0.3, rMax: 3 }, links: { charges: "q" } },
     { id: "surface", component: "gaussian-surface", params: { shape: "sphere", size: 1 }, links: { charges: "q" } },
-    { id: "eq", component: "equation", params: eq(String.raw`\htmlClass{t-flux}{\Psi}`) },
+    { id: "eq", component: "equation", params: eq(String.raw`\htmlClass{t-flux}{\Psi}`, "psi, the electric flux", "psi") },
   ],
   bindings: { "t-flux": ["surface", "field"], "t-surface": ["surface"], "t-charge": ["q"], "t-field": ["field"] },
   steps: [
@@ -65,7 +65,7 @@ export const gauss = PlateDef.parse({
       id: "flux",
       title: "§4 Flux",
       show: ["eq"],
-      patch: { surface: { shading: true }, eq: eq(String.raw`\htmlClass{t-flux}{\Psi}=\oint_{\htmlClass{t-surface}{S}}\mathbf D\cdot d\mathbf S`) },
+      patch: { surface: { shading: true }, eq: eq(String.raw`\htmlClass{t-flux}{\Psi}=\oint_{\htmlClass{t-surface}{S}}\mathbf D\cdot d\mathbf S`, "psi equals the closed surface integral of D dot d S", "the flux integral") },
       focus: ["surface"],
       note: "Add up every patch and you get the flux Ψ. Now predict: if the sphere's radius doubles, what will Ψ read?",
       claims: [{ instance: "surface", readout: "flux", value: 2, unit: "µC" }],
@@ -88,7 +88,7 @@ export const gauss = PlateDef.parse({
       patch: {
         surface: { size: 2 },
         q: { items: [{ id: "q1", kind: "point", q: 2, pos: [0, 0, 0] }, { id: "q2", kind: "point", q: 3, pos: [0.8, 0, 0.3], draggable: true }] },
-        eq: eq(String.raw`\htmlClass{t-flux}{\Psi}=\oint_{\htmlClass{t-surface}{S}}\mathbf D\cdot d\mathbf S=\htmlClass{t-charge}{Q_{\mathrm{enc}}}`),
+        eq: eq(String.raw`\htmlClass{t-flux}{\Psi}=\oint_{\htmlClass{t-surface}{S}}\mathbf D\cdot d\mathbf S=\htmlClass{t-charge}{Q_{\mathrm{enc}}}`, "psi equals the closed surface integral of D dot d S, which equals the charge enclosed", "Gauss's law"),
       },
       focus: ["q", "surface"],
       note: "Only enclosed charge counts. Drag the second charge out of the surface and watch Ψ fall back to exactly the charge left inside.",

@@ -27,7 +27,7 @@ export const outsideCharge = PlateDef.parse({
       id: "drag",
       title: "Drag one out",
       focus: ["surface"],
-      note: "Drag the +4 µC charge out of the cube. Amber patches (inflow) and violet patches (outflow) balance exactly.",
+      note: "Drag the +4 µC charge out of the cube. Ochre patches (inflow) and blue patches (outflow) balance exactly.",
       interaction: { id: "drag-out-detour", type: "manipulate-goal", goal: "Move the +4 µC charge outside the cube.", check: "outside-zero", dimension: "conceptual" },
     },
   ],

@@ -80,3 +80,4 @@ const f2425 = defineTemplate<{ a: number; R: number }>({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425];
+export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));
