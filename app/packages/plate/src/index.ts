@@ -5,3 +5,4 @@ export * from "./plate";
 export * from "./timeline";
 export * from "./focus";
 export * from "./validate";
+export * from "./components/em";
