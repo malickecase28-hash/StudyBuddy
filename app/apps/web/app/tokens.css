@@ -41,7 +41,7 @@
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-[data-theme="night"] {
+[data-theme="blueprint"] {
   --bg: #111822;
   --bg-raised: #172130;
   --bg-sunken: #0d131b;
