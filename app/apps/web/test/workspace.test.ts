@@ -32,6 +32,6 @@ it("currentMode validates the URL mode and falls back to the last mode", () => {
   expect(currentMode(new URLSearchParams(""), "explore")).toBe("explore");
 });
 it("reads an ask id, and drops malformed ones", () => {
-  expect(parse("lesson=flux-surface&ask=why-cos").ask).toBe("why-cos");
+  expect(parse("lesson=main&ask=why-cos").ask).toBe("why-cos");
   expect(parse("ask=Bad%20Id").ask).toBeUndefined();
 });

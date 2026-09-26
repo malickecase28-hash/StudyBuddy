@@ -76,7 +76,13 @@ export function PlatePlayer(props: {
     ),
   );
   const [bi, setBi] = useState(start);
+  // ⌘K can open a question in another idea of this lesson: follow the URL's block.
+  useEffect(() => {
+    const i = props.initialAsk && props.initialBlock ? blocks.findIndex((b) => b.id === props.initialBlock) : -1;
+    if (i >= 0) setBi(i);
+  }, [props.initialAsk, props.initialBlock]); // eslint-disable-line react-hooks/exhaustive-deps
   const block = blocks[bi]!;
+  const ideaOffset = blocks.slice(0, bi).reduce((n, b) => n + (ideaMetaFor(b.plateId)?.ideas.length ?? 0), 0);
   const plate = plates[block.plateId]!;
   const resumeStep = resumeStepFor({
     blockId: block.id,
@@ -89,7 +95,7 @@ export function PlatePlayer(props: {
   const next = blocks[bi + 1];
   return (
     <PlateRun
-      key={block.id} {...props} initialAsk={bi === start ? props.initialAsk : undefined} block={block} plate={plate} resumeStep={resumeStep}
+      key={block.id} {...props} initialAsk={bi === start || blocks[bi]!.id === props.initialBlock ? props.initialAsk : undefined} ideaOffset={ideaOffset} block={block} plate={plate} resumeStep={resumeStep}
       snapshot={snapshot?.plateId === plate.id ? snapshot : undefined}
       next={next ? { title: plates[next.plateId]!.title, go: () => setBi(bi + 1) } : undefined}
     />
@@ -97,10 +103,10 @@ export function PlatePlayer(props: {
 }
 
 function PlateRun({
-  conceptId, lessonId, returnTo, split, onSplit, block, plate, resumeStep, snapshot, next, initialAsk,
+  conceptId, lessonId, returnTo, split, onSplit, block, plate, resumeStep, snapshot, next, initialAsk, ideaOffset,
 }: {
   conceptId: string; lessonId: string; returnTo?: string; split: number; onSplit: (r: number) => void;
-  block: PlateBlock; plate: PlateDef; resumeStep: number; snapshot?: Snapshot; next?: { title: string; go: () => void }; initialAsk?: string | undefined;
+  block: PlateBlock; plate: PlateDef; resumeStep: number; snapshot?: Snapshot; next?: { title: string; go: () => void }; initialAsk?: string | undefined; ideaOffset: number;
 }) {
   const reduced = useReducedMotion();
   const dispatch = useStudy((s) => s.dispatch);
@@ -282,7 +288,7 @@ function PlateRun({
           <PlateReadouts plate={plate} frame={frame} hidden={hiddenReadouts(plate, index, answered)} />
         </div>
         <aside className="margin space-y-5 pl-4" aria-label="Margin">
-          <MarginNote kicker={meta ? stepLocation(meta, index) : `§${index + 1} of ${plate.steps.length} · ${plate.title}`} title={step.title}>
+          <MarginNote kicker={meta ? stepLocation(meta, index, ideaOffset + 1) : `§${index + 1} of ${plate.steps.length} · ${plate.title}`} title={step.title}>
             {step.kind === "recap" && idea ? (
               <>
                 <RecapCard title={idea.title} points={idea.recap.points} traps={idea.recap.traps} />
@@ -369,7 +375,7 @@ function PlateRun({
         </aside>
       </Split>
       <footer className="title-strip">
-        <Timeline steps={plate.steps} pos={pb.pos} lock={lock} playing={pb.playing} onScrub={pb.scrub} onTogglePlay={pb.toggle} {...(meta ? { marks: timelineMarks(meta) } : {})} />
+        <Timeline steps={plate.steps} pos={pb.pos} lock={lock} playing={pb.playing} onScrub={pb.scrub} onTogglePlay={pb.toggle} {...(meta ? { marks: timelineMarks(meta, ideaOffset + 1) } : {})} />
       </footer>
     </div>
   );

@@ -9,7 +9,9 @@ export function deskContinue(learner: LearnerState): DeskContinue {
   if (!learner.diagnostic && learner.history.length === 0) return { href: "/diagnostic", title: "Start with a 5-minute readiness check", sub: "It builds your route through the course." };
   const pos = learner.position;
   const concept = pos ? getConcept(pos.conceptId) : undefined;
-  const lesson = pos && concept ? getLesson(pos.conceptId, pos.lessonId) : undefined;
+  const saved = pos && concept ? getLesson(pos.conceptId, pos.lessonId) : undefined;
+  // A position saved before its block moved lessons (e.g. main → quick, or a removed lesson) follows the block.
+  const lesson = saved?.blocks.some((b) => b.id === pos!.blockId) ? saved : (concept?.lessons.find((l) => l.blocks.some((b) => b.id === pos!.blockId)) ?? saved);
   if (pos && concept && lesson) {
     const block = lesson.blocks.find((b) => b.id === pos.blockId);
     if (isPlateLesson(lesson) && block?.type === "plate" && plates[block.plateId]) {

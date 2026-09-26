@@ -10,9 +10,13 @@ describe("deskContinue", () => {
   it("first run goes to the readiness check", () => {
     expect(deskContinue(initialState()).href).toBe("/diagnostic");
   });
+  it("a saved position in main whose block moved to the quick tour still resolves", () => {
+    const c = deskContinue(at({ conceptId: G, lessonId: "main", blockId: "gauss", branchStack: [], plateStep: 2 }));
+    expect(c.href).toBe(`/c/em1/${G}?mode=learn&lesson=quick&block=gauss&step=2`);
+  });
   it("resumes the exact plate step, with a thumbnail", () => {
-    const c = deskContinue(at({ conceptId: G, lessonId: "main", blockId: "gauss", branchStack: [], plateStep: 3 }));
-    expect(c.href).toBe(`/c/em1/${G}?mode=learn&lesson=main&block=gauss&step=3`);
+    const c = deskContinue(at({ conceptId: G, lessonId: "quick", blockId: "gauss", branchStack: [], plateStep: 3 }));
+    expect(c.href).toBe(`/c/em1/${G}?mode=learn&lesson=quick&block=gauss&step=3`);
     expect(c.plate).toEqual({ plateId: "gauss", step: 3 });
     expect(c.title).toBe("§4 Flux");
     expect(c.sub).toMatch(/Gauss's Law/);

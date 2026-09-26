@@ -20,7 +20,7 @@ export function buildCommands({ dueReviews }: { dueReviews: number }): PaletteCo
       l.blocks.flatMap((b) => {
         const meta = b.type === "plate" ? ideaMetaFor(b.plateId) : undefined;
         return (meta?.ideas ?? []).flatMap((idea) =>
-          idea.asks.map((a) => ({ id: `q:${meta!.plateId}:${a.id}`, label: a.q, group: "Questions", keywords: `${idea.title} ${a.a.slice(0, 80)}`, action: { kind: "href" as const, href: conceptHref(c.id, "learn", { lesson: l.id, ask: a.id }) } })),
+          idea.asks.map((a) => ({ id: `q:${meta!.plateId}:${a.id}`, label: a.q, group: "Questions", keywords: `${idea.title} ${a.a.slice(0, 80)}`, action: { kind: "href" as const, href: conceptHref(c.id, "learn", { lesson: l.id, block: b.id, ask: a.id }) } })),
         );
       }),
     ),

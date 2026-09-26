@@ -58,23 +58,23 @@ export const gaussLaw = {
   lessons: [
     {
       id: "main",
-      title: "Electric flux → Gauss's law",
-      minutes: 25,
-      blocks: [
-        { ...meta("vivid", src(SLIDES, "pp. 29-30")), id: "faraday", type: "plate", plateId: "faraday" },
-        { ...meta("vivid", src(SLIDES, "pp. 31-38")), id: "gauss", type: "plate", plateId: "gauss" },
-      ],
-    },
-    {
-      id: "flux-surface",
-      title: "Flux through a surface (in depth)",
-      minutes: 20,
+      title: "Electric flux → Gauss's law (in depth)",
+      minutes: 90,
       blocks: [
         { ...meta("vivid", src(SLIDES, "pp. 29-30")), id: "idea-faraday", type: "plate", plateId: "idea-faraday" },
         { ...meta("vivid", src(SLIDES, "pp. 31-36")), id: "flux-surface", type: "plate", plateId: "flux-surface" },
         { ...meta("vivid", src(SLIDES, "pp. 36-37")), id: "idea-closed", type: "plate", plateId: "idea-closed" },
         { ...meta("vivid", src(SLIDES, "pp. 37-38")), id: "idea-gauss-law", type: "plate", plateId: "idea-gauss-law" },
         { ...meta("vivid", src(WENT, "§2.7, p. 47")), id: "idea-symmetry", type: "plate", plateId: "idea-symmetry" },
+      ],
+    },
+    {
+      id: "quick",
+      title: "Quick tour (6 steps, for review)",
+      minutes: 10,
+      blocks: [
+        { ...meta("vivid", src(SLIDES, "pp. 29-30")), id: "faraday", type: "plate", plateId: "faraday" },
+        { ...meta("vivid", src(SLIDES, "pp. 31-38")), id: "gauss", type: "plate", plateId: "gauss" },
       ],
     },
     { id: "why-area", title: "Detour: why a bigger surface doesn't catch more flux", minutes: 3, blocks: [{ ...meta("vivid", orig()), id: "why-area-p", type: "plate", plateId: "why-area-plate" }] },
