@@ -14,3 +14,5 @@ export * from "./diagnostic";
 export * from "./walk";
 export * from "./graph";
 export * from "./lint";
+export * from "./schema/interactions";
+export * from "./routes";

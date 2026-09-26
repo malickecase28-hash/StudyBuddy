@@ -136,6 +136,9 @@ export const RetrievalBlock = z.object({
   item: z.discriminatedUnion("type", [McqBlock, NumericBlock]),
 });
 
+export const PlateBlock = z.object({ ...base, type: z.literal("plate"), plateId: Id });
+export type PlateBlock = z.infer<typeof PlateBlock>;
+
 export const AssessmentBlock = z.discriminatedUnion("type", [McqBlock, NumericBlock, StepSolveBlock, ChallengeBlock]);
 
 export const CheckpointBlock = z.object({
@@ -163,6 +166,7 @@ const LeafBlock = z.discriminatedUnion("type", [
   CheckpointBlock,
   RemediateBlock,
   RetrievalBlock,
+  PlateBlock,
 ]);
 type LeafBlock = z.infer<typeof LeafBlock>;
 
