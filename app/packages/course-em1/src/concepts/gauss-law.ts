@@ -69,7 +69,10 @@ export const gaussLaw = {
       id: "flux-surface",
       title: "Flux through a surface (in depth)",
       minutes: 20,
-      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 31-36")), id: "flux-surface", type: "plate", plateId: "flux-surface" }],
+      blocks: [
+        { ...meta("vivid", src(SLIDES, "pp. 29-30")), id: "idea-faraday", type: "plate", plateId: "idea-faraday" },
+        { ...meta("vivid", src(SLIDES, "pp. 31-36")), id: "flux-surface", type: "plate", plateId: "flux-surface" },
+      ],
     },
     { id: "why-area", title: "Detour: why a bigger surface doesn't catch more flux", minutes: 3, blocks: [{ ...meta("vivid", orig()), id: "why-area-p", type: "plate", plateId: "why-area-plate" }] },
     { id: "outside-charge", title: "Detour: charges outside the surface", minutes: 3, blocks: [{ ...meta("vivid", orig()), id: "outside-charge-p", type: "plate", plateId: "outside-charge-plate" }] },
