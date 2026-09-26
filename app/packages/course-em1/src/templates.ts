@@ -1,6 +1,7 @@
 import { defineTemplate, type TemplateDef } from "@forma/engine";
 
 const EPS0 = 8.8541878128e-12;
+const KE = 1 / (4 * Math.PI * EPS0);
 const concept = "em1.electrostatics.gauss-applications";
 const r4 = (x: number) => Math.round(x * 1e4) / 1e4;
 
@@ -365,5 +366,50 @@ const curlZ = defineTemplate<{ a: number; b: number; x0: number; y0: number; z0:
   tags: { concepts: [CALC], misconceptions: [], difficulty: 2 },
 });
 
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ];
+const coulombMag = defineTemplate<{ q1: number; q2: number; d: number }>({
+  id: "coulomb-mag",
+  params: { q1: { min: 1, max: 9, step: 1 }, q2: { min: 1, max: 9, step: 1 }, d: { min: 5, max: 50, step: 5 } },
+  prompt: (p) => `Two point charges, ${p.q1} µC and −${p.q2} µC, are ${p.d} cm apart in free space. Find the size of the force between them.`,
+  solve: (p) => ({
+    answer: { value: sig((KE * p.q1 * 1e-6 * p.q2 * 1e-6) / (p.d / 100) ** 2), unit: "N" },
+    distractors: [{ value: sig((KE * p.q1 * 1e-6 * p.q2 * 1e-6) / p.d ** 2), unit: "N", errorClass: "unit", feedback: "That leaves the distance in centimetres. Convert to metres before squaring." }],
+  }),
+  hints: () => ["|F| = |Q1Q2| / (4πε₀R²).", "Charges in coulombs, R in metres.", "k = 1/(4πε₀) ≈ 8.988 × 10⁹ N·m²/C²."],
+  worked: (p) => [
+    { text: `Q1 = ${p.q1} × 10⁻⁶ C, Q2 = ${p.q2} × 10⁻⁶ C, R = ${p.d / 100} m.` },
+    { text: `|F| = 8.988 × 10⁹ × ${p.q1 * p.q2} × 10⁻¹² / ${sig((p.d / 100) ** 2, 4)} = ${sig((KE * p.q1 * 1e-6 * p.q2 * 1e-6) / (p.d / 100) ** 2)} N, attractive (opposite signs).` },
+  ],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.coulomb"], misconceptions: [], difficulty: 1 },
+});
+
+const ePoint = defineTemplate<{ q: number; r: number }>({
+  id: "e-point",
+  params: { q: { min: 1, max: 9, step: 1 }, r: { min: 5, max: 50, step: 5 } },
+  prompt: (p) => `Find |E| at ${p.r} cm from a ${p.q} nC point charge in free space.`,
+  solve: (p) => ({
+    answer: { value: sig((KE * p.q * 1e-9) / (p.r / 100) ** 2), unit: "V/m" },
+    distractors: [{ value: sig((KE * p.q * 1e-9) / (p.r / 100)), unit: "V/m", errorClass: "conceptual", feedback: "E falls as 1/R², not 1/R. Square the distance." }],
+  }),
+  hints: () => ["|E| = Q / (4πε₀R²).", "R in metres, Q in coulombs.", "Square R."],
+  worked: (p) => [{ text: `|E| = 8.988 × 10⁹ × ${p.q} × 10⁻⁹ / (${p.r / 100})² = ${sig((KE * p.q * 1e-9) / (p.r / 100) ** 2)} V/m.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.field"], misconceptions: [], difficulty: 1 },
+});
+
+const eLine = defineTemplate<{ rl: number; rho: number }>({
+  id: "e-line",
+  params: { rl: { min: 500, max: 5000, step: 500 }, rho: { min: 10, max: 100, step: 10 } },
+  prompt: (p) => `An infinite line carries ρL = ${p.rl} nC/m. Find |E| at ${p.rho} cm from it.`,
+  solve: (p) => ({
+    answer: { value: sig((p.rl * 1e-9) / (2 * Math.PI * EPS0 * (p.rho / 100))), unit: "V/m" },
+    distractors: [{ value: sig((p.rl * 1e-9) / (4 * Math.PI * EPS0 * (p.rho / 100))), unit: "V/m", errorClass: "conceptual", tag: "LINE_FIELD_FORM", feedback: "A line's field is ρL/(2πε₀ρ): 2π, not 4π." }],
+  }),
+  hints: () => ["E = ρL / (2πε₀ρ) for an infinite line.", "ρ in metres.", "It falls as 1/ρ, not 1/ρ²."],
+  worked: (p) => [{ text: `E = ${p.rl} × 10⁻⁹ / (2π × 8.854 × 10⁻¹² × ${p.rho / 100}) = ${sig((p.rl * 1e-9) / (2 * Math.PI * EPS0 * (p.rho / 100)))} V/m.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.field"], misconceptions: ["LINE_FIELD_FORM"], difficulty: 2 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));

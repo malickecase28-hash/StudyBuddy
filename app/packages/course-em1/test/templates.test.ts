@@ -12,6 +12,9 @@ const radialFlux = (a: number, R: number) =>
   }, 0);
 
 const truth: Record<string, (p: Record<string, number>) => number> = {
+  "coulomb-mag": (p) => (1 / (4 * Math.PI * EPS0)) * p.q1! * 1e-6 * p.q2! * 1e-6 / (p.d! / 100) ** 2,
+  "e-point": (p) => (1 / (4 * Math.PI * EPS0)) * p.q! * 1e-9 / (p.r! / 100) ** 2,
+  "e-line": (p) => (p.rl! * 1e-9) / (2 * Math.PI * EPS0 * (p.rho! / 100)),
   "grad-comp": (p) => 3 * p.a! * p.y! + 6 * p.b!,
   "grad-cyl-phi": (p) => p.c! * Math.cos([0, 60, 120, 180][p.k!]! * Math.PI / 180),
   "div-cart": (p) => p.p! * p.y0! + 2 * p.q! * p.y0! - p.s! * p.x0!,
