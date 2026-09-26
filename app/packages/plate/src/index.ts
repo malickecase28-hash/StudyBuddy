@@ -8,3 +8,4 @@ export * from "./validate";
 export * from "./components/em";
 export * from "./geometry2d";
 export * from "./playback";
+export * from "./ideas";
