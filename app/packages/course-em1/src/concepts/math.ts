@@ -33,6 +33,7 @@ export const vectors = {
       minutes: 80,
       blocks: [
         { ...meta("vivid", src(SLIDES_2A, "Vector algebra")), id: "idea-vec-basics", type: "plate", plateId: "idea-vec-basics" },
+        { ...meta("vivid", src(SLIDES_2A, "Multiplication")), id: "idea-vec-products", type: "plate", plateId: "idea-vec-products" },
       ],
     },
     {
