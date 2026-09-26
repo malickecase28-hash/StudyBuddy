@@ -54,3 +54,34 @@ test("learn: two wrong normals open the detour, which returns to the same step",
   await expect(page).toHaveURL(/lesson=main.*step=2/);
   await margin(page, "§3 Surface");
 });
+
+test("pre-rendered pages ship the shell, so first paint is not blank", async ({ request }) => {
+  for (const url of ["/", `/c/em1/${G}?mode=learn`]) {
+    const html = await (await request.get(url)).text();
+    expect(html, url).toContain("Skip to content");
+    expect(html, url).toContain("Forma: go to your desk");
+  }
+});
+
+test("a restored snapshot keeps later steps live", async ({ page }) => {
+  await open(page, concept(G, "mode=learn&lesson=main&block=gauss&step=4"));
+  await margin(page, "§3 Surface"); // locked: §3 and §4 must be answered first
+  await choose(page, "Always outward");
+  await next(page);
+  await page.getByRole("button", { name: "Commit prediction" }).click();
+  await next(page);
+  await margin(page, "§5 The law");
+  const q2 = page.getByRole("button", { name: /\+3 µC charge/ });
+  await q2.focus();
+  for (let i = 0; i < 13; i++) await page.keyboard.press("ArrowRight");
+  await expect(page.getByText("Done. Look at the readouts.")).toBeVisible();
+  await page.getByRole("button", { name: "Save this setup to the notebook" }).click();
+  await expect(page.getByText("Saved to your notebook.")).toBeVisible();
+  await open(page, "/notebook");
+  await page.keyboard.press("n");
+  await page.getByRole("link", { name: "Restore this setup" }).first().click();
+  await margin(page, "§5 The law");
+  await next(page);
+  await margin(page, "§6 Prove it");
+  await expect(page.getByRole("img", { name: "Closed cube Gaussian surface" })).toBeVisible();
+});

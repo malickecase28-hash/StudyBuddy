@@ -7,7 +7,8 @@ import { DIMENSIONS, type Dimension } from "./schema/common";
 export type Mode = "learn" | "solve" | "explore" | "revise";
 export type ToolId = "paper" | "notebook" | "formulas" | "sources" | "calculator";
 export type Workspace = { lastMode: Mode; layouts: Record<Mode, { split: number; pinned: ToolId[] }> };
-type PlateSnapshot = { plateId: string; stepId: string; state: Record<string, { params: Record<string, unknown>; visible: boolean }> };
+/** A learner's edits layered over one authored plate step (not the full scene), so restoring keeps later steps live. */
+type PlateSnapshot = { plateId: string; stepId: string; state: Record<string, { params?: Record<string, unknown>; visible?: boolean }> };
 
 export const defaultWorkspace = (): Workspace => ({
   lastMode: "learn",

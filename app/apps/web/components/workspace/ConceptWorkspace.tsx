@@ -17,12 +17,17 @@ export function ConceptWorkspace({ conceptId }: { conceptId: string }) {
   const learner = useStudy((s) => s.learner);
   const setLayout = useStudy((s) => s.setLayout);
   const setActive = useUi((s) => s.setActiveConcept);
+  const setWorkspaceMode = useUi((s) => s.setWorkspaceMode);
   const concept = getConcept(conceptId);
   const p = concept ? parseWorkspaceParams(search, concept, learner) : null;
   useEffect(() => {
     setActive(conceptId);
     return () => setActive(null);
   }, [conceptId, setActive]);
+  useEffect(() => {
+    setWorkspaceMode(p?.mode ?? null);
+    return () => setWorkspaceMode(null);
+  }, [p?.mode, setWorkspaceMode]);
   useEffect(() => {
     if (p && learner.workspace.lastMode !== p.mode) setLayout(p.mode, {});
   }, [p?.mode, learner.workspace.lastMode, setLayout, p]);

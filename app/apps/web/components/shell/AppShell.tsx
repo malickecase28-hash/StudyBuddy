@@ -1,10 +1,10 @@
 "use client";
 
-import { DAY_MS, type Mode } from "@forma/engine";
+import { DAY_MS } from "@forma/engine";
 import { Mark, Segmented, TitleBlock, Wordmark } from "@forma/ui";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import { conceptHref, course, examDateMs, getConcept } from "@/lib/course";
 import { dueCount } from "@/lib/retrieval";
 import { useStudy } from "@/lib/store";
@@ -21,15 +21,8 @@ const PAGES: Record<string, string> = {
   "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Working paper", "/lab": "Classic lab", "/map": "Concept map",
 };
 
+/** The shell reads no search params, so every page pre-renders with its frame (no blank first paint). */
 export function AppShell({ children }: { children: ReactNode }) {
-  return (
-    <Suspense>
-      <Shell>{children}</Shell>
-    </Suspense>
-  );
-}
-
-function Shell({ children }: { children: ReactNode }) {
   useShortcuts();
   return (
     <div className="shell">
@@ -51,14 +44,12 @@ function Shell({ children }: { children: ReactNode }) {
 
 function TopBar() {
   const path = usePathname();
-  const search = useSearchParams();
   const router = useRouter();
   const setPalette = useUi((s) => s.setPalette);
   const setLayout = useStudy((s) => s.setLayout);
-  const lastMode = useStudy((s) => s.learner.workspace.lastMode);
   const [, , courseId, rawConcept] = path.split("/");
   const concept = rawConcept ? getConcept(decodeURIComponent(rawConcept)) : undefined;
-  const mode = (search.get("mode") ?? lastMode) as Mode;
+  const mode = useUi((s) => s.workspaceMode);
   const crumbs: { label: string; href?: string }[] =
     path === "/" ? [{ label: "Desk" }]
     : path.startsWith("/c/") ? [{ label: "Library", href: "/courses" }, { label: course.title, ...(concept ? { href: `/c/${courseId}` } : {}) }, ...(concept ? [{ label: `Unit ${concept.unit}` }, { label: concept.title }] : [])]
@@ -76,7 +67,7 @@ function TopBar() {
           ))}
         </ol>
       </nav>
-      {concept && (
+      {concept && mode && (
         <Segmented
           label="Mode" value={mode} options={MODES}
           onChange={(m) => {

@@ -29,5 +29,19 @@ export async function setTheme(page: Page, name: "Paper" | "Blueprint") {
   await page.getByRole("button", { name, exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", name.toLowerCase());
   await page.keyboard.press("Escape");
-  await page.waitForTimeout(400); // store persistence is debounced (250 ms)
+  // Persistence is debounced; wait until the theme is really in IndexedDB before the next page load reads it.
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          new Promise((res) => {
+            const r = indexedDB.open("studybuddy");
+            r.onsuccess = () => {
+              const g = r.result.transaction("kv").objectStore("kv").get("learner");
+              g.onsuccess = () => res((g.result?.value as { settings?: { theme?: string } } | undefined)?.settings?.theme);
+            };
+          }),
+      ),
+    )
+    .toBe(name.toLowerCase());
 }

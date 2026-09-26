@@ -1,14 +1,54 @@
 "use client";
 
 import type { LearnEvent } from "@forma/engine";
-import type { Cue } from "@forma/plate";
+import type { Cue, PlateDef } from "@forma/plate";
 import { useCallback, useEffect, useState } from "react";
 
 /** One step transition, matching the phase windows in @forma/plate `frameAt`. */
 export const STEP_MS = 900;
 
-export const answeredFromHistory = (history: readonly LearnEvent[], plateId: string) =>
-  new Set(history.flatMap((e) => (e.type === "answer" && e.blockId.startsWith(`${plateId}.`) ? [e.blockId.slice(plateId.length + 1)] : [])));
+type Answer = Extract<LearnEvent, { type: "answer" }>;
+
+/** Interaction ids with any answer recorded under `${prefix}.<id>` (e.g. Explore experiments already credited). */
+export const attemptedIds = (history: readonly LearnEvent[], prefix: string) =>
+  new Set(history.flatMap((e) => (e.type === "answer" && e.blockId.startsWith(`${prefix}.`) ? [e.blockId.slice(prefix.length + 1)] : [])));
+
+/**
+ * Interactions that unlocked the timeline in an earlier session, by the same rules the live session uses:
+ * a prediction once committed; choose/identify once correct or after two attempts; everything else once correct.
+ */
+export function answeredFromHistory(history: readonly LearnEvent[], plate: PlateDef): Set<string> {
+  const events = history.filter((e): e is Answer => e.type === "answer" && e.blockId.startsWith(`${plate.id}.`));
+  return new Set(
+    plate.steps.flatMap((s) => {
+      const i = s.interaction;
+      if (!i) return [];
+      const mine = events.filter((e) => e.blockId === `${plate.id}.${i.id}`);
+      const done =
+        i.type === "predict-drag" ? mine.length > 0
+        : i.type === "choose" || i.type === "identify" ? mine.some((e) => e.correct) || mine.length >= 2
+        : mine.some((e) => e.correct);
+      return done ? [i.id] : [];
+    }),
+  );
+}
+
+/** A goal or experiment is credited to mastery once; revisits don't re-dispatch it. */
+export const shouldCredit = (id: string, credited: ReadonlySet<string>) => !credited.has(id);
+
+/** Where a plate block opens: a snapshot's step, a deep link naming this block, or the saved position. */
+export function resumeStepFor(a: {
+  blockId: string; stepCount: number; snapshotStep: number | undefined;
+  initialBlock: string | undefined; initialStep: number | undefined;
+  position: { blockId: string; plateStep?: number } | null;
+}): number {
+  const step =
+    a.snapshotStep ??
+    (a.initialStep !== undefined && a.initialBlock === a.blockId ? a.initialStep
+    : a.position?.blockId === a.blockId ? (a.position.plateStep ?? 0)
+    : 0);
+  return Math.max(0, Math.min(step, a.stepCount - 1));
+}
 
 /** Continuous timeline position animated toward a target step; reduced motion jumps. */
 export function usePlayback(count: number, lock: number, reduced: boolean, initial = 0) {

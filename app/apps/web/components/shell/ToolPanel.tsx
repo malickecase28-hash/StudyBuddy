@@ -2,7 +2,6 @@
 
 import type { ToolId } from "@forma/engine";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
 import { Tex } from "@/components/Tex";
 import { conceptHref, formulaSheet, getConcept, lessonForPlate } from "@/lib/course";
 import { useStudy } from "@/lib/store";
@@ -63,12 +62,10 @@ export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string 
 }
 
 export function ToolPanel() {
-  const { panel, closePanel, activeConceptId } = useUi();
-  const path = usePathname();
-  const mode = useSearchParams().get("mode");
+  const { panel, closePanel, activeConceptId, workspaceMode: mode } = useUi();
   const layouts = useStudy((s) => s.learner.workspace.layouts);
   // Solve shows its pinned tools inside its own split (spec: problem sheet | working paper).
-  const pinned = path.startsWith("/c/") && mode !== "solve" ? (layouts[(mode as keyof typeof layouts) ?? "learn"]?.pinned ?? []) : [];
+  const pinned = mode && mode !== "solve" ? layouts[mode].pinned : [];
   const shown = [...new Set([...pinned, ...(panel ? [panel] : [])])];
   if (!shown.length) return null;
   return (

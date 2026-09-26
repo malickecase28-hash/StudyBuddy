@@ -10,7 +10,7 @@ import { MarginNote, Timeline } from "@forma/ui";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { conceptHref, getLesson, lessonHref, misconceptionFor, splitRef } from "@/lib/course";
-import { answeredFromHistory, useCueClock, usePlayback } from "@/lib/playback";
+import { answeredFromHistory, resumeStepFor, shouldCredit, useCueClock, usePlayback } from "@/lib/playback";
 import { conceptProgress } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
 import { Split } from "../workspace/Split";
@@ -19,7 +19,7 @@ import { PlateStage } from "./PlateStage";
 import { PlateReadouts } from "./Readouts";
 
 type PlateBlock = Extract<Block, { type: "plate" }>;
-type Snapshot = { plateId: string; stepId: string; state: Record<string, { params: Record<string, unknown>; visible: boolean }> };
+type Snapshot = { plateId: string; stepId: string; state: Overrides };
 type Offer = { key: string; text: string; href: string };
 const toOverrides = (p: Record<string, Record<string, unknown>>): Overrides => Object.fromEntries(Object.entries(p).map(([id, params]) => [id, { params }]));
 
@@ -76,9 +76,14 @@ export function PlatePlayer(props: {
   const [bi, setBi] = useState(start);
   const block = blocks[bi]!;
   const plate = plates[block.plateId]!;
-  const resumeStep = snapshot?.plateId === plate.id
-    ? Math.max(0, plate.steps.findIndex((s) => s.id === snapshot.stepId))
-    : props.initialStep ?? (position?.blockId === block.id ? position.plateStep ?? 0 : 0);
+  const resumeStep = resumeStepFor({
+    blockId: block.id,
+    stepCount: plate.steps.length,
+    snapshotStep: snapshot?.plateId === plate.id ? Math.max(0, plate.steps.findIndex((s) => s.id === snapshot.stepId)) : undefined,
+    initialBlock: bi === start ? props.initialBlock ?? blocks[start]!.id : undefined,
+    initialStep: bi === start ? props.initialStep : undefined,
+    position,
+  });
   const next = blocks[bi + 1];
   return (
     <PlateRun
@@ -103,7 +108,7 @@ function PlateRun({
   const history = useStudy((s) => s.learner.history);
   const evaluate = useMemo(() => createEvaluator(registry, plate.instances), [plate]);
 
-  const [answered, setAnswered] = useState<Set<string>>(() => answeredFromHistory(history, plate.id));
+  const [answered, setAnswered] = useState<Set<string>>(() => answeredFromHistory(history, plate));
   const lock = lockIndex(plate, answered);
   const pb = usePlayback(plate.steps.length, lock, reduced, resumeStep);
   const index = Math.min(Math.round(pb.pos), plate.steps.length - 1);
@@ -201,7 +206,12 @@ function PlateRun({
     [dispatch, conceptId, plate, here, pb],
   );
   const onComplete = useCallback(() => interaction && setAnswered((s) => new Set(s).add(interaction.id)), [interaction]);
-  const answer = useMemo(() => (interaction ? onAnswer(interaction) : () => []), [interaction, onAnswer]);
+  // Goals re-fire when revisited (their check is still met); credit them to mastery once.
+  const answer = useMemo(() => {
+    if (!interaction) return () => [];
+    const goal = interaction.type === "manipulate-goal" || interaction.type === "place";
+    return goal && !shouldCredit(interaction.id, answered) ? () => [] : onAnswer(interaction);
+  }, [interaction, onAnswer, answered]);
 
   const truth = (reveal: Record<string, Record<string, unknown>>) => {
     if (interaction?.type !== "predict-drag") return null;
@@ -211,8 +221,8 @@ function PlateRun({
   };
 
   const saveSnapshot = async () => {
-    const s = applyOverrides(stateAt(plate, index), overrides);
-    await addNote({ conceptId, kind: "sim-state", title: `${plate.title} · §${index + 1} ${step.title}`, body: "Saved plate setup", plate: { plateId: plate.id, stepId: step.id, state: s } });
+    // Only the learner's edits are stored: the authored step state rebuilds the rest exactly, and later steps stay live.
+    await addNote({ conceptId, kind: "sim-state", title: `${plate.title} · §${index + 1} ${step.title}`, body: "Saved plate setup", plate: { plateId: plate.id, stepId: step.id, state: overrides } });
     setStatus("Saved to your notebook. Restore it from there.");
   };
 

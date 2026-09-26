@@ -5,6 +5,7 @@ import { applyOverrides, createEvaluator, frameAt, stateAt, type Frame, type Ove
 import { Segmented } from "@forma/ui";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { attemptedIds, shouldCredit } from "@/lib/playback";
 import { useStudy } from "@/lib/store";
 import { PlateStage } from "../plate/PlateStage";
 import { PlateReadouts } from "../plate/Readouts";
@@ -27,12 +28,15 @@ function LabBench({ lab, conceptId }: { lab: Lab; conceptId: string }) {
   } catch {
     frame = start;
   }
-  const done = useRef(new Set<string>());
+  const history = useStudy((s) => s.learner.history);
+  // Experiments already credited stay done (and are not re-credited) when the learner comes back.
+  const done = useRef<Set<string> | null>(null);
+  done.current ??= attemptedIds(history, lab.plate.id);
   const [, rerender] = useState(0);
   useEffect(() => {
     for (const e of lab.experiments)
-      if (!done.current.has(e.id) && checks[e.check]?.(frame, start)) {
-        done.current.add(e.id);
+      if (shouldCredit(e.id, done.current!) && checks[e.check]?.(frame, start)) {
+        done.current!.add(e.id);
         dispatch({ type: "answer", conceptId, blockId: `${lab.plate.id}.${e.id}`, blockType: "plate", dimensions: ["application"], correct: true, attempt: 1 });
         rerender((n) => n + 1);
       }
@@ -63,8 +67,8 @@ function LabBench({ lab, conceptId }: { lab: Lab; conceptId: string }) {
         <h2 className="text-xl">Experiments</h2>
         <ul className="space-y-3">
           {lab.experiments.map((e) => (
-            <li key={e.id} className="experiment card" data-done={done.current.has(e.id)}>
-              <p className="kicker">{done.current.has(e.id) ? "✓ Done" : "To try"}</p>
+            <li key={e.id} className="experiment card" data-done={done.current!.has(e.id)}>
+              <p className="kicker">{done.current!.has(e.id) ? "✓ Done" : "To try"}</p>
               <h3>{e.title}</h3>
               <p className="text-sm">{e.goal}</p>
             </li>
