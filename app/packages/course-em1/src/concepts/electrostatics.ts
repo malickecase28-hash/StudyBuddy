@@ -6,9 +6,13 @@ export const coulomb = {
   id: "em1.electrostatics.coulomb",
   title: "Coulomb's Law",
   unit: 2,
-  objectives: ["Compute the force between point charges in vector form.", "Apply superposition for several charges."],
+  objectives: ["Compute the force between two point charges in vector form, with units.", "Apply superposition to find the net force from several charges."],
   prerequisites: [{ conceptId: "em1.math.vectors", minMastery: 0.3 }],
-  misconceptions: [],
+  misconceptions: [
+    { tag: "FORCE_MAGNITUDE_ONLY", description: "Gives |F| when the question asks for the force (a vector).", remediation: "em1.electrostatics.coulomb/main" },
+    { tag: "COULOMB_DIRECTION", description: "Points the force the wrong way: wrong R order or ignoring the sign of Q1Q2.", remediation: "em1.electrostatics.coulomb/main" },
+    { tag: "SUPERPOSITION_MAGNITUDES", description: "Adds force magnitudes instead of vectors.", remediation: "em1.electrostatics.coulomb/main" },
+  ],
   examLinks: [],
   sources: [src(SLIDES, "pp. 9-15"), src(WENT, "§2.2, p. 18")],
   status: "verified",
@@ -16,7 +20,13 @@ export const coulomb = {
   lessons: [
     {
       id: "main",
-      title: "Force between point charges",
+      title: "Coulomb's law (in depth)",
+      minutes: 50,
+      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 9-15")), id: "idea-coulomb-law", type: "plate" as const, plateId: "idea-coulomb-law" }],
+    },
+    {
+      id: "quick",
+      title: "Quick refresher: force between point charges",
       minutes: 10,
       blocks: [
         {
