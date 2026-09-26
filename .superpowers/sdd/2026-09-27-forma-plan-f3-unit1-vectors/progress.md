@@ -1,0 +1,4 @@
+# SDD ledger — plan: docs/superpowers/plans/2026-09-27-forma-plan-f3-unit1-vectors.md
+Task 1: Ruling: The existing exact-template fixture and empty vectors-filter assertion described the pre-F3 template set — added independent formulas and expected F3 templates to both assertions — without this, full package tests rejected planned coverage.
+Task 1: Ruling: The planned vector-angle expectation (120.657 at three decimals) exceeded the template’s five-significant-figure output (120.66) — aligned the assertion with the authored output — no loss beyond its declared precision.
+Task 1: complete (commits 416faff..561dc26, tests: pnpm vitest run packages/course-em1/test/templates-f3.test.ts → 11 passed; pnpm vitest run packages/course-em1 && pnpm typecheck → 9 files / 142 tests passed, typecheck clean)
