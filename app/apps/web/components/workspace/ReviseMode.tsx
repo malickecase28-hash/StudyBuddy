@@ -1,12 +1,15 @@
 "use client";
 
+import { DAY_MS } from "@forma/engine";
 import Link from "next/link";
-import { pastPapers } from "@/lib/course";
+import { examDateMs, pastPapers } from "@/lib/course";
+import { useStudy } from "@/lib/store";
 import { ConceptMap } from "../map/ConceptMap";
 import { RetrievalQuiz } from "../screens/RetrievalQuiz";
 import { Split } from "./Split";
 
 export function ReviseMode({ conceptId, split, onSplit }: { conceptId: string; split: number; onSplit: (r: number) => void }) {
+  const now = useStudy((s) => s.now);
   const exam = pastPapers.filter((q) => q.concepts.some((c) => c.conceptId === conceptId));
   return (
     <Split ratio={split} onRatio={onSplit} label="Resize the map and the review column">
@@ -21,6 +24,7 @@ export function ReviseMode({ conceptId, split, onSplit }: { conceptId: string; s
         </section>
         <section aria-labelledby="rv-exam" className="space-y-2">
           <h2 id="rv-exam" className="text-xl">Exam view</h2>
+          <p className="text-sm text-soft">Finals in {Math.max(0, Math.ceil((examDateMs - now()) / DAY_MS))} days</p>
           {exam.length ? (
             <ul className="space-y-3">
               {exam.map((q) => (

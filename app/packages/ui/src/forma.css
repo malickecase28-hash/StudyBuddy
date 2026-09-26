@@ -97,3 +97,11 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .explore { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: 20px; align-items: start; }
 .experiment[data-done="true"] { border-color: var(--ok); }
 @media (max-width: 900px) { .explore { grid-template-columns: 1fr; } }
+.desk { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(16rem, 1fr); gap: 20px; align-items: start; }
+.desk-wide, .desk-route, .desk-notes { grid-column: 1 / -1; }
+.desk-continue { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: center; padding: 20px; background: var(--paper-2); border: 1.5px solid var(--ink); }
+.plate-thumb { pointer-events: none; }
+.plate-thumb-empty { aspect-ratio: 520 / 380; background: var(--paper); border: 1.5px dashed var(--grid); }
+.desk-route-list { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 8px; font-size: 0.95rem; }
+.desk-route-list a[aria-current="step"] { color: var(--flux-text); font-weight: 600; }
+@media (max-width: 900px) { .desk, .desk-continue { grid-template-columns: 1fr; } }

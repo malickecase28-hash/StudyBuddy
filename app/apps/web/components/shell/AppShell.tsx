@@ -1,12 +1,10 @@
 "use client";
 
-import { DAY_MS } from "@forma/engine";
 import { Mark, Segmented, TitleBlock, Wordmark } from "@forma/ui";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { conceptHref, course, examDateMs, getConcept } from "@/lib/course";
-import { dueCount } from "@/lib/retrieval";
+import { conceptHref, course, getConcept } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { useUi } from "@/lib/ui";
 import { CommandPalette, useShortcuts } from "./CommandPalette";
@@ -100,17 +98,12 @@ function useShortcutLabel() {
 function StatusFooter() {
   const hydrated = useStudy((s) => s.hydrated);
   const unavailable = useStudy((s) => s.storageUnavailable);
-  const learner = useStudy((s) => s.learner);
-  const now = useStudy((s) => s.now);
-  const days = Math.max(0, Math.ceil((examDateMs - now()) / DAY_MS));
   return (
     <footer className="status-footer">
       <TitleBlock
         cells={[
           { label: "Course", value: course.code },
           { label: "Progress", value: !hydrated ? "…" : unavailable ? "Not saved (memory only)" : "Saved on this device" },
-          { label: "Finals", value: `${days} days` },
-          { label: "Due reviews", value: hydrated ? String(dueCount(learner, now())) : "…" },
         ]}
       />
     </footer>
