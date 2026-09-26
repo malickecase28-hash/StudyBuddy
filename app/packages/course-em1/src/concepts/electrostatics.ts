@@ -65,9 +65,13 @@ export const field = {
   id: "em1.electrostatics.field",
   title: "Electric field E",
   unit: 2,
-  objectives: ["Define E as force per unit charge.", "Superpose fields of several point charges.", "Recall E of an infinite line charge."],
+  objectives: ["Define E and find the field of a point charge, as a vector.", "Superpose the fields of several point charges.", "Find E from infinite line and sheet charges."],
   prerequisites: [{ conceptId: "em1.electrostatics.coulomb", minMastery: 0.3 }],
-  misconceptions: [],
+  misconceptions: [
+    { tag: "E_DIRECTION_NEGATIVE", description: "Points E away from a negative charge.", remediation: "em1.electrostatics.field/main" },
+    { tag: "LINE_FIELD_FORM", description: "Uses the point-charge form, or 4π instead of 2π, for a line charge.", remediation: "em1.electrostatics.field/main" },
+    { tag: "SHEET_FIELD_DISTANCE", description: "Thinks an infinite sheet's field weakens with distance.", remediation: "em1.electrostatics.field/main" },
+  ],
   examLinks: [],
   sources: [src(SLIDES, "pp. 16-28"), src(WENT, "§2.2, p. 20")],
   status: "verified",
@@ -75,7 +79,13 @@ export const field = {
   lessons: [
     {
       id: "main",
-      title: "Fields from charges",
+      title: "The electric field (in depth)",
+      minutes: 70,
+      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 16-28")), id: "idea-e-point", type: "plate" as const, plateId: "idea-e-point" }, { ...meta("vivid", src(SLIDES, "pp. 16-28")), id: "idea-e-superposition", type: "plate" as const, plateId: "idea-e-superposition" }],
+    },
+    {
+      id: "quick",
+      title: "Quick refresher: fields from charges",
       minutes: 10,
       blocks: [
         {
