@@ -12,7 +12,7 @@ export function LearnMode({ conceptId, p, split, onSplit }: { conceptId: string;
       <PlatePlayer
         key={`${p.lessonId}:${p.snapshotId ?? ""}`} conceptId={conceptId} lessonId={p.lessonId} split={split} onSplit={onSplit}
         {...(p.returnTo ? { returnTo: p.returnTo } : {})} {...(p.snapshotId ? { snapshotId: p.snapshotId } : {})}
-        {...(p.step !== undefined ? { initialStep: p.step } : {})} {...(p.blockId ? { initialBlock: p.blockId } : {})}
+        {...(p.step !== undefined ? { initialStep: p.step } : {})} {...(p.blockId ? { initialBlock: p.blockId } : {})} {...(p.ask ? { initialAsk: p.ask } : {})}
       />
     );
   return (

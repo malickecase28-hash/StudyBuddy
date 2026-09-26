@@ -1,6 +1,6 @@
 "use client";
 
-import type { Effect, ErrorClass, Interaction } from "@forma/engine";
+import type { Effect, ErrorClass, Interaction, NumericSpec } from "@forma/engine";
 import { gradePrediction } from "@forma/plate";
 import { Readout } from "@forma/ui";
 import { useEffect, useRef, useState } from "react";
@@ -17,6 +17,11 @@ type Props = {
   onReveal: (patch: Patch) => void;
   onComplete: () => void;
   onHighlight: (ids: string[]) => void;
+  /** A check step: the timeline unlocks only on a correct answer. */
+  strict?: boolean;
+  onMiss?: () => void;
+  /** A template-backed numeric check: this learner's variant. */
+  numericVariant?: { key: string; prompt: string; spec: NumericSpec; hints: string[] };
 };
 type I<T extends Interaction["type"]> = Extract<Interaction, { type: T }>;
 
@@ -75,7 +80,7 @@ function Goal({ text, hint, goalMet, onAnswer, onComplete }: { text: string; hin
   );
 }
 
-function Choose({ i, onAnswer, onComplete }: { i: I<"choose"> } & Pick<Props, "onAnswer" | "onComplete">) {
+function Choose({ i, onAnswer, onComplete, strict, onMiss }: { i: I<"choose"> } & Pick<Props, "onAnswer" | "onComplete" | "strict" | "onMiss">) {
   const [picked, setPicked] = useState<string | null>(null);
   const [checked, setChecked] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -88,7 +93,8 @@ function Choose({ i, onAnswer, onComplete }: { i: I<"choose"> } & Pick<Props, "o
     setAttempt(a);
     setChecked(o.id);
     onAnswer({ correct: o.correct, attempt: a, ...(!o.correct && o.tag ? { tag: o.tag } : {}) });
-    if (o.correct || a >= 2) onComplete();
+    if (!o.correct) onMiss?.();
+    if (o.correct || (!strict && a >= 2)) onComplete();
   };
   return (
     <fieldset className="interaction space-y-2">
@@ -117,7 +123,7 @@ function Choose({ i, onAnswer, onComplete }: { i: I<"choose"> } & Pick<Props, "o
   );
 }
 
-function Identify({ i, onAnswer, onComplete, onHighlight }: { i: I<"identify"> } & Pick<Props, "onAnswer" | "onComplete" | "onHighlight">) {
+function Identify({ i, onAnswer, onComplete, onHighlight, strict, onMiss }: { i: I<"identify"> } & Pick<Props, "onAnswer" | "onComplete" | "onHighlight" | "strict" | "onMiss">) {
   const [attempt, setAttempt] = useState(0);
   const [last, setLast] = useState<(typeof i.targets)[number] | null>(null);
   return (
@@ -133,7 +139,8 @@ function Identify({ i, onAnswer, onComplete, onHighlight }: { i: I<"identify"> }
               setAttempt(a);
               setLast(t);
               onAnswer({ correct: t.correct, attempt: a, ...(!t.correct && t.tag ? { tag: t.tag } : {}) });
-              if (t.correct || a >= 2) onComplete();
+              if (!t.correct) onMiss?.();
+              if (t.correct || (!strict && a >= 2)) onComplete();
             }}
           >
             {t.label}
@@ -155,22 +162,28 @@ export function InteractionView(p: Props) {
     case "place":
       return <Goal text={i.prompt} hint={i.hint} goalMet={p.goalMet} onAnswer={p.onAnswer} onComplete={p.onComplete} />;
     case "choose":
-      return <Choose i={i} onAnswer={p.onAnswer} onComplete={p.onComplete} />;
+      return <Choose i={i} onAnswer={p.onAnswer} onComplete={p.onComplete} {...(p.strict ? { strict: true } : {})} {...(p.onMiss ? { onMiss: p.onMiss } : {})} />;
     case "identify":
-      return <Identify i={i} onAnswer={p.onAnswer} onComplete={p.onComplete} onHighlight={p.onHighlight} />;
-    case "numeric":
+      return <Identify i={i} onAnswer={p.onAnswer} onComplete={p.onComplete} onHighlight={p.onHighlight} {...(p.strict ? { strict: true } : {})} {...(p.onMiss ? { onMiss: p.onMiss } : {})} />;
+    case "numeric": {
+      const v = p.numericVariant;
+      let lastCorrect = false;
       return (
         <NumericField
-          spec={{ answer: i.answer, relTol: i.relTol, distractors: i.distractors }}
-          prompt={i.prompt}
-          hints={i.hints}
-          onAnswer={(v, attempt) => {
-            const fx = p.onAnswer({ correct: v.correct, attempt, ...(v.tag ? { tag: v.tag } : {}), ...(v.errorClass ? { errorClass: v.errorClass } : {}) });
+          key={v?.key ?? i.id}
+          spec={v?.spec ?? { answer: i.answer, relTol: i.relTol, distractors: i.distractors }}
+          prompt={v?.prompt ?? i.prompt}
+          hints={v?.hints ?? i.hints}
+          onAnswer={(verdict, attempt) => {
+            lastCorrect = verdict.correct;
+            if (!verdict.correct) p.onMiss?.();
+            const fx = p.onAnswer({ correct: verdict.correct, attempt, ...(verdict.tag ? { tag: verdict.tag } : {}), ...(verdict.errorClass ? { errorClass: verdict.errorClass } : {}) });
             return { revealWorked: fx.some((e) => e.type === "revealWorkedStep") };
           }}
-          onSolved={p.onComplete}
+          onSolved={() => (!p.strict || lastCorrect) && p.onComplete()}
         />
       );
+    }
     default:
       return <p className="text-soft">This step's activity isn&apos;t available in this build yet.</p>;
   }

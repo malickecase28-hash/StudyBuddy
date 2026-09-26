@@ -19,3 +19,9 @@ it("includes tools, formulas and pages, and ranks a concept+mode query", () => {
   expect(cmds.find((c) => c.id === "p:/review")!.label).toBe("Due reviews (3)");
   expect(rankCommands("gauss sol", cmds)[0]!.id).toBe("c:em1.electrostatics.gauss-law:solve");
 });
+it("lists every question students ask as a searchable command", () => {
+  const q = cmds.filter((c) => c.group === "Questions");
+  expect(q.length).toBeGreaterThanOrEqual(8);
+  expect(rankCommands("negative flux", cmds)[0]!.id).toBe("q:flux-surface:negative");
+  expect(q.find((c) => c.id === "q:flux-surface:negative")!.action).toEqual({ kind: "href", href: conceptHref("em1.electrostatics.gauss-law", "learn", { lesson: "flux-surface", ask: "negative" }) });
+});

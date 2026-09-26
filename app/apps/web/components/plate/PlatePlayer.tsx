@@ -1,19 +1,21 @@
 "use client";
 
-import { checks, plates, registry } from "@forma/course-em1";
-import { pickRoute, type Block, type Effect, type Interaction } from "@forma/engine";
+import { checks, course, plates, registry, templates } from "@forma/course-em1";
+import { instantiate, pickRoute, seedOf, type Block, type Effect, type Interaction } from "@forma/engine";
 import {
-  applyCues, applyOverrides, createEvaluator, frameAt, hiddenReadouts, lockIndex, readAloudText, stateAt, termTargets,
+  applyCues, applyOverrides, askState, createEvaluator, frameAt, hiddenReadouts, lockIndex, readAloudText, stateAt, stepLocation, termTargets, timelineMarks,
   type Frame, type Overrides, type PlateDef,
 } from "@forma/plate";
 import { MarginNote, Timeline } from "@forma/ui";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { conceptHref, getLesson, lessonHref, misconceptionFor, splitRef } from "@/lib/course";
+import { conceptHref, getLesson, ideaMetaFor, lessonHref, misconceptionFor, splitRef } from "@/lib/course";
 import { answeredFromHistory, resumeStepFor, shouldCredit, useCueClock, usePlayback } from "@/lib/playback";
 import { conceptProgress } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
+import { Tex } from "../Tex";
 import { Split } from "../workspace/Split";
+import { AsksList, RecapCard, recapMarkdown, TrapNote, WorkedLines } from "./idea";
 import { InteractionView, type AnswerInput } from "./interactions";
 import { PlateStage } from "./PlateStage";
 import { PlateReadouts } from "./Readouts";
@@ -60,7 +62,7 @@ function ReadAloud({ text }: { text: string }) {
 }
 
 export function PlatePlayer(props: {
-  conceptId: string; lessonId: string; returnTo?: string; snapshotId?: string; initialStep?: number; initialBlock?: string;
+  conceptId: string; lessonId: string; returnTo?: string; snapshotId?: string; initialStep?: number; initialBlock?: string; initialAsk?: string;
   split: number; onSplit: (r: number) => void;
 }) {
   const lesson = getLesson(props.conceptId, props.lessonId)!;
@@ -87,7 +89,7 @@ export function PlatePlayer(props: {
   const next = blocks[bi + 1];
   return (
     <PlateRun
-      key={block.id} {...props} block={block} plate={plate} resumeStep={resumeStep}
+      key={block.id} {...props} initialAsk={bi === start ? props.initialAsk : undefined} block={block} plate={plate} resumeStep={resumeStep}
       snapshot={snapshot?.plateId === plate.id ? snapshot : undefined}
       next={next ? { title: plates[next.plateId]!.title, go: () => setBi(bi + 1) } : undefined}
     />
@@ -95,10 +97,10 @@ export function PlatePlayer(props: {
 }
 
 function PlateRun({
-  conceptId, lessonId, returnTo, split, onSplit, block, plate, resumeStep, snapshot, next,
+  conceptId, lessonId, returnTo, split, onSplit, block, plate, resumeStep, snapshot, next, initialAsk,
 }: {
   conceptId: string; lessonId: string; returnTo?: string; split: number; onSplit: (r: number) => void;
-  block: PlateBlock; plate: PlateDef; resumeStep: number; snapshot?: Snapshot; next?: { title: string; go: () => void };
+  block: PlateBlock; plate: PlateDef; resumeStep: number; snapshot?: Snapshot; next?: { title: string; go: () => void }; initialAsk?: string | undefined;
 }) {
   const reduced = useReducedMotion();
   const dispatch = useStudy((s) => s.dispatch);
@@ -113,6 +115,13 @@ function PlateRun({
   const pb = usePlayback(plate.steps.length, lock, reduced, resumeStep);
   const index = Math.min(Math.round(pb.pos), plate.steps.length - 1);
   const step = plate.steps[index]!;
+  const meta = ideaMetaFor(plate.id);
+  const idea = meta?.ideas.find((x) => index >= x.start && index <= x.end);
+  const learner = useStudy((s) => s.learner);
+  const nextVariant = useStudy((s) => s.nextVariant);
+  const [askOpen, setAskOpen] = useState<string | null>(initialAsk ?? null);
+  const [misses, setMisses] = useState<Record<string, number>>({});
+  const ask = askOpen ? meta?.ideas.flatMap((x) => x.asks.map((a) => ({ a, x }))).find((y) => y.a.id === askOpen) : undefined;
 
   const [overrides, setOverrides] = useState<Overrides>(() => (snapshot ? snapshot.state : {}));
   const [editedAt, setEditedAt] = useState<number | null>(snapshot ? resumeStep : null);
@@ -124,7 +133,8 @@ function PlateRun({
 
   // Frame: timeline state → learner overrides → authored reveal → cue track.
   const tl = frameAt(plate, pb.pos, { reducedMotion: reduced });
-  let state = applyOverrides(tl.state, overrides);
+  // An open ask previews its own plate state; the learner's overrides stay layered and untouched.
+  let state = ask ? applyOverrides(askState(plate, ask.x, ask.a), overrides) : applyOverrides(tl.state, overrides);
   if (revealed?.step === index) state = applyOverrides(state, revealed.o);
   const cued = applyCues(state, step.cues, cueMs);
   let frame: Frame;
@@ -157,6 +167,18 @@ function PlateRun({
   }, [pb, index]);
 
   const interaction = step.interaction;
+  const tpl = interaction?.type === "numeric" && interaction.template ? templates.find((t) => t.id === interaction.template) : undefined;
+  const variant = tpl ? instantiate(tpl, seedOf(learner, tpl.id)) : undefined;
+  const remediation = tpl ? instantiate(tpl, seedOf(learner, tpl.id) + 1000) : undefined;
+  const notebook = learner.notebook;
+  // Recap cards are saved once per idea, when all its checks are answered correctly.
+  useEffect(() => {
+    for (const x of meta?.ideas ?? []) {
+      const title = `Recap · ${x.title}`;
+      if (x.checks.every((c) => answered.has(c.id)) && !notebook.some((n) => n.title === title))
+        void addNote({ conceptId, kind: "note", title, body: recapMarkdown(x.title, x.recap.points, x.recap.traps) });
+    }
+  }, [meta, answered, notebook, addNote, conceptId]);
   const editable =
     interaction?.type === "manipulate-goal" ? plate.instances.filter((x) => registry.get(x.component).handles.length > 0).map((x) => x.id)
     : interaction?.type === "place" ? [interaction.handle.instance]
@@ -242,8 +264,20 @@ function PlateRun({
           <PlateReadouts plate={plate} frame={frame} hidden={hiddenReadouts(plate, index, answered)} />
         </div>
         <aside className="margin space-y-5 pl-4" aria-label="Margin">
-          <MarginNote kicker={`§${index + 1} of ${plate.steps.length} · ${plate.title}`} title={step.title}>
-            <p>{step.note}</p>
+          <MarginNote kicker={meta ? stepLocation(meta, index) : `§${index + 1} of ${plate.steps.length} · ${plate.title}`} title={step.title}>
+            {step.kind === "recap" && idea ? (
+              <>
+                <RecapCard title={idea.title} points={idea.recap.points} traps={idea.recap.traps} />
+                <Link className="underline" href={`/c/${course.id}/${encodeURIComponent(conceptId)}/sheet`}>Open the revision sheet →</Link>
+              </>
+            ) : (
+              <p>{step.note}</p>
+            )}
+            {step.latex && <Tex latex={step.latex} display />}
+            {(() => {
+              const ex = idea?.examples.find((e) => e.end === index);
+              return ex?.trap ? <TrapNote text={ex.trap} /> : null;
+            })()}
             {step.why && (
               <details>
                 <summary>Why?</summary>
@@ -262,8 +296,30 @@ function PlateRun({
             <InteractionView
               key={`${plate.id}:${interaction.id}`} interaction={interaction} goalMet={goalMet} truth={truth}
               onAnswer={answer} onReveal={(p) => setRevealed({ step: index, o: toOverrides(p) })} onComplete={onComplete} onHighlight={setHighlight}
+              strict={step.kind === "check"}
+              onMiss={() => setMisses((m) => ({ ...m, [interaction.id]: (m[interaction.id] ?? 0) + 1 }))}
+              {...(variant ? { numericVariant: { key: variant.key, prompt: variant.prompt, spec: variant.spec, hints: variant.hints } } : {})}
             />
           )}
+          {interaction && step.kind === "check" && (misses[interaction.id] ?? 0) >= 2 && !answered.has(interaction.id) && (
+            <div className="space-y-2" role="status">
+              {remediation && tpl ? (
+                <>
+                  <WorkedLines title="Worked example with new numbers" lines={[{ text: remediation.prompt }, ...remediation.worked]} />
+                  <button className="btn" onClick={() => { nextVariant(tpl.id); setMisses((m) => ({ ...m, [interaction.id]: 0 })); }}>Try a new one</button>
+                </>
+              ) : (
+                <p className="text-sm">
+                  Look again at{" "}
+                  {idea?.examples.map((ex, k) => (
+                    <button key={ex.id} className="mr-2 underline" onClick={() => pb.go(ex.start)}>worked example {k + 1}</button>
+                  ))}
+                  then try this check again.
+                </p>
+              )}
+            </div>
+          )}
+          {idea && <AsksList asks={idea.asks} open={askOpen} onOpen={setAskOpen} />}
           {offers.map((o) => (
             <div key={o.key} className="fb fb-again text-sm" role="status">
               ↺ {o.text} <Link className="underline" href={o.href}>Take the detour</Link>
@@ -295,7 +351,7 @@ function PlateRun({
         </aside>
       </Split>
       <footer className="title-strip">
-        <Timeline steps={plate.steps} pos={pb.pos} lock={lock} playing={pb.playing} onScrub={pb.scrub} onTogglePlay={pb.toggle} />
+        <Timeline steps={plate.steps} pos={pb.pos} lock={lock} playing={pb.playing} onScrub={pb.scrub} onTogglePlay={pb.toggle} {...(meta ? { marks: timelineMarks(meta) } : {})} />
       </footer>
     </div>
   );

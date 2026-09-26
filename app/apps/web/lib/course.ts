@@ -1,4 +1,4 @@
-import { course, diagnostic, formulaSheet, pastPapers } from "@forma/course-em1";
+import { course, diagnostic, formulaSheet, ideaPlates, pastPapers } from "@forma/course-em1";
 import { topoOrder, type Concept, type Lesson } from "@forma/engine";
 
 export { course, diagnostic, formulaSheet, pastPapers };
@@ -79,3 +79,6 @@ export function diagnosticSolid(results: Record<string, string> | undefined): Se
   for (const [refresher, topics] of byRefresher) if (topics.every((t) => results[t] === "ready")) solid.add(refresher);
   return solid;
 }
+
+/** The idea index for a plate authored with defineIdeaPlate, if any. */
+export const ideaMetaFor = (plateId: string) => ideaPlates[plateId]?.meta;

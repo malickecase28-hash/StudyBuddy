@@ -116,3 +116,4 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 }
 .patch-edge { stroke: var(--surface); stroke-width: 7; stroke-linecap: round; }
 .timeline-ticks { position: relative; min-height: 1.4em; }
+@media print { .topbar, .tool-dock, .status-footer, .tool-pane, .split-handle { display: none !important; } .shell-main { padding: 0; } .recap-card { break-inside: avoid; } }
