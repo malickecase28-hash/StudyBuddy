@@ -35,6 +35,7 @@ export const vectors = {
         { ...meta("vivid", src(SLIDES_2A, "Vector algebra")), id: "idea-vec-basics", type: "plate", plateId: "idea-vec-basics" },
         { ...meta("vivid", src(SLIDES_2A, "Multiplication")), id: "idea-vec-products", type: "plate", plateId: "idea-vec-products" },
         { ...meta("vivid", src(SLIDES_2A, "Coordinate systems")), id: "idea-coords", type: "plate", plateId: "idea-coords" },
+        { ...meta("vivid", src("UTech ELE3001 U2.W02(b) extract", "pp. 35-36")), id: "idea-elements", type: "plate", plateId: "idea-elements" },
       ],
     },
     {

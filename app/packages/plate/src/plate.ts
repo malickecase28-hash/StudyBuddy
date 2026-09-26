@@ -122,7 +122,8 @@ export function diffStates(a: SceneState, b: SceneState): StepDiff {
       const from = sa.params[param];
       const to = sb.params[param];
       if (deepEqual(from, to)) continue;
-      if (from !== undefined && to !== undefined && isLerpable(from, to)) d.tweens.push({ id, param, from, to });
+      // Coord-region face indices select a fixed surface; interpolating them creates invalid fractional faces.
+      if (param !== "face" && from !== undefined && to !== undefined && isLerpable(from, to)) d.tweens.push({ id, param, from, to });
       else d.sets.push({ id, param, to });
     }
   }
