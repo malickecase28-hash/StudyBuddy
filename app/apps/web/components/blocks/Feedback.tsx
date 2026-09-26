@@ -1,6 +1,6 @@
 "use client";
 
-import type { ErrorClass } from "@studybuddy/engine";
+import type { ErrorClass } from "@forma/engine";
 import { Markup } from "../Markup";
 import { ERROR_LABEL } from "./types";
 

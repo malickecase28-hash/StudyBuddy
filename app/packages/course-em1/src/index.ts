@@ -1,4 +1,4 @@
-import { Course } from "@studybuddy/engine";
+import { Course } from "@forma/engine";
 import { coulomb, divergence, field, fluxDensity, lockedConcepts } from "./concepts/electrostatics";
 import { gaussApplications } from "./concepts/gauss-applications";
 import { gaussLaw } from "./concepts/gauss-law";

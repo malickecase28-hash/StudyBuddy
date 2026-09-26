@@ -1,4 +1,4 @@
-import { walkBlocks, type Block, type Concept, type Course } from "@studybuddy/engine";
+import { walkBlocks, type Block, type Concept, type Course } from "@forma/engine";
 
 /** The spec's per-concept publish checklist (§6.4), computed from the content itself. */
 export const CHECKS = [

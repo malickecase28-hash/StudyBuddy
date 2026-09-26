@@ -1,6 +1,6 @@
 "use client";
 
-import { checkNumeric, type Block, type Dimension, type NumericSpec, type Verdict } from "@studybuddy/engine";
+import { checkNumeric, type Block, type Dimension, type NumericSpec, type Verdict } from "@forma/engine";
 import { useState, type FormEvent } from "react";
 import { Markup } from "../Markup";
 import { Feedback } from "./Feedback";

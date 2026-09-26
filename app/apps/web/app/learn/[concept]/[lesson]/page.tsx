@@ -1,4 +1,4 @@
-import { course } from "@studybuddy/course-em1";
+import { course } from "@forma/course-em1";
 import { Suspense } from "react";
 import { LessonScreen } from "@/components/screens/LessonScreen";
 

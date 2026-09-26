@@ -1,6 +1,6 @@
 "use client";
 
-import type { Block } from "@studybuddy/engine";
+import type { Block } from "@forma/engine";
 import { Component, type ReactNode } from "react";
 import { McqView, IdentifyView, PredictView } from "./choice";
 import { SourceTag } from "./Feedback";

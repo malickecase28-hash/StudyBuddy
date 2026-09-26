@@ -1,6 +1,6 @@
 "use client";
 
-import { unmetPrerequisites } from "@studybuddy/engine";
+import { unmetPrerequisites } from "@forma/engine";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";

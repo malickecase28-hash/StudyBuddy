@@ -1,4 +1,4 @@
-import { enclosedCharge, fluxThrough, surfacePatches, type Charge, type SurfaceShape, type Vec3 } from "@studybuddy/physics";
+import { enclosedCharge, fluxThrough, surfacePatches, type Charge, type SurfaceShape, type Vec3 } from "@forma/physics";
 import { z } from "zod";
 
 /**

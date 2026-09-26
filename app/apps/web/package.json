@@ -12,9 +12,9 @@
   "dependencies": {
     "@react-three/drei": "10.7.9",
     "@react-three/fiber": "9.8.1",
-    "@studybuddy/course-em1": "workspace:*",
-    "@studybuddy/engine": "workspace:*",
-    "@studybuddy/physics": "workspace:*",
+    "@forma/course-em1": "workspace:*",
+    "@forma/engine": "workspace:*",
+    "@forma/physics": "workspace:*",
     "@xyflow/react": "12.12.0",
     "@zag-js/dialog": "1.44.0",
     "@zag-js/react": "1.44.0",

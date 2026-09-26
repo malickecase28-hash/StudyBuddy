@@ -1,7 +1,7 @@
 "use client";
 
-import type { LabCharge, LabSurface } from "@studybuddy/course-em1";
-import { blobRadius, fluxDensity, norm, type Vec3 } from "@studybuddy/physics";
+import type { LabCharge, LabSurface } from "@forma/course-em1";
+import { blobRadius, fluxDensity, norm, type Vec3 } from "@forma/physics";
 import { useRef, useState } from "react";
 import type { LabColors } from "./colors";
 

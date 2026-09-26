@@ -1,6 +1,6 @@
 "use client";
 
-import { GaussLabConfig, LAB_CHECKS, type LabState } from "@studybuddy/course-em1";
+import { GaussLabConfig, LAB_CHECKS, type LabState } from "@forma/course-em1";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useCallback, useState } from "react";

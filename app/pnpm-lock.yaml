@@ -17,21 +17,21 @@ importers:
 
   apps/web:
     dependencies:
+      '@forma/course-em1':
+        specifier: workspace:*
+        version: link:../../packages/course-em1
+      '@forma/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
+      '@forma/physics':
+        specifier: workspace:*
+        version: link:../../packages/physics
       '@react-three/drei':
         specifier: 10.7.9
         version: 10.7.9(@react-three/fiber@9.8.1(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.1))(@types/react@19.3.0)(@types/three@0.186.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.1)
       '@react-three/fiber':
         specifier: 9.8.1
         version: 9.8.1(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.1)
-      '@studybuddy/course-em1':
-        specifier: workspace:*
-        version: link:../../packages/course-em1
-      '@studybuddy/engine':
-        specifier: workspace:*
-        version: link:../../packages/engine
-      '@studybuddy/physics':
-        specifier: workspace:*
-        version: link:../../packages/physics
       '@xyflow/react':
         specifier: 12.12.0
         version: 12.12.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -105,10 +105,10 @@ importers:
 
   packages/course-em1:
     dependencies:
-      '@studybuddy/engine':
+      '@forma/engine':
         specifier: workspace:*
         version: link:../engine
-      '@studybuddy/physics':
+      '@forma/physics':
         specifier: workspace:*
         version: link:../physics
       zod:

@@ -1,4 +1,4 @@
-import { walkBlocks, type Block, type Dimension, type LearnerState, type McqBlock } from "@studybuddy/engine";
+import { walkBlocks, type Block, type Dimension, type LearnerState, type McqBlock } from "@forma/engine";
 import { course } from "./course";
 
 export type RetrievalItem = { conceptId: string; dimension: Dimension; block: McqBlock };

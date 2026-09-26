@@ -1,12 +1,12 @@
 {
-  "name": "@studybuddy/course-em1",
+  "name": "@forma/course-em1",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "exports": { ".": "./src/index.ts" },
   "dependencies": {
-    "@studybuddy/engine": "workspace:*",
-    "@studybuddy/physics": "workspace:*",
+    "@forma/engine": "workspace:*",
+    "@forma/physics": "workspace:*",
     "zod": "^4.6.5"
   }
 }

@@ -1,4 +1,4 @@
-import type { Licence, Mood, Source } from "@studybuddy/engine";
+import type { Licence, Mood, Source } from "@forma/engine";
 
 export const SLIDES = "UTech ELE3001 Unit 2b slides (G. D. Boswell)";
 export const SLIDES_2A = "UTech ELE3001 Unit 2a slides (G. D. Boswell)";

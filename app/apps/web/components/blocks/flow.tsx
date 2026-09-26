@@ -1,6 +1,6 @@
 "use client";
 
-import type { Block } from "@studybuddy/engine";
+import type { Block } from "@forma/engine";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { lessonHref, splitRef } from "@/lib/course";

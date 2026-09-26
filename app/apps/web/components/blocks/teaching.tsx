@@ -1,6 +1,6 @@
 "use client";
 
-import type { Block } from "@studybuddy/engine";
+import type { Block } from "@forma/engine";
 import { useEffect, useRef, useState } from "react";
 import { useStudy } from "@/lib/store";
 import { Markup } from "../Markup";

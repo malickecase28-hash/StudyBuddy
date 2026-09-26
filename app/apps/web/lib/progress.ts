@@ -1,4 +1,4 @@
-import { deriveState, emptyProgress, overallMastery, type ConceptState, type LearnerState } from "@studybuddy/engine";
+import { deriveState, emptyProgress, overallMastery, type ConceptState, type LearnerState } from "@forma/engine";
 import { course } from "./course";
 
 export const STATE_GLYPH: Record<ConceptState, { glyph: string; label: string }> = {

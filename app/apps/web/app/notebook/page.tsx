@@ -1,6 +1,6 @@
 "use client";
 
-import { GaussLabConfig } from "@studybuddy/course-em1";
+import { GaussLabConfig } from "@forma/course-em1";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";

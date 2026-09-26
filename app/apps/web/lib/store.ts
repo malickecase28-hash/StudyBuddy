@@ -11,7 +11,7 @@ import {
   type NotebookEntry,
   type Settings,
   type TopicResult,
-} from "@studybuddy/engine";
+} from "@forma/engine";
 import { create } from "zustand";
 import { conceptById, examDateMs } from "./course";
 import { load, save, TIMED_OUT } from "./persist";

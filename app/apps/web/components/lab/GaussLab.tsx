@@ -2,8 +2,8 @@
 
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
-import { labReadout, type GaussLabConfig, type LabCharge, type LabState, type LabSurface } from "@studybuddy/course-em1";
-import { blobRadius, dot, fluxDensity, norm, type Vec3 } from "@studybuddy/physics";
+import { labReadout, type GaussLabConfig, type LabCharge, type LabState, type LabSurface } from "@forma/course-em1";
+import { blobRadius, dot, fluxDensity, norm, type Vec3 } from "@forma/physics";
 import * as slider from "@zag-js/slider";
 import { normalizeProps, useMachine } from "@zag-js/react";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
@@ -20,7 +20,7 @@ const withSize = (s: LabSurface, v: number): LabSurface => (s.kind === "cube" ? 
 const fmtQ = (x: number) => `${Math.abs(x) < 0.005 ? "0.00" : x.toFixed(2)} µC`;
 
 /**
- * Interactive Gauss's-law lab. Physics comes from @studybuddy/physics, so what the learner
+ * Interactive Gauss's-law lab. Physics comes from @forma/physics, so what the learner
  * sees is governed by the same maths the course's answers are verified against.
  */
 export default function GaussLab({

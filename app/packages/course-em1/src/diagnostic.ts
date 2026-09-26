@@ -1,4 +1,4 @@
-import { Diagnostic } from "@studybuddy/engine";
+import { Diagnostic } from "@forma/engine";
 
 const opt = (id: string, label: string, correct: boolean, feedback: string) => ({ id, label, correct, feedback });
 

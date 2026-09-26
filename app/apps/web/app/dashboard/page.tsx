@@ -1,6 +1,6 @@
 "use client";
 
-import { DIMENSIONS } from "@studybuddy/engine";
+import { DIMENSIONS } from "@forma/engine";
 import Link from "next/link";
 import { course, getConcept, lessonHref, mainLesson, misconceptionInfo, pastPapers, splitRef } from "@/lib/course";
 import { conceptProgress, pct, STATE_GLYPH } from "@/lib/progress";

@@ -1,7 +1,7 @@
 "use client";
 
-import { GaussLabConfig, LAB_CHECKS, type LabState } from "@studybuddy/course-em1";
-import type { Block } from "@studybuddy/engine";
+import { GaussLabConfig, LAB_CHECKS, type LabState } from "@forma/course-em1";
+import type { Block } from "@forma/engine";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStudy } from "@/lib/store";

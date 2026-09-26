@@ -1,6 +1,6 @@
 "use client";
 
-import { checkChoice, diagnosticRoute, nextDiagnosticItem, type DiagnosticAnswers } from "@studybuddy/engine";
+import { checkChoice, diagnosticRoute, nextDiagnosticItem, type DiagnosticAnswers } from "@forma/engine";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

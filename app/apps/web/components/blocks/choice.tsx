@@ -1,6 +1,6 @@
 "use client";
 
-import { checkChoice, type Block, type Choice, type Verdict } from "@studybuddy/engine";
+import { checkChoice, type Block, type Choice, type Verdict } from "@forma/engine";
 import { useState } from "react";
 import { Markup } from "../Markup";
 import { Feedback } from "./Feedback";

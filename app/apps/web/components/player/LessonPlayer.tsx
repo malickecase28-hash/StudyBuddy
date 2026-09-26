@@ -1,6 +1,6 @@
 "use client";
 
-import type { Block, Effect } from "@studybuddy/engine";
+import type { Block, Effect } from "@forma/engine";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getConcept, getLesson, isDetour, lessonHref, misconceptionFor, nextConcept, splitRef } from "@/lib/course";

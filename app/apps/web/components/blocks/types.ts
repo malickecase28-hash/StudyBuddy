@@ -1,4 +1,4 @@
-import type { Block, Dimension, Effect, ErrorClass } from "@studybuddy/engine";
+import type { Block, Dimension, Effect, ErrorClass } from "@forma/engine";
 
 export type AnswerInput = {
   block: Block;

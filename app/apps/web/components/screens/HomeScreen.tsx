@@ -1,7 +1,7 @@
 "use client";
 
-import { DAY_MS } from "@studybuddy/engine";
-import { GaussLabConfig } from "@studybuddy/course-em1";
+import { DAY_MS } from "@forma/engine";
+import { GaussLabConfig } from "@forma/course-em1";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { conceptById, conceptOrder, course, diagnosticSolid, examDateMs, getConcept, getLesson, lessonHref, mainLesson, misconceptionInfo } from "@/lib/course";

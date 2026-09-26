@@ -2,7 +2,7 @@
 
 import * as dialog from "@zag-js/dialog";
 import { normalizeProps, Portal, useMachine } from "@zag-js/react";
-import type { Settings } from "@studybuddy/engine";
+import type { Settings } from "@forma/engine";
 import { useId } from "react";
 import { useStudy } from "@/lib/store";
 

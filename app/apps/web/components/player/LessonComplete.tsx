@@ -1,6 +1,6 @@
 "use client";
 
-import { DIMENSIONS, type Concept, type Lesson } from "@studybuddy/engine";
+import { DIMENSIONS, type Concept, type Lesson } from "@forma/engine";
 import Link from "next/link";
 import { useState } from "react";
 import { isDetour, lessonHref, splitRef } from "@/lib/course";

@@ -1,5 +1,5 @@
-import { course, diagnostic, formulaSheet, pastPapers } from "@studybuddy/course-em1";
-import { topoOrder, type Concept, type Lesson } from "@studybuddy/engine";
+import { course, diagnostic, formulaSheet, pastPapers } from "@forma/course-em1";
+import { topoOrder, type Concept, type Lesson } from "@forma/engine";
 
 export { course, diagnostic, formulaSheet, pastPapers };
 

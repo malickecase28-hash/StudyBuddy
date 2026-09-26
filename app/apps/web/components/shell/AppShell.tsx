@@ -1,6 +1,6 @@
 "use client";
 
-import { DAY_MS } from "@studybuddy/engine";
+import { DAY_MS } from "@forma/engine";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";

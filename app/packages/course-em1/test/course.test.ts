@@ -1,4 +1,4 @@
-import { lintCourse, toSI, walkBlocks, type Block } from "@studybuddy/engine";
+import { lintCourse, toSI, walkBlocks, type Block } from "@forma/engine";
 import {
   EPS0,
   K_E,
@@ -9,7 +9,7 @@ import {
   surfacePatches,
   vec,
   type Charge,
-} from "@studybuddy/physics";
+} from "@forma/physics";
 import { describe, expect, it } from "vitest";
 import { course, diagnostic, GaussLabConfig, LAB_CHECKS, pastPapers } from "../src";
 
