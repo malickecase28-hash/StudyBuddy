@@ -6,17 +6,17 @@ import { DIMENSIONS, type Dimension } from "./schema/common";
 
 export type Mode = "learn" | "solve" | "explore" | "revise";
 export type ToolId = "paper" | "notebook" | "formulas" | "sources" | "calculator";
-export type Workspace = { lastMode: Mode; layouts: Record<Mode, { split: number; pinned: ToolId[] }> };
+export type Workspace = { lastMode: Mode; layouts: Record<Mode, { split: number; pinned: ToolId[]; toolWidth: number }> };
 /** A learner's edits layered over one authored plate step (not the full scene), so restoring keeps later steps live. */
 type PlateSnapshot = { plateId: string; stepId: string; state: Record<string, { params?: Record<string, unknown>; visible?: boolean }> };
 
 export const defaultWorkspace = (): Workspace => ({
   lastMode: "learn",
   layouts: {
-    learn: { split: 0.7, pinned: [] },
-    solve: { split: 0.5, pinned: ["paper"] },
-    explore: { split: 1, pinned: [] },
-    revise: { split: 0.33, pinned: [] },
+    learn: { split: 0.7, pinned: [], toolWidth: 0.45 },
+    solve: { split: 0.5, pinned: ["paper"], toolWidth: 0.5 },
+    explore: { split: 1, pinned: [], toolWidth: 0.45 },
+    revise: { split: 0.33, pinned: [], toolWidth: 0.45 },
   },
 });
 
@@ -102,7 +102,7 @@ const ProgressS = z.object({
   lastSeen: z.number().nullable(),
   review: z.record(z.string(), ReviewS),
 });
-const ModeLayout = z.object({ split: z.number().min(0).max(1), pinned: z.array(z.enum(["paper", "notebook", "formulas", "sources", "calculator"])) });
+const ModeLayout = z.object({ split: z.number().min(0).max(1), pinned: z.array(z.enum(["paper", "notebook", "formulas", "sources", "calculator"])), toolWidth: z.number().min(0).max(1).default(0.45) });
 const common = {
   diagnostic: z
     .object({ completedAt: z.number(), results: z.record(z.string(), z.enum(["ready", "partial", "gap"])), route: z.array(z.string()) })
@@ -163,5 +163,7 @@ export const withNextSeed = (s: LearnerState, templateId: string): LearnerState 
 export function withLayout(s: LearnerState, mode: Mode, patch: Partial<Workspace["layouts"][Mode]>): LearnerState {
   const cur = s.workspace.layouts[mode];
   const split = Math.min(1, Math.max(0.2, patch.split ?? cur.split));
-  return { ...s, workspace: { lastMode: mode, layouts: { ...s.workspace.layouts, [mode]: { ...cur, ...patch, split } } } };
+  const toolWidth = Math.min(0.8, Math.max(0.2, patch.toolWidth ?? cur.toolWidth));
+  return { ...s, workspace: { lastMode: mode, layouts: { ...s.workspace.layouts, [mode]: { ...cur, ...patch, split, toolWidth } } } };
 }
+

@@ -50,7 +50,7 @@ type Store = {
   dismissWelcome: () => void;
   dismissResetNotice: () => void;
   resetProgress: () => void;
-  setLayout: (mode: Mode, patch: Partial<{ split: number; pinned: ToolId[] }>) => void;
+  setLayout: (mode: Mode, patch: Partial<{ split: number; pinned: ToolId[]; toolWidth: number }>) => void;
   nextVariant: (templateId: string) => void;
 };
 
