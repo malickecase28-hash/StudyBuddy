@@ -1,7 +1,7 @@
-import { course, diagnostic, formulaSheet, ideaPlates, pastPapers } from "@forma/course-em1";
+import { assessmentsForItem, course, diagnostic, formulaSheet, ideaPlates, questionBank } from "@forma/course-em1";
 import { topoOrder, type Concept, type Lesson } from "@forma/engine";
 
-export { course, diagnostic, formulaSheet, pastPapers };
+export { assessmentsForItem, course, diagnostic, formulaSheet, questionBank };
 export { templatesFor } from "@forma/course-em1";
 
 export const conceptById = new Map(course.concepts.map((c) => [c.id, c]));

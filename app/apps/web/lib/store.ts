@@ -18,6 +18,7 @@ import {
 } from "@forma/engine";
 import { create } from "zustand";
 import { conceptById, examDateMs } from "./course";
+import { reviewDateFor } from "./assessments";
 import { load, save, TIMED_OUT } from "./persist";
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
@@ -93,7 +94,7 @@ export const useStudy = create<Store>((set, get) => ({
     const concept = conceptById.get(e.conceptId);
     if (!concept) return [];
     const event = { ...e, at: get().now() } as LearnEvent;
-    const { state, effects } = reduce(get().learner, event, concept, examDateMs);
+    const { state, effects } = reduce(get().learner, event, concept, reviewDateFor(e.conceptId, event.at) ?? examDateMs);
     set({ learner: state });
     return effects;
   },

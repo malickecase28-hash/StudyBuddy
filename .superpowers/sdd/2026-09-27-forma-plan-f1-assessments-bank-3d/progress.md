@@ -4,3 +4,4 @@ Task 2: complete (commits 7c0597d..33bf67c, tests: pnpm vitest run packages/phys
 Task 3: complete (commits 952cd64..HEAD, tests: pnpm vitest run packages/engine && pnpm typecheck → 74 tests passed; typecheck clean)
 Task 4: Ruling: The pasted bank code included nine extra f2324 questions while the required id assertion includes only the pre-existing f2324-q2b — retained only q2b as the explicit test and spec scope require — no in-scope source lost.
 Task 4: complete (commits ebf1fe3..HEAD, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → 115 tests passed; typecheck clean)
+Task 5: complete (commits 48e7822..HEAD, tests: pnpm test and web tsc → 341 unit tests passed; tsc errors only in past-papers/page.tsx and dashboard/page.tsx pending Task 6)

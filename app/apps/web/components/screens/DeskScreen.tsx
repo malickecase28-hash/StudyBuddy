@@ -1,8 +1,9 @@
 "use client";
 
-import { DAY_MS } from "@forma/engine";
+import { nextAssessment } from "@forma/engine";
 import Link from "next/link";
-import { conceptHref, conceptOrder, course, examDateMs, getConcept } from "@/lib/course";
+import { countdownText, readiness } from "@/lib/assessments";
+import { conceptHref, conceptOrder, course, getConcept } from "@/lib/course";
 import { deskContinue } from "@/lib/desk";
 import { conceptProgress, STATE_GLYPH } from "@/lib/progress";
 import { dueCount } from "@/lib/retrieval";
@@ -18,7 +19,6 @@ export function DeskScreen() {
   const dismissWelcome = useStudy((s) => s.dismissWelcome);
   const c = deskContinue(learner);
   const due = dueCount(learner, now);
-  const days = Math.max(0, Math.ceil((examDateMs - now) / DAY_MS));
   const current = learner.position?.conceptId;
   const returning = !!returnInfo && returnInfo.gapDays >= 2 && !welcomeDismissed;
 
@@ -46,7 +46,17 @@ export function DeskScreen() {
         <p id="due-title" className="kicker">Due today</p>
         <p className="text-xl">{due ? `${due} recall${due === 1 ? "" : "s"} due` : "Nothing due"}</p>
         {due > 0 && <Link className="btn" href="/review">Start review →</Link>}
-        <p className="text-sm text-soft">Finals in {days} days · {course.code}</p>
+        {(() => {
+          const next = nextAssessment(course, now);
+          if (!next) return null;
+          const r = readiness(learner, next.id);
+          return (
+            <>
+              <p className="text-sm text-soft">{countdownText(now)} · {course.code}</p>
+              <p className="text-sm text-soft">{next.short} readiness: {r.ready} of {r.total} topics demonstrated</p>
+            </>
+          );
+        })()}
       </section>
       <section className="desk-route card" aria-labelledby="route-title">
         <h2 id="route-title" className="kicker">{course.title} · your route</h2>
