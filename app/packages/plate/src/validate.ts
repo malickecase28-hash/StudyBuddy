@@ -14,6 +14,30 @@ export function tokenOverlap(a: string, b: string): number {
   return ta.filter((t) => tb.has(t)).length / ta.length;
 }
 
+/** Every finite number found anywhere in a value (params, models, claims). */
+export function numbersOf(x: unknown, out: number[] = []): number[] {
+  if (typeof x === "number") {
+    if (Number.isFinite(x)) out.push(x);
+  } else if (Array.isArray(x)) x.forEach((y) => numbersOf(y, out));
+  else if (x && typeof x === "object") Object.values(x).forEach((y) => numbersOf(y, out));
+  return out;
+}
+
+const WITH_UNIT = /([−-]?\d+(?:\.\d+)?)\s*(µC\/m²|µC\/m\^2|nC\/m²|nC\/m\^2|V\/m|µC|nC|m²|m\^2|m)(?![\w/²^])/g;
+
+/** Numbers followed by a physics unit that no candidate value matches at the written precision (or within 0.5%). */
+export function unbackedNumbers(text: string, candidates: readonly number[]): string[] {
+  const out: string[] = [];
+  for (const m of text.matchAll(WITH_UNIT)) {
+    const raw = m[1]!.replace("−", "-");
+    const value = Number(raw);
+    const decimals = (raw.split(".")[1] ?? "").length;
+    const backed = candidates.some((c) => Math.abs(Number(c.toFixed(decimals)) - value) < 1e-9 || Math.abs(c - value) <= 0.005 * Math.abs(value));
+    if (!backed) out.push(m[0].replace(/\s+/g, " "));
+  }
+  return out;
+}
+
 /** Structural, physics and text-discipline checks for one plate. Never throws. */
 export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[] {
   const issues: PlateIssue[] = [];
@@ -115,6 +139,8 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
         add("error", `claim ${c.instance}.${c.readout} says ${c.value} ${c.unit} but the model gives ${v}`, step.id);
       }
     }
+    const candidates = [...numbersOf(frame), ...step.claims.map((c) => c.value)];
+    for (const n of unbackedNumbers(step.note, candidates)) add("warning", `unbacked number "${n}" in the note`, step.id);
     const words = wordCount(step.note);
     if (words > 180) add("warning", `margin note has ${words} words (budget 180)`, step.id);
     if (step.kind !== "recap" && prev && isEmptyDiff(diffStates(prev, state)) && !step.interaction && step.focus.length === 0 && step.cues.length === 0) {
