@@ -13,6 +13,8 @@ Builds on:
 - From now on **Claude plans and Codex implements**. Plans must be clean enough for Codex to execute without this conversation.
 - Claude leads the product roadmap for voice mode, hands-free mode, and stylus notes that can compete with Apple's whiteboard (Freeform).
 
+- The user supplied past homework, a mid-semester test, an ICT and newer lecture decks (`Resources/Electromagnetics/Malo drop`). The lecturer reuses homework as test questions, so every homework and test question in scope becomes taught knowledge. `docs/superpowers/resources/emag-catalog.md` lists every resource by id.
+
 This spec covers wave 6a, assessment awareness, and the planning and handoff model. Voice mode, hands-free mode and stylus notes each get their own spec later; §6 sets their order and boundaries.
 
 ## 1. Operating model: Claude plans, Codex implements
@@ -56,7 +58,18 @@ The outline says semester tests are worth 30% in total. Splitting that 15/15 is 
 - **Scheduler.** `nextReview` receives the date of the next assessment whose scope contains the concept, so reviews compress toward ICT 1 for Unit 2 concepts and toward finals for the rest.
 - **Revise mode.** A scope switcher offers "ICT 1 / ICT 2 / Finals" and filters revision sheets, due reviews and practice to that assessment's concepts.
 - **Readiness.** One line per assessment on the Desk: the share of in-scope concepts whose checks are all passed, plus the count of due reviews. No fake predicted score.
-- **Missing papers.** No ICT papers exist in `Resources/`. ICT practice draws on past-paper and tutorial items on in-scope topics. The Library lists "Add your ICT papers" as a known gap, but no upload feature is built now.
+- **Practice sources.** ICT 1 practice draws on the 2023-24 mid-semester test (`mst2324`), HW01/HW02 and the matching finals questions. ICT 2 practice draws on `ict2-2425`, HW03, HW04 and `u3w01a`. No upload feature is built now.
+
+### 2.3 Item bank: homework and tests become knowledge
+
+- Every in-scope question in `mst2324`, `ict2-2425`, `hw01-2425`, `hw02-2324`, `hw03-2425` and `f2425` becomes a mapped item.
+- Item ids follow the source: `mst:2324-q5b`, `hw:2425-hw01-1.4a`, `ict:2425-2-q2`.
+- Each item appears in its concept in two forms:
+  - as a worked example that uses the question's own numbers (at the tutorial or exam level);
+  - as a numeric template, so the student then practises new numbers.
+- The concept-wide coverage test requires every mapped item.
+- The plan fixes every answer by independent computation. Lecturer drafts and student solutions are only cross-checks (for example, one student HW01 answer has an arithmetic slip: 5717 C, not 5721.71 C).
+- **Units drill.** Tests switch freely between nm, µm, mm, cm, inches, nC, µC and mC. Every Coulomb, E and capacitance idea includes one check whose data is in a non-SI unit, and its trap names the conversion.
 
 ## 3. Wave 6a content map
 
@@ -71,21 +84,24 @@ The rules from the Plan E global constraints carry over: every number backed by 
 
 | Concept id | Title | Ideas | Weight evidence | Mapped items |
 |---|---|---|---|---|
-| `em1.math.vectors` (rebuild) | Vectors and coordinate systems | 3: components and unit vectors; distance vectors and magnitudes; cylindrical and spherical coordinates with conversion | Every vector question depends on it | Tutorial Review of Vectors 01–03 |
-| `em1.math.vector-calculus` (new) | Gradient, divergence, curl | 3: gradient; divergence; curl (preview for Ampère), in all three coordinate systems using the formula sheet | Q1(c), Q4(a)iv | Formula sheet |
-| `em1.electrostatics.coulomb` (rebuild) | Coulomb's law | 3: vector form; superposition; units and scale (nm, µC) | Q1(b), 11 marks | f2425 Q1(b) |
-| `em1.electrostatics.field` (rebuild) | Electric field E | 3: E = F/q; superposition of point charges; continuous ρL, ρS, ρv (line and sheet results) | Every paper | f2425 Q1(b)ii |
+| `em1.intro.em-world` (new, Unit 1) | EM in the world, and SI units | 2: why EM matters to critical infrastructure (the finals Q1(a) short answer); symbols, SI prefixes and conversions (nm through inches, nC through mC) | f2425 Q1(a), 4 marks; the revision guide's units line | `unit1`, `revguide` |
+| `em1.math.vectors` (rebuild) | Vectors and coordinate systems | 4: components and unit vectors; distance vectors and magnitudes; cylindrical and spherical coordinates with conversion; differential elements dl, dS, dv in all three systems (`u2w02b`) | Every vector question depends on it | Tutorial Review of Vectors 01–03 |
+| `em1.math.vector-calculus` (new) | Gradient, divergence, curl | 3: gradient; divergence; curl (preview for Ampère), in all three coordinate systems using the formula sheet | Q1(c), Q4(a)iv; HW01 1.2 and HW02 2.1–2.2 (27 marks) | hw01 1.2, hw02 2.1–2.2 |
+| `em1.electrostatics.coulomb` (rebuild) | Coulomb's law | 3: vector form; superposition; units and scale (nm, µC) | Q1(b), 11 marks; MST Q1, 16 marks | f2425 Q1(b), mst Q1, hw01 1.3b, hw02 2.4 |
+| `em1.electrostatics.field` (rebuild) | Electric field E | 3: E = F/q; superposition of point charges; continuous ρL, ρS, ρv (line and sheet results) | Every paper; MST Q2(b), 10 marks | f2425 Q1(b)ii, mst Q2(a–b), hw01 1.3a |
 | `em1.electrostatics.gauss-law` | Gauss's law | 5 (done in Plan E) | Q2(a) | done |
-| `em1.electrostatics.gauss-applications` (rebuild) | Gauss applications | 3: volume charge (uniform ball, inside and outside); nonuniform densities; Q from a given D | Q2(a), 8 marks | tutorial q06, q08 |
-| `em1.electrostatics.divergence` (rebuild) | Point form and the divergence theorem | 2: ∇·D = ρv; divergence theorem as the bridge to Gauss's law | Revision guide | Q2 variants |
+| `em1.electrostatics.gauss-applications` (rebuild) | Gauss applications | 3: Q from ρL, ρS, ρv by integration in all three systems; flux through a spherical patch and the infinite sheet (E and D at a point); uniform ball inside and outside, and Q from a given D | Q2(a), 8 marks; MST Q3 and Q4(b), 27 marks | tutorial q06, q08; mst Q3, Q4(a–b); hw01 1.4a |
+| `em1.electrostatics.divergence` (rebuild) | Point form and the divergence theorem | 2: ∇·D = ρv; divergence theorem as the bridge to Gauss's law | Revision guide; HW01 1.4b | hw01 1.3c, 1.4b |
 | `em1.electrostatics.current` (new) | Current density, continuity, Ohm's law | 2: J, I = ∫J·dS and J = σE; continuity ∇·J = −∂ρv/∂t | Q4(b), 5 marks | f2425 Q4(b) |
-| `em1.electrostatics.potential` (unlock) | Potential and energy | 4: V as work per charge; V of point charges and superposition; E = −∇V then D = εE; potential energy of point charges | Q1(c), 10 marks | f2425 Q1(c) |
-| `em1.electrostatics.dielectrics` (unlock) | Dielectrics and boundary conditions | 5: polarization and εr; tangential E continuous; normal D (free surface charge); refraction angle (tan θ1/tan θ2 = εr1/εr2); conductor boundaries | Q2(b), 17 marks, the heaviest | f2425 Q2(b) |
-| `em1.electrostatics.capacitance` (unlock) | Capacitance | 2: C = Q/V for parallel plates; coaxial and spherical with dielectrics | Case study, week 5 | — |
+| `em1.electrostatics.potential` (unlock) | Potential and energy | 4: V as work per charge; V of point charges and superposition; E = −∇V then D = εE; potential energy of point charges | Q1(c), 10 marks; MST Q2(c) and Q5(a), 15 marks | f2425 Q1(c), mst Q2(c), mst Q5(a) |
+| `em1.electrostatics.dielectrics` (unlock) | Dielectrics and boundary conditions | 5: polarization and εr; tangential E continuous; normal D (free surface charge); refraction angle (tan θ1/tan θ2 = εr1/εr2); conductor boundaries | Q2(b), 17 marks, the heaviest; ICT 2 Q2; HW03 3.2 (25 marks) | f2425 Q2(b), ict2 Q2, hw03 3.2 |
+| `em1.electrostatics.capacitance` (unlock) | Capacitance and stored energy | 3: parallel plates and C = Q/V; energy W = ½CV² and energy density; coax and spherical with dielectrics | MST Q4(c) and Q5(b), 16 marks | mst Q4(c), mst Q5(b) |
 
 `em1.electrostatics.flux-density` is retired. Its content lives in Gauss Idea 1 and dielectrics Idea 1. Its route redirects to Gauss's law and its prerequisites move to Gauss's law.
 
-Total: 30 new ideas, about 400 steps. Each rebuilt concept keeps a "Quick tour" lesson holding its old blocks, as Gauss's law does.
+Total: 34 new ideas, about 450 steps.
+
+**Why the app started at Unit 2.** Plan A seeded only the units with calculations. Unit 1 ("Introduction") is examined, though: finals Q1(a) asks about EM's importance to infrastructure (4 marks), and the revision guide lists units and symbols, which every paper tests. `em1.intro.em-world` adds Unit 1 as the course's first concept. Each rebuilt concept keeps a "Quick tour" lesson holding its old blocks, as Gauss's law does.
 
 ## 4. Plate engine additions
 
@@ -103,6 +119,8 @@ The plate engine gets new components, each with `validate`, readouts in declared
   - `current-tube`: J through a surface, with I readout.
 - **Plan I:**
   - `boundary`: two regions with εr1 and εr2, a boundary plane (general `ax + by + cz = d`), D1 and E1 given as vectors, and the plate computing D2, E2, the normal and tangential parts, and θ1 and θ2. It is exact, and the magnetic twin in 6b reuses it with μ.
+    - Angles are measured from the normal or from the tangent, as the question states. HW03 3.2 measures from the tangent; ICT 2 measures from the normal.
+    - It must reproduce `hw03-2425` 3.2, `ict2-2425` Q2 and `f2425` Q2(b).
   - `capacitor`: parallel plates, coax or spherical, with C, Q and V readouts.
 
 Physics lives in `@forma/physics` with unit tests against textbook values before any plate uses it.
@@ -113,10 +131,10 @@ Course order (the user's choice) also gives the most ICT 1 coverage by 12 Oct:
 
 | Plan | Covers | Approx. ideas |
 |---|---|---|
-| F | `AGENTS.md`, assessments (§2), math foundation (vectors, vector calculus) | 6 |
+| F | `AGENTS.md`, assessments and item bank (§2), Unit 1, math foundation (vectors, vector calculus) | 9 |
 | G | Coulomb, E field, Gauss applications, point form | 11 |
 | H | Current and continuity, potential and energy | 6 |
-| I | Dielectrics and boundaries, capacitance; retire flux-density | 7 |
+| I | Dielectrics and boundaries, capacitance and energy; retire flux-density | 8 |
 
 If ICT 1 comes close before Plan I is done, I moves ahead of H: boundary conditions carry more marks.
 
@@ -149,7 +167,8 @@ If ICT 1 comes close before Plan I is done, I moves ahead of H: boundary conditi
 - Each concept in §3 passes the per-plate idea tests and a concept-wide coverage test (objectives, mapped items, misconceptions).
 - Every Unit 2 concept is playable in Learn with idea numbering across its blocks.
 - A student can switch Revise to "ICT 1" and see only in-scope sheets and reviews. The Desk counts down to ICT 1 until 12 Oct, then to ICT 2.
-- The `boundary` component reproduces Finals 2024-25 Q2(b) exactly: E2, D2 and θ2 match a hand solution to four significant figures.
+- The `boundary` component reproduces Finals 2024-25 Q2(b), HW03 3.2 and ICT 2 Q2 exactly: E2, D2 and the angles match an independent computation to four significant figures.
+- Every in-scope question in `mst2324`, `hw01-2425`, `hw02-2324`, `f2425` and the electrostatic parts of `ict2-2425` and `hw03-2425` is a mapped item, covered by a worked example and a template.
 - Codex completes each plan with a clean ledger, and Claude's final review finds no Critical issues.
 
 ## 8. Out of scope here
