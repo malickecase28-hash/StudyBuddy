@@ -86,7 +86,7 @@ export function WorkingPaper({ conceptId: requested, noteId, compact = false }: 
       )}
       <div className={compact ? "space-y-3" : "grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]"}>
         <section className="card min-w-0 p-2" aria-label="Drawing area">
-          <div ref={host} className={`working-paper ${compact ? "h-[440px]" : "h-[620px]"} overflow-hidden rounded-xl bg-white`} />
+          <div ref={host} className={`working-paper ${compact ? "h-[calc(100vh-330px)] min-h-[360px]" : "h-[620px]"} overflow-hidden rounded-xl bg-white`} />
           {!ready && <p className="p-2 text-sm text-soft">Loading drawing tools…</p>}
         </section>
         <aside className="card h-fit space-y-4">

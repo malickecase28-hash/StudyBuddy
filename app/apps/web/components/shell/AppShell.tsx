@@ -11,7 +11,7 @@ import { CommandPalette, useShortcuts } from "./CommandPalette";
 import { Hydrated } from "./Providers";
 import { SettingsDialog } from "./SettingsDialog";
 import { ToolDock } from "./ToolDock";
-import { ToolPanel } from "./ToolPanel";
+import { ToolSplit } from "./ToolPanel";
 
 const MODES = [["learn", "Learn"], ["solve", "Solve"], ["explore", "Explore"], ["revise", "Revise"]] as const;
 const PAGES: Record<string, string> = {
@@ -29,10 +29,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       <ResetNotice />
       <div className="shell-body">
         <ToolDock />
-        <main id="main" className="shell-main">
-          <Hydrated>{children}</Hydrated>
-        </main>
-        <ToolPanel />
+        <ToolSplit>
+          <main id="main" className="shell-main">
+            <Hydrated>{children}</Hydrated>
+          </main>
+        </ToolSplit>
       </div>
       <StatusFooter />
       <CommandPalette />

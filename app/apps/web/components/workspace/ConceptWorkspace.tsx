@@ -46,7 +46,7 @@ export function ConceptWorkspace({ conceptId }: { conceptId: string }) {
         <h1 className="text-3xl">{concept.title}</h1>
       </header>
       {p.mode === "learn" && <LearnMode conceptId={conceptId} p={p} split={layout.split} onSplit={onSplit} />}
-      {p.mode === "solve" && <SolveMode conceptId={conceptId} split={layout.split} onSplit={onSplit} pinned={layout.pinned} />}
+      {p.mode === "solve" && <SolveMode conceptId={conceptId} />}
       {p.mode === "explore" && <ExploreMode conceptId={conceptId} />}
       {p.mode === "revise" && <ReviseMode conceptId={conceptId} split={layout.split} onSplit={onSplit} />}
     </div>

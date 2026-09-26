@@ -84,11 +84,10 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .tool-dock { display: flex; flex-direction: column; gap: 4px; padding: 10px 6px; border-right: 1.5px solid var(--ink); }
 .tool-button { width: 36px; height: 36px; display: grid; place-items: center; font-size: 1.1rem; border: 1.5px solid transparent; }
 .tool-button[aria-pressed="true"] { border-color: var(--ink); background: var(--paper-2); }
-.shell-main { flex: 1; min-width: 0; padding: 20px 24px 32px; }
-.tool-panel { width: 26rem; max-width: 40vw; border-left: 1.5px solid var(--ink); padding: 14px; display: grid; gap: 20px; align-content: start; background: var(--paper-2); overflow-y: auto; }
+.shell-main { min-width: 0; padding: 20px 24px 32px; }
 .status-footer { padding: 8px 16px; border-top: 1.5px solid var(--ink); }
 .title-strip { border-top: 1.5px solid var(--ink); padding-top: 10px; }
-@media (max-width: 900px) { .crumbs { display: none; } .tool-panel { position: fixed; inset: auto 0 0 0; width: auto; max-width: none; max-height: 60vh; z-index: 30; } }
+@media (max-width: 900px) { .crumbs { display: none; } }
 .palette { width: min(640px, 100%); background: var(--paper-2); border: 1.5px solid var(--ink); }
 .palette-input { width: 100%; padding: 12px 14px; font-size: 1rem; border-bottom: 1.5px solid var(--ink); background: transparent; }
 .palette-list { max-height: 50vh; overflow-y: auto; }
@@ -105,3 +104,13 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .desk-route-list { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 8px; font-size: 0.95rem; }
 .desk-route-list a[aria-current="step"] { color: var(--flux-text); font-weight: 600; }
 @media (max-width: 900px) { .desk, .desk-continue { grid-template-columns: 1fr; } }
+.tool-split { flex: 1; min-width: 0; display: grid; align-items: stretch; }
+.tool-split-page { min-width: 0; }
+.tool-pane { border-left: 1.5px solid var(--ink); background: var(--paper-2); padding: 12px 14px; overflow: auto; max-height: calc(100vh - 110px); position: sticky; top: 50px; display: grid; gap: 12px; align-content: start; }
+.tool-pane-head { display: flex; align-items: center; gap: 6px; }
+.tool-pane-head h2 { margin-right: auto; }
+@media (max-width: 900px) {
+  .tool-split { grid-template-columns: minmax(0, 1fr) !important; }
+  .tool-split .split-handle { display: none; }
+  .tool-pane { position: fixed; inset: 0; z-index: 40; max-height: none; border-left: 0; }
+}

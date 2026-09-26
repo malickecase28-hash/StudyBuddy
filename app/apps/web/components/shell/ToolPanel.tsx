@@ -1,6 +1,7 @@
 "use client";
 
 import type { ToolId } from "@forma/engine";
+import { useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { Tex } from "@/components/Tex";
 import { conceptHref, formulaSheet, getConcept, lessonForPlate } from "@/lib/course";
@@ -61,24 +62,76 @@ export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string 
   }
 }
 
-export function ToolPanel() {
-  const { panel, closePanel, activeConceptId, workspaceMode: mode } = useUi();
+export function useToolState() {
+  const { panel, openPanel, closePanel, workspaceMode: mode, toolWidth, setToolWidth } = useUi();
   const layouts = useStudy((s) => s.learner.workspace.layouts);
-  // Solve shows its pinned tools inside its own split (spec: problem sheet | working paper).
-  const pinned = mode && mode !== "solve" ? layouts[mode].pinned : [];
-  const shown = [...new Set([...pinned, ...(panel ? [panel] : [])])];
-  if (!shown.length) return null;
+  const setLayout = useStudy((s) => s.setLayout);
+  const pinnedTool = mode ? layouts[mode].pinned[0] ?? null : null;
+  const tool = panel ?? pinnedTool;
+  return {
+    tool,
+    pinned: tool !== null && tool === pinnedTool,
+    width: mode ? layouts[mode].toolWidth : toolWidth,
+    setWidth: (w: number) => (mode ? setLayout(mode, { toolWidth: w }) : setToolWidth(w)),
+    open: (t: ToolId) => openPanel(t),
+    /** Closing a pinned tool unpins it for this mode, so it doesn't come back on the next page. */
+    close: () => {
+      if (mode && tool === pinnedTool) setLayout(mode, { pinned: [] });
+      closePanel();
+    },
+    togglePin: (t: ToolId) => {
+      if (!mode) return;
+      setLayout(mode, { pinned: pinnedTool === t ? [] : [t] });
+      openPanel(t);
+    },
+  };
+}
+
+/** Page | handle | tool. The page is always the first child, so opening a tool never remounts it. */
+export function ToolSplit({ children }: { children: ReactNode }) {
+  const { tool, pinned, width, setWidth, close, togglePin } = useToolState();
+  const { activeConceptId, toolExpanded, setToolExpanded } = useUi();
+  const box = useRef<HTMLDivElement>(null);
+  const label = tool ? TOOLS.find((x) => x.id === tool)!.label : "";
+  const cols = !tool ? "minmax(0, 1fr)" : toolExpanded ? "0 0 minmax(0, 1fr)" : `minmax(0, ${1 - width}fr) 12px minmax(0, ${width}fr)`;
   return (
-    <aside className="tool-panel" aria-label="Tools">
-      {shown.map((t) => (
-        <section key={t} aria-label={TOOLS.find((x) => x.id === t)!.label} className="space-y-2">
-          <header className="flex items-center">
-            <h2 className="label">{TOOLS.find((x) => x.id === t)!.label}{pinned.includes(t) && " · pinned"}</h2>
-            {t === panel && !pinned.includes(t) && <button className="ml-auto px-2" onClick={closePanel} aria-label="Close tool">✕</button>}
+    <div ref={box} className="tool-split" style={{ gridTemplateColumns: cols }}>
+      <div className="tool-split-page" hidden={!!tool && toolExpanded}>
+        {children}
+      </div>
+      {tool && (
+        <div
+          role="separator" aria-orientation="vertical" aria-label="Resize the page and the tool" tabIndex={0}
+          aria-valuemin={20} aria-valuemax={80} aria-valuenow={Math.round(width * 100)} className="split-handle" hidden={toolExpanded}
+          onPointerDown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}
+          onPointerMove={(e) => {
+            if (!e.currentTarget.hasPointerCapture(e.pointerId) || !box.current) return;
+            const r = box.current.getBoundingClientRect();
+            setWidth(1 - (e.clientX - r.left) / r.width);
+          }}
+          onKeyDown={(e) => {
+            const d = e.key === "ArrowLeft" ? 0.05 : e.key === "ArrowRight" ? -0.05 : 0;
+            if (!d) return;
+            e.preventDefault();
+            setWidth(width + d);
+          }}
+        />
+      )}
+      {tool && (
+        <aside className="tool-pane" aria-label={`Tool: ${label}`}>
+          <header className="tool-pane-head">
+            <h2 className="label">{label}</h2>
+            <button className="btn text-sm" aria-pressed={pinned} onClick={() => togglePin(tool)} title="Keep this tool open in this mode">
+              {pinned ? "Pinned" : "Pin"}
+            </button>
+            <button className="btn text-sm" aria-pressed={toolExpanded} onClick={() => setToolExpanded(!toolExpanded)} aria-label={toolExpanded ? "Show the page again" : "Expand the tool"}>
+              ⤢
+            </button>
+            <button className="btn text-sm" onClick={close} aria-label={`Close ${label}`}>✕</button>
           </header>
-          <ToolBody tool={t} conceptId={activeConceptId} />
-        </section>
-      ))}
-    </aside>
+          <ToolBody tool={tool} conceptId={activeConceptId} />
+        </aside>
+      )}
+    </div>
   );
 }

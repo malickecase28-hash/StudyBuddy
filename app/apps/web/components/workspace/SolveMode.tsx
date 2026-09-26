@@ -1,20 +1,18 @@
 "use client";
 
-import { instantiate, seedOf, type ToolId } from "@forma/engine";
+import { instantiate, seedOf } from "@forma/engine";
 import { Segmented } from "@forma/ui";
 import Link from "next/link";
 import { useState } from "react";
 import { conceptHref, course, templatesFor } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { NumericField } from "../blocks/numeric";
-import { ToolBody } from "../shell/ToolPanel";
-import { Split } from "./Split";
 
 const TITLES: Record<string, string> = {
   "q06-octant": "Q.06 Octant", "q08-e": "Q.08 |E|", "q08-q": "Q.08 Charge", "q09a-cube": "Q.09(a) Cube", "f2425-qt": "Finals 24-25 Q2(a)",
 };
 
-export function SolveMode({ conceptId, split, onSplit, pinned }: { conceptId: string; split: number; onSplit: (r: number) => void; pinned: ToolId[] }) {
+export function SolveMode({ conceptId }: { conceptId: string }) {
   const list = templatesFor(conceptId);
   const [id, setId] = useState(list[0]?.id ?? "");
   const learner = useStudy((s) => s.learner);
@@ -51,13 +49,5 @@ export function SolveMode({ conceptId, split, onSplit, pinned }: { conceptId: st
       <button className="btn" onClick={() => nextVariant(t.id)}>New variant</button>
     </section>
   );
-  if (!pinned.length) return sheet;
-  return (
-    <Split ratio={split} onRatio={onSplit} label="Resize the problem sheet and your tools">
-      {sheet}
-      <div className="space-y-6">
-        {pinned.map((tool) => <ToolBody key={tool} tool={tool} conceptId={conceptId} />)}
-      </div>
-    </Split>
-  );
+  return sheet;
 }
