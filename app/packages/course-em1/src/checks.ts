@@ -31,4 +31,6 @@ export const checks: Record<string, Check> = {
   /** The surface shape changed while charge stays enclosed. */
   "shape-swap": (now, start) =>
     now.surface?.params.shape !== start.surface?.params.shape && Math.abs(Number(now.surface?.model.enclosed)) > 1e-9,
+  /** The flat patch passes 3 µC, within 2%. */
+  "patch-flux-3": (now) => Math.abs(Number(now.patch?.model.dPsi) - 3) <= 0.06,
 };

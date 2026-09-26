@@ -28,6 +28,7 @@ const truth: Record<string, (p: Record<string, number>) => number> = {
       surfacePatches({ kind: "cube", center: vec(0, 0, 0), side: 10 }, 48),
     ),
   "f2425-qt": (p) => radialFlux(p.a!, p.R!),
+  "flux-flat-patch": (p) => dot(vec(p.D! * 1e-6, 0, 0), vec(Math.cos((p.theta! * Math.PI) / 180), 0, Math.sin((p.theta! * Math.PI) / 180))) * p.a! * p.b!,
 };
 
 describe("question templates", () => {

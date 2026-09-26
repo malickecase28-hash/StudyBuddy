@@ -78,6 +78,36 @@ const f2425 = defineTemplate<{ a: number; R: number }>({
   tags: { concepts: [concept], misconceptions: [], difficulty: 3 },
 });
 
+const fluxFlat = defineTemplate<{ D: number; a: number; b: number; theta: number }>({
+  id: "flux-flat-patch",
+  params: { D: { min: 2, max: 9, step: 1 }, a: { min: 0.5, max: 3, step: 0.5 }, b: { min: 1, max: 4, step: 0.5 }, theta: { min: 20, max: 80, step: 10 } },
+  prompt: (p) => `A flat ${p.a} m × ${p.b} m rectangle sits in a uniform field D = ${p.D} µC/m², with its normal at ${p.theta}° to D. Find the flux through it.`,
+  solve: (p) => {
+    const A = p.a * p.b;
+    const c = Math.cos((p.theta * Math.PI) / 180);
+    const s = Math.sin((p.theta * Math.PI) / 180);
+    return {
+      answer: { value: r4(p.D * A * c), unit: "µC" },
+      distractors: [
+        { value: r4(p.D * A * s), unit: "µC", errorClass: "conceptual", feedback: "That's sin θ. The angle is measured from the normal, so use cos θ." },
+        { value: r4(p.D * A), unit: "µC", errorClass: "conceptual", feedback: "That ignores the tilt. Only the part of D along the normal, D cos θ, crosses." },
+      ],
+    };
+  },
+  hints: () => ["The field is uniform and the surface flat: one multiplication will do.", "Ψ = |D| A cos θ, with θ measured from the normal.", "Area first, then D cos θ, then multiply."],
+  worked: (p) => {
+    const A = r4(p.a * p.b);
+    const dn = r4(p.D * Math.cos((p.theta * Math.PI) / 180));
+    return [
+      { text: `Area: A = ${p.a} × ${p.b} = ${A} m².` },
+      { text: `Part of D along the normal: D cos θ = ${p.D} × cos ${p.theta}° = ${dn} µC/m².` },
+      { text: `Multiply: Ψ = ${dn} × ${A} = ${r4(p.D * p.a * p.b * Math.cos((p.theta * Math.PI) / 180))} µC.` },
+    ];
+  },
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.gauss-law"], misconceptions: [], difficulty: 2 },
+});
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425];
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));
