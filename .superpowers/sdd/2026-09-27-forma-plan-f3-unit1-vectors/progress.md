@@ -6,3 +6,5 @@ Task 2: Ruling: The new verified concept and idea plate exposed stale misconcept
 Task 2: complete (commits f36fd17..08bdccf, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → 9 files / 148 tests passed, typecheck clean)
 Task 3: Ruling: The exact recap mentions 0.0254 m, but compiled recaps did not carry givens and validation reported it unbacked — added optional recap givens to the idea compiler and computed the value from the exact inch constant — preserves the plan’s text and precision.
 Task 3: complete (commits 43d16a8..cba61ea, tests: pnpm vitest run packages/course-em1 && pnpm typecheck → 9 files / 154 tests passed, typecheck clean)
+Task 4: Ruling: The course structure test enumerated only earlier slice misconceptions — updated the expected set with the five planned vectors tags — all tags remain subject to remediation-lesson checks.
+Task 4: complete (commits 5cda1e6..0fcaff7, tests: pnpm vitest run packages/course-em1/test/f3-vectors-structure.test.ts → 1 passed; pnpm vitest run packages/course-em1 && pnpm typecheck → 10 files / 159 tests passed, typecheck clean)
