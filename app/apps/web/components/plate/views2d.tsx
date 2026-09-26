@@ -4,6 +4,7 @@ import { PX, pathD, toSvg, type Evaluated } from "@forma/plate";
 import type { ComponentType, KeyboardEvent, PointerEvent } from "react";
 import { Tex } from "../Tex";
 import { usePlateStage } from "./stage-context";
+import { Axes3View, CoordFrameView, Vector3View } from "./views3d";
 
 export type ViewProps = { id: string; ev: Evaluated; appear: number; focused: boolean; highlighted: boolean };
 
@@ -333,6 +334,9 @@ export const views2d: Record<string, ComponentType<ViewProps>> = {
   "flat-patch": FlatPatchView,
   vector: VectorView,
   "patch-tiling": PatchTilingView,
+  axes3: Axes3View,
+  vector3: Vector3View,
+  "coord-frame": CoordFrameView,
 };
 
 export const overlayViews = { equation: EquationView };

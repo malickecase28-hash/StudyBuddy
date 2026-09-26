@@ -3,6 +3,7 @@ import {
   type Charge, type SurfaceShape, type Vec3,
 } from "@forma/physics";
 import { z } from "zod";
+import { vecComponents } from "./vec";
 import { defineComponent, type AnyComponent } from "../component";
 import { outline as outlineOf, outlineNormals } from "../geometry2d";
 
@@ -296,4 +297,4 @@ export const PatchTiling = defineComponent({
   links: ["charges"],
 });
 
-export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling];
+export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling, ...vecComponents];

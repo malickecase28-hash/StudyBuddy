@@ -72,3 +72,12 @@ export const pathD = (pts: readonly (readonly number[])[], closed = true) =>
       return `${i ? "L" : "M"}${x.toFixed(2)} ${y.toFixed(2)}`;
     })
     .join(" ") + (closed ? " Z" : "");
+
+/** Oblique (cabinet) view: y right, z up, x toward the viewer down-left at 45°, half length. */
+const OB = 0.5 * Math.SQRT1_2;
+export const toSvg3 = (p: readonly number[]): [number, number] => {
+  const x = p[0] ?? 0, y = p[1] ?? 0, z = p[2] ?? 0;
+  return [(y - OB * x) * PX, -(z - OB * x) * PX];
+};
+/** Inverse of toSvg3 for a known x (dragging keeps x fixed). */
+export const fromSvg3 = (sx: number, sy: number, x: number): [number, number, number] => [x, sx / PX + OB * x, -sy / PX + OB * x];

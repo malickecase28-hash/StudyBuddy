@@ -8,10 +8,13 @@ const LABEL: Record<string, string> = {
   flux: "Ψ, flux out", enclosed: "Q enclosed", area: "Surface area", probeD: "|D| at probe", probeE: "|E| at probe",
   outerQ: "Outer sphere", eMid: "|E| at 0.5 m", dMid: "|D| at 0.5 m", total: "Total charge",
   dPsi: "dΨ through the patch", Dn: "D·n̂", shadow: "Shadow A cos θ", theta: "θ (D to normal)", magnitude: "|D|", sum: "Σ D·dS over the patches", count: "Patches",
+  vx: "x-component", vy: "y-component", vz: "z-component", vmag: "Magnitude",
+  vxm: "x-component", vym: "y-component", vzm: "z-component", vmagm: "Length",
+  px: "x", py: "y", pz: "z", pRho: "ρ", pPhi: "φ", pR: "r", pTheta: "θ (from +z)",
 };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
   flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge",
-  dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux",
+  dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field",
 };
 const pretty = (unit: string) => unit.replace("^2", "²");
 
@@ -21,13 +24,13 @@ export function PlateReadouts({ plate, frame, hidden = [] }: { plate: PlateDef; 
     if (!ev?.visible || ev.params.readout === false || (inst.component === "faraday-spheres" && ev.params.revealed !== true)) return [];
     return Object.entries(registry.get(inst.component).readouts)
       .filter(([name]) => name in ev.model && !hidden.some((h) => h.instance === inst.id && h.readout === name))
-      .map(([name, unit]) => ({ key: `${inst.id}.${name}`, name, unit, value: typeof ev.model[name] === "number" ? (ev.model[name] as number) : null }));
+      .map(([name, unit]) => ({ key: `${inst.id}.${name}`, name, unit, label: (inst.component === "vector3" ? `${String(ev.params.label)} ` : "") + (LABEL[name] ?? name), value: typeof ev.model[name] === "number" ? (ev.model[name] as number) : null }));
   });
   if (!rows.length) return null;
   return (
     <div className="readouts" role="group" aria-label="Instrument readouts">
       {rows.map((r) => (
-        <Readout key={r.key} label={LABEL[r.name] ?? r.name} value={r.value} unit={pretty(r.unit)} {...(TONE[r.name] ? { tone: TONE[r.name] } : {})} />
+        <Readout key={r.key} label={r.label} value={r.value} unit={pretty(r.unit)} {...(TONE[r.name] ? { tone: TONE[r.name] } : {})} />
       ))}
     </div>
   );
