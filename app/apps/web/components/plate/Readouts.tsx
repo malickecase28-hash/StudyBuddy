@@ -11,12 +11,20 @@ const LABEL: Record<string, string> = {
   vx: "x-component", vy: "y-component", vz: "z-component", vmag: "Magnitude",
   vxm: "x-component", vym: "y-component", vzm: "z-component", vmagm: "Length",
   px: "x", py: "y", pz: "z", pRho: "ρ", pPhi: "φ", pR: "r", pTheta: "θ (from +z)",
+  f: "Value at the probe", gmag: "|∇| at the probe",
+  F1: "1st component", F2: "2nd component", F3: "3rd component", div: "∇· at the probe",
+  c1: "curl, 1st", c2: "curl, 2nd", c3: "curl, 3rd",
+  boxFlux: "Net flux out of the box", boxRatio: "Flux ÷ box volume", circ: "Circulation round the loop", circRatio: "Circulation ÷ loop area",
+  len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume",
+  lambda: "Wavelength λ", si: "In SI base units", siM: "In metres", siM2: "In m²", siM3: "In m³", siC: "In coulombs", siHz: "In hertz", siV: "In volts", siF: "In farads", siN: "In newtons",
+  g1: "∇, 1st component", g2: "∇, 2nd component", g3: "∇, 3rd component",
 };
+const SYS: Record<string, [string, string, string]> = { cart: ["x", "y", "z"], cyl: ["ρ", "φ", "z"], sph: ["r", "θ", "φ"] };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
   flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge",
   dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field",
 };
-const pretty = (unit: string) => unit.replace("^2", "²");
+const pretty = (unit: string) => unit.replace("^2", "²").replace("^3", "³");
 
 export function PlateReadouts({ plate, frame, hidden = [] }: { plate: PlateDef; frame: Frame; hidden?: { instance: string; readout: string }[] }) {
   const rows = plate.instances.flatMap((inst) => {
@@ -24,7 +32,15 @@ export function PlateReadouts({ plate, frame, hidden = [] }: { plate: PlateDef; 
     if (!ev?.visible || ev.params.readout === false || (inst.component === "faraday-spheres" && ev.params.revealed !== true)) return [];
     return Object.entries(registry.get(inst.component).readouts)
       .filter(([name]) => name in ev.model && !hidden.some((h) => h.instance === inst.id && h.readout === name))
-      .map(([name, unit]) => ({ key: `${inst.id}.${name}`, name, unit, label: (inst.component === "vector3" ? `${String(ev.params.label)} ` : "") + (LABEL[name] ?? name), value: typeof ev.model[name] === "number" ? (ev.model[name] as number) : null }));
+      .map(([name, unit]) => {
+        let label = (inst.component === "vector3" ? `${String(ev.params.label)} ` : "") + (LABEL[name] ?? name);
+        if (inst.component === "spectrum" && name === "f") label = "Frequency f";
+        if (inst.component === "scalar-slice" || inst.component === "vector-slice") {
+          const sys = SYS[String(ev.model.system)] ?? SYS.cart!;
+          label = label.replace("1st", sys[0]).replace("2nd", sys[1]).replace("3rd", sys[2]);
+        }
+        return { key: `${inst.id}.${name}`, name, unit, label, value: typeof ev.model[name] === "number" ? (ev.model[name] as number) : null };
+      });
   });
   if (!rows.length) return null;
   return (
