@@ -59,8 +59,11 @@ export function Segmented<T extends string>({ label, value, options, onChange }:
   );
 }
 
+export const visibleTicks = (count: number, marks?: { index: number; label: string }[]) =>
+  marks ?? Array.from({ length: count }, (_, k) => ({ index: k, label: `§${k + 1}` }));
+
 /** Scrub bar: a native range (continuous, keyboard-operable) plus § ticks. Positions past `lock` are unreachable. */
-export function Timeline({ steps, pos, lock, playing, onScrub, onTogglePlay }: { steps: { id: string; title: string }[]; pos: number; lock: number; playing: boolean; onScrub: (pos: number) => void; onTogglePlay: () => void }) {
+export function Timeline({ steps, pos, lock, playing, onScrub, onTogglePlay, marks }: { steps: { id: string; title: string }[]; pos: number; lock: number; playing: boolean; onScrub: (pos: number) => void; onTogglePlay: () => void; marks?: { index: number; label: string }[] }) {
   const i = Math.min(Math.round(pos), steps.length - 1);
   return (
     <div className="timeline">
@@ -79,11 +82,11 @@ export function Timeline({ steps, pos, lock, playing, onScrub, onTogglePlay }: {
           onChange={(e) => onScrub(Math.min(Number(e.target.value), lock))}
         />
         <ol className="timeline-ticks">
-          {steps.map((s, k) => (
-            <li key={s.id}>
-              <button type="button" disabled={k > lock} aria-current={k === i ? "step" : undefined} onClick={() => onScrub(k)}>
-                §{k + 1}
-                <span className="sr-only"> {s.title}</span>
+          {visibleTicks(steps.length, marks).map((t) => (
+            <li key={t.index} style={marks ? { position: "absolute", left: `${(100 * t.index) / Math.max(1, steps.length - 1)}%` } : undefined}>
+              <button type="button" disabled={t.index > lock} aria-current={t.index === i ? "step" : undefined} onClick={() => onScrub(t.index)}>
+                {t.label}
+                <span className="sr-only"> {steps[t.index]?.title}</span>
               </button>
             </li>
           ))}
