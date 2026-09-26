@@ -9,6 +9,8 @@ export type TemplateDef<P extends Record<string, number>> = {
   prompt: (p: P) => string;
   solve: (p: P) => { answer: AuthoredQuantity; distractors?: Distractor[] };
   hints?: (p: P) => string[];
+  /** Worked-solution lines for this variant (shown as remediation after repeated misses). */
+  worked?: (p: P) => { text: string; latex?: string }[];
   relTol?: number;
   dimension: Dimension;
   tags: { concepts: string[]; misconceptions: string[]; difficulty: 1 | 2 | 3 | 4 | 5 };
@@ -46,6 +48,7 @@ export type Variant<P extends Record<string, number>> = {
   prompt: string;
   spec: NumericSpec;
   hints: string[];
+  worked: { text: string; latex?: string }[];
   dimension: Dimension;
   tags: TemplateDef<P>["tags"];
 };
@@ -60,6 +63,7 @@ export function instantiate<P extends Record<string, number>>(t: TemplateDef<P>,
     prompt: t.prompt(params),
     spec: { answer: solved.answer, relTol: t.relTol ?? 0.02, distractors: solved.distractors ?? [] },
     hints: t.hints?.(params) ?? [],
+    worked: t.worked?.(params) ?? [],
     dimension: t.dimension,
     tags: t.tags,
   };

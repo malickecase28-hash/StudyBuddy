@@ -62,7 +62,7 @@ export const Interaction = z.discriminatedUnion("type", [
     selfExplain: z.object({ prompt: z.string().min(1), options: z.array(Choice).min(2) }).optional(),
     dimension: Dimension,
   }),
-  z.object({ ...base, type: z.literal("numeric"), prompt: z.string().min(1), ...NumericAnswerFields, hints: z.array(z.string()).max(3).default([]), dimension: Dimension }),
+  z.object({ ...base, type: z.literal("numeric"), prompt: z.string().min(1), ...NumericAnswerFields, template: z.string().min(1).optional(), hints: z.array(z.string()).max(3).default([]), dimension: Dimension }),
   z.object({ ...base, type: z.literal("step-solve"), prompt: z.string().min(1), steps: StepSolveBlock.shape.steps, dimension: Dimension }),
   z.object({ ...base, type: z.literal("sketch"), prompt: z.string().min(1), solution: z.string().min(1), dimension: Dimension }),
 ]);

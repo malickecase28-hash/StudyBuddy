@@ -41,3 +41,21 @@ describe("templates", () => {
     expect(qs.size).toBeGreaterThan(5);
   });
 });
+import { Interaction } from "../src";
+
+describe("worked lines and template checks", () => {
+  const t = defineTemplate<{ Q: number }>({
+    id: "w", params: { Q: { min: 2, max: 2, step: 1 } }, prompt: (p) => `Q = ${p.Q}`,
+    solve: (p) => ({ answer: { value: p.Q / 2, unit: "µC" } }),
+    worked: (p) => [{ text: `Half of ${p.Q} is ${p.Q / 2}.` }],
+    dimension: "computational", tags: { concepts: [], misconceptions: [], difficulty: 1 },
+  });
+  it("instantiates worked lines with the variant's numbers", () => {
+    expect(instantiate(t, 1).worked).toEqual([{ text: "Half of 2 is 1." }]);
+    expect(instantiate(octant, 1).worked).toEqual([]);
+  });
+  it("numeric interactions may name a template", () => {
+    const i = Interaction.parse({ id: "n", type: "numeric", prompt: "p", answer: { value: 1, unit: "µC" }, template: "w", dimension: "computational" });
+    expect(i.type === "numeric" && i.template).toBe("w");
+  });
+});
