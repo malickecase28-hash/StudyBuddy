@@ -37,13 +37,13 @@ describe("validatePlate", () => {
     expect(msgs).toEqual(expect.arrayContaining([expect.stringMatching(/Unknown component "nope"/), expect.stringMatching(/binding "t" targets unknown instance "zz"/)]));
   });
   it("warns on word budget, possible slides and verbatim narration", () => {
-    const long = Array.from({ length: 70 }, () => "word").join(" ");
+    const long = Array.from({ length: 190 }, () => "word").join(" ");
     const p = mk([
       { id: "s1", title: "t", show: ["a"], note: long },
       { id: "s2", title: "t", note: "Nothing changes here at all.", narration: { transcript: "Nothing changes here at all." } },
     ]);
     const msgs = validatePlate(registry, p).filter((i) => i.level === "warning").map((i) => i.message);
-    expect(msgs).toEqual(expect.arrayContaining([expect.stringMatching(/70 words/), expect.stringMatching(/possible slide/), expect.stringMatching(/repeats the margin note/)]));
+    expect(msgs).toEqual(expect.arrayContaining([expect.stringMatching(/190 words/), expect.stringMatching(/possible slide/), expect.stringMatching(/repeats the margin note/)]));
   });
   it("counts words and overlap", () => {
     expect(wordCount("  Flux counts what is inside. ")).toBe(5);

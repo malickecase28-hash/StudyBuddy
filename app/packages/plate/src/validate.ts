@@ -116,8 +116,8 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
       }
     }
     const words = wordCount(step.note);
-    if (words > 60) add("warning", `margin note has ${words} words (budget 60)`, step.id);
-    if (prev && isEmptyDiff(diffStates(prev, state)) && !step.interaction && step.focus.length === 0 && step.cues.length === 0) {
+    if (words > 180) add("warning", `margin note has ${words} words (budget 180)`, step.id);
+    if (step.kind !== "recap" && prev && isEmptyDiff(diffStates(prev, state)) && !step.interaction && step.focus.length === 0 && step.cues.length === 0) {
       add("warning", "possible slide: the note changes but the plate does not", step.id);
     }
     if (step.narration && tokenOverlap(step.narration.transcript, step.note) > 0.6) {

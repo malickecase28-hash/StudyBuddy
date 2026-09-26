@@ -37,6 +37,9 @@ const InstanceS = z.object({
 
 export const Step = z.object({
   id: Id,
+  kind: z.enum(["explain", "work", "ask", "check", "recap"]).default("explain"),
+  idea: z.string().optional(),
+  latex: z.string().optional(),
   title: z.string().min(1),
   patch: z.record(z.string(), z.record(z.string(), z.unknown())).default({}),
   show: z.array(z.string()).default([]),
