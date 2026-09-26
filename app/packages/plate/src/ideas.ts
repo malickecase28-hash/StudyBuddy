@@ -9,7 +9,7 @@ export type StepInput = {
   why?: string; derivation?: string; interaction?: unknown; claims?: unknown[]; givens?: { value: number; unit: string }[]; cues?: unknown[]; narration?: unknown; latex?: string;
 };
 export type ExampleInput = {
-  id: string; level: "basic" | "tutorial" | "exam"; title: string; problem: string; setup: Patch; show?: string[]; hide?: string[];
+  id: string; level: "basic" | "tutorial" | "exam"; title: string; problem: string; setup: Patch; show?: string[]; hide?: string[]; givens?: { value: number; unit: string }[];
   lines: { text: string; latex?: string; focus?: string[]; patch?: Patch; claims?: unknown[]; givens?: { value: number; unit: string }[]; narration?: unknown; cues?: unknown[] }[]; trap?: string; covers?: string[];
 };
 export type AskInput = { id: string; q: string; a: string; patch?: Patch; show?: string[]; hide?: string[]; focus?: string[]; tags?: string[]; narration?: { transcript: string; captions?: { t: number; text: string }[]; audio?: { src: string; durationMs: number } } };
@@ -42,7 +42,7 @@ export function defineIdeaPlate(input: { id: string; title: string; instances: u
     const explainEnd = steps.length - 1;
     const examples = idea.examples.map((ex) => {
       const s0 = steps.length;
-      steps.push({ id: `${idea.id}-${ex.id}`, title: ex.title, kind: "work", idea: idea.id, note: ex.problem, patch: ex.setup, show: ex.show ?? [], hide: ex.hide ?? [] });
+      steps.push({ id: `${idea.id}-${ex.id}`, title: ex.title, kind: "work", idea: idea.id, note: ex.problem, patch: ex.setup, show: ex.show ?? [], hide: ex.hide ?? [], givens: ex.givens ?? [] });
       ex.lines.forEach((ln, k) =>
         steps.push({ id: `${idea.id}-${ex.id}-l${k + 1}`, title: `${ex.title} · line ${k + 1}`, kind: "work", idea: idea.id, note: ln.text, focus: ln.focus ?? [], patch: ln.patch ?? {}, claims: ln.claims ?? [], givens: ln.givens ?? [], ...(ln.latex ? { latex: ln.latex } : {}), ...(ln.narration ? { narration: ln.narration } : {}), ...(ln.cues ? { cues: ln.cues } : {}) }),
       );

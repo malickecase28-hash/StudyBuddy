@@ -16,6 +16,11 @@ const q06 = defineTemplate<{ Q: number }>({
     ],
   }),
   hints: () => ["The charge is at the centre, so the flux spreads evenly.", "What fraction of the sphere is this?", "Half in θ × a quarter in φ."],
+  worked: (p) => [
+    { text: `The charge is at the centre, so its ${p.Q} µC of flux spreads evenly over the sphere; the radius doesn't matter.` },
+    { text: "0 < θ < π/2 is the top half; 0 < φ < π/2 is a quarter of the way round. Together: 1/2 × 1/4 = 1/8 of the sphere." },
+    { text: `Ψ = ${p.Q}/8 = ${r4(p.Q / 8)} µC.` },
+  ],
   dimension: "application",
   tags: { concepts: [concept], misconceptions: [], difficulty: 2 },
 });
@@ -45,6 +50,11 @@ const q08q = defineTemplate<{ a: number; r: number }>({
     distractors: [{ value: r4(p.a * p.r * p.r), unit: "nC", errorClass: "conceptual", feedback: "That's D on the sphere. Multiply by its area, 4πr²." }],
   }),
   hints: (p) => ["Q_enc = ∮ D·dS.", "D is radial and constant on the sphere: ∮ D·dS = D × 4πr².", `${p.a} × ${p.r}² × 4π × ${p.r}² nC.`],
+  worked: (p) => [
+    { text: `On the sphere r = ${p.r} m, D = ${p.a} × ${p.r}² = ${r4(p.a * p.r * p.r)} nC/m², radial and the same everywhere.` },
+    { text: `Its area is 4π × ${p.r}² = ${r4(4 * Math.PI * p.r * p.r)} m².` },
+    { text: `Q = ∮ D·dS = ${r4(p.a * p.r * p.r)} × ${r4(4 * Math.PI * p.r * p.r)} = ${r4(p.a * p.r ** 4 * 4 * Math.PI)} nC.` },
+  ],
   dimension: "computational",
   tags: { concepts: [concept], misconceptions: [], difficulty: 3 },
 });
@@ -58,6 +68,10 @@ const q09a = defineTemplate<{ q1: number; q2: number }>({
     distractors: [{ value: r4(Math.abs(p.q1 - p.q2)) || r4(p.q1 + p.q2 + 1), unit: "µC", errorClass: "sign", feedback: "Both charges are positive and inside: add them." }],
   }),
   hints: () => ["Are both charges inside |x|, |y|, |z| < 5?", "Both are inside.", "Ψ = Q_enc."],
+  worked: (p) => [
+    { text: "The cube runs from −5 to 5 m on every axis. (1, −2, 3) and (−1, 2, −2) have every coordinate inside that range, so both charges are enclosed." },
+    { text: `Gauss's law: Ψ = Q_enc = ${p.q1} + ${p.q2} = ${r4(p.q1 + p.q2)} µC.` },
+  ],
   dimension: "computational",
   tags: { concepts: [concept], misconceptions: ["OUTSIDE_CHARGE_CONTRIBUTES"], difficulty: 1 },
 });
@@ -74,6 +88,11 @@ const f2425 = defineTemplate<{ a: number; R: number }>({
     ],
   }),
   hints: (p) => [`|D| on the sphere = ${p.a} × ${p.R}² nC/m².`, "∮ D·dS = D × 4πR².", "Convert nC to µC at the end."],
+  worked: (p) => [
+    { text: `On the sphere, D = ${p.a} × ${p.R}² = ${p.a * p.R * p.R} nC/m², radial and constant.` },
+    { text: `Area: 4π × ${p.R}² = ${r4(4 * Math.PI * p.R * p.R)} m².` },
+    { text: `Q_T = ${p.a * p.R * p.R} × ${r4(4 * Math.PI * p.R * p.R)} = ${r4(p.a * p.R ** 4 * 4 * Math.PI)} nC = ${r4((p.a * p.R ** 4 * 4 * Math.PI) / 1000)} µC.` },
+  ],
   dimension: "application",
   tags: { concepts: [concept], misconceptions: [], difficulty: 3 },
 });
