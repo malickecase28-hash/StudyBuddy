@@ -207,7 +207,7 @@ A step change produces a diff, played in this order:
 - Explore mode has no authored steps.
 - "Save to notebook" snapshots params and restores them exactly.
 
-### 4.7 Narration-ready (hooks only; the audio pipeline is sub-project 7)
+### 4.6 Narration-ready (hooks only; the audio pipeline is sub-project 7)
 Narration is authored and generated at build time, then played back deterministically. There is no TTS inference at runtime. This spec builds only the hooks:
 - **Cue tracks:** besides the step-to-step diff, a step may carry a time-based cue track (`{ t, action: highlight | show | hide | tween | camera, target, params }`). The timeline plays cues against a clock that a narration segment can drive later. Without audio, the same cues play on a silent clock at reading pace.
 - **Pause points** are ordinary interaction steps: playback stops, the learner answers, and branching picks the next segment.
@@ -216,7 +216,7 @@ Narration is authored and generated at build time, then played back deterministi
 - **Fallback reader:** browser `speechSynthesis` can read a margin note or transcript on request ("Read this" 🔊). Off by default. Consistency across devices isn't guaranteed.
 - **Lint:** warns when a transcript repeats the on-screen margin note verbatim (above 60% token overlap). Narration teaches *alongside* the plate; it doesn't read it aloud.
 
-### 4.6 Performance and fallback
+### 4.7 Performance and fallback
 - Models are memoised and heavy ones run off the render loop.
 - Quality tiers control arrow density, patch count and DPR.
 - SVG up to about 2k elements; canvas fallback beyond that.
