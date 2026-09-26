@@ -37,7 +37,7 @@ describe("course structure", () => {
   it("every misconception tag in the slice has a remediation lesson", () => {
     const tags = new Set(course.concepts.flatMap((c) => c.misconceptions.map((m) => m.tag)));
     expect([...tags].sort()).toEqual(
-      ["DISPLACEMENT_ORDER", "DOT_CROSS_CONFUSION", "D_VS_E_PERMITTIVITY", "ELEMENT_SCALE_FACTOR", "FLUX_SCALES_WITH_AREA", "GAUSS_WITHOUT_SYMMETRY", "OUTSIDE_CHARGE_CONTRIBUTES", "PHI_QUADRANT", "PREFIX_POWER", "SURFACE_NORMAL_DIRECTION", "SYMBOL_CASE", "UNIT_VECTOR_LENGTH", "WAVELENGTH_INVERSE"].sort(),
+      ["DISPLACEMENT_ORDER", "DOT_CROSS_CONFUSION", "D_VS_E_PERMITTIVITY", "ELEMENT_SCALE_FACTOR", "FLUX_SCALES_WITH_AREA", "GAUSS_WITHOUT_SYMMETRY", "GRAD_DIV_TYPE", "MISSING_SCALE_FACTORS", "OPERATOR_SYSTEM_MISMATCH", "OUTSIDE_CHARGE_CONTRIBUTES", "PHI_QUADRANT", "PREFIX_POWER", "SURFACE_NORMAL_DIRECTION", "SYMBOL_CASE", "UNIT_VECTOR_LENGTH", "WAVELENGTH_INVERSE"].sort(),
     );
   });
   it("diagnostic refreshers and bank-item concepts exist", () => {
