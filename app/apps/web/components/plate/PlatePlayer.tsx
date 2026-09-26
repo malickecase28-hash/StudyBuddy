@@ -156,8 +156,9 @@ function PlateRun({
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
       const t = e.target instanceof Element ? e.target : document.body;
       if (t.closest("input, textarea, select, [contenteditable='true'], [role='separator'], [role='radiogroup'], .handle")) return;
-      if (e.key === "ArrowRight") pb.go(index + 1);
-      else if (e.key === "ArrowLeft") pb.go(index - 1);
+      // Step from where the timeline is heading, so quick presses queue instead of repeating the same step.
+      if (e.key === "ArrowRight") pb.go(Math.floor(pb.target) + 1);
+      else if (e.key === "ArrowLeft") pb.go(Math.ceil(pb.target) - 1);
       else if (e.key === " " && !t.closest("button, a, summary")) pb.toggle();
       else return;
       e.preventDefault();
@@ -176,7 +177,7 @@ function PlateRun({
     for (const x of meta?.ideas ?? []) {
       const title = `Recap · ${x.title}`;
       if (x.checks.every((c) => answered.has(c.id)) && !notebook.some((n) => n.title === title))
-        void addNote({ conceptId, kind: "note", title, body: recapMarkdown(x.title, x.recap.points, x.recap.traps) });
+        void addNote({ conceptId, kind: "note", title, body: recapMarkdown(x.recap.points, x.recap.traps) });
     }
   }, [meta, answered, notebook, addNote, conceptId]);
   const editable =

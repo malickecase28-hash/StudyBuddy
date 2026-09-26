@@ -69,7 +69,11 @@ export function usePlayback(count: number, lock: number, reduced: boolean, initi
     const tick = (now: number) => {
       const dt = (now - last) / STEP_MS;
       last = now;
-      setPos((p) => (Math.abs(target - p) <= dt ? target : p + Math.sign(target - p) * dt));
+      // One step takes STEP_MS; longer jumps speed up with the distance left, so skipping ahead never crawls.
+      setPos((p) => {
+        const step = dt * Math.max(1, Math.abs(target - p));
+        return Math.abs(target - p) <= step ? target : p + Math.sign(target - p) * step;
+      });
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -85,7 +89,7 @@ export function usePlayback(count: number, lock: number, reduced: boolean, initi
     [max],
   );
   const toggle = useCallback(() => (moving ? setTarget(pos) : go(Math.floor(pos) + 1)), [moving, pos, go]);
-  return { pos, playing: moving, go, scrub, toggle };
+  return { pos, target, playing: moving, go, scrub, toggle };
 }
 
 /** Silent clock for a step's cue track (spec §4.6): runs from arrival until 2 s after the last cue. */

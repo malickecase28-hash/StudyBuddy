@@ -70,5 +70,6 @@ export function RecapCard({ title, points, traps }: { title: string; points: str
   );
 }
 
-export const recapMarkdown = (title: string, points: string[], traps: string[]) =>
-  [`Recap · ${title}`, "", ...points.map((p) => `- ${p}`), ...(traps.length ? ["", "Traps:", ...traps.map((t) => `- ${t}`)] : [])].join("\n");
+/** Note body for a recap card (the note's title already names the idea). */
+export const recapMarkdown = (points: string[], traps: string[]) =>
+  [...points.map((p) => `- ${p}`), ...(traps.length ? ["", "Traps:", ...traps.map((t) => `- ${t}`)] : [])].join("\n");
