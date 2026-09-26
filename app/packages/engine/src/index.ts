@@ -16,3 +16,4 @@ export * from "./graph";
 export * from "./lint";
 export * from "./schema/interactions";
 export * from "./routes";
+export * from "./templates";
