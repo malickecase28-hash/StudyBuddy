@@ -64,8 +64,8 @@ test("working paper's colour picker stays hidden and its colours parse", async (
   await expect(page.getByText(/NaN/)).toHaveCount(0);
 });
 
-test("the Desk lab's radius slider thumb follows its value", async ({ page }) => {
-  await page.goto("/");
+test("the classic lab's radius slider thumb follows its value", async ({ page }) => {
+  await page.goto("/lab");
   const thumb = page.locator("[data-scope=slider][data-part=thumb]").first();
   await expect(thumb).toBeVisible();
   await thumb.focus();

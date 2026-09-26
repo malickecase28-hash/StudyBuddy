@@ -38,7 +38,7 @@ test("⌘K palette and number keys switch concepts and modes", async ({ page }) 
   await page.keyboard.press("3");
   await expect(page).toHaveURL(/mode=explore/);
   await page.keyboard.press("p");
-  await expect(page.getByRole("complementary", { name: "Tools" })).toContainText("Working paper");
+  await expect(page.getByRole("complementary", { name: "Tool: Working paper" })).toBeVisible();
 });
 
 test.describe("reduced motion", () => {
