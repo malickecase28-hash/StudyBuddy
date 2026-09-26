@@ -22,6 +22,6 @@ export const course = Course.parse({
 export { diagnostic } from "./diagnostic";
 export { formulaSheet, pastPapers } from "./reference";
 export * from "./lab";
-export { plates, registry } from "./plates";
+export { classicLesson, plates, registry } from "./plates";
 export { checks, type Check } from "./checks";
 export { templates } from "./templates";

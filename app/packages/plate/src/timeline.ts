@@ -32,7 +32,7 @@ const settled = (plate: PlateDef, i: number): TimelineFrame => {
 /** The plate at a continuous timeline position: whole numbers are steps, fractions are transitions. */
 export function frameAt(plate: PlateDef, pos: number, opts: { reducedMotion?: boolean } = {}): TimelineFrame {
   const last = plate.steps.length - 1;
-  const p = Number.isFinite(pos) ? Math.min(Math.max(pos, 0), last) : 0;
+  const p = Number.isNaN(pos) ? 0 : Math.min(Math.max(pos, 0), last);
   const i = Math.floor(p);
   const f = p - i;
   if (f === 0 || i >= last) return settled(plate, i);

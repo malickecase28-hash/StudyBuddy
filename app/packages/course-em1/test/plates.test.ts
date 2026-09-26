@@ -1,6 +1,6 @@
 import { createEvaluator, stateAt, validatePlate } from "@forma/plate";
 import { describe, expect, it } from "vitest";
-import { checks, course, plates, registry } from "../src";
+import { checks, classicLesson, course, plates, registry } from "../src";
 
 describe("plates", () => {
   for (const plate of Object.values(plates)) {
@@ -16,6 +16,13 @@ describe("plates", () => {
     for (const c of course.concepts)
       for (const l of c.lessons)
         for (const b of l.blocks) if (b.type === "plate") expect(plates[b.plateId], `${c.id}/${l.id}`).toBeDefined();
+  });
+
+  it("every plate maps to an existing classic lesson in the concept that uses it", () => {
+    for (const c of course.concepts)
+      for (const l of c.lessons)
+        for (const b of l.blocks)
+          if (b.type === "plate") expect(c.lessons.some((x) => x.id === classicLesson[b.plateId]), `${b.plateId} -> ${classicLesson[b.plateId]}`).toBe(true);
   });
 
   it("every step interaction check exists", () => {

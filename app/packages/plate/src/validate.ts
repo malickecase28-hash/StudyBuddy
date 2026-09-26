@@ -1,6 +1,7 @@
 import type { Registry } from "./component";
 import { applyStep, diffStates, initialState, isEmptyDiff, type PlateDef } from "./plate";
-import { createEvaluator, type SceneState } from "./scene";
+import { createEvaluator, type Frame, type SceneState } from "./scene";
+import { frameAt } from "./timeline";
 
 export type PlateIssue = { plate: string; step?: string; level: "error" | "warning"; message: string };
 
@@ -36,6 +37,40 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
   if (issues.some((i) => i.level === "error")) return issues;
 
   const evaluate = createEvaluator(registry, plate.instances);
+  const componentOf = (id: string) => registry.get(plate.instances.find((x) => x.id === id)!.component);
+
+  /** Every instance/readout/param an interaction or cue names must exist; a reveal must evaluate. */
+  const checkRefs = (step: PlateDef["steps"][number], state: SceneState) => {
+    const known = (id: string, what: string) => {
+      if (ids.has(id)) return true;
+      add("error", `${what} targets unknown instance "${id}"`, step.id);
+      return false;
+    };
+    const i = step.interaction;
+    if (i?.type === "predict-drag" && known(i.target.instance, "predict-drag")) {
+      const unit = componentOf(i.target.instance).readouts[i.target.readout];
+      if (unit === undefined) add("error", `predict-drag readout ${i.target.instance}.${i.target.readout} is not a declared readout`, step.id);
+      else if (unit !== i.unit) add("error", `predict-drag uses unit ${i.unit} but ${i.target.instance}.${i.target.readout} is in ${unit}`, step.id);
+      const revealed = structuredClone(state);
+      let ok = true;
+      for (const [id, patch] of Object.entries(i.reveal)) {
+        if (!known(id, "reveal")) ok = false;
+        else revealed[id]!.params = { ...revealed[id]!.params, ...patch };
+      }
+      if (ok) {
+        try {
+          evaluate(revealed);
+        } catch (e) {
+          add("error", `reveal patch does not evaluate: ${(e as Error).message}`, step.id);
+        }
+      }
+    }
+    if (i?.type === "place" && known(i.handle.instance, "place handle") && !componentOf(i.handle.instance).handles.includes(i.handle.param)) {
+      add("error", `place handle ${i.handle.instance}.${i.handle.param} is not a declared handle`, step.id);
+    }
+    for (const c of [...step.cues, ...(step.narration?.cues ?? [])]) if (c.action !== "camera") known(c.target, `${c.action} cue`);
+  };
+
   let prev: SceneState | null = null;
   let running = initialState(plate);
   let broken = false;
@@ -51,7 +86,8 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
       broken = true;
       return;
     }
-    let frame;
+    checkRefs(step, state);
+    let frame: Frame;
     try {
       frame = evaluate(state);
     } catch (e) {
@@ -73,7 +109,8 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
         add("error", `claim ${c.instance}.${c.readout} uses unit ${c.unit} but the readout is in ${unit}`, step.id);
         continue;
       }
-      const v = Number(frame[c.instance]!.model[c.readout]);
+      const raw = frame[c.instance]!.model[c.readout];
+      const v = typeof raw === "number" ? raw : Number.NaN;
       if (!Number.isFinite(v) || Math.abs(v - c.value) > c.relTol * Math.max(Math.abs(c.value), 1e-12)) {
         add("error", `claim ${c.instance}.${c.readout} says ${c.value} ${c.unit} but the model gives ${v}`, step.id);
       }
@@ -87,6 +124,16 @@ export function validatePlate(registry: Registry, plate: PlateDef): PlateIssue[]
       add("warning", "narration transcript repeats the margin note; narrate alongside the plate instead", step.id);
     }
     prev = state;
+  });
+  if (issues.some((i) => i.level === "error")) return issues;
+  // Mid-transition frames mix interpolated params; they must evaluate too (e.g. integer params mid-tween).
+  plate.steps.forEach((step, k) => {
+    if (k === 0) return;
+    try {
+      evaluate(frameAt(plate, k - 0.5).state);
+    } catch (e) {
+      add("error", `transition into this step does not evaluate: ${(e as Error).message}`, step.id);
+    }
   });
   return issues;
 }

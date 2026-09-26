@@ -1,11 +1,13 @@
 import {
-  EPS0, contains, dot, electricField, enclosedCharge, fluxDensity, fluxThrough, norm, scale, surfaceArea, surfacePatches,
+  EPS0, contains, dot, electricField, enclosedCharge, fluxDensity, norm, scale, surfaceArea, surfacePatches,
   type Charge, type SurfaceShape, type Vec3,
 } from "@forma/physics";
 import { z } from "zod";
 import { defineComponent, type AnyComponent } from "../component";
 
 const V3 = z.tuple([z.number(), z.number(), z.number()]);
+/** Integer params round on parse, so timeline tweens between two integers stay valid mid-transition. */
+const int = (min: number, max: number, def: number) => z.number().transform(Math.round).pipe(z.number().int().min(min).max(max)).default(def);
 const ChargeItem = z.discriminatedUnion("kind", [
   z.object({ id: z.string(), kind: z.literal("point"), q: z.number(), pos: V3, draggable: z.boolean().default(false) }),
   z.object({ id: z.string(), kind: z.literal("line"), rhoL: z.number(), x: z.number(), y: z.number() }),
@@ -33,12 +35,21 @@ export const Charges = defineComponent({
 });
 
 const chargesOf = (ctx: { link: (n: string) => { model: Record<string, unknown> } }) => ctx.link("charges").model.charges as Charge[];
-const nearPoint = (cs: Charge[], p: Vec3, r: number) => cs.some((c) => c.kind === "point" && norm([p[0] - c.pos[0], p[1] - c.pos[1], p[2] - c.pos[2]]) < r);
+/** True when p lies within r of a point or line charge, or within 1e-9 m of a sheet: D is undefined or unreadable there. */
+const nearCharge = (cs: Charge[], p: Vec3, r: number) =>
+  cs.some((c) =>
+    c.kind === "point"
+      ? norm([p[0] - c.pos[0], p[1] - c.pos[1], p[2] - c.pos[2]]) < r
+      : c.kind === "line"
+        ? Math.hypot(p[0] - c.x, p[1] - c.y) < r
+        : Math.abs(p[2] - c.z0) < 1e-9,
+  );
+const SINGULAR = 1e-9;
 
 export const FieldArrows = defineComponent({
   id: "field-arrows",
   params: z.object({
-    grid: z.number().int().min(3).max(9).default(5),
+    grid: int(3, 9, 5),
     extent: z.number().positive().default(1.6),
     plane: z.enum(["xz", "3d"]).default("xz"),
     probe: z.number().positive().default(1),
@@ -55,17 +66,19 @@ export const FieldArrows = defineComponent({
       }
     const minGap = (0.35 * 2 * p.extent) / (p.grid - 1);
     const samples = pts
-      .filter((pt) => !nearPoint(cs, pt, minGap))
+      .filter((pt) => !nearCharge(cs, pt, minGap))
       .map((pt) => {
         const d = fluxDensity(cs, pt);
         const m = norm(d);
         return { p: pt, dir: m > 0 ? scale(d, 1 / m) : ([0, 0, 0] as Vec3), mag: m * 1e6 };
       });
+    // At a charge (or on a sheet) the field is undefined: report null rather than NaN or a misleading 0.
     const probePt: Vec3 = [p.probe, 0, 0];
+    const singular = nearCharge(cs, probePt, SINGULAR);
     return {
       samples,
-      probeD: norm(fluxDensity(cs, probePt)) * 1e6,
-      probeE: norm(electricField(cs, probePt)) / p.epsR,
+      probeD: singular ? null : norm(fluxDensity(cs, probePt)) * 1e6,
+      probeE: singular ? null : norm(electricField(cs, probePt)) / p.epsR,
     };
   },
   handles: ["probe", "epsR"],
@@ -78,16 +91,14 @@ export const FieldProfile = defineComponent({
   params: z.object({
     rMin: z.number().positive().default(0.3),
     rMax: z.number().positive().default(3),
-    samples: z.number().int().min(4).max(400).default(60),
+    samples: int(4, 400, 60),
     quantity: z.enum(["D", "E"]).default("D"),
   }),
   model: (p, ctx) => {
     const cs = chargesOf(ctx);
-    const points = Array.from({ length: p.samples }, (_, i) => {
-      const r = p.rMin + ((p.rMax - p.rMin) * i) / (p.samples - 1);
-      const v = p.quantity === "D" ? norm(fluxDensity(cs, [r, 0, 0])) * 1e6 : norm(electricField(cs, [r, 0, 0]));
-      return { r, v };
-    });
+    const points = Array.from({ length: p.samples }, (_, i) => p.rMin + ((p.rMax - p.rMin) * i) / (p.samples - 1))
+      .filter((r) => !nearCharge(cs, [r, 0, 0], SINGULAR))
+      .map((r) => ({ r, v: p.quantity === "D" ? norm(fluxDensity(cs, [r, 0, 0])) * 1e6 : norm(electricField(cs, [r, 0, 0])) }));
     return { points };
   },
   handles: [],
@@ -101,11 +112,11 @@ const SurfaceParams = z.object({
   size: z.number().positive().default(1),
   height: z.number().positive().default(1),
   amplitude: z.number().min(0).max(0.6).default(0.2),
-  lobes: z.number().int().min(1).max(8).default(3),
+  lobes: int(1, 8, 3),
   showNormals: z.boolean().default(false),
   shading: z.boolean().default(false),
   readout: z.boolean().default(true),
-  quality: z.number().int().min(8).max(96).default(24),
+  quality: int(8, 96, 24),
 });
 
 const toShape = (p: z.infer<typeof SurfaceParams>): SurfaceShape => {
@@ -128,17 +139,24 @@ export const GaussianSurface = defineComponent({
   model: (p, ctx) => {
     const cs = chargesOf(ctx);
     const shape = toShape(p);
-    // A point charge within 1% of the surface (inside the 1.01× shape, outside the 0.99× shape) makes the
-    // integrand singular. Physically a smooth surface catches half of it, so count it as ½ and flag it.
-    const grown = toShape({ ...p, size: p.size * 1.01, height: p.height * 1.01 });
-    const shrunk = toShape({ ...p, size: p.size * 0.99, height: p.height * 0.99 });
+    // A point charge on the surface (to 1e-9 relative) makes the integrand singular. Physically a smooth
+    // surface catches half of it, so count it as ½ and flag it. Anywhere else the charge is fully in or out.
+    const grown = toShape({ ...p, size: p.size * (1 + SINGULAR), height: p.height * (1 + SINGULAR) });
+    const shrunk = toShape({ ...p, size: p.size * (1 - SINGULAR), height: p.height * (1 - SINGULAR) });
     const onSurface = cs.filter((c) => c.kind === "point" && contains(grown, c.pos) && !contains(shrunk, c.pos));
     const regular = cs.filter((c) => !onSurface.includes(c));
     const halfOnSurface = onSurface.reduce((s, c) => s + (c.kind === "point" ? c.q : 0), 0) / 2;
-    // Gauss's law is exact, so the flux readout is the analytic enclosed charge. Quadrature is used only where
-    // no closed form exists (line/sheet charges crossing a blob); where lines pierce a surface it converges O(1/n).
-    const analytic = p.shape !== "blob" || regular.every((c) => c.kind === "point");
-    const enclosed = analytic ? enclosedCharge(regular, shape) : fluxThrough(regular, surfacePatches(shape, p.quality));
+    // Gauss's law is exact, so the flux readout is the analytic enclosed charge (quadrature where lines pierce a
+    // surface converges only O(1/n)). A blob has no closed form for a crossing line or sheet, so that is refused.
+    let inScope = regular;
+    if (p.shape === "blob") {
+      const reach = p.size * (1 + p.amplitude);
+      const c0 = p.center;
+      if (regular.some((c) => (c.kind === "line" ? Math.hypot(c.x - c0[0], c.y - c0[1]) < reach : c.kind === "sheet" && Math.abs(c.z0 - c0[2]) < reach)))
+        throw new Error("gaussian-surface: line and sheet charges crossing a blob have no exact flux; use a sphere, cube or cylinder");
+      inScope = regular.filter((c) => c.kind === "point");
+    }
+    const enclosed = enclosedCharge(inScope, shape);
     const flux = enclosed + halfOnSurface;
     const patches = surfacePatches(shape, 8).map((pt) => {
       const a = norm(pt.dS);
