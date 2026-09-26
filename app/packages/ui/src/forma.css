@@ -69,3 +69,8 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .plate-equation [class*="t-"] { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .plate * { transition: none !important; animation: none !important; } }
 .readouts { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 10px 0; }
+.split { display: grid; gap: 0; align-items: start; }
+.split-pane { min-width: 0; }
+.split-handle { align-self: stretch; cursor: col-resize; background: linear-gradient(var(--grid), var(--grid)) center / 1.5px 100% no-repeat; }
+.split-handle:hover, .split-handle:focus-visible { background-image: linear-gradient(var(--focus), var(--focus)); }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr !important; } .split-handle { display: none; } }
