@@ -26,7 +26,7 @@ export const vectorCalculus = {
       id: "main",
       title: "Gradient, divergence and curl (in depth)",
       minutes: 75,
-      blocks: [{ ...meta("vivid", src(SLIDES_2A, "Gradient")), id: "idea-gradient", type: "plate" as const, plateId: "idea-gradient" }, { ...meta("vivid", src(SLIDES_2A, "Divergence")), id: "idea-divergence", type: "plate" as const, plateId: "idea-divergence" }],
+      blocks: [{ ...meta("vivid", src(SLIDES_2A, "Gradient")), id: "idea-gradient", type: "plate" as const, plateId: "idea-gradient" }, { ...meta("vivid", src(SLIDES_2A, "Divergence")), id: "idea-divergence", type: "plate" as const, plateId: "idea-divergence" }, { ...meta("vivid", src(SLIDES_2A, "Curl")), id: "idea-curl", type: "plate" as const, plateId: "idea-curl" }],
     },
   ],
 };

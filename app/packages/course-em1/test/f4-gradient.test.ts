@@ -4,11 +4,15 @@ import { course, ideaPlates } from "../src";
 describe("F4 gradient", () => {
   it("registers an in-depth vector calculus concept and gradient idea", () => {
     const concept = course.concepts.find((c) => c.id === "em1.math.vector-calculus");
-    expect(concept?.lessons.find((l) => l.id === "main")?.blocks.map((b) => b.type === "plate" ? b.plateId : "")).toEqual(["idea-gradient", "idea-divergence"]);
+    expect(concept?.lessons.find((l) => l.id === "main")?.blocks.map((b) => b.type === "plate" ? b.plateId : "")).toEqual(["idea-gradient", "idea-divergence", "idea-curl"]);
     expect(ideaPlates["idea-gradient"]?.meta.ideas.map((idea) => idea.id)).toEqual(["gradient"]);
   });
 });
 
 it("registers the divergence idea", () => {
   expect(ideaPlates["idea-divergence"]?.meta.ideas.map((idea) => idea.id)).toEqual(["divergence"]);
+});
+
+it("registers the curl idea", () => {
+  expect(ideaPlates["idea-curl"]?.meta.ideas.map((idea) => idea.id)).toEqual(["curl"]);
 });
