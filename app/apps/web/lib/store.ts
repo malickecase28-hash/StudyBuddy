@@ -11,6 +11,10 @@ import {
   type NotebookEntry,
   type Settings,
   type TopicResult,
+  withLayout,
+  withNextSeed,
+  type Mode,
+  type ToolId,
 } from "@forma/engine";
 import { create } from "zustand";
 import { conceptById, examDateMs } from "./course";
@@ -46,6 +50,8 @@ type Store = {
   dismissWelcome: () => void;
   dismissResetNotice: () => void;
   resetProgress: () => void;
+  setLayout: (mode: Mode, patch: Partial<{ split: number; pinned: ToolId[] }>) => void;
+  nextVariant: (templateId: string) => void;
 };
 
 const STATE_KEY = "learner";
@@ -119,6 +125,9 @@ export const useStudy = create<Store>((set, get) => ({
   setLabFocus: (labFocus) => set({ labFocus }),
   dismissWelcome: () => set({ welcomeDismissed: true }),
   dismissResetNotice: () => set({ resetNotice: false }),
+
+  setLayout: (mode, patch) => set((s) => ({ learner: withLayout(s.learner, mode, patch) })),
+  nextVariant: (templateId) => set((s) => ({ learner: withNextSeed(s.learner, templateId) })),
   resetProgress: () => set({ learner: { ...initialState(), settings: get().learner.settings }, returnInfo: null }),
 }));
 

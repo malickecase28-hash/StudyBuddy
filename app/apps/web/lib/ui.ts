@@ -1,26 +1,25 @@
 "use client";
 
+import type { ToolId } from "@forma/engine";
 import { create } from "zustand";
 
-type DrawerTab = "sources" | "formulas" | "notebook";
-
-/** Ephemeral UI state (not persisted). */
+/** Ephemeral UI state (not persisted). Pinned tools live in the learner's per-mode layouts. */
 export const useUi = create<{
-  drawerOpen: boolean;
-  drawerTab: DrawerTab;
-  railOpen: boolean;
+  panel: ToolId | null;
+  paletteOpen: boolean;
   activeConceptId: string | null;
-  openDrawer: (tab?: DrawerTab) => void;
-  closeDrawer: () => void;
-  toggleRail: () => void;
+  togglePanel: (t: ToolId) => void;
+  openPanel: (t: ToolId) => void;
+  closePanel: () => void;
+  setPalette: (open: boolean) => void;
   setActiveConcept: (id: string | null) => void;
 }>((set) => ({
-  drawerOpen: false,
-  drawerTab: "sources",
-  railOpen: true,
+  panel: null,
+  paletteOpen: false,
   activeConceptId: null,
-  openDrawer: (tab) => set((s) => ({ drawerOpen: true, drawerTab: tab ?? s.drawerTab })),
-  closeDrawer: () => set({ drawerOpen: false }),
-  toggleRail: () => set((s) => ({ railOpen: !s.railOpen })),
+  togglePanel: (t) => set((s) => ({ panel: s.panel === t ? null : t })),
+  openPanel: (t) => set({ panel: t }),
+  closePanel: () => set({ panel: null }),
+  setPalette: (paletteOpen) => set({ paletteOpen }),
   setActiveConcept: (activeConceptId) => set({ activeConceptId }),
 }));

@@ -9,8 +9,9 @@ import { useStudy } from "@/lib/store";
 type Option<K extends keyof Settings> = { key: K; label: string; hint: string; values: [Settings[K], string][] };
 
 const OPTIONS = [
-  { key: "theme", label: "Theme", hint: "Colour meanings stay the same in every theme.", values: [["paper", "Studio light"], ["blueprint", "Blueprint"], ["contrast", "High contrast"]] },
+  { key: "theme", label: "Theme", hint: "Colour meanings stay the same in every theme.", values: [["paper", "Paper"], ["blueprint", "Blueprint"], ["contrast", "High contrast"]] },
   { key: "motion", label: "Motion", hint: "Reduced shows the same information without animation.", values: [["standard", "Standard"], ["reduced", "Reduced"]] },
+  { key: "narration", label: "Read aloud", hint: "Shows a “Read this” button that uses this device's voice. Voices differ between devices.", values: [["off", "Off"], ["device", "Device voice"]] },
   { key: "density", label: "Density", hint: "", values: [["comfortable", "Comfortable"], ["compact", "Compact"]] },
   { key: "simQuality", label: "Simulation quality", hint: "Low-power uses fewer arrows and a coarser surface.", values: [["high", "High"], ["balanced", "Balanced"], ["low", "Low-power"]] },
   { key: "equationDetail", label: "Equations", hint: "Progressive builds equations term by term.", values: [["progressive", "Progressive"], ["full", "Full at once"]] },
@@ -31,7 +32,7 @@ export function SettingsDialog() {
     const blob = new Blob([JSON.stringify(learner, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "studybuddy-progress.json";
+    a.download = "forma-progress.json";
     a.click();
   };
 

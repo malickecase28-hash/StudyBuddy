@@ -147,6 +147,16 @@ export function HomeScreen() {
           })}
         </ol>
       </section>
+      {learner.notebook.length > 0 && (
+        <section className="card space-y-2" aria-labelledby="recent-notes">
+          <h2 id="recent-notes" className="label">Recent in your notebook</h2>
+          <ul className="space-y-1 text-sm">
+            {learner.notebook.slice(0, 3).map((n) => (
+              <li key={n.id}><Link className="underline" href="/notebook">{n.title}</Link></li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
