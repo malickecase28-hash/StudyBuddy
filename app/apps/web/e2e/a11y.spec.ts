@@ -6,6 +6,7 @@ const SCREENS = [
   "/", "/courses", "/c/em1",
   concept("em1.intro.em-world", "mode=learn"),
   concept("em1.math.vectors", "mode=learn&lesson=main&block=idea-coords"), concept("em1.math.vector-calculus", "mode=learn&lesson=main&block=idea-divergence"),
+  concept("em1.electrostatics.coulomb", "mode=learn"), concept("em1.electrostatics.field", "mode=learn&lesson=main&block=idea-e-continuous"),
   concept(G, "mode=learn"), concept(G, "mode=solve"), concept(G, "mode=explore"), concept(G, "mode=revise"),
   concept("em1.electrostatics.gauss-applications", "mode=learn"), "/notebook", "/review",
   concept(G, "mode=learn&lesson=main&block=flux-surface"), concept(G, "mode=learn&lesson=main&block=idea-symmetry"), `/c/em1/${G}/sheet`,

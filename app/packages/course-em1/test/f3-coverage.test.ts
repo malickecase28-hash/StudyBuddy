@@ -14,8 +14,10 @@ describe("F3/F4 concepts", () => {
     expect(mainOf("em1.intro.em-world")).toEqual(["idea-em-world", "idea-units"]);
     expect(mainOf("em1.math.vectors")).toEqual(["idea-vec-basics", "idea-vec-products", "idea-coords", "idea-elements"]);
     expect(mainOf("em1.math.vector-calculus")).toEqual(["idea-gradient", "idea-divergence", "idea-curl"]);
+    expect(mainOf("em1.electrostatics.coulomb")).toEqual(["idea-coulomb-law", "idea-superposition"]);
+    expect(mainOf("em1.electrostatics.field")).toEqual(["idea-e-point", "idea-e-superposition", "idea-e-continuous"]);
   });
-  for (const id of ["em1.intro.em-world", "em1.math.vectors", "em1.math.vector-calculus"]) {
+  for (const id of ["em1.intro.em-world", "em1.math.vectors", "em1.math.vector-calculus", "em1.electrostatics.coulomb", "em1.electrostatics.field"]) {
     it(`${id}: full coverage, and every idea is load-bearing`, () => {
       const plates = mainOf(id);
       expect(coverageGaps(merged(id, plates))).toEqual([]);
