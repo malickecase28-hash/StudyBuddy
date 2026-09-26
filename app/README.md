@@ -44,6 +44,12 @@ pnpm --dir apps/web e2e --update-snapshots -g "key plate states"   # after an in
 
 Shortcuts: ← → step · Space play/pause · 1–4 mode · P paper · N notebook · ⌘K / Ctrl+K search and jump. Tools open as a resizable split beside the page (Shift-click or Pin keeps one open per mode; ⤢ expands; on phones they open full-screen). The finals countdown lives on the Desk and in Revise only.
 
+## Teaching model
+
+Lessons are authored as **ideas** with `defineIdeaPlate` (`packages/course-em1/src/plates/*.ts`). Each idea runs Explain (derivations in view) → three worked examples, stepped line by line (basic, tutorial, exam) → questions students ask (short answers that preview their own plate state; searchable from ⌘K) → checks (a check unlocks only when answered correctly; two misses show a worked example with new numbers or point back to the examples) → a recap card, saved to the notebook and collected on `/c/em1/<concept>/sheet`.
+
+Lints keep it honest: 180 words per step and 80 per ask; no "possible slide"; and every number with a physics unit in a note, ask or trap must match a claim, param or model readout on that plate state. A coverage test fails the build if a declared objective, past-paper item or misconception isn't explained, worked and checked.
+
 ## What's in the prototype (the spec's 15 pieces)
 
 1. Landing: continue card, route, finals countdown, reviews due.
