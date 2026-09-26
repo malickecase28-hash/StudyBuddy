@@ -9,7 +9,8 @@ describe("G1 Coulomb lesson", () => {
       "Apply superposition to find the net force from several charges.",
     ]);
     expect(coulomb.lessons.map((lesson) => lesson.id)).toEqual(["main", "quick"]);
-    expect(coulomb.lessons[0]!.blocks[0]).toMatchObject({ type: "plate", plateId: "idea-coulomb-law" });
+    expect(coulomb.lessons[0]!.blocks.map((block) => "plateId" in block ? block.plateId : null).filter(Boolean)).toEqual(["idea-coulomb-law", "idea-superposition"]);
     expect(ideaPlates["idea-coulomb-law"]?.meta.ideas.map((idea) => idea.id)).toEqual(["coulomb-law"]);
+    expect(ideaPlates["idea-superposition"]?.meta.ideas.map((idea) => idea.id)).toEqual(["superposition"]);
   });
 });

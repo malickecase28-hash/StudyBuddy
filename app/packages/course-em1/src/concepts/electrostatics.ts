@@ -22,7 +22,7 @@ export const coulomb = {
       id: "main",
       title: "Coulomb's law (in depth)",
       minutes: 50,
-      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 9-15")), id: "idea-coulomb-law", type: "plate" as const, plateId: "idea-coulomb-law" }],
+      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 9-15")), id: "idea-coulomb-law", type: "plate" as const, plateId: "idea-coulomb-law" }, { ...meta("vivid", src(SLIDES, "pp. 9-15")), id: "idea-superposition", type: "plate" as const, plateId: "idea-superposition" }],
     },
     {
       id: "quick",
