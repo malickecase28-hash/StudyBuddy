@@ -12,6 +12,19 @@ const radialFlux = (a: number, R: number) =>
   }, 0);
 
 const truth: Record<string, (p: Record<string, number>) => number> = {
+  "em-wavelength": (p) => 299_792_458 / (p.f! * 1e6),
+  "unit-si-length": (p) => p.v! * [1e-3, 1e-6, 1e-2, 0.0254][p.k!]!,
+  "vec-sum-mag": (p) => Math.hypot(p.a! + 5, p.b!, 3 - p.c!),
+  "vec-distance-mm": (p) => Math.hypot(p.dx!, p.dz!) / 1000,
+  "vec-angle": (p) => Math.acos((p.b! - 6 * p.a!) / (Math.hypot(1, p.a!) * Math.hypot(p.b!, 2, 6))) * 180 / Math.PI,
+  "coord-phi": (p) => {
+    const signs = [[1, 1], [-1, 1], [-1, -1], [1, -1]][p.quad!]!;
+    return (Math.atan2(signs[1]! * p.qy!, signs[0]! * p.qx!) * 180 / Math.PI + 360) % 360;
+  },
+  "sph-patch-area": (p) => {
+    const theta = [30, 45, 60, 90][p.t!]! * Math.PI / 180;
+    return (p.rc! / 100) ** 2 * (1 - Math.cos(theta)) * (p.dp! * Math.PI / 180);
+  },
   "q06-octant": (p) =>
     fluxThrough(
       [{ kind: "point", q: p.Q! * 1e-6, pos: vec(0, 0, 0) }],

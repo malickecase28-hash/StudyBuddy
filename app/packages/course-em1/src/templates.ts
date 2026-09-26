@@ -128,5 +128,161 @@ const fluxFlat = defineTemplate<{ D: number; a: number; b: number; theta: number
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat];
+const C0 = 299_792_458;
+const sig = (x: number, n = 4) => Number(x.toPrecision(n));
+const DEG = Math.PI / 180;
+
+const emWavelength = defineTemplate<{ f: number }>({
+  id: "em-wavelength",
+  params: { f: { min: 60, max: 990, step: 10 } },
+  prompt: (p) => `A transmitter broadcasts at ${p.f} MHz. Find the wavelength in metres.`,
+  solve: (p) => ({
+    answer: { value: sig(C0 / (p.f * 1e6)), unit: "m" },
+    distractors: [{ value: sig(C0 / p.f), unit: "m", errorClass: "unit", feedback: "That divides by the frequency in MHz. Convert to hertz first: multiply by 10⁶." }],
+  }),
+  hints: (p) => ["λ = c/f, with c = 299 792 458 m/s.", "The frequency must be in hertz.", `299 792 458 ÷ (${p.f} × 10⁶).`],
+  worked: (p) => [{ text: `f = ${p.f} MHz = ${p.f} × 10⁶ Hz.` }, { text: `λ = c/f = 299 792 458 ÷ (${p.f} × 10⁶) = ${sig(C0 / (p.f * 1e6))} m.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.intro.em-world"], misconceptions: [], difficulty: 1 },
+});
+
+const LEN: [string, number, number][] = [["mm", 1e-3, 1e-2], ["µm", 1e-6, 1e-3], ["cm", 1e-2, 1e-3], ["inch", 0.0254, 1e-2]];
+const unitSiLength = defineTemplate<{ v: number; k: number }>({
+  id: "unit-si-length",
+  params: { v: { min: 1, max: 99, step: 1 }, k: { min: 0, max: 3, step: 1 } },
+  prompt: (p) => `Convert ${p.v} ${LEN[p.k]![0]} to metres.`,
+  solve: (p) => {
+    const [, f, wrong] = LEN[p.k]!;
+    return {
+      answer: { value: sig(p.v * f, 6), unit: "m" },
+      distractors: [{ value: sig(p.v * wrong, 6), unit: "m", errorClass: "unit", feedback: "Check the ladder: milli is 10⁻³, micro 10⁻⁶, centi 10⁻², and an inch is exactly 0.0254 m." }],
+    };
+  },
+  hints: (p) => [`What power of ten is one ${LEN[p.k]![0]}?`, `1 ${LEN[p.k]![0]} = ${LEN[p.k]![1]} m.`, `${p.v} × ${LEN[p.k]![1]}.`],
+  worked: (p) => [{ text: `1 ${LEN[p.k]![0]} = ${LEN[p.k]![1]} m, so ${p.v} ${LEN[p.k]![0]} = ${p.v} × ${LEN[p.k]![1]} = ${sig(p.v * LEN[p.k]![1], 6)} m.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.intro.em-world"], misconceptions: ["PREFIX_POWER"], difficulty: 1 },
+});
+
+const vecSumMag = defineTemplate<{ a: number; b: number; c: number }>({
+  id: "vec-sum-mag",
+  params: { a: { min: 1, max: 5, step: 1 }, b: { min: 1, max: 5, step: 1 }, c: { min: 1, max: 9, step: 1 } },
+  prompt: (p) => `A = ${p.a}âₓ + 3âz and B = 5âₓ + ${p.b}âᵧ − ${p.c}âz. Find |A + B|.`,
+  solve: (p) => ({
+    answer: { value: sig(Math.hypot(p.a + 5, p.b, 3 - p.c), 5), unit: "" },
+    distractors: [{ value: sig(Math.hypot(p.a, 3) + Math.hypot(5, p.b, p.c), 5), unit: "", errorClass: "conceptual", feedback: "Magnitudes don't add unless the vectors are parallel. Add the components first, then take the length." }],
+  }),
+  hints: () => ["Add matching components.", "Then |V| = √(Vₓ² + Vᵧ² + V_z²).", "Watch the sign of the z part."],
+  worked: (p) => [
+    { text: `A + B = ${p.a + 5}âₓ + ${p.b}âᵧ + (${3 - p.c})âz.` },
+    { text: `|A + B| = √(${(p.a + 5) ** 2} + ${p.b ** 2} + ${(3 - p.c) ** 2}) = ${sig(Math.hypot(p.a + 5, p.b, 3 - p.c), 5)}.` },
+  ],
+  dimension: "computational",
+  tags: { concepts: ["em1.math.vectors"], misconceptions: [], difficulty: 1 },
+});
+
+const vecDistanceMm = defineTemplate<{ dx: number; dz: number }>({
+  id: "vec-distance-mm",
+  params: { dx: { min: 1, max: 9, step: 1 }, dz: { min: 1, max: 9, step: 1 } },
+  prompt: (p) => `Charges sit at P1(2, 2, 13) mm and P2(${2 + p.dx}, 2, ${13 - p.dz}) mm. Find the length of R12 in metres.`,
+  solve: (p) => ({
+    answer: { value: sig(Math.hypot(p.dx, p.dz) / 1000), unit: "m" },
+    distractors: [{ value: sig(Math.hypot(p.dx, p.dz)), unit: "m", errorClass: "unit", feedback: "That is the length in millimetres. Divide by 1000 for metres." }],
+  }),
+  hints: () => ["R12 = P2 − P1, end minus start.", "Length by 3D Pythagoras.", "Then convert mm to m."],
+  worked: (p) => [
+    { text: `R12 = (${p.dx}, 0, −${p.dz}) mm.` },
+    { text: `|R12| = √(${p.dx ** 2} + ${p.dz ** 2}) = ${sig(Math.hypot(p.dx, p.dz))} mm = ${sig(Math.hypot(p.dx, p.dz) / 1000)} m.` },
+  ],
+  dimension: "computational",
+  tags: { concepts: ["em1.math.vectors"], misconceptions: [], difficulty: 1 },
+});
+
+const vecAngle = defineTemplate<{ a: number; b: number }>({
+  id: "vec-angle",
+  params: { a: { min: 1, max: 5, step: 1 }, b: { min: 1, max: 6, step: 1 } },
+  prompt: (p) => `A = âₓ + ${p.a}âz and B = ${p.b}âₓ + 2âᵧ − 6âz. Find the angle between them, in degrees.`,
+  solve: (p) => {
+    const dotAB = p.b - 6 * p.a;
+    const th = Math.acos(dotAB / (Math.hypot(1, p.a) * Math.hypot(p.b, 2, 6))) / DEG;
+    return {
+      answer: { value: sig(th, 5), unit: "°" },
+      distractors: Math.abs(th - 90) > 0.5 ? [{ value: sig(180 - th, 5), unit: "°", errorClass: "sign", feedback: "Keep the sign of A·B: a negative dot product means the angle is more than 90°." }] : [],
+    };
+  },
+  hints: () => ["cos θ = A·B / (|A||B|).", "A·B = AₓBₓ + AᵧBᵧ + A_zB_z.", "Keep the sign, then take cos⁻¹."],
+  worked: (p) => {
+    const dotAB = p.b - 6 * p.a;
+    const ma = Math.hypot(1, p.a), mb = Math.hypot(p.b, 2, 6);
+    return [
+      { text: `A·B = (1)(${p.b}) + (0)(2) + (${p.a})(−6) = ${dotAB}.` },
+      { text: `|A| = ${sig(ma, 5)}, |B| = ${sig(mb, 5)}.` },
+      { text: `cos θ = ${dotAB} / (${sig(ma, 5)} × ${sig(mb, 5)}) = ${sig(dotAB / (ma * mb), 5)}, so θ = ${sig(Math.acos(dotAB / (ma * mb)) / DEG, 5)}°.` },
+    ];
+  },
+  dimension: "computational",
+  tags: { concepts: ["em1.math.vectors"], misconceptions: [], difficulty: 2 },
+});
+
+const QUAD: [number, number][] = [[1, 1], [-1, 1], [-1, -1], [1, -1]];
+const coordPhi = defineTemplate<{ qx: number; qy: number; quad: number }>({
+  id: "coord-phi",
+  params: { qx: { min: 1, max: 5, step: 1 }, qy: { min: 1, max: 5, step: 1 }, quad: { min: 0, max: 3, step: 1 } },
+  prompt: (p) => {
+    const [sx, sy] = QUAD[p.quad]!;
+    return `Find φ, from 0° to 360°, for the point (${sx * p.qx}, ${sy * p.qy}, 2).`;
+  },
+  solve: (p) => {
+    const [sx, sy] = QUAD[p.quad]!;
+    const x = sx * p.qx, y = sy * p.qy;
+    const phi = ((Math.atan2(y, x) / DEG) % 360 + 360) % 360;
+    const raw = Math.atan(y / x) / DEG;
+    return {
+      answer: { value: sig(phi, 5), unit: "°" },
+      distractors: Math.abs(raw - phi) > 0.5 ? [{ value: sig(raw, 5), unit: "°", errorClass: "conceptual", tag: "PHI_QUADRANT", feedback: "That is the calculator's tan⁻¹(y/x). Place the point in its quadrant from the signs of x and y, then correct the angle." }] : [],
+    };
+  },
+  hints: () => ["Which quadrant? Look at the signs of x and y.", "tan⁻¹(y/x) only knows the ratio.", "Quadrants II and III: add 180°. Quadrant IV: add 360°."],
+  worked: (p) => {
+    const [sx, sy] = QUAD[p.quad]!;
+    const x = sx * p.qx, y = sy * p.qy;
+    const raw = Math.atan(y / x) / DEG;
+    const phi = ((Math.atan2(y, x) / DEG) % 360 + 360) % 360;
+    return [
+      { text: `x = ${x}, y = ${y}: quadrant ${["I", "II", "III", "IV"][p.quad]}.` },
+      { text: `tan⁻¹(y/x) = ${sig(raw, 5)}°; corrected for the quadrant, φ = ${sig(phi, 5)}°.` },
+    ];
+  },
+  dimension: "computational",
+  tags: { concepts: ["em1.math.vectors"], misconceptions: ["PHI_QUADRANT"], difficulty: 2 },
+});
+
+const TH2 = [30, 45, 60, 90];
+const sphPatchArea = defineTemplate<{ rc: number; t: number; dp: number }>({
+  id: "sph-patch-area",
+  params: { rc: { min: 10, max: 50, step: 5 }, t: { min: 0, max: 3, step: 1 }, dp: { min: 15, max: 90, step: 15 } },
+  prompt: (p) => `Find the area of the part of the sphere r = ${p.rc} cm with 0 < θ < ${TH2[p.t]}° and 0 < φ < ${p.dp}°.`,
+  solve: (p) => {
+    const r = p.rc / 100, t2 = TH2[p.t]! * DEG, dphi = p.dp * DEG;
+    return {
+      answer: { value: sig(r * r * (1 - Math.cos(t2)) * dphi), unit: "m^2" },
+      distractors: [
+        { value: sig(r * r * t2 * dphi), unit: "m^2", errorClass: "conceptual", tag: "ELEMENT_SCALE_FACTOR", feedback: "That leaves out sin θ. On a sphere, dS = r² sin θ dθ dφ." },
+        { value: sig(p.rc * p.rc * (1 - Math.cos(t2)) * dphi), unit: "m^2", errorClass: "unit", feedback: "That squares the radius in centimetres. Convert r to metres first." },
+      ],
+    };
+  },
+  hints: () => ["dS = r² sin θ dθ dφ on a sphere.", "∫ sin θ dθ from 0 to θ₂ = 1 − cos θ₂.", "Angles in radians; r in metres."],
+  worked: (p) => {
+    const r = p.rc / 100, t2 = TH2[p.t]! * DEG, dphi = p.dp * DEG;
+    return [
+      { text: `r = ${r} m; ∫₀^θ₂ sin θ dθ = 1 − cos ${TH2[p.t]}° = ${sig(1 - Math.cos(t2), 5)}; Δφ = ${p.dp}° = ${sig(dphi, 5)} rad.` },
+      { text: `S = r²(1 − cos θ₂)Δφ = ${sig(r * r, 5)} × ${sig(1 - Math.cos(t2), 5)} × ${sig(dphi, 5)} = ${sig(r * r * (1 - Math.cos(t2)) * dphi)} m².` },
+    ];
+  },
+  dimension: "computational",
+  tags: { concepts: ["em1.math.vectors"], misconceptions: ["ELEMENT_SCALE_FACTOR"], difficulty: 2 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));

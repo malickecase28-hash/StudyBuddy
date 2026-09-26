@@ -21,5 +21,6 @@ describe("explore labs", () => {
 
 it("templatesFor filters by concept tag", () => {
   expect(templatesFor("em1.electrostatics.gauss-applications").map((t) => t.id).sort()).toEqual(["f2425-qt", "q06-octant", "q08-e", "q08-q", "q09a-cube"]);
-  expect(templatesFor("em1.math.vectors")).toEqual([]);
+  expect(templatesFor("em1.math.vectors").map((t) => t.id).sort()).toEqual(["coord-phi", "sph-patch-area", "vec-angle", "vec-distance-mm", "vec-sum-mag"]);
+  expect(templatesFor("em1.intro.em-world").map((t) => t.id).sort()).toEqual(["em-wavelength", "unit-si-length"]);
 });

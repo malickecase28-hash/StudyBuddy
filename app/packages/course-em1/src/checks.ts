@@ -33,4 +33,8 @@ export const checks: Record<string, Check> = {
     now.surface?.params.shape !== start.surface?.params.shape && Math.abs(Number(now.surface?.model.enclosed)) > 1e-9,
   /** The flat patch passes 3 µC, within 2%. */
   "patch-flux-3": (now) => Math.abs(Number(now.patch?.model.dPsi) - 3) <= 0.06,
-};
+  /** The coord-frame point (instance "cf") is in the second quadrant: 90° < φ < 180°. */
+  "phi-second-quadrant": (now) => {
+    const phi = Number(now.cf?.model.pPhi);
+    return phi > 90 && phi < 180;
+  },};
