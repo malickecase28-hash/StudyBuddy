@@ -11,3 +11,4 @@ minimumReleaseAgeExclude:
   - its-fine@2.1.1
   - motion-dom@13.4.4
   - motion@13.4.4
+  - '@cortex-js/compute-engine@0.135.0'
