@@ -72,4 +72,8 @@ export const vectorFields: Record<string, VectorField> = {
     F: ([r, t]) => [r, 0, r * cos(t) ** 2],
     div: () => 3,
     curl: ([, t]) => [cot(t) - 3 * sin(t) * cos(t), -2 * cos(t) ** 2, 0] }),
+  "hw-2.6": V({ id: "hw-2.6", text: "D = 3xy ax + x² ay", latex: String.raw`\mathbf D=3xy\,\mathbf a_x+x^2\,\mathbf a_y`, system: "cart",
+    F: ([x, y]) => [3 * x * y, x * x, 0], div: ([, y]) => 3 * y, curl: ([x]) => [0, 0, -x] }),
+  "f2324-2b": V({ id: "f2324-2b", text: "E = πr² (r ≤ 3 m), 6π/r³ (r > 3 m), radial", latex: String.raw`\mathbf E=\begin{cases}\pi r^2\,\mathbf a_r & r\le3\\ \tfrac{6\pi}{r^3}\,\mathbf a_r & r>3\end{cases}`, system: "sph",
+    F: ([r]) => [r <= 3 ? Math.PI * r * r : (6 * Math.PI) / r ** 3, 0, 0], div: ([r]) => (r <= 3 ? 4 * Math.PI * r : (-6 * Math.PI) / r ** 4), curl: () => [0, 0, 0] }),
 };

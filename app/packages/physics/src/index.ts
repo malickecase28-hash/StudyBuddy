@@ -7,3 +7,4 @@ export * from "./flux";
 export * from "./potential";
 export * from "./coords";
 export * from "./fields";
+export * from "./densities";

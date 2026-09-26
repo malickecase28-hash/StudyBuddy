@@ -1,4 +1,4 @@
-import { cartOf, gaussLegendre, nativeOf, scalarFields, vectorFields, type Vec3 } from "@forma/physics";
+import { cartOf, densities, fromCyl, fromSph, gaussLegendre, nativeOf, scalarFields, totalCharge, unitVectors, vectorFields, type CoordSystem, type Vec3 } from "@forma/physics";
 import { toSI } from "@forma/engine";
 import { z } from "zod";
 import { defineComponent } from "../component";
@@ -107,6 +107,39 @@ export const VectorSlice = defineComponent({
 const Range = z.tuple([z.number(), z.number()]).refine(([a, b]) => b > a, "range must increase");
 const DEG = Math.PI / 180;
 
+function coordRegionExtras(system: CoordSystem, ranges: [number, number][], face: 0 | 1 | 2 | null, faceAt: "max" | "min", density: string | null, centralCharge: number | null) {
+  const nativeRanges = ranges.map(([a, b], i) => {
+    const angle = (system === "cyl" && i === 1) || (system === "sph" && (i === 1 || i === 2));
+    return angle ? [a * DEG, b * DEG] as [number, number] : [a, b] as [number, number];
+  });
+  const out: Record<string, number> = {};
+  if (density !== null) out.Q = totalCharge(densities[density]!, nativeRanges);
+  if (centralCharge !== null && face !== null) {
+    const { nodes, weights } = gaussLegendre(16);
+    const free = [0, 1, 2].filter((k) => k !== face);
+    const fixed = faceAt === "max" ? nativeRanges[face]![1] : nativeRanges[face]![0];
+    let flux = 0;
+    for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) {
+      const u = [nativeRanges[0]![0], nativeRanges[1]![0], nativeRanges[2]![0]];
+      u[face] = fixed;
+      const [a, b] = nativeRanges[free[0]!]!;
+      const [c, d] = nativeRanges[free[1]!]!;
+      u[free[0]!] = (a + b) / 2 + ((b - a) / 2) * nodes[i]!;
+      u[free[1]!] = (c + d) / 2 + ((d - c) / 2) * nodes[j]!;
+      const native = u as [number, number, number];
+      const point: Vec3 = system === "cart" ? native : system === "cyl" ? fromCyl(...native) : fromSph(...native);
+      const r = Math.hypot(...point);
+      const D = [point[0] * centralCharge / (4 * Math.PI * r ** 3), point[1] * centralCharge / (4 * Math.PI * r ** 3), point[2] * centralCharge / (4 * Math.PI * r ** 3)] as Vec3;
+      const normal = unitVectors(point, system)[face].map((v) => v * (faceAt === "max" ? 1 : -1)) as unknown as Vec3;
+      const h: [number, number, number] = system === "cart" ? [1, 1, 1] : system === "cyl" ? [1, native[0], 1] : [1, native[0], native[0] * Math.sin(native[1])];
+      const jac = h[free[0]!]! * h[free[1]!]! * ((b - a) / 2) * ((d - c) / 2);
+      flux += weights[i]! * weights[j]! * (D[0] * normal[0] + D[1] * normal[1] + D[2] * normal[2]) * jac;
+    }
+    out.patchFlux = flux;
+  }
+  return out;
+}
+
 export const CoordRegion = defineComponent({
   id: "coord-region",
   params: z.object({
@@ -114,6 +147,8 @@ export const CoordRegion = defineComponent({
     ranges: z.tuple([Range, Range, Range]),
     face: z.union([z.literal(0), z.literal(1), z.literal(2), z.null()]).default(null),
     faceAt: z.enum(["max", "min"]).default("max"),
+    density: z.string().nullable().default(null),
+    centralCharge: z.number().nullable().default(null),
     /** Drawing magnification only (a 7 m cylinder or a 25 cm patch); readouts use the true region. */
     drawScale: z.number().positive().default(1),
   }),
@@ -123,12 +158,12 @@ export const CoordRegion = defineComponent({
     if (p.system === "cart") {
       const [dx, dy, dz] = [b1 - a1, b2 - a2, b3 - a3];
       const area = p.face === null ? undefined : [dy * dz, dx * dz, dx * dy][p.face];
-      return { len1: dx, len2: dy, len3: dz, volume: dx * dy * dz, ...(area === undefined ? {} : { area }) };
+      return { len1: dx, len2: dy, len3: dz, volume: dx * dy * dz, ...(area === undefined ? {} : { area }), ...coordRegionExtras(p.system, p.ranges, p.face, p.faceAt, p.density, p.centralCharge) };
     }
     if (p.system === "cyl") {
       const dphi = (b2 - a2) * DEG, dz = b3 - a3;
       const area = p.face === null ? undefined : [pick(a1, b1) * dphi * dz, (b1 - a1) * dz, 0.5 * (b1 * b1 - a1 * a1) * dphi][p.face];
-      return { len1: b1 - a1, len2: a1 * dphi, len3: dz, volume: 0.5 * (b1 * b1 - a1 * a1) * dphi * dz, ...(area === undefined ? {} : { area }) };
+      return { len1: b1 - a1, len2: a1 * dphi, len3: dz, volume: 0.5 * (b1 * b1 - a1 * a1) * dphi * dz, ...(area === undefined ? {} : { area }), ...coordRegionExtras(p.system, p.ranges, p.face, p.faceAt, p.density, p.centralCharge) };
     }
     const ta = a2 * DEG, tb = b2 * DEG, dth = tb - ta, dphi = (b3 - a3) * DEG;
     const rs = pick(a1, b1), ts = pick(ta, tb);
@@ -137,11 +172,12 @@ export const CoordRegion = defineComponent({
       len1: b1 - a1, len2: a1 * dth, len3: a1 * Math.sin(ta) * dphi,
       volume: ((b1 ** 3 - a1 ** 3) / 3) * (Math.cos(ta) - Math.cos(tb)) * dphi,
       ...(area === undefined ? {} : { area }),
+      ...coordRegionExtras(p.system, p.ranges, p.face, p.faceAt, p.density, p.centralCharge),
     };
   },
   handles: [],
-  readouts: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3" },
-  quotable: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3" },
+  readouts: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3", Q: "C", patchFlux: "µC" },
+  quotable: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3", Q: "C", patchFlux: "µC" },
 });
 
 export const C0 = 299_792_458;

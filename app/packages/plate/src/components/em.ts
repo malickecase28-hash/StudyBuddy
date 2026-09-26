@@ -13,17 +13,18 @@ const V3 = z.tuple([z.number(), z.number(), z.number()]);
 const int = (min: number, max: number, def: number) => z.number().transform(Math.round).pipe(z.number().int().min(min).max(max)).default(def);
 const ChargeItem = z.discriminatedUnion("kind", [
   z.object({ id: z.string(), kind: z.literal("point"), q: z.number(), pos: V3, label: z.string().optional(), draggable: z.boolean().default(false) }),
+  z.object({ id: z.string(), kind: z.literal("ball"), rhoV: z.number(), radius: z.number().positive(), center: V3 }),
   z.object({ id: z.string(), kind: z.literal("line"), rhoL: z.number(), x: z.number(), y: z.number() }),
   z.object({ id: z.string(), kind: z.literal("sheet"), rhoS: z.number(), z0: z.number() }),
 ]);
 type Item = z.infer<typeof ChargeItem>;
 
-const toSI = (it: Item): Charge =>
-  it.kind === "point"
-    ? { kind: "point", q: it.q * 1e-6, pos: it.pos as Vec3 }
-    : it.kind === "line"
-      ? { kind: "line", rhoL: it.rhoL * 1e-9, x: it.x, y: it.y }
-      : { kind: "sheet", rhoS: it.rhoS * 1e-6, z0: it.z0 };
+const toSI = (it: Item): Charge => {
+  if (it.kind === "point") return { kind: "point", q: it.q * 1e-6, pos: it.pos as Vec3 };
+  if (it.kind === "ball") return { kind: "ball", rhoV: it.rhoV * 1e-6, radius: it.radius, center: it.center as Vec3 };
+  if (it.kind === "line") return { kind: "line", rhoL: it.rhoL * 1e-9, x: it.x, y: it.y };
+  return { kind: "sheet", rhoS: it.rhoS * 1e-6, z0: it.z0 };
+};
 
 export const Charges = defineComponent({
   id: "charges",
@@ -31,15 +32,16 @@ export const Charges = defineComponent({
   model: (p) => ({
     charges: p.items.map(toSI),
     items: p.items,
-    // A line or sheet charge has no finite total: report one only for point charges.
-    ...(p.items.every((it) => it.kind === "point") ? { total: p.items.reduce((s, it) => (it.kind === "point" ? s + it.q : s), 0) } : {}),
+    // Line and sheet charges have no finite total.
+    ...(p.items.every((it) => it.kind === "point" || it.kind === "ball") ? { total: p.items.reduce((s, it) => s + (it.kind === "point" ? it.q : it.kind === "ball" ? (it.rhoV * (4 / 3) * Math.PI * it.radius ** 3) : 0), 0) } : {}),
     qs: p.items.flatMap((it) => (it.kind === "point" ? [it.q] : [])),
+    rhoVs: p.items.flatMap((it) => (it.kind === "ball" ? [it.rhoV] : [])),
     rhoSs: p.items.flatMap((it) => (it.kind === "sheet" ? [it.rhoS] : [])),
     rhoLs: p.items.flatMap((it) => (it.kind === "line" ? [it.rhoL] : [])),
   }),
   handles: ["items"],
   readouts: { total: "µC" },
-  quotable: { qs: "µC", rhoSs: "µC/m^2", rhoLs: "nC/m" },
+  quotable: { qs: "µC", rhoVs: "µC/m^3", rhoSs: "µC/m^2", rhoLs: "nC/m" },
 });
 
 const chargesOf = (ctx: { link: (n: string) => { model: Record<string, unknown> } }) => ctx.link("charges").model.charges as Charge[];
@@ -48,9 +50,11 @@ const nearCharge = (cs: Charge[], p: Vec3, r: number) =>
   cs.some((c) =>
     c.kind === "point"
       ? norm([p[0] - c.pos[0], p[1] - c.pos[1], p[2] - c.pos[2]]) < r
-      : c.kind === "line"
-        ? Math.hypot(p[0] - c.x, p[1] - c.y) < r
-        : Math.abs(p[2] - c.z0) < 1e-9,
+      : c.kind === "ball"
+        ? false
+        : c.kind === "line"
+          ? Math.hypot(p[0] - c.x, p[1] - c.y) < r
+          : Math.abs(p[2] - c.z0) < 1e-9,
   );
 const SINGULAR = 1e-9;
 
@@ -248,14 +252,14 @@ export const EProbe = defineComponent({
   model: (p, ctx) => {
     const cs = chargesOf(ctx);
     const pt = p.point as Vec3;
-    const onCharge = cs.some((c) => c.kind === "point" && norm([pt[0] - c.pos[0], pt[1] - c.pos[1], pt[2] - c.pos[2]]) < 1e-15);
-    if (onCharge) return { Ex: null, Ey: null, Ez: null, Emag: null };
+    const onCharge = nearCharge(cs, pt, SINGULAR);
+    if (onCharge) return { Ex: null, Ey: null, Ez: null, Emag: null, Dx: null, Dy: null, Dz: null, Dmag: null };
     const E = electricField(cs, pt);
-    return { Ex: E[0], Ey: E[1], Ez: E[2], Emag: norm(E) };
+    return { Ex: E[0], Ey: E[1], Ez: E[2], Emag: norm(E), Dx: E[0] * EPS0 * 1e6, Dy: E[1] * EPS0 * 1e6, Dz: E[2] * EPS0 * 1e6, Dmag: norm(E) * EPS0 * 1e6 };
   },
   handles: ["point"],
-  readouts: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m" },
-  quotable: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m" },
+  readouts: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m", Dx: "µC/m^2", Dy: "µC/m^2", Dz: "µC/m^2", Dmag: "µC/m^2" },
+  quotable: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m", Dx: "µC/m^2", Dy: "µC/m^2", Dz: "µC/m^2", Dmag: "µC/m^2" },
 });
 
 export const Axes = defineComponent({ id: "axes", params: z.object({ length: z.number().positive().default(1.8) }), model: () => ({}), handles: [], readouts: {} });

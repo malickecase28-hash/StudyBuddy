@@ -12,6 +12,7 @@ export type ViewProps = { id: string; ev: Evaluated; appear: number; focused: bo
 type V3 = [number, number, number];
 type Item =
   | { id: string; kind: "point"; q: number; pos: V3; label?: string; draggable: boolean }
+  | { id: string; kind: "ball"; rhoV: number; radius: number; center: V3 }
   | { id: string; kind: "line"; rhoL: number; x: number; y: number }
   | { id: string; kind: "sheet"; rhoS: number; z0: number };
 
@@ -44,6 +45,16 @@ function ChargesView({ id, ev }: ViewProps) {
             <g key={it.id} role="img" aria-label={`Sheet charge ${it.rhoS} µC per square metre`}>
               <rect x={-260} y={y - 3} width={520} height={6} fill="url(#hatch-charge)" />
               <text x={-252} y={y - 8} className="plate-label">{`ρS ${it.rhoS} µC/m²`}</text>
+            </g>
+          );
+        }
+        if (it.kind === "ball") {
+          const [x, y] = place(it.center, k, oblique);
+          const r = it.radius * k * 100;
+          return (
+            <g key={it.id} role="img" aria-label="Uniform ball of charge">
+              <circle cx={x} cy={y} r={r} fill="url(#hatch-charge)" stroke="var(--charge)" />
+              <text x={x + r + 6} y={y - r - 4} className="plate-label">{`ρv ${it.rhoV} µC/m³`}</text>
             </g>
           );
         }

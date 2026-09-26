@@ -15,7 +15,7 @@ const LABEL: Record<string, string> = {
   F1: "1st component", F2: "2nd component", F3: "3rd component", div: "∇· at the probe",
   c1: "curl, 1st", c2: "curl, 2nd", c3: "curl, 3rd",
   boxFlux: "Net flux out of the box", boxRatio: "Flux ÷ box volume", circ: "Circulation round the loop", circRatio: "Circulation ÷ loop area",
-  len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume",
+  len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume", Q: "Total charge Q", patchFlux: "Ψ through the face", Dx: "Dₓ", Dy: "Dᵧ", Dz: "D_z", Dmag: "|D|",
   lambda: "Wavelength λ", si: "In SI base units", siM: "In metres", siM2: "In m²", siM3: "In m³", siC: "In coulombs", siHz: "In hertz", siV: "In volts", siF: "In farads", siN: "In newtons",
   g1: "∇, 1st component", g2: "∇, 2nd component", g3: "∇, 3rd component",
   Fx: "Fₓ", Fy: "Fᵧ", Fz: "F_z", Fmag: "|F|", R: "Separation R", Ex: "Eₓ", Ey: "Eᵧ", Ez: "E_z", Emag: "|E|",
@@ -23,7 +23,7 @@ const LABEL: Record<string, string> = {
 const SYS: Record<string, [string, string, string]> = { cart: ["x", "y", "z"], cyl: ["ρ", "φ", "z"], sph: ["r", "θ", "φ"] };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
   flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge", Fmag: "charge", Emag: "field",
-  dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field",
+  dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field", Q: "charge", patchFlux: "flux", Dmag: "flux",
 };
 const pretty = (unit: string) => unit.replace("^2", "²").replace("^3", "³");
 
