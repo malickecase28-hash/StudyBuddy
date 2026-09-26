@@ -13,7 +13,7 @@ export const whyArea = PlateDef.parse({
   instances: base([point(4, [0, 0, 0])], { shape: "sphere", size: 1 }),
   steps: [
     { id: "small", title: "r = 1 m", focus: ["surface"], note: "At r = 1 m, D is 4/(4π) µC/m² over 4π m² of surface: 4 µC in total.", claims: [{ instance: "surface", readout: "flux", value: 4, unit: "µC" }] },
-    { id: "big", title: "r = 2.5 m", patch: { surface: { size: 2.5 } }, focus: ["surface"], note: "The patches pale as D weakens, but there are more of them. Still exactly 4 µC.", claims: [{ instance: "surface", readout: "flux", value: 4, unit: "µC" }] },
+    { id: "big", title: "r = 1.8 m", patch: { surface: { size: 1.8 } }, focus: ["surface"], note: "The patches pale as D weakens, but there are more of them. Still exactly 4 µC.", claims: [{ instance: "surface", readout: "flux", value: 4, unit: "µC" }] },
   ],
 });
 

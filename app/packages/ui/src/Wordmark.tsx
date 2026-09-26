@@ -6,6 +6,9 @@ const LETTERS: { x: number; d: string[]; evenodd?: boolean }[] = [
   { x: 518, d: ["M0 120 L44 0 H68 L112 120 H86 L56 36 L26 120 Z"] },
 ];
 
+/** Titled: an image with a name. Untitled: decorative, hidden from assistive tech. */
+const a11y = (title: string) => (title ? { role: "img", "aria-label": title } : { "aria-hidden": true });
+
 const glyph = (l: (typeof LETTERS)[number]) => (
   <g key={l.x} transform={`translate(${l.x} 0)`}>
     {l.d.map((d) => (
@@ -17,7 +20,7 @@ const glyph = (l: (typeof LETTERS)[number]) => (
 /** FORMA on the 120-unit cap grid. `height` is the rendered height in px (cap ≥ 16 px ⇒ height ≥ 19). */
 export function Wordmark({ height = 20, title = "Forma" }: { height?: number; title?: string }) {
   return (
-    <svg viewBox="-12 -12 654 144" height={height} role="img" aria-label={title} fill="currentColor">
+    <svg viewBox="-12 -12 654 144" height={height} fill="currentColor" {...a11y(title)}>
       {LETTERS.map(glyph)}
     </svg>
   );
@@ -26,7 +29,7 @@ export function Wordmark({ height = 20, title = "Forma" }: { height?: number; ti
 /** The F alone: favicon, app icon, avatar fallback. */
 export function Mark({ size = 24, title = "Forma" }: { size?: number; title?: string }) {
   return (
-    <svg viewBox="-12 -12 120 144" height={size} role="img" aria-label={title} fill="currentColor">
+    <svg viewBox="-12 -12 120 144" height={size} fill="currentColor" {...a11y(title)}>
       {glyph(LETTERS[0]!)}
     </svg>
   );

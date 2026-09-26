@@ -46,16 +46,16 @@ export function HomeScreen() {
       <section className="studio-hero grid gap-8 p-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:p-8">
           <div className="flex flex-col justify-center py-3 lg:py-8">
             <p className="label">StudyBuddy / Your learning workspace</p>
-            <h1 className="mt-4 max-w-xl text-4xl font-semibold leading-tight tracking-[-0.04em] lg:text-5xl">Make the invisible <span className="text-[#8cddd2]">make sense.</span></h1>
-            <p className="mt-5 max-w-lg text-base leading-7 text-[#c7d9d5]">Explore a model, make a prediction, work a real problem. Your first course is Electromagnetics I; the workspace is built for everything you study next.</p>
+            <h1 className="mt-4 max-w-xl text-4xl font-semibold leading-tight tracking-[-0.04em] lg:text-5xl">Make the invisible <span className="text-[var(--grid)]">make sense.</span></h1>
+            <p className="mt-5 max-w-lg text-base leading-7 text-[color-mix(in_srgb,var(--paper)_82%,var(--ink))]">Explore a model, make a prediction, work a real problem. Your first course is Electromagnetics I; the workspace is built for everything you study next.</p>
             <div className="mt-7 flex flex-wrap gap-2">
               {firstRun ? <Link href="/diagnostic" className="btn btn-primary">Start the readiness check</Link> : <Link href={pos && posLesson ? lessonHref(pos.conceptId, pos.lessonId) : nextUp ? lessonHref(nextUp, mainLesson(getConcept(nextUp)!)!.id) : "/lab"} className="btn btn-primary">Continue studying →</Link>}
               {firstRun ? <Link href={lessonHref("em1.electrostatics.gauss-law", "main")} className="btn">Go straight to Gauss&apos;s law →</Link> : <Link href="/lab" className="btn">Open the lab →</Link>}
             </div>
-            <p className="mt-6 text-xs text-[#9ab8b2]">{firstRun ? "5 minute check · No streaks · Work at your own depth" : "Experiment freely · Return to your place · Work at your own depth"}</p>
+            <p className="mt-6 text-xs text-[color-mix(in_srgb,var(--paper)_82%,var(--ink))]">{firstRun ? "5 minute check · No streaks · Work at your own depth" : "Experiment freely · Return to your place · Work at your own depth"}</p>
           </div>
           <div className="min-w-0">
-            <div className="mb-3 flex items-center justify-between gap-3"><p className="label">Live experiment / Electric flux</p><span className="text-xs text-[#a7c4bd]">Drag the charge across the boundary</span></div>
+            <div className="mb-3 flex items-center justify-between gap-3"><p className="label">Live experiment / Electric flux</p><span className="text-xs text-[color-mix(in_srgb,var(--paper)_82%,var(--ink))]">Drag the charge across the boundary</span></div>
             <div className="lab-shell"><GaussLab config={PREVIEW} /></div>
           </div>
       </section>
@@ -68,7 +68,7 @@ export function HomeScreen() {
             {pos && posLesson ? (
               <>
                 <h2 className="mt-3 text-3xl font-semibold">{posLesson.title}</h2>
-                <p className="mt-1 text-sm text-[#c7d9d5]">{getConcept(pos.conceptId)?.title}</p>
+                <p className="mt-1 text-sm text-[color-mix(in_srgb,var(--paper)_82%,var(--ink))]">{getConcept(pos.conceptId)?.title}</p>
                 <Link href={lessonHref(pos.conceptId, pos.lessonId)} className="btn btn-primary mt-3">
                   Continue where you left off →
                 </Link>
