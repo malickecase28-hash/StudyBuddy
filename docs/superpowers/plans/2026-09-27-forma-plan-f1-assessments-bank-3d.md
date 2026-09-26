@@ -32,7 +32,7 @@
 
   | id | Date | Notes |
   |---|---|---|
-  | `ict1` | 2026-10-12 | Group A's sitting; Group B sits 15 Oct |
+  | `ict1` | 2026-10-12 | Group A's sitting (the user is in Group A); the date is posted but not yet final, so keep it in the one place it lives (`course-em1/src/assessments.ts`) |
   | `ict2` | 2026-11-16 | |
   | `finals` | 2026-12-15 | equals `course.examDate` |
 
@@ -1077,7 +1077,7 @@ In `em.ts`:
 
 In `packages/plate/src/index.ts`, export `./components/vec` (check how `em` is exported and mirror it).
 
-`validatePlate` and `backingValues` may assume readouts are always present in the model. If a plate test fails because `pRho` is missing in cart mode, make the lookup skip keys that are absent from the model: `if (!(name in ev.model)) continue;`. Log a ruling.
+`backingValues` already skips readouts absent from the model (it checks `typeof v === "number"`), so cart mode needs no lint change. A claim on an absent readout is correctly an error.
 
 - [ ] **Step 5: Run the plate tests**
 
