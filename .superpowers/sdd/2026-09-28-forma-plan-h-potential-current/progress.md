@@ -11,3 +11,6 @@ Task 3: Ruling: the volt ask quotes 1 V, 1 J and 1 C without plate backing — s
 Task 3: complete (commits fbb8904..1b4786a, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 18 files/344 tests; typecheck PASS).
 Task 4: Ruling: the first energy worked example repeated the preceding zero-potential view and triggered the possible-slide warning — show the work-from-potential equation in its setup — cost if wrong: the equation is repeated when the example begins.
 Task 4: complete (commits 8e08900..9e2d05e, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 18 files/357 tests; typecheck PASS).
+Task 5: Ruling: the continuity plate quotes a derived −5 C/m³ rate that is not a declared readout and triggers the number lint — keep the relation ∂ρv/∂t = −∇·J and state that density falls — cost if wrong: the worked note no longer gives the derived rate numerically.
+Task 5: Ruling: the proof example reused the prior state and triggered the possible-slide warning — show a different closed-box size at the proof setup — cost if wrong: the proof begins with a larger illustrative volume.
+Task 5: complete (commits d92e1f2..416721b, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 18 files/370 tests; typecheck PASS).
