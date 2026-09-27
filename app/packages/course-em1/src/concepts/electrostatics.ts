@@ -137,50 +137,6 @@ export const field = {
   ],
 };
 
-export const fluxDensityBlocks = [
-        {
-          ...meta("quiet", src(SLIDES, "pp. 31-32")),
-          id: "psi",
-          type: "prose",
-          text: "Faraday found that the {{flux|electric flux}} from a charge is proportional to the charge, with constant 1 in SI: $\\Psi = Q$ (coulombs). **{{flux|D}}** is flux per unit area crossing a surface orthogonal to it (C/m²). For a point charge, $\\mathbf D = \\dfrac{Q}{4\\pi r^2}\\mathbf a_r$, and in free space $\\mathbf D = \\varepsilon_0\\mathbf E$.",
-        },
-        {
-          ...meta("vivid", orig()),
-          id: "faraday-lab",
-          type: "sim-3d",
-          scene: "gauss-lab",
-          config: {
-            charges: [{ id: "q", q: 2, pos: [0, 0, 0], draggable: false }],
-            surface: { kind: "sphere", radius: 1 },
-            show: { field: true, normals: false, contributions: true, readout: true },
-          },
-          caption: "Faraday's setup, idealised: a +2 µC charge inside a closed sphere. The flux out is exactly the charge, Ψ = Q.",
-        },
-        {
-          ...meta("assessment", src(SLIDES, "p. 59 (Q.07a)")),
-          id: "q7a",
-          type: "numeric",
-          prompt: "Q.07(a): a point charge Q_A = 55 mC sits at (−2, 3, −6). Find D_z at P(2, −3, 6).",
-          answer: { value: 19.14, unit: "µC/m^2" },
-          distractors: [
-            { value: 1.595, unit: "µC/m^2", errorClass: "conceptual", feedback: "That's Q/(4π|R|³). Multiply by R_z = 12 for the z-component." },
-          ],
-          hints: ["R = P − Q = (4, −6, 12); |R| = 14.", "D = Q R / (4π|R|³).", "D_z = 55×10⁻³ × 12 / (4π × 2744)."],
-          dimension: "computational",
-        },
-        {
-          ...meta("assessment", src(SLIDES, "p. 30")),
-          id: "medium",
-          type: "mcq",
-          prompt: "Surround a charge with a dielectric instead of vacuum. The total flux Ψ from the charge…",
-          options: [
-            { id: "same", label: "Stays equal to Q", correct: true, feedback: "Faraday's result holds in any material." },
-            { id: "less", label: "Drops by ε_r", correct: false, feedback: "E drops by ε_r. Flux (and D) don't.", tag: "D_VS_E_PERMITTIVITY" },
-          ],
-          dimension: "conceptual",
-        },
-];
-
 export const divergence = {
   id: "em1.electrostatics.divergence",
   title: "Point form and the divergence theorem",
