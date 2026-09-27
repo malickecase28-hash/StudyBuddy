@@ -114,6 +114,7 @@ function coordRegionExtras(system: CoordSystem, ranges: [number, number][], face
   });
   const out: Record<string, number> = {};
   if (density !== null) out.Q = totalCharge(densities[density]!, nativeRanges);
+  if (centralCharge !== null) out.centralCharge = centralCharge;
   if (centralCharge !== null && face !== null) {
     const { nodes, weights } = gaussLegendre(16);
     const free = [0, 1, 2].filter((k) => k !== face);
@@ -177,7 +178,7 @@ export const CoordRegion = defineComponent({
   },
   handles: [],
   readouts: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3", Q: "C", patchFlux: "µC" },
-  quotable: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3", Q: "C", patchFlux: "µC" },
+  quotable: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3", Q: "C", patchFlux: "µC", centralCharge: "µC" },
 });
 
 export const C0 = 299_792_458;

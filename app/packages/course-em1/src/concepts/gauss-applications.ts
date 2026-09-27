@@ -51,7 +51,11 @@ export const gaussApplications = {
       id: "main",
       title: "Gauss's law in use (in depth)",
       minutes: 70,
-      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 58-61")), id: "idea-charge-density", type: "plate" as const, plateId: "idea-charge-density" }],
+      blocks: [
+        { ...meta("vivid", src(SLIDES, "pp. 58-61")), id: "idea-charge-density", type: "plate" as const, plateId: "idea-charge-density" },
+        { ...meta("vivid", src(SLIDES, "p. 58")), id: "idea-patch-flux", type: "plate" as const, plateId: "idea-patch-flux" },
+        { ...meta("vivid", src(SLIDES, "p. 60")), id: "idea-spheres", type: "plate" as const, plateId: "idea-spheres" },
+      ],
     },
     {
       id: "worked",

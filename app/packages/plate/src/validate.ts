@@ -28,7 +28,7 @@ export type Backing = { value: number; unit: string };
 const normUnit = (u: string) => u.replace(/μ/g, "µ").replace("^2", "²").replace("³", "^3").replace(/inches/g, "inch");
 
 // A number (not part of a range like "2-3" or a bare ".5") followed by a physics unit.
-const WITH_UNIT = /(?<![\w.\-−])([−-]?\d+(?:\.\d+)?)\s*([µμ]C\/m²|[µμ]C\/m\^2|nC\/m²|nC\/m\^2|[µμ]C\/m|nC\/m|V\/m|[kMGT]?Hz|[µμ]C|nC|m³|m\^3|m²|m\^2|inch(?:es)?|C|m)(?![\w/²^])/g;
+const WITH_UNIT = /(?<![\w.\-−])([−-]?\d+(?:\.\d+)?)\s*([µμ]C\/m³|[µμ]C\/m\^3|[µμ]C\/m²|[µμ]C\/m\^2|nC\/m²|nC\/m\^2|[µμ]C\/m|nC\/m|V\/m|[kMGT]?Hz|[µμ]C|nC|m³|m\^3|m²|m\^2|inch(?:es)?|C|m)(?![\w/²^])/g;
 
 /** The backing value expressed in the written unit, or null when the dimensions differ. */
 const inUnit = (c: Backing, unit: string): number | null => {

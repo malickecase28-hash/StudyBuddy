@@ -13,4 +13,9 @@ describe("G2 charge-density lesson", () => {
     expect(gaussApplications.lessons[0]!.blocks[0]).toMatchObject({ id: "idea-charge-density", type: "plate", plateId: "idea-charge-density" });
     expect(ideaPlates["idea-charge-density"]?.meta.ideas.map((idea) => idea.id)).toEqual(["charge-density"]);
   });
+  it("registers the patch-flux and spheres ideas in the Gauss-applications lesson", () => {
+    expect(gaussApplications.lessons[0]!.blocks.map((block) => "plateId" in block ? block.plateId : null).filter(Boolean)).toEqual(["idea-charge-density", "idea-patch-flux", "idea-spheres"]);
+    expect(ideaPlates["idea-patch-flux"]?.meta.ideas.map((idea) => idea.id)).toEqual(["patch-flux"]);
+    expect(ideaPlates["idea-spheres"]?.meta.ideas.map((idea) => idea.id)).toEqual(["spheres"]);
+  });
 });
