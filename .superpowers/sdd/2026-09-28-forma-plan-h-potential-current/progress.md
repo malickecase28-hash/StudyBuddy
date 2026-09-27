@@ -9,3 +9,5 @@ Task 3: Ruling: the closed-loop quadrature leaves a 1.93e-14 J residue while the
 Task 3: Ruling: the MST trap quotes 0.128 m without a visible readout or given — remove the unsupported number while retaining the diameter-versus-radius error — cost if wrong: the exact numeric distractor is absent from the trap text.
 Task 3: Ruling: the volt ask quotes 1 V, 1 J and 1 C without plate backing — state the joule-per-coulomb definition without unsupported quantities — cost if wrong: the definition is less numerical.
 Task 3: complete (commits fbb8904..1b4786a, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 18 files/344 tests; typecheck PASS).
+Task 4: Ruling: the first energy worked example repeated the preceding zero-potential view and triggered the possible-slide warning — show the work-from-potential equation in its setup — cost if wrong: the equation is repeated when the example begins.
+Task 4: complete (commits 8e08900..9e2d05e, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 18 files/357 tests; typecheck PASS).
