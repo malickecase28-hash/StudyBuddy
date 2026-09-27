@@ -9,6 +9,8 @@ const SCREENS = [
   concept("em1.electrostatics.coulomb", "mode=learn"), concept("em1.electrostatics.field", "mode=learn&lesson=main&block=idea-e-continuous"),
   concept(G, "mode=learn"), concept(G, "mode=solve"), concept(G, "mode=explore"), concept(G, "mode=revise"),
   concept("em1.electrostatics.gauss-applications", "mode=learn"), "/notebook", "/review",
+  concept("em1.electrostatics.potential", "mode=learn"),
+  concept("em1.electrostatics.current", "mode=learn&lesson=main&block=idea-ohm"),
   concept("em1.electrostatics.divergence", "mode=learn&lesson=main&block=idea-div-theorem"),
   concept(G, "mode=learn&lesson=main&block=flux-surface"), concept(G, "mode=learn&lesson=main&block=idea-symmetry"), `/c/em1/${G}/sheet`,
 ];

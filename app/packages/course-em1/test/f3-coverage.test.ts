@@ -18,8 +18,10 @@ describe("F3/F4 concepts", () => {
     expect(mainOf("em1.electrostatics.field")).toEqual(["idea-e-point", "idea-e-superposition", "idea-e-continuous"]);
     expect(mainOf("em1.electrostatics.gauss-applications")).toEqual(["idea-charge-density", "idea-patch-flux", "idea-spheres"]);
     expect(mainOf("em1.electrostatics.divergence")).toEqual(["idea-point-form", "idea-div-theorem"]);
+    expect(mainOf("em1.electrostatics.potential")).toEqual(["idea-work", "idea-v-point", "idea-grad-v", "idea-energy"]);
+    expect(mainOf("em1.electrostatics.current")).toEqual(["idea-ohm", "idea-continuity"]);
   });
-  for (const id of ["em1.intro.em-world", "em1.math.vectors", "em1.math.vector-calculus", "em1.electrostatics.coulomb", "em1.electrostatics.field", "em1.electrostatics.gauss-applications", "em1.electrostatics.divergence"]) {
+  for (const id of ["em1.intro.em-world", "em1.math.vectors", "em1.math.vector-calculus", "em1.electrostatics.coulomb", "em1.electrostatics.field", "em1.electrostatics.gauss-applications", "em1.electrostatics.divergence", "em1.electrostatics.potential", "em1.electrostatics.current"]) {
     it(`${id}: full coverage, and every idea is load-bearing`, () => {
       const plates = mainOf(id);
       expect(coverageGaps(merged(id, plates))).toEqual([]);
