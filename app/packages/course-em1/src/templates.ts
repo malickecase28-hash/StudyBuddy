@@ -576,5 +576,113 @@ const continuityRate = defineTemplate<{ a: number; x0: number }>({
   tags: { concepts: ["em1.electrostatics.current"], misconceptions: ["CONTINUITY_SIGN"], difficulty: 1 },
 });
 
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD, vPoint, workMove, currentDensity, ohmWire, continuityRate];
+/** dir 0: dielectric region 1 into free space (Finals 24-25); dir 1: free space into a dielectric (Finals 23-24). */
+const sides = (dir: number, er: number) => (dir === 0 ? { er1: er, er2: 1 } : { er1: 1, er2: er });
+const DIEL = "em1.electrostatics.dielectrics";
+const CAP = "em1.electrostatics.capacitance";
+
+const bndTangent = defineTemplate<{ er: number; dir: number; Dx: number; Dy: number }>({
+  id: "bnd-tangent",
+  params: { er: { min: 2, max: 9, step: 1 }, dir: { min: 0, max: 1, step: 1 }, Dx: { min: 1, max: 5, step: 1 }, Dy: { min: 1, max: 9, step: 1 } },
+  prompt: (p) => {
+    const s = sides(p.dir, p.er);
+    return `Region 1 (x < 0) has εr1 = ${s.er1}; region 2 (x > 0) has εr2 = ${s.er2}. There is no surface charge, and D₁ = ${p.Dx}âₓ + ${p.Dy}âᵧ C/m² at the boundary. Find D₂ᵧ, the y-component of D₂, in C/m².`;
+  },
+  solve: (p) => {
+    const s = sides(p.dir, p.er);
+    return {
+      answer: { value: sig((p.Dy * s.er2) / s.er1), unit: "C/m^2" },
+      distractors: [
+        { value: p.Dy, unit: "C/m^2", errorClass: "conceptual", tag: "BND_D_TANGENT", feedback: "Tangential E is continuous, not tangential D. Multiply by ε₂/ε₁." },
+        { value: sig((p.Dy * s.er1) / s.er2), unit: "C/m^2", errorClass: "conceptual", tag: "BND_RATIO_FLIP", feedback: "The ratio is upside down: D₂ₜ = (ε₂/ε₁)D₁ₜ." },
+      ],
+    };
+  },
+  hints: () => ["The boundary is x = 0, so y is a tangential direction.", "E₁ₜ = E₂ₜ, so D₂ₜ/ε₂ = D₁ₜ/ε₁.", "D₂ᵧ = (εr2/εr1)D₁ᵧ."],
+  worked: (p) => {
+    const s = sides(p.dir, p.er);
+    return [{ text: `y is tangential to x = 0. D₂ᵧ = (εr2/εr1)D₁ᵧ = (${s.er2}/${s.er1}) × ${p.Dy} = ${sig((p.Dy * s.er2) / s.er1)} C/m².` }];
+  },
+  dimension: "computational",
+  tags: { concepts: [DIEL], misconceptions: ["BND_D_TANGENT", "BND_RATIO_FLIP"], difficulty: 2 },
+});
+
+const deg = (x: number) => sig((Math.atan(x) * 180) / Math.PI);
+const bndAngle = defineTemplate<{ th1: number; er: number; dir: number }>({
+  id: "bnd-angle",
+  params: { th1: { min: 10, max: 80, step: 10 }, er: { min: 2, max: 9, step: 1 }, dir: { min: 0, max: 1, step: 1 } },
+  prompt: (p) => {
+    const s = sides(p.dir, p.er);
+    return `A field in region 1 (εr1 = ${s.er1}) meets a charge-free boundary at θ₁ = ${p.th1}° from the normal. Region 2 has εr2 = ${s.er2}. Find θ₂, also from the normal, in degrees.`;
+  },
+  solve: (p) => {
+    const s = sides(p.dir, p.er);
+    const t = Math.tan((p.th1 * Math.PI) / 180);
+    return {
+      answer: { value: deg((t * s.er2) / s.er1), unit: "°" },
+      distractors: [{ value: deg((t * s.er1) / s.er2), unit: "°", errorClass: "conceptual", tag: "BND_RATIO_FLIP", feedback: "From the normal, tan θ₁/tan θ₂ = ε₁/ε₂, so tan θ₂ = (ε₂/ε₁) tan θ₁." }],
+    };
+  },
+  hints: () => ["tan θ₁/tan θ₂ = εr1/εr2, with both angles from the normal.", "tan θ₂ = (εr2/εr1) tan θ₁.", "Take tan⁻¹, in degrees."],
+  worked: (p) => {
+    const s = sides(p.dir, p.er);
+    const t = Math.tan((p.th1 * Math.PI) / 180);
+    return [{ text: `tan θ₂ = (${s.er2}/${s.er1}) × tan ${p.th1}° = ${sig((t * s.er2) / s.er1)}, so θ₂ = ${deg((t * s.er2) / s.er1)}°.` }];
+  },
+  dimension: "computational",
+  tags: { concepts: [DIEL], misconceptions: ["BND_RATIO_FLIP"], difficulty: 2 },
+});
+
+const capPlates = defineTemplate<{ S: number; d: number; er: number }>({
+  id: "cap-parallel",
+  params: { S: { min: 10, max: 100, step: 10 }, d: { min: 0.5, max: 5, step: 0.5 }, er: { min: 1, max: 8, step: 1 } },
+  prompt: (p) => `Parallel plates of area ${p.S} cm² are ${p.d} mm apart, with a dielectric of εr = ${p.er} filling the gap. Find C in pF.`,
+  solve: (p) => {
+    const C = (p.er * EPS0 * p.S * 1e-4) / (p.d * 1e-3);
+    return {
+      answer: { value: sig(C / 1e-12), unit: "pF" },
+      distractors: [{ value: sig(C / 1e-12 / 1000), unit: "pF", errorClass: "unit", tag: "CAP_UNITS", feedback: "The gap was left in millimetres. Convert it to metres first." }],
+    };
+  },
+  hints: () => ["C = εr ε₀ S/d.", "S: 1 cm² = 10⁻⁴ m². d: 1 mm = 10⁻³ m.", "Divide the answer in F by 10⁻¹² for pF."],
+  worked: (p) => [{ text: `C = ${p.er} × 8.854 × 10⁻¹² × ${p.S} × 10⁻⁴ / (${p.d} × 10⁻³) = ${sig((p.er * EPS0 * p.S * 1e-4) / (p.d * 1e-3) / 1e-12)} pF.` }],
+  dimension: "computational",
+  tags: { concepts: [CAP], misconceptions: ["CAP_UNITS"], difficulty: 1 },
+});
+
+const capEnergy = defineTemplate<{ C: number; V: number }>({
+  id: "cap-energy",
+  params: { C: { min: 10, max: 100, step: 10 }, V: { min: 10, max: 200, step: 10 } },
+  prompt: (p) => `A ${p.C} nF capacitor is charged to ${p.V} V. Find the energy it stores, in µJ.`,
+  solve: (p) => {
+    const W = (0.5 * p.C * 1e-9 * p.V * p.V) / 1e-6;
+    return {
+      answer: { value: sig(W), unit: "µJ" },
+      distractors: [{ value: sig(2 * W), unit: "µJ", errorClass: "conceptual", tag: "ENERGY_HALF", feedback: "That's CV². The stored energy is ½CV²." }],
+    };
+  },
+  hints: () => ["W = ½CV².", "C in farads: 1 nF = 10⁻⁹ F.", "Divide by 10⁻⁶ for µJ."],
+  worked: (p) => [{ text: `W = ½ × ${p.C} × 10⁻⁹ × ${p.V}² = ${sig((0.5 * p.C * 1e-9 * p.V * p.V) / 1e-6)} µJ.` }],
+  dimension: "computational",
+  tags: { concepts: [CAP], misconceptions: ["ENERGY_HALF"], difficulty: 1 },
+});
+
+const capCoaxT = defineTemplate<{ a: number; b: number; er: number }>({
+  id: "cap-coax",
+  params: { a: { min: 0.5, max: 2, step: 0.5 }, b: { min: 3, max: 10, step: 1 }, er: { min: 1, max: 6, step: 1 } },
+  prompt: (p) => `A coaxial cable has an inner conductor of radius ${p.a} mm, an outer conductor of inner radius ${p.b} mm, and a dielectric of εr = ${p.er} between them. Find its capacitance per metre, in pF/m.`,
+  solve: (p) => {
+    const k = 2 * Math.PI * p.er * EPS0;
+    return {
+      answer: { value: sig(k / Math.log(p.b / p.a) / 1e-12), unit: "pF/m" },
+      distractors: [{ value: sig(k / Math.log10(p.b / p.a) / 1e-12), unit: "pF/m", errorClass: "conceptual", tag: "CAP_LN", feedback: "That uses log₁₀. The formula's ln is the natural log." }],
+    };
+  },
+  hints: () => ["C/L = 2πε/ln(b/a).", "Only the ratio b/a enters, so mm can stay mm inside the log.", "ln is the natural log."],
+  worked: (p) => [{ text: `ln(${p.b}/${p.a}) = ${sig(Math.log(p.b / p.a))}; C/L = 2π × ${p.er} × 8.854 × 10⁻¹² / ${sig(Math.log(p.b / p.a))} = ${sig((2 * Math.PI * p.er * EPS0) / Math.log(p.b / p.a) / 1e-12)} pF/m.` }],
+  dimension: "computational",
+  tags: { concepts: [CAP], misconceptions: ["CAP_LN"], difficulty: 2 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD, vPoint, workMove, currentDensity, ohmWire, continuityRate, bndTangent, bndAngle, capPlates, capEnergy, capCoaxT];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));

@@ -58,6 +58,14 @@ const truth: Record<string, (p: Record<string, number>) => number> = {
   "current-density": (p) => p.I! / (Math.PI * (p.r! / 1000) ** 2),
   "ohm-wire": (p) => p.L! / (5.8e7 * Math.PI * (p.d! / 2000) ** 2),
   "continuity-rate": (p) => -2 * p.a! * p.x0!,
+  "bnd-tangent": (p) => p.Dy! * (p.dir! === 0 ? 1 / p.er! : p.er!),
+  "bnd-angle": (p) => {
+    const er1 = p.dir! === 0 ? p.er! : 1, er2 = p.dir! === 0 ? 1 : p.er!;
+    return Math.atan(Math.tan(p.th1! * Math.PI / 180) * er2 / er1) * 180 / Math.PI;
+  },
+  "cap-parallel": (p) => (p.er! * EPS0 * p.S! * 1e-4) / (p.d! * 1e-3),
+  "cap-energy": (p) => 0.5 * p.C! * 1e-9 * p.V! ** 2,
+  "cap-coax": (p) => (2 * Math.PI * p.er! * EPS0) / Math.log(p.b! / p.a!),
 };
 
 describe("question templates", () => {
