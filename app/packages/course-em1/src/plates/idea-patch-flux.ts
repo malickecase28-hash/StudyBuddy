@@ -69,7 +69,7 @@ export const ideaPatchFlux = defineIdeaPlate({
         },
         {
           id: "cube", level: "exam", title: "Faces of a cube",
-          setup: { region: { system: "cart", ranges: [[-1, 1], [-1, 1], [-1, 1]], face: 2, centralCharge: 12 } },
+          setup: { region: { system: "cart", ranges: [[-1, 1], [-1, 1], [-1, 1]], face: 2, centralCharge: 12, drawScale: 0.5 } },
           problem: "A 12 µC charge sits at the centre of a cube. Find the flux through its top face, and the flux through the remaining five faces together.",
           lines: [
             { text: "All six faces are identical by symmetry, so each carries 12/6 = 2 µC.", focus: ["region"], claims: [{ instance: "region", readout: "patchFlux", value: 2, unit: "µC" }] },
