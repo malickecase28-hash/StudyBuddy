@@ -4,6 +4,7 @@ import {
   DAY_MS,
   initialState,
   migrate,
+  retireConcept,
   reduce,
   type Effect,
   type LearnEvent,
@@ -18,6 +19,7 @@ import {
 } from "@forma/engine";
 import { create } from "zustand";
 import { conceptById, examDateMs } from "./course";
+import { retiredConcepts } from "@forma/course-em1";
 import { reviewDateFor } from "./assessments";
 import { load, save, TIMED_OUT } from "./persist";
 
@@ -81,7 +83,8 @@ export const useStudy = create<Store>((set, get) => ({
       set({ hydrated: true, storageUnavailable: true });
       return;
     }
-    const { state, reset, backup } = migrate(raw);
+    const { state: migrated, reset, backup } = migrate(raw);
+    const state = retiredConcepts.reduce((s, r) => retireConcept(s, r.from, r.to, r.lessonId), migrated);
     if (reset && backup) await save(`${STATE_KEY}-backup-${Date.now()}`, backup);
     const clockOffsetDays = typeof (dev as { clockOffsetDays?: unknown })?.clockOffsetDays === "number" ? (dev as { clockOffsetDays: number }).clockOffsetDays : 0;
     const now = Date.now() + clockOffsetDays * DAY_MS;

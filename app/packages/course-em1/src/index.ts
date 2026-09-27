@@ -1,7 +1,7 @@
 import { Course } from "@forma/engine";
 import type { BankItem } from "./questions";
 import { assessmentsFor, EXAM_DATE } from "./assessments";
-import { coulomb, divergence, field, fluxDensity, lockedConcepts } from "./concepts/electrostatics";
+import { coulomb, divergence, field, lockedConcepts } from "./concepts/electrostatics";
 import { emWorld } from "./concepts/intro";
 import { gaussApplications } from "./concepts/gauss-applications";
 import { gaussLaw } from "./concepts/gauss-law";
@@ -11,7 +11,8 @@ import { potentialConcept } from "./concepts/potential";
 import { currentConcept } from "./concepts/current";
 
 /** Electromagnetics I (ELE3001) vertical slice. Parsed (and thereby validated) at import time. */
-const concepts = [emWorld, vectors, vectorCalculus, surfaceIntegrals, coulomb, field, fluxDensity, gaussLaw, gaussApplications, divergence, potentialConcept, currentConcept, ...lockedConcepts];
+const concepts = [emWorld, vectors, vectorCalculus, surfaceIntegrals, coulomb, field, gaussLaw, gaussApplications, divergence, potentialConcept, currentConcept, ...lockedConcepts];
+export const retiredConcepts = [{ from: "em1.electrostatics.flux-density", to: "em1.electrostatics.gauss-law", lessonId: "flux-density" }];
 export const course = Course.parse({
   id: "em1",
   code: "ELE3001",

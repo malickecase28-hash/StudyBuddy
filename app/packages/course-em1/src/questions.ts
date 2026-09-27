@@ -23,7 +23,6 @@ const K = {
   world: "em1.intro.em-world",
   coul: "em1.electrostatics.coulomb",
   field: "em1.electrostatics.field",
-  flux: "em1.electrostatics.flux-density",
   gauss: "em1.electrostatics.gauss-law",
   gapp: "em1.electrostatics.gauss-applications",
   div: "em1.electrostatics.divergence",
@@ -51,7 +50,7 @@ export const questionBank: BankItem[] = [
   { id: "mst-2324-q2b", source: "mst2324", kind: "mst", paper: MST, question: "Q2(b)", marks: 10, text: "In a vacuum, QA = 0.5 µC at A(4, −3, 7) µm and QB = −0.3 µC at B(2, −3, 1) µm. Calculate E at P(1, 2, 5) µm.", concepts: w([K.field, 0.8], [K.vec, 0.2]) },
   { id: "mst-2324-q2c", source: "mst2324", kind: "mst", paper: MST, question: "Q2(c)", marks: 5, text: "A thin metallic sphere of diameter 12.8 cm is charged to +200 mC. Calculate V, the electric potential at its surface.", concepts: w([K.pot, 1]) },
   { id: "mst-2324-q3a", source: "mst2324", kind: "mst", paper: MST, question: "Q3(a)", marks: 10, text: "A 100 µC point charge is at the origin. Calculate the total electric flux Ψ through the part of the sphere r = 25.0 cm bounded by 0 < θ < π/3 and π/6 < φ < π/4.", concepts: w([K.gapp, 0.5], [K.surf, 0.5]) },
-  { id: "mst-2324-q3b", source: "mst2324", kind: "mst", paper: MST, question: "Q3(b)", marks: 7, text: "An infinite plane at z = 5.00 m in free space carries ρS = 120 µC/m². (i) State the formula relating E, D and ε0. (ii) Calculate E at P(4, 5, 6) m. (iii) Hence compute D at the same point.", concepts: w([K.gapp, 0.6], [K.flux, 0.4]) },
+  { id: "mst-2324-q3b", source: "mst2324", kind: "mst", paper: MST, question: "Q3(b)", marks: 7, text: "An infinite plane at z = 5.00 m in free space carries ρS = 120 µC/m². (i) State the formula relating E, D and ε0. (ii) Calculate E at P(4, 5, 6) m. (iii) Hence compute D at the same point.", concepts: w([K.gapp, 0.6], [K.diel, 0.4]) },
   { id: "mst-2324-q4a", source: "mst2324", kind: "mst", paper: MST, question: "Q4(a)", marks: 4, text: "State Gauss's law (i) descriptively and (ii) in integral form.", concepts: w([K.gauss, 1]) },
   { id: "mst-2324-q4b", source: "mst2324", kind: "mst", paper: MST, question: "Q4(b)", marks: 10, text: "Calculate Q_T, the total charge within 0 ≤ ρ ≤ 0.2 m, 0 ≤ φ ≤ π, −4 ≤ z ≤ −2 m, for the nonlinear charge density ρv = ρ² sin φ µC/m³.", concepts: w([K.gapp, 0.6], [K.vec, 0.4]) },
   { id: "mst-2324-q4c", source: "mst2324", kind: "mst", paper: MST, question: "Q4(c)", marks: 6, text: "Calculate the capacitance of a 100 km coaxial cable with a solid core of radius 0.28 inch, insulated to a 0.90 inch diameter by a material of dielectric constant εr = 6.78.", concepts: w([K.cap, 1]) },
@@ -61,7 +60,7 @@ export const questionBank: BankItem[] = [
   // Finals, Dec 2024 (catalog: f2425)
   { id: "f2425-q1a", source: "f2425", kind: "finals", paper: F2425, question: "Q1(a)", marks: 4, text: "Very briefly comment on how electromagnetics theory has been important to technological advances in a chosen critical infrastructure.", concepts: w([K.world, 1]) },
   { id: "f2425-q1b", source: "f2425", kind: "finals", paper: F2425, question: "Q1(b)", marks: 11, text: "qA = +2.5 µC and qB = −3.8 µC are fixed at A(1, 2, 3) nm and B(0, 2, 8) nm. (i) Calculate F_AB, the force qA exerts on qB. (ii) Hence compute E_B, the field at the location of qB.", concepts: w([K.coul, 0.6], [K.field, 0.3], [K.vec, 0.1]) },
-  { id: "f2425-q1c", source: "f2425", kind: "finals", paper: F2425, question: "Q1(c)", marks: 10, text: "In a region of permittivity ε, the potential is V = x³ sin y + 10z² kV. (i) Develop an expression for D in C·m⁻². (ii) Evaluate D at P(2, −2, 1) m.", concepts: w([K.pot, 0.5], [K.calc, 0.3], [K.flux, 0.2]) },
+  { id: "f2425-q1c", source: "f2425", kind: "finals", paper: F2425, question: "Q1(c)", marks: 10, text: "In a region of permittivity ε, the potential is V = x³ sin y + 10z² kV. (i) Develop an expression for D in C·m⁻². (ii) Evaluate D at P(2, −2, 1) m.", concepts: w([K.pot, 0.5], [K.calc, 0.3], [K.diel, 0.2]) },
   {
     id: "f2425-q2a", source: "f2425", kind: "finals", paper: F2425, question: "Q2(a)", marks: 8,
     text: "In a region of free space, D = 5.0r² a_r (nC/m²). A sphere of radius r = 10.0 m is centred at the origin. (i) Compute Q_T, the total charge inside the sphere. (ii) Stating your reason, deduce the total electric flux leaving the sphere.",

@@ -1,4 +1,5 @@
 import { meta, orig, SLIDES, src, WENT } from "../sources";
+import { fluxDensityBlocks } from "./electrostatics";
 
 const R = String.raw;
 const ID = "em1.electrostatics.gauss-law";
@@ -22,7 +23,7 @@ export const gaussLaw = {
     "Recognise when symmetry makes Gauss's law a shortcut for finding D.",
   ],
   prerequisites: [
-    { conceptId: "em1.electrostatics.flux-density", minMastery: 0.3 },
+    { conceptId: "em1.electrostatics.field", minMastery: 0.3 },
     { conceptId: "em1.math.surface-integrals", minMastery: 0.3 },
   ],
   misconceptions: [
@@ -54,6 +55,7 @@ export const gaussLaw = {
       }),
     ),
     { id: "stuck-numeric", when: { type: "attemptsFailed", blockType: "numeric", gte: 3 }, then: [{ type: "revealWorkedStep" }], once: false },
+    { id: "de-twice", when: { type: "tagCount", tag: "D_VS_E_PERMITTIVITY", gte: 2 }, then: [{ type: "offerRemediation", tag: "D_VS_E_PERMITTIVITY", lessonRef: `${ID}/d-vs-e` }], once: true },
   ],
   lessons: [
     {
@@ -77,6 +79,7 @@ export const gaussLaw = {
         { ...meta("vivid", src(SLIDES, "pp. 31-38")), id: "gauss", type: "plate", plateId: "gauss" },
       ],
     },
+    { id: "flux-density", title: "Flux density D (quick)", minutes: 10, blocks: fluxDensityBlocks },
     { id: "why-area", title: "Detour: why a bigger surface doesn't catch more flux", minutes: 3, blocks: [{ ...meta("vivid", orig()), id: "why-area-p", type: "plate", plateId: "why-area-plate" }] },
     { id: "outside-charge", title: "Detour: charges outside the surface", minutes: 3, blocks: [{ ...meta("vivid", orig()), id: "outside-charge-p", type: "plate", plateId: "outside-charge-plate" }] },
     { id: "normal-direction", title: "Detour: which way dS points", minutes: 3, blocks: [{ ...meta("vivid", src(WENT, "§2.6, p. 44")), id: "normal-direction-p", type: "plate", plateId: "normal-direction-plate" }] },

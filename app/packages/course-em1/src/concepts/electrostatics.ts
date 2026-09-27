@@ -1,7 +1,5 @@
 import { F2324, meta, orig, SLIDES, src, WENT } from "../sources";
 
-const GL = "em1.electrostatics.gauss-law";
-
 export const coulomb = {
   id: "em1.electrostatics.coulomb",
   title: "Coulomb's Law",
@@ -139,30 +137,7 @@ export const field = {
   ],
 };
 
-export const fluxDensity = {
-  id: "em1.electrostatics.flux-density",
-  title: "Electric flux Ψ & flux density D",
-  unit: 2,
-  objectives: ["Explain Faraday's result Ψ = Q.", "Relate D and E: D = ε₀E in free space; D doesn't depend on the medium."],
-  prerequisites: [{ conceptId: "em1.electrostatics.field", minMastery: 0.3 }],
-  misconceptions: [{ tag: "D_VS_E_PERMITTIVITY", description: "Thinks D changes with the medium.", remediation: `${GL}/d-vs-e` }],
-  examLinks: [],
-  sources: [src(SLIDES, "pp. 29-34"), src(WENT, "§2.6 Electric Flux Density, p. 44")],
-  status: "verified",
-  rules: [
-    {
-      id: "de-twice",
-      when: { type: "tagCount", tag: "D_VS_E_PERMITTIVITY", gte: 2 },
-      then: [{ type: "offerRemediation", tag: "D_VS_E_PERMITTIVITY", lessonRef: `${GL}/d-vs-e` }],
-      once: true,
-    },
-  ],
-  lessons: [
-    {
-      id: "main",
-      title: "From Faraday's spheres to D",
-      minutes: 10,
-      blocks: [
+export const fluxDensityBlocks = [
         {
           ...meta("quiet", src(SLIDES, "pp. 31-32")),
           id: "psi",
@@ -204,10 +179,7 @@ export const fluxDensity = {
           ],
           dimension: "conceptual",
         },
-      ],
-    },
-  ],
-};
+];
 
 export const divergence = {
   id: "em1.electrostatics.divergence",

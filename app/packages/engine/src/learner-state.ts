@@ -153,6 +153,19 @@ export function migrate(raw: unknown): { state: LearnerState; reset: boolean; ba
   }
   return { state: initialState(), reset: true, backup: raw };
 }
+
+/** Moves a learner off a retired concept: position and notebook go to its successor; its progress is dropped. */
+export function retireConcept(s: LearnerState, from: string, to: string, lessonId: string): LearnerState {
+  const touches = from in s.concepts || s.position?.conceptId === from || s.notebook.some((n) => n.conceptId === from);
+  if (!touches) return s;
+  const { [from]: _dropped, ...concepts } = s.concepts;
+  return {
+    ...s,
+    concepts,
+    position: s.position?.conceptId === from ? { ...s.position, conceptId: to, lessonId } : s.position,
+    notebook: s.notebook.map((n) => (n.conceptId === from ? { ...n, conceptId: to } : n)),
+  };
+}
 export const seedOf = (s: LearnerState, templateId: string) => s.seeds[templateId] ?? 1;
 
 export const withNextSeed = (s: LearnerState, templateId: string): LearnerState => ({
