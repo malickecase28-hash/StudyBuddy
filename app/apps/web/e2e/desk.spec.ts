@@ -7,6 +7,15 @@ test("the Desk continues to the exact plate step, and the countdown lives only t
   await next(page);
   await margin(page, "§2 Field");
   await expect(page.locator(".status-footer")).not.toContainText(/(ICT \d|Finals) (in|today)/);
+  await expect.poll(() => page.evaluate(() => new Promise<number | undefined>((resolve) => {
+    const r = indexedDB.open("studybuddy");
+    r.onsuccess = () => {
+      const request = r.result.transaction("kv").objectStore("kv").get("learner");
+      request.onsuccess = () => resolve(request.result?.value.position?.plateStep);
+      request.onerror = () => resolve(undefined);
+    };
+    r.onerror = () => resolve(undefined);
+  }))).toBe(1);
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "§2 Field" })).toBeVisible();
   await expect(page.getByText(/(ICT \d|Finals) (in \d+ days?|today)/).first()).toBeVisible();
