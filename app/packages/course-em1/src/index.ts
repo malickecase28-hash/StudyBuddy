@@ -7,9 +7,10 @@ import { gaussApplications } from "./concepts/gauss-applications";
 import { gaussLaw } from "./concepts/gauss-law";
 import { surfaceIntegrals, vectors } from "./concepts/math";
 import { vectorCalculus } from "./concepts/calculus";
+import { potentialConcept } from "./concepts/potential";
 
 /** Electromagnetics I (ELE3001) vertical slice. Parsed (and thereby validated) at import time. */
-const concepts = [emWorld, vectors, vectorCalculus, surfaceIntegrals, coulomb, field, fluxDensity, gaussLaw, gaussApplications, divergence, ...lockedConcepts];
+const concepts = [emWorld, vectors, vectorCalculus, surfaceIntegrals, coulomb, field, fluxDensity, gaussLaw, gaussApplications, divergence, potentialConcept, ...lockedConcepts];
 export const course = Course.parse({
   id: "em1",
   code: "ELE3001",

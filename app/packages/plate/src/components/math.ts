@@ -241,7 +241,7 @@ export const LineWork = defineComponent({
       const e = E(pt);
       integral += 0.5 * weights[i]! * (e[0] * d[0] + e[1] * d[1] + e[2] * d[2]);
     }
-    const W = -p.q * integral;
+    const W = Math.abs(integral) < 1e-12 ? 0 : -p.q * integral;
     return { W, Vab: W / p.q, q: p.q };
   },
   handles: [],

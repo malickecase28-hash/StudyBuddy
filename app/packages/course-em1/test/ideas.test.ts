@@ -51,3 +51,11 @@ it("the 'curved' ask shows the charge and its tiled sphere, not the uniform fiel
   const s = askState(c.plate, idea, idea.asks.find((a) => a.id === "curved")!);
   expect([s.q!.visible, s.tiles!.visible, s.field!.visible, s.patch!.visible]).toEqual([true, true, false, false]);
 });
+
+it("potential concept exposes work and point-potential ideas through the registered plates", () => {
+  const concept = course.concepts.find((c) => c.id === "em1.electrostatics.potential")!;
+  expect(concept.locked).not.toBe(true);
+  expect(concept.lessons.find((l) => l.id === "main")!.blocks.map((b) => b.plateId)).toEqual(["idea-work", "idea-v-point"]);
+  expect(plates["idea-work"]).toBeDefined();
+  expect(plates["idea-v-point"]).toBeDefined();
+});
