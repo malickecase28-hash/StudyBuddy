@@ -211,11 +211,14 @@ export const fluxDensity = {
 
 export const divergence = {
   id: "em1.electrostatics.divergence",
-  title: "Divergence & the point form (preview)",
+  title: "Point form and the divergence theorem",
   unit: 2,
-  objectives: ["Read ∇·D = ρ_v as Gauss's law per unit volume."],
+  objectives: ["Use ∇·D = ρv to find the charge density from a given field.", "Apply the divergence theorem: net flux out equals the charge inside, computed either way."],
   prerequisites: [{ conceptId: "em1.electrostatics.gauss-applications", minMastery: 0.3 }],
-  misconceptions: [],
+  misconceptions: [
+    { tag: "POINT_FORM_EPS", description: "Forgets ε₀ when the field is given as E rather than D.", remediation: "em1.electrostatics.divergence/main" },
+    { tag: "DIV_THEOREM_FACES", description: "Counts faces the field is parallel to, or drops faces where it isn't.", remediation: "em1.electrostatics.divergence/main" },
+  ],
   examLinks: [{ paper: "Finals 2023-24 Sem 1", question: "Q2(b)", marks: 12, weight: 0.6 }],
   sources: [src(SLIDES, "p. 39"), src(WENT, "§2.8, p. 54")],
   status: "verified",
@@ -223,6 +226,12 @@ export const divergence = {
   lessons: [
     {
       id: "main",
+      title: "Point form and the divergence theorem (in depth)",
+      minutes: 45,
+      blocks: [{ ...meta("vivid", src(WENT, "§2.8, p. 54")), id: "idea-point-form", type: "plate" as const, plateId: "idea-point-form" }],
+    },
+    {
+      id: "quick",
       title: "Gauss's law, point by point",
       minutes: 8,
       blocks: [
