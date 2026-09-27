@@ -5,3 +5,7 @@ Task 1: complete (commits a92f970..657924e, tests: pnpm test && pnpm typecheck &
 Task 2: Ruling: the inverse-square distractor equals the correct value when r = 1 m - omit that coincident distractor - cost if wrong: this parameter case has no diagnostic distractor.
 Task 2: Ruling: four significant figures round the Finals current-density value away from its 248680 check - retain six significant figures for its answer and worked value - cost if wrong: more displayed precision than the other templates.
 Task 2: complete (commits accbd99..6ed1255, tests: pnpm vitest run packages/course-em1 -> PASS, 18 files/331 tests).
+Task 3: Ruling: the closed-loop quadrature leaves a 1.93e-14 J residue while the plan claims exact zero — clamp integration residue below 1e-12 to zero — cost if wrong: a physically meaningful work below that absolute threshold is also zeroed.
+Task 3: Ruling: the MST trap quotes 0.128 m without a visible readout or given — remove the unsupported number while retaining the diameter-versus-radius error — cost if wrong: the exact numeric distractor is absent from the trap text.
+Task 3: Ruling: the volt ask quotes 1 V, 1 J and 1 C without plate backing — state the joule-per-coulomb definition without unsupported quantities — cost if wrong: the definition is less numerical.
+Task 3: complete (commits fbb8904..1b4786a, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 18 files/344 tests; typecheck PASS).
