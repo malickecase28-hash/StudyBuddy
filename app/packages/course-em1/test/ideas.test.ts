@@ -66,3 +66,11 @@ it("potential concept includes field-from-potential and energy ideas", () => {
   expect(plates["idea-grad-v"]).toBeDefined();
   expect(plates["idea-energy"]).toBeDefined();
 });
+
+it("current concept exposes current density and continuity ideas through registered plates", () => {
+  const concept = course.concepts.find((c) => c.id === "em1.electrostatics.current")!;
+  expect(concept.locked).not.toBe(true);
+  expect(concept.lessons.find((l) => l.id === "main")!.blocks.filter((b) => b.type === "plate").map((b) => b.plateId)).toEqual(["idea-ohm", "idea-continuity"]);
+  expect(plates["idea-ohm"]).toBeDefined();
+  expect(plates["idea-continuity"]).toBeDefined();
+});

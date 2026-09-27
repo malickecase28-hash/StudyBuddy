@@ -275,7 +275,6 @@ const locked = (id: string, title: string, unit: number) => ({
 });
 
 export const lockedConcepts = [
-  locked("em1.electrostatics.current", "Current density, continuity and Ohm's law", 2),
   locked("em1.electrostatics.dielectrics", "Dielectrics & boundaries", 2),
   locked("em1.electrostatics.capacitance", "Capacitance", 2),
   locked("em1.magnetostatics.ampere", "Magnetostatic fields", 3),
