@@ -55,7 +55,14 @@ it("the 'curved' ask shows the charge and its tiled sphere, not the uniform fiel
 it("potential concept exposes work and point-potential ideas through the registered plates", () => {
   const concept = course.concepts.find((c) => c.id === "em1.electrostatics.potential")!;
   expect(concept.locked).not.toBe(true);
-  expect(concept.lessons.find((l) => l.id === "main")!.blocks.map((b) => b.plateId)).toEqual(["idea-work", "idea-v-point"]);
+  expect(concept.lessons.find((l) => l.id === "main")!.blocks.filter((b) => b.type === "plate").map((b) => b.plateId)).toEqual(["idea-work", "idea-v-point", "idea-grad-v", "idea-energy"]);
   expect(plates["idea-work"]).toBeDefined();
   expect(plates["idea-v-point"]).toBeDefined();
+});
+
+it("potential concept includes field-from-potential and energy ideas", () => {
+  const concept = course.concepts.find((c) => c.id === "em1.electrostatics.potential")!;
+  expect(concept.lessons.find((l) => l.id === "main")!.blocks.filter((b) => b.type === "plate").map((b) => b.plateId)).toEqual(["idea-work", "idea-v-point", "idea-grad-v", "idea-energy"]);
+  expect(plates["idea-grad-v"]).toBeDefined();
+  expect(plates["idea-energy"]).toBeDefined();
 });

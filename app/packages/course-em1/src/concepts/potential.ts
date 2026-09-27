@@ -30,6 +30,8 @@ export const potentialConcept = {
       blocks: [
         { ...meta("vivid", src(SLIDES, "Work done")), id: "idea-work", type: "plate" as const, plateId: "idea-work" },
         { ...meta("vivid", src(SLIDES, "Potential")), id: "idea-v-point", type: "plate" as const, plateId: "idea-v-point" },
+        { ...meta("vivid", src(SLIDES, "Electric field from potential")), id: "idea-grad-v", type: "plate" as const, plateId: "idea-grad-v" },
+        { ...meta("vivid", src(SLIDES, "Energy")), id: "idea-energy", type: "plate" as const, plateId: "idea-energy" },
       ],
     },
   ],
