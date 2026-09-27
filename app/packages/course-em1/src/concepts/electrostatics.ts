@@ -228,7 +228,10 @@ export const divergence = {
       id: "main",
       title: "Point form and the divergence theorem (in depth)",
       minutes: 45,
-      blocks: [{ ...meta("vivid", src(WENT, "§2.8, p. 54")), id: "idea-point-form", type: "plate" as const, plateId: "idea-point-form" }],
+      blocks: [
+        { ...meta("vivid", src(WENT, "§2.8, p. 54")), id: "idea-point-form", type: "plate" as const, plateId: "idea-point-form" },
+        { ...meta("vivid", src(WENT, "§2.8, p. 54")), id: "idea-div-theorem", type: "plate" as const, plateId: "idea-div-theorem" },
+      ],
     },
     {
       id: "quick",

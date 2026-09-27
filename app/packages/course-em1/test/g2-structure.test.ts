@@ -26,6 +26,7 @@ describe("G2 charge-density lesson", () => {
       "Apply the divergence theorem: net flux out equals the charge inside, computed either way.",
     ]);
     expect(divergence.lessons.map((lesson) => lesson.id)).toEqual(["main", "quick"]);
-    expect(divergence.lessons[0]!.blocks.map((block) => "plateId" in block ? block.plateId : null).filter(Boolean)).toEqual(["idea-point-form"]);
+    expect(divergence.lessons[0]!.blocks.map((block) => "plateId" in block ? block.plateId : null).filter(Boolean)).toEqual(["idea-point-form", "idea-div-theorem"]);
+    expect(ideaPlates["idea-div-theorem"]?.meta.ideas.map((idea) => idea.id)).toEqual(["div-theorem"]);
   });
 });
