@@ -5,7 +5,7 @@ import type { ComponentType, KeyboardEvent, PointerEvent } from "react";
 import { Tex } from "../Tex";
 import { usePlateStage } from "./stage-context";
 import { Axes3View, CoordFrameView, Vector3View } from "./views3d";
-import { CoordRegionView, ScalarSliceView, SpectrumView, UnitConvertView, VectorSliceView } from "./viewsMath";
+import { ConductorView, CoordRegionView, LineWorkView, ScalarSliceView, SpectrumView, UnitConvertView, VectorSliceView } from "./viewsMath";
 
 export type ViewProps = { id: string; ev: Evaluated; appear: number; focused: boolean; highlighted: boolean };
 
@@ -402,6 +402,8 @@ export const views2d: Record<string, ComponentType<ViewProps>> = {
   "scalar-slice": ScalarSliceView,
   "vector-slice": VectorSliceView,
   "coord-region": CoordRegionView,
+  "line-work": LineWorkView,
+  conductor: ConductorView,
   spectrum: SpectrumView,
   "unit-convert": UnitConvertView,
 };

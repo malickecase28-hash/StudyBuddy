@@ -18,12 +18,14 @@ const LABEL: Record<string, string> = {
   len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume", Q: "Total charge Q", patchFlux: "Ψ through the face", Dx: "Dₓ", Dy: "Dᵧ", Dz: "D_z", Dmag: "|D|",
   lambda: "Wavelength λ", si: "In SI base units", siM: "In metres", siM2: "In m²", siM3: "In m³", siC: "In coulombs", siHz: "In hertz", siV: "In volts", siF: "In farads", siN: "In newtons",
   g1: "∇, 1st component", g2: "∇, 2nd component", g3: "∇, 3rd component",
-  Fx: "Fₓ", Fy: "Fᵧ", Fz: "F_z", Fmag: "|F|", R: "Separation R", Ex: "Eₓ", Ey: "Eᵧ", Ez: "E_z", Emag: "|E|",
+  Fx: "Fₓ", Fy: "Fᵧ", Fz: "F_z", Fmag: "|F|", R: "Resistance R", Ex: "Eₓ", Ey: "Eᵧ", Ez: "E_z", Emag: "|E|", E: "Electric field E",
+  W: "Work done W", Vab: "V(end) − V(start)", J: "|J|", P: "Power I²R", pd: "Power density σE²", V: "Potential V", U: "Energy of the pair U",
 };
 const SYS: Record<string, [string, string, string]> = { cart: ["x", "y", "z"], cyl: ["ρ", "φ", "z"], sph: ["r", "θ", "φ"] };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
   flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge", Fmag: "charge", Emag: "field",
   dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field", Q: "charge", patchFlux: "flux", Dmag: "flux",
+  W: "charge", V: "field", J: "flux",
 };
 const pretty = (unit: string) => unit.replace("^2", "²").replace("^3", "³");
 
@@ -36,6 +38,8 @@ export function PlateReadouts({ plate, frame, hidden = [] }: { plate: PlateDef; 
       .map(([name, unit]) => {
         let label = (inst.component === "vector3" ? `${String(ev.params.label)} ` : "") + (LABEL[name] ?? name);
         if (inst.component === "spectrum" && name === "f") label = "Frequency f";
+        if (inst.component === "conductor" && name === "E") label = "|E| in the conductor";
+        if (inst.component === "coulomb-force" && name === "R") label = "Separation R";
         if (inst.component === "scalar-slice" || inst.component === "vector-slice") {
           const sys = SYS[String(ev.model.system)] ?? SYS.cart!;
           label = label.replace("1st", sys[0]).replace("2nd", sys[1]).replace("3rd", sys[2]);

@@ -41,6 +41,10 @@ export const scalarFields: Record<string, ScalarField> = {
     f: ([r, p, z]) => r * r * z ** 3 + 5 * z * cos(p), grad: ([r, p, z]) => [2 * r * z ** 3, (-5 * z * sin(p)) / r, 3 * r * r * z * z + 5 * cos(p)] }),
   "f2425-1c": S({ id: "f2425-1c", text: "V = x³ sin y + 10z²", latex: String.raw`V=x^3\sin y+10z^2`, system: "cart",
     f: ([x, y, z]) => x ** 3 * sin(y) + 10 * z * z, grad: ([x, y, z]) => [3 * x * x * sin(y), x ** 3 * cos(y), 20 * z] }),
+  "ex4-V": S({ id: "ex4-V", text: "V = −(xy + 2z)", latex: String.raw`V=-(xy+2z)`, system: "cart",
+    f: ([x, y, z]) => -(x * y + 2 * z), grad: ([x, y]) => [-y, -x, -2] }),
+  "f2324-1b": S({ id: "f2324-1b", text: "V = r³ sin θ cos φ", latex: String.raw`V=r^3\sin\theta\cos\phi`, system: "sph",
+    f: ([r, t, p]) => r ** 3 * sin(t) * cos(p), grad: ([r, t, p]) => [3 * r * r * sin(t) * cos(p), r * r * cos(t) * cos(p), -r * r * sin(p)] }),
 };
 
 const cot = (t: number) => cos(t) / sin(t);
@@ -76,4 +80,8 @@ export const vectorFields: Record<string, VectorField> = {
     F: ([x, y]) => [3 * x * y, x * x, 0], div: ([, y]) => 3 * y, curl: ([x]) => [0, 0, -x] }),
   "f2324-2b": V({ id: "f2324-2b", text: "E = πr² (r ≤ 3 m), 6π/r³ (r > 3 m), radial", latex: String.raw`\mathbf E=\begin{cases}\pi r^2\,\mathbf a_r & r\le3\\ \tfrac{6\pi}{r^3}\,\mathbf a_r & r>3\end{cases}`, system: "sph",
     F: ([r]) => [r <= 3 ? Math.PI * r * r : (6 * Math.PI) / r ** 3, 0, 0], div: ([r]) => (r <= 3 ? 4 * Math.PI * r : (-6 * Math.PI) / r ** 4), curl: () => [0, 0, 0] }),
+  "ex4-E": V({ id: "ex4-E", text: "E = y ax + x ay + 2 az", latex: String.raw`\mathbf E=y\,\mathbf a_x+x\,\mathbf a_y+2\,\mathbf a_z`, system: "cart",
+    F: ([x, y]) => [y, x, 2], div: () => 0, curl: () => [0, 0, 0] }),
+  "cont-5x": V({ id: "cont-5x", text: "J = 5x ax", latex: String.raw`\mathbf J=5x\,\mathbf a_x`, system: "cart",
+    F: ([x]) => [5 * x, 0, 0], div: () => 5, curl: () => [0, 0, 0] }),
 };

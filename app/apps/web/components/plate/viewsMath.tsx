@@ -1,7 +1,7 @@
 "use client";
 
 import { cartOf, nativeOf, scalarFields, vectorFields, type Vec3 } from "@forma/physics";
-import { toSvg, toSvg3, PX } from "@forma/plate";
+import { pathAt, toSvg, toSvg3, PX } from "@forma/plate";
 import type { KeyboardEvent, PointerEvent } from "react";
 import { usePlateStage } from "./stage-context";
 import type { ViewProps } from "./views2d";
@@ -186,6 +186,40 @@ export function CoordRegionView({ ev }: ViewProps) {
     <g className="v-coord-region" role="img" aria-label={`Region in ${p.system === "cart" ? "cartesian" : p.system === "cyl" ? "cylindrical" : "spherical"} coordinates`}>
       {face && <polygon points={face} fill="url(#hatch-surface)" style={{ stroke: "var(--surface)" }} />}
       {curves.map((c, i) => <polyline key={i} points={c} fill="none" className="ink" />)}
+    </g>
+  );
+}
+
+export function LineWorkView({ ev }: ViewProps) {
+  const p = ev.params as { path: { kind: "segment" | "arc" }; drawScale: number };
+  const at = (s: number) => pathAt(p.path as Parameters<typeof pathAt>[0], s)[0].map((v) => v * p.drawScale);
+  const pts = Array.from({ length: 49 }, (_, i) => toSvg3(at(i / 48)).map((v) => v.toFixed(1)).join(",")).join(" ");
+  const [sx, sy] = toSvg3(at(0));
+  const [ex, ey] = toSvg3(at(1));
+  return (
+    <g role="img" aria-label={`Path for the work integral, ${p.path.kind}`}>
+      <polyline points={pts} fill="none" style={{ stroke: "var(--charge)" }} strokeWidth={2} markerEnd="url(#arrow-charge)" />
+      <circle cx={sx} cy={sy} r={4} fill="var(--charge)" />
+      <text x={sx + 7} y={sy - 7} className="plate-label">start</text>
+      <text x={ex + 7} y={ey - 7} className="plate-label">end</text>
+    </g>
+  );
+}
+
+export function ConductorView({ ev }: ViewProps) {
+  const p = ev.params as { radius: number; length: number; sigma: number };
+  const [x1, y1] = toSvg([-2, 0, -0.25]);
+  const [x2, y2] = toSvg([2, 0, 0.25]);
+  const label = `r = ${p.radius * 1000} mm · L = ${p.length} m · σ = ${p.sigma.toExponential(2)} S/m`;
+  return (
+    <g role="img" aria-label="Conductor, schematic">
+      <text x={-200} y={-38} className="plate-label">{label}</text>
+      <rect x={x1} y={y2} width={x2 - x1} height={y1 - y2} fill="url(#hatch-graphite)" className="ink" />
+      {[-1, 0, 1].map((x) => {
+        const [a, b] = toSvg([x - 0.35, 0, 0]);
+        const [c, d] = toSvg([x + 0.35, 0, 0]);
+        return <g key={x}><line x1={a} y1={b} x2={c} y2={d} style={{ stroke: "var(--flux)" }} markerEnd="url(#arrow-flux)" /><text x={c + 4} y={d - 5} className="plate-label">J</text></g>;
+      })}
     </g>
   );
 }

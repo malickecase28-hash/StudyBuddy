@@ -1,5 +1,5 @@
 import {
-  EPS0, contains, dot, electricField, enclosedCharge, fluxDensity, fluxThrough, norm, scale, surfaceArea, surfacePatches,
+  EPS0, K_E, contains, dot, electricField, enclosedCharge, fluxDensity, fluxThrough, norm, potential, scale, surfaceArea, surfacePatches,
   type Charge, type SurfaceShape, type Vec3,
 } from "@forma/physics";
 import { z } from "zod";
@@ -233,11 +233,12 @@ export const CoulombForce = defineComponent({
     const F: Vec3 = [E[0] * q, E[1] * q, E[2] * q];
     const pts = others.filter((i) => i.kind === "point") as Extract<Item, { kind: "point" }>[];
     const R = pts.length === 1 && others.length === 1 ? norm([at[0] - pts[0]!.pos[0], at[1] - pts[0]!.pos[1], at[2] - pts[0]!.pos[2]]) : undefined;
-    return { Fx: F[0], Fy: F[1], Fz: F[2], Fmag: norm(F), at, ...(R === undefined ? {} : { R }) };
+    const U = R !== undefined && pts.length === 1 ? (K_E * q * (pts[0]!.q * 1e-6)) / R : undefined;
+    return { Fx: F[0], Fy: F[1], Fz: F[2], Fmag: norm(F), at, ...(R === undefined ? {} : { R }), ...(U === undefined ? {} : { U }) };
   },
   handles: [],
-  readouts: { Fx: "N", Fy: "N", Fz: "N", Fmag: "N", R: "m" },
-  quotable: { Fx: "N", Fy: "N", Fz: "N", Fmag: "N", R: "m" },
+  readouts: { Fx: "N", Fy: "N", Fz: "N", Fmag: "N", R: "m", U: "J" },
+  quotable: { Fx: "N", Fy: "N", Fz: "N", Fmag: "N", R: "m", U: "J" },
 });
 
 export const EProbe = defineComponent({
@@ -250,11 +251,12 @@ export const EProbe = defineComponent({
     const onCharge = nearCharge(cs, pt, SINGULAR);
     if (onCharge) return { Ex: null, Ey: null, Ez: null, Emag: null, Dx: null, Dy: null, Dz: null, Dmag: null };
     const E = electricField(cs, pt);
-    return { Ex: E[0], Ey: E[1], Ez: E[2], Emag: norm(E), Dx: E[0] * EPS0 * 1e6, Dy: E[1] * EPS0 * 1e6, Dz: E[2] * EPS0 * 1e6, Dmag: norm(E) * EPS0 * 1e6 };
+    const V = (() => { try { return potential(cs, pt); } catch { return undefined; } })();
+    return { Ex: E[0], Ey: E[1], Ez: E[2], Emag: norm(E), Dx: E[0] * EPS0 * 1e6, Dy: E[1] * EPS0 * 1e6, Dz: E[2] * EPS0 * 1e6, Dmag: norm(E) * EPS0 * 1e6, ...(V === undefined ? {} : { V }) };
   },
   handles: ["point"],
-  readouts: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m", Dx: "µC/m^2", Dy: "µC/m^2", Dz: "µC/m^2", Dmag: "µC/m^2" },
-  quotable: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m", Dx: "µC/m^2", Dy: "µC/m^2", Dz: "µC/m^2", Dmag: "µC/m^2" },
+  readouts: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m", Dx: "µC/m^2", Dy: "µC/m^2", Dz: "µC/m^2", Dmag: "µC/m^2", V: "V" },
+  quotable: { Ex: "V/m", Ey: "V/m", Ez: "V/m", Emag: "V/m", Dx: "µC/m^2", Dy: "µC/m^2", Dz: "µC/m^2", Dmag: "µC/m^2", V: "V" },
 });
 
 export const Axes = defineComponent({ id: "axes", params: z.object({ length: z.number().positive().default(1.8) }), model: () => ({}), handles: [], readouts: {} });

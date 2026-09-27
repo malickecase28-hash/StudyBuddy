@@ -18,6 +18,14 @@ const BASE: Record<string, string> = {
   N: "N",
   "F/m": "F/m",
   F: "F",
+  A: "A",
+  "A/m^2": "A/m^2",
+  "Ω": "Ω",
+  ohm: "Ω",
+  W: "W",
+  "W/m^3": "W/m^3",
+  "S/m": "S/m",
+  J: "J",
 };
 
 const PREFIX: Record<string, number> = { p: 1e-12, n: 1e-9, "µ": 1e-6, u: 1e-6, m: 1e-3, c: 1e-2, k: 1e3, M: 1e6, G: 1e9, T: 1e12 };

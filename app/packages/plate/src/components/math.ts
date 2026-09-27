@@ -210,4 +210,57 @@ export const UnitConvert = defineComponent({
   quotable: { siM: "m", siM2: "m^2", siM3: "m^3", siC: "C", siHz: "Hz", siV: "V", siF: "F", siN: "N" },
 });
 
-export const mathComponents = [ScalarSlice, VectorSlice, CoordRegion, Spectrum, UnitConvert];
+const Path = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("segment"), from: V3, to: V3 }),
+  z.object({ kind: z.literal("arc"), center: V3, radius: z.number().positive(), from: z.number(), to: z.number() }),
+]);
+type PathT = z.infer<typeof Path>;
+const RAD = Math.PI / 180;
+/** Point and tangent (d/ds) at s ∈ [0, 1]. Arcs lie in the plane z = center.z, angles in degrees from +x. */
+export function pathAt(path: PathT, s: number): [Vec3, Vec3] {
+  if (path.kind === "segment") {
+    const d: Vec3 = [path.to[0] - path.from[0], path.to[1] - path.from[1], path.to[2] - path.from[2]];
+    return [[path.from[0] + s * d[0], path.from[1] + s * d[1], path.from[2] + s * d[2]], d];
+  }
+  const a = (path.from + s * (path.to - path.from)) * RAD, da = (path.to - path.from) * RAD;
+  const [cx, cy, cz] = path.center;
+  return [[cx + path.radius * Math.cos(a), cy + path.radius * Math.sin(a), cz], [-path.radius * Math.sin(a) * da, path.radius * Math.cos(a) * da, 0]];
+}
+
+export const LineWork = defineComponent({
+  id: "line-work",
+  params: z.object({ field: VectorId, q: z.number(), path: Path, drawScale: z.number().positive().default(1) }),
+  model: (p) => {
+    const f = vectorFields[p.field]!;
+    const E = (q: Vec3) => cartOf(f.F(nativeOf(q, f.system)), q, f.system);
+    const { nodes, weights } = gaussLegendre(24);
+    let integral = 0;
+    for (let i = 0; i < 24; i++) {
+      const s = 0.5 + 0.5 * nodes[i]!;
+      const [pt, d] = pathAt(p.path, s);
+      const e = E(pt);
+      integral += 0.5 * weights[i]! * (e[0] * d[0] + e[1] * d[1] + e[2] * d[2]);
+    }
+    const W = -p.q * integral;
+    return { W, Vab: W / p.q, q: p.q };
+  },
+  handles: [],
+  readouts: { W: "J", Vab: "V" },
+  quotable: { W: "J", Vab: "V", q: "C" },
+});
+
+export const Conductor = defineComponent({
+  id: "conductor",
+  params: z.object({ radius: z.number().positive(), length: z.number().positive(), sigma: z.number().positive(), current: z.number() }),
+  model: (p) => {
+    const A = Math.PI * p.radius * p.radius;
+    const J = p.current / A;
+    const R = p.length / (p.sigma * A);
+    return { J, E: J / p.sigma, R, P: p.current * p.current * R, pd: (J * J) / p.sigma };
+  },
+  handles: [],
+  readouts: { J: "A/m^2", E: "V/m", R: "Ω", P: "W", pd: "W/m^3" },
+  quotable: { J: "A/m^2", E: "V/m", R: "Ω", P: "W", pd: "W/m^3" },
+});
+
+export const mathComponents = [ScalarSlice, VectorSlice, CoordRegion, Spectrum, UnitConvert, LineWork, Conductor];

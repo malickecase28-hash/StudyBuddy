@@ -37,3 +37,11 @@ describe("parseQuantity", () => {
     expect(toSI(5, "cm^3").value).toBeCloseTo(5e-6, 15);
   });
 });
+
+it("reads current, resistance, power and energy units", () => {
+  expect(toSI(3.183, "MA/m^2")).toEqual({ value: 3.183e6, dim: "A/m^2" });
+  expect(toSI(5.488, "Ω").dim).toBe("Ω");
+  expect(toSI(548.8, "W").dim).toBe("W");
+  expect(toSI(8.988, "mJ").value).toBeCloseTo(8.988e-3, 15);
+  expect(toSI(5.8e7, "S/m").dim).toBe("S/m");
+});
