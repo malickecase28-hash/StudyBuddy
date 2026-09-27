@@ -1,6 +1,7 @@
 "use client";
 
 import { fromSvg3, PX, toSvg3, unitVectorsAt } from "@forma/plate";
+import { cross, dot, norm, normalize, type Vec3 } from "@forma/physics";
 import type { KeyboardEvent, PointerEvent } from "react";
 import { usePlateStage } from "./stage-context";
 import type { ViewProps } from "./views2d";
@@ -26,6 +27,33 @@ export function Axes3View({ ev }: ViewProps) {
       <Arrow from={[0, 0, 0]} to={[L, 0, 0]} tone="graphite" label="x" />
       <Arrow from={[0, 0, 0]} to={[0, L, 0]} tone="graphite" label="y" />
       <Arrow from={[0, 0, 0]} to={[0, 0, L]} tone="graphite" label="z" />
+    </g>
+  );
+}
+
+export function BoundaryView({ ev }: ViewProps) {
+  const p = ev.params as { er1: number; er2: number; conductor: boolean; anchor: [number, number, number] };
+  const d = ev.model.draw as { n: Vec3; D1: Vec3; D2: Vec3; D1n: Vec3; D1t: Vec3; split: boolean };
+  const c = p.anchor;
+  const at = (...terms: [number, Vec3][]): number[] => terms.reduce((s, [k, v]) => [s[0]! + k * v[0], s[1]! + k * v[1], s[2]! + k * v[2]], [...c] as number[]);
+  const t1 = normalize(cross(d.n, Math.abs(d.n[2]) > 0.9 ? [1, 0, 0] : [0, 0, 1]));
+  const t2 = cross(d.n, t1);
+  const quad = [at([1.2, t1], [1.2, t2]), at([1.2, t1], [-1.2, t2]), at([-1.2, t1], [-1.2, t2]), at([-1.2, t1], [1.2, t2])].map((q) => toSvg3(q).join(",")).join(" ");
+  const k = 1.2 / Math.max(norm(d.D1), norm(d.D2), 1e-30);
+  const into2 = dot(d.D1, d.n) < 0;
+  const fmt = (x: number) => String(Number(x.toPrecision(4)));
+  const label = (pt: number[], text: string) => { const [x, y] = toSvg3(pt); return <text x={x} y={y} className="plate-label">{text}</text>; };
+  const [n0, n1] = [toSvg3(at([-1.3, d.n])), toSvg3(at([1.3, d.n]))];
+  return (
+    <g className="v-boundary" role="img" aria-label={`Boundary between region 1 (εr ${fmt(p.er1)}) and region 2 (${p.conductor ? "a conductor" : `εr ${fmt(p.er2)}`})`}>
+      <polygon points={quad} fill={p.conductor ? "var(--graphite)" : "url(#hatch-graphite)"} fillOpacity={p.conductor ? 0.35 : 1} stroke="var(--surface)" />
+      <line x1={n0[0]} y1={n0[1]} x2={n1[0]} y2={n1[1]} className="ink" strokeDasharray="3 3" />
+      {label(at([1.4, d.n]), "n̂")}
+      {label(at([0.9, d.n], [1, t1]), `Region 1 · εr = ${fmt(p.er1)}`)}
+      {label(at([-0.9, d.n], [1, t1]), p.conductor ? "Region 2 · conductor" : `Region 2 · εr = ${fmt(p.er2)}`)}
+      {into2 ? <Arrow from={at([-k, d.D1])} to={[...c]} tone="flux" label="D₁" /> : <Arrow from={[...c]} to={at([k, d.D1])} tone="flux" label="D₁" />}
+      {!p.conductor && norm(d.D2) > 0 && (into2 ? <Arrow from={[...c]} to={at([k, d.D2])} tone="flux" label="D₂" /> : <Arrow from={at([-k, d.D2])} to={[...c]} tone="flux" label="D₂" />)}
+      {d.split && <g opacity={0.7}><Arrow from={[...c]} to={at([k, d.D1n])} tone="surface" label="D₁ₙ" /><Arrow from={[...c]} to={at([k, d.D1t])} tone="surface" label="D₁ₜ" /></g>}
     </g>
   );
 }

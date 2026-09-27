@@ -15,17 +15,21 @@ const LABEL: Record<string, string> = {
   F1: "1st component", F2: "2nd component", F3: "3rd component", div: "∇· at the probe",
   c1: "curl, 1st", c2: "curl, 2nd", c3: "curl, 3rd",
   boxFlux: "Net flux out of the box", boxRatio: "Flux ÷ box volume", circ: "Circulation round the loop", circRatio: "Circulation ÷ loop area",
-  len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume", Q: "Total charge Q", patchFlux: "Ψ through the face", Dx: "Dₓ", Dy: "Dᵧ", Dz: "D_z", Dmag: "|D|",
+  len1: "Edge 1", len2: "Edge 2", len3: "Edge 3", volume: "Volume", Q: "Charge Q", patchFlux: "Ψ through the face", Dx: "Dₓ", Dy: "Dᵧ", Dz: "D_z", Dmag: "|D|",
   lambda: "Wavelength λ", si: "In SI base units", siM: "In metres", siM2: "In m²", siM3: "In m³", siC: "In coulombs", siHz: "In hertz", siV: "In volts", siF: "In farads", siN: "In newtons",
   g1: "∇, 1st component", g2: "∇, 2nd component", g3: "∇, 3rd component",
   Fx: "Fₓ", Fy: "Fᵧ", Fz: "F_z", Fmag: "|F|", R: "Resistance R", Ex: "Eₓ", Ey: "Eᵧ", Ez: "E_z", Emag: "|E|", E: "Electric field E",
   W: "Work done W", Vab: "V(end) − V(start)", J: "|J|", P: "Power I²R", pd: "Power density σE²", V: "Potential V", U: "Energy of the pair U",
+  nx: "n̂ₓ", ny: "n̂ᵧ", nz: "n̂z", D1nx: "D₁ normal, x", D1ny: "D₁ normal, y", D1nz: "D₁ normal, z", D1tx: "D₁ tangential, x", D1ty: "D₁ tangential, y", D1tz: "D₁ tangential, z",
+  D1x: "D₁ x", D1y: "D₁ y", D1z: "D₁ z", D2x: "D₂ x", D2y: "D₂ y", D2z: "D₂ z", E1x: "E₁ x", E1y: "E₁ y", E1z: "E₁ z", E2x: "E₂ x", E2y: "E₂ y", E2z: "E₂ z",
+  P1x: "P₁ x", P1y: "P₁ y", P1z: "P₁ z", P2x: "P₂ x", P2y: "P₂ y", P2z: "P₂ z", th1: "θ₁", th2: "θ₂", rhoS: "ρs",
+  D1mag: "|D₁|", D2mag: "|D₂|", E1mag: "|E₁|", E2mag: "|E₂|", C: "Capacitance C", Eg: "Largest |E|", wE: "Energy density ½εE²",
 };
 const SYS: Record<string, [string, string, string]> = { cart: ["x", "y", "z"], cyl: ["ρ", "φ", "z"], sph: ["r", "θ", "φ"] };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
   flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge", Fmag: "charge", Emag: "field",
   dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field", Q: "charge", patchFlux: "flux", Dmag: "flux",
-  W: "charge", V: "field", J: "flux",
+  W: "charge", V: "field", J: "flux", D2x: "flux", D2y: "flux", D2z: "flux", E2x: "field", E2y: "field", E2z: "field", rhoS: "charge", C: "surface", th1: "surface", th2: "surface",
 };
 const pretty = (unit: string) => unit.replace("^2", "²").replace("^3", "³");
 
@@ -39,6 +43,7 @@ export function PlateReadouts({ plate, frame, hidden = [] }: { plate: PlateDef; 
         let label = (inst.component === "vector3" ? `${String(ev.params.label)} ` : "") + (LABEL[name] ?? name);
         if (inst.component === "spectrum" && name === "f") label = "Frequency f";
         if (inst.component === "conductor" && name === "E") label = "|E| in the conductor";
+        if (inst.component === "capacitor" && name === "W") label = "Stored energy W";
         if (inst.component === "coulomb-force" && name === "R") label = "Separation R";
         if (inst.component === "scalar-slice" || inst.component === "vector-slice") {
           const sys = SYS[String(ev.model.system)] ?? SYS.cart!;

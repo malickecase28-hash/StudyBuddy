@@ -5,6 +5,7 @@ import {
 import { z } from "zod";
 import { vecComponents } from "./vec";
 import { mathComponents } from "./math";
+import { mediaComponents } from "./media";
 import { defineComponent, type AnyComponent } from "../component";
 import { outline as outlineOf, outlineNormals } from "../geometry2d";
 
@@ -340,4 +341,4 @@ export const PatchTiling = defineComponent({
   links: ["charges"],
 });
 
-export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, CoulombForce, EProbe, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling, ...vecComponents, ...mathComponents];
+export const emComponents: AnyComponent[] = [Charges, FieldArrows, FieldProfile, GaussianSurface, Equation, FaradaySpheres, CoulombForce, EProbe, Axes, DimensionCallout, UniformField, FlatPatch, Vector, PatchTiling, ...vecComponents, ...mathComponents, ...mediaComponents];

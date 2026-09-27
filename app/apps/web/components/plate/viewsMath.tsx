@@ -224,6 +224,47 @@ export function ConductorView({ ev }: ViewProps) {
   );
 }
 
+const lengthLabel = (x: number) => x < 1e-3 ? `${Number((x * 1e6).toPrecision(4))} µm` : x < 1 ? `${Number((x * 1e3).toPrecision(4))} mm` : `${Number(x.toPrecision(4))} m`;
+export function CapacitorView({ ev }: ViewProps) {
+  const p = ev.params as { kind: "parallel" | "coax" | "sphere"; er: number; area?: number; d?: number; a?: number; b?: number };
+  const label = `${p.kind === "parallel" ? "Parallel-plate" : p.kind === "coax" ? "Coaxial" : "Spherical"} capacitor, schematic`;
+  if (p.kind === "parallel") {
+    const [x1, yTop] = toSvg([-1.5, 0, 0.6]);
+    const [x2, yBottom] = toSvg([1.5, 0, -0.6]);
+    const [gx1, gyTop] = toSvg([-1.5, 0, 0.5]);
+    const [gx2, gyBottom] = toSvg([1.5, 0, -0.5]);
+    const area = p.area!;
+    return (
+      <g role="img" aria-label={label}>
+        <text x={-200} y={-90} className="plate-label">{`εr = ${p.er} · d = ${lengthLabel(p.d!)} · S = ${Number(area.toPrecision(4))} m²`}</text>
+        {p.er > 1 && <rect x={gx1} y={gyTop} width={gx2 - gx1} height={gyBottom - gyTop} fill="url(#hatch-graphite)" />}
+        <rect x={x1} y={yTop} width={x2 - x1} height={Math.abs(toSvg([0, 0, 0.5])[1]! - toSvg([0, 0, 0.6])[1]!)} fill="var(--charge)" />
+        <rect x={x1} y={toSvg([0, 0, -0.5])[1]!} width={x2 - x1} height={Math.abs(toSvg([0, 0, -0.5])[1]! - yBottom)} fill="var(--field)" />
+        <text x={x2 + 8} y={yTop + 5} className="plate-label">+Q</text>
+        <text x={x2 + 8} y={yBottom + 5} className="plate-label">−Q</text>
+      </g>
+    );
+  }
+  const center = toSvg([0, 0, 0]);
+  const radius = 1.2 * 100;
+  const inner = 0.4 * 100;
+  const a0 = Math.PI / 6;
+  const [ax, ay] = [center[0] + inner * Math.cos(a0), center[1] - inner * Math.sin(a0)];
+  const [bx, by] = [center[0] + radius * Math.cos(a0), center[1] - radius * Math.sin(a0)];
+  return (
+    <g role="img" aria-label={label}>
+      <text x={-200} y={-90} className="plate-label">{p.kind === "coax" ? "cross-section" : "section through the centre"} · εr = {p.er}</text>
+      {p.er > 1 && <circle cx={center[0]} cy={center[1]} r={radius} fill="url(#hatch-graphite)" />}
+      <circle cx={center[0]} cy={center[1]} r={radius} fill="none" stroke="var(--ink)" strokeWidth={3} />
+      <circle cx={center[0]} cy={center[1]} r={inner} fill="var(--charge)" />
+      <line x1={center[0]} y1={center[1]} x2={ax} y2={ay} className="ink" />
+      <line x1={center[0]} y1={center[1]} x2={bx} y2={by} className="ink" />
+      <text x={ax + 3} y={ay - 4} className="plate-label">a</text>
+      <text x={bx + 3} y={by - 4} className="plate-label">b</text>
+    </g>
+  );
+}
+
 const LOG0 = 3, LOG1 = 21; // 1 kHz … 1 ZHz
 const BAND_EDGES: [number, string][] = [[3e8, "Radio"], [3e11, "Microwave"], [4e14, "IR"], [7.9e14, "Vis"], [3e16, "UV"], [3e19, "X-ray"], [1e21, "Gamma"]];
 export function SpectrumView({ id, ev }: ViewProps) {
