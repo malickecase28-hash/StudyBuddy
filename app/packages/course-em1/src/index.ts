@@ -10,9 +10,10 @@ import { vectorCalculus } from "./concepts/calculus";
 import { potentialConcept } from "./concepts/potential";
 import { currentConcept } from "./concepts/current";
 import { dielectricsConcept } from "./concepts/dielectrics";
+import { capacitanceConcept } from "./concepts/capacitance";
 
 /** Electromagnetics I (ELE3001) vertical slice. Parsed (and thereby validated) at import time. */
-const concepts = [emWorld, vectors, vectorCalculus, surfaceIntegrals, coulomb, field, gaussLaw, gaussApplications, divergence, potentialConcept, currentConcept, dielectricsConcept, ...lockedConcepts];
+const concepts = [emWorld, vectors, vectorCalculus, surfaceIntegrals, coulomb, field, gaussLaw, gaussApplications, divergence, potentialConcept, currentConcept, dielectricsConcept, capacitanceConcept, ...lockedConcepts];
 export const retiredConcepts = [{ from: "em1.electrostatics.flux-density", to: "em1.electrostatics.gauss-law", lessonId: "flux-density" }];
 export const course = Course.parse({
   id: "em1",
