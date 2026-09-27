@@ -8,3 +8,5 @@ Task 4: Ruling: the named course catalog file was ignored and untracked in this 
 Task 4: complete (commits 8932f76..55bd6cc, tests: pnpm test && pnpm typecheck && (cd apps/web && ../../node_modules/.bin/tsc -p tsconfig.json) -> PASS, 75 files/732 tests; typechecks PASS; publication report regenerated for the retired concept).
 Task 5: complete (commits f8a8e04..8d77c97, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 21 files/414 tests; package typecheck PASS; publication report regenerated for the unlocked concept).
 Task 6: complete (commits 6a02ec1..3fa8d69, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 21 files/427 tests; package typecheck PASS).
+Task 7: Ruling: the plan's equation rendered Q²/(2C), which its global constraint explicitly forbids — render the equivalent ½Q²/C form — cost if wrong: a different but equivalent equation layout.
+Task 7: complete (commits 6473ad4..a663c6d, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 21 files/446 tests; package typecheck PASS; publication report regenerated for the unlocked concept).
