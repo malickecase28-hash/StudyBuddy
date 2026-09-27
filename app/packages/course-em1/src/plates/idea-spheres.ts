@@ -12,7 +12,7 @@ const eqp = (latex: string, speech: string) => ({ latex, speech, shortSpeech: sp
 export const ideaSpheres = defineIdeaPlate({
   id: "idea-spheres",
   title: "Spheres of charge: D and Q inside and outside",
-  requires: { objectives: [2], items: ["tutorial:q08"], misconceptions: ["BALL_INSIDE_OUTSIDE"] },
+  requires: { objectives: [2], items: ["tutorial:q08"], misconceptions: ["BALL_INSIDE_OUTSIDE", "OUTSIDE_CHARGE_CONTRIBUTES", "D_VS_E_PERMITTIVITY"] },
   instances: [
     { id: "q", component: "charges", params: BALL },
     { id: "surface", component: "gaussian-surface", params: { shape: "sphere", size: 0.5 }, links: { charges: "q" } },
@@ -81,12 +81,12 @@ export const ideaSpheres = defineIdeaPlate({
         },
       ],
       asks: [
-        { id: "inside-rule", q: "Why does only the charge inside r count?", tags: ["BALL_INSIDE_OUTSIDE"], a: "By Gauss's law, the flux through the sphere of radius r depends only on the charge it encloses. The charge in the outer shell surrounds the Gaussian sphere, and its field there cancels by symmetry." },
+        { id: "inside-rule", q: "Why does only the charge inside r count?", tags: ["BALL_INSIDE_OUTSIDE", "OUTSIDE_CHARGE_CONTRIBUTES"], a: "By Gauss's law, the flux through the sphere of radius r depends only on the charge it encloses. The charge in the outer shell surrounds the Gaussian sphere, and its field there cancels by symmetry." },
         { id: "centre", q: "Why is D zero at the centre?", a: "Every piece of charge is balanced by an equal piece opposite, so their pulls cancel. In the formula, D = ρv r/3 gives zero at r = 0." },
         { id: "point", q: "Why does the ball look like a point charge from outside?", a: "Outside, the Gaussian sphere encloses the whole charge, and Gauss's law then gives D = Q/(4πr²), the point-charge result. How the charge is arranged inside doesn't matter, as long as it's spherically symmetric." },
         { id: "shell", q: "What about a hollow shell of charge?", a: "Inside the shell the Gaussian sphere encloses nothing, so D = 0 there. Outside, D = Q/(4πr²) again. It is the same method with a different Q_enc." },
         { id: "nonuniform", q: "What if ρv varies with r?", a: "Then Q_enc = ∫ρv dv over the sphere of radius r, with dv = 4πr² dr for a spherical shell. The rest of the method is unchanged." },
-        { id: "e-too", q: "How do I get E from D?", a: "In free space, E = D/ε₀. Inside a material, E = D/(ε₀εr). D itself depends only on the free charge." },
+        { id: "e-too", q: "How do I get E from D?", tags: ["D_VS_E_PERMITTIVITY"], a: "In free space, E = D/ε₀. Inside a material, E = D/(ε₀εr). D itself depends only on the free charge." },
       ],
       checks: [
         {
@@ -96,6 +96,8 @@ export const ideaSpheres = defineIdeaPlate({
             options: [
               choice("right", "ρv r / 3", true, "Right: only the charge within r counts."),
               choice("out", "ρv a³ / (3r²)", false, "That's the outside formula; it uses the whole ball.", "BALL_INSIDE_OUTSIDE"),
+              choice("outside-shell", "Include the charge in the outer shell too", false, "The Gaussian sphere encloses only the charge within r.", "OUTSIDE_CHARGE_CONTRIBUTES"),
+              choice("epsilon", "ρv r / (3ε₀)", false, "That would mix E into the displacement field D.", "D_VS_E_PERMITTIVITY"),
               choice("zero", "zero", false, "Only a hollow shell has zero field inside."),
             ] },
         },

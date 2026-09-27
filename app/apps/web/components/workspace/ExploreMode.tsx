@@ -4,7 +4,7 @@ import { checks, labs, registry, type Lab } from "@forma/course-em1";
 import { applyOverrides, createEvaluator, frameAt, stateAt, type Frame, type Overrides } from "@forma/plate";
 import { Segmented } from "@forma/ui";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { attemptedIds, shouldCredit } from "@/lib/playback";
 import { useStudy } from "@/lib/store";
 import { PlateStage } from "../plate/PlateStage";
@@ -41,10 +41,11 @@ function LabBench({ lab, conceptId }: { lab: Lab; conceptId: string }) {
         rerender((n) => n + 1);
       }
   });
-  const set = (id: string, params: Record<string, unknown>) => setO((x) => ({ ...x, [id]: { params: { ...x[id]?.params, ...params } } }));
+  const set = useCallback((id: string, params: Record<string, unknown>) => setO((x) => ({ ...x, [id]: { params: { ...x[id]?.params, ...params } } })), []);
+  const editable = useMemo(() => lab.plate.instances.map((i) => i.id), [lab]);
   return (
     <div className="explore">
-      <PlateStage plate={lab.plate} timeline={frameAt(lab.plate, 0)} frame={frame} editable={lab.plate.instances.map((i) => i.id)} onEdit={set} label={`${lab.plate.title}: free exploration`} />
+      <PlateStage plate={lab.plate} timeline={frameAt(lab.plate, 0)} frame={frame} editable={editable} onEdit={set} label={`${lab.plate.title}: free exploration`} />
       <aside className="instrument-panel space-y-5" aria-label="Instruments">
         <h2 className="text-xl">Instruments</h2>
         {lab.controls.map((c) => {

@@ -11,7 +11,7 @@ const eqp = (latex: string, speech: string) => ({ latex, speech, shortSpeech: sp
 export const ideaPatchFlux = defineIdeaPlate({
   id: "idea-patch-flux",
   title: "Flux through part of a surface",
-  requires: { objectives: [1], items: ["mst-2324-q3a", "tutorial:q06"], misconceptions: ["FLUX_PATCH_AREA"] },
+  requires: { objectives: [1], items: ["mst-2324-q3a", "tutorial:q06"], misconceptions: ["FLUX_PATCH_AREA", "FLUX_SCALES_WITH_AREA", "GAUSS_WITHOUT_SYMMETRY"] },
   instances: [
     { id: "axes", component: "axes3", params: { length: 1.6 } },
     { id: "region", component: "coord-region", params: { system: "sph", ranges: [[0, 1], [0, 90], [0, 360]], face: 0, centralCharge: 12 } },
@@ -81,7 +81,8 @@ export const ideaPatchFlux = defineIdeaPlate({
       asks: [
         { id: "why-share", q: "Why is flux shared by area?", tags: ["FLUX_PATCH_AREA"], a: "Only for a charge at the centre of a sphere, where D is the same size everywhere on the surface and normal to it. Then flux is D times area, and D is the same everywhere, so the flux divides exactly as the area does." },
         { id: "theta-share", q: "Why (1 − cos θ₂) and not θ₂/π?", a: "Bands of the sphere near the poles are smaller than those near the equator. Integrating r² sin θ dθ gives r²(1 − cos θ₂), which accounts for the shrinking bands." },
-        { id: "off-centre", q: "What if the charge isn't at the centre?", a: "Then D varies over the surface, and the simple share no longer works for a patch. Only the total through the whole closed surface is still Q." },
+        { id: "off-centre", q: "What if the charge isn't at the centre?", tags: ["GAUSS_WITHOUT_SYMMETRY"], a: "Then D varies over the surface, and the simple share no longer works for a patch. Only the total through the whole closed surface is still Q." },
+        { id: "radius", q: "Why doesn't a bigger sphere get more flux?", tags: ["FLUX_SCALES_WITH_AREA"], a: "The field gets weaker as r² while the area grows as r², so their product and the total flux stay Q." },
         { id: "open", q: "Does Gauss's law apply to a patch?", a: "Not directly: Gauss's law is about closed surfaces. Symmetry lets you split the closed-surface total into equal or proportional pieces." },
         { id: "solid", q: "What is a solid angle?", a: "The 3D version of an angle: patch area divided by r², measured in steradians. A whole sphere is 4π steradians, and the flux share is the solid angle divided by 4π." },
         { id: "units", q: "What units does the flux come out in?", a: "The same as the charge. Ψ has units of coulombs, so a charge in microcoulombs gives flux in microcoulombs." },
@@ -94,6 +95,7 @@ export const ideaPatchFlux = defineIdeaPlate({
             options: [
               choice("share", "Q × (patch area ÷ 4πr²)", true, "Right: the patch's share of the whole."),
               choice("area", "Q × (patch area)", false, "That has the wrong units. Divide by the whole area.", "FLUX_PATCH_AREA"),
+              choice("bigger", "A bigger sphere always gets more total flux", false, "For a point charge, the area grows while D falls, so the total stays Q.", "FLUX_SCALES_WITH_AREA"),
               choice("zero", "zero, since the patch isn't closed", false, "Flux through an open patch is fine; Gauss's law just doesn't give it directly."),
             ] },
         },
@@ -102,6 +104,16 @@ export const ideaPatchFlux = defineIdeaPlate({
           note: "Predict first; then the plate shows the result.",
           interaction: { id: "predict-r", type: "predict-drag", prompt: "The sphere's radius doubles, from 1 m to 2 m. Drag the hemisphere's flux to your prediction.", target: { instance: "region", readout: "patchFlux" }, range: [0, 12], unit: "µC", relTol: 0.05, reveal: { region: { ranges: [[0, 2], [0, 90], [0, 360]], drawScale: 0.8 } }, dimension: "conceptual", tag: "FLUX_PATCH_AREA",
             feedback: { close: "Right: unchanged, 6 µC.", far: "The share is the same at any radius: 6 µC." } },
+        },
+        {
+          id: "symmetry", title: "Check: when can D come out?",
+          note: "Use the symmetry before simplifying the integral.",
+          interaction: { id: "symmetry", type: "choose", prompt: "When can D be taken outside ∮D·dS as D × area?", dimension: "conceptual",
+            options: [
+              choice("right", "When symmetry makes its magnitude constant and direction normal", true, "Right: symmetry justifies pulling D out of the integral."),
+              choice("closed", "For every closed Gaussian surface", false, "A closed surface alone does not make D constant or normal.", "GAUSS_WITHOUT_SYMMETRY"),
+              choice("point", "Whenever there is a point charge, even off-centre", false, "An off-centre charge does not give the same D over the surface."),
+            ] },
         },
         {
           id: "patch-num", title: "Check: a patch, your numbers",

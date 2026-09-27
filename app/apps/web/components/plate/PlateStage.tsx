@@ -1,7 +1,7 @@
 "use client";
 
 import { fromSvg, VIEWBOX, type Frame, type PlateDef, type TimelineFrame } from "@forma/plate";
-import { Component, useMemo, useRef, type ReactNode } from "react";
+import { Component, memo, useMemo, useRef, type ReactNode } from "react";
 import { StageContext, type StageApi } from "./stage-context";
 import { EquationView, views2d } from "./views2d";
 
@@ -38,6 +38,10 @@ function PlateDefs() {
   );
 }
 
+const memoViews2d = Object.fromEntries(Object.entries(views2d).map(([id, View]) => [id, memo(View, (a, b) =>
+  a.id === b.id && a.ev.model === b.ev.model && JSON.stringify(a.ev.params) === JSON.stringify(b.ev.params) && a.appear === b.appear && a.focused === b.focused && a.highlighted === b.highlighted,
+)]));
+
 export function PlateStage({
   plate, timeline, frame, label, highlight = [], editable = [], onEdit, onTerm,
 }: {
@@ -66,7 +70,7 @@ export function PlateStage({
           <rect x={VIEWBOX.x} y={VIEWBOX.y} width={VIEWBOX.w} height={VIEWBOX.h} fill="url(#plate-grid)" />
           {plate.instances.map((inst) => {
             const ev = frame[inst.id];
-            const View = views2d[inst.component];
+            const View = memoViews2d[inst.component];
             if (!ev?.visible || !View) return null;
             const focused = timeline.focus.includes(inst.id);
             return (
