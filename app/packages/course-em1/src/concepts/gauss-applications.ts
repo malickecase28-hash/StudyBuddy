@@ -8,12 +8,15 @@ export const gaussApplications = {
   title: "Applying Gauss's Law",
   unit: 2,
   objectives: [
-    "Choose a Gaussian surface that exploits symmetry (sphere, cylinder, pillbox).",
-    "Compute enclosed charge and flux for point, line, surface and volume distributions.",
-    "Solve exam-style Gauss's law problems end to end.",
+    "Find total charge from ρL, ρS and ρv by integration in all three coordinate systems.",
+    "Find the flux through part of a closed surface from its share of the whole.",
+    "Use Gauss's law to find D and Q for spherical charge distributions, inside and outside.",
   ],
   prerequisites: [{ conceptId: GL, minMastery: 0.4 }],
   misconceptions: [
+    { tag: "DENSITY_NO_JACOBIAN", description: "Integrates a density without the scale factors (ρ, r², r² sin θ).", remediation: "em1.electrostatics.gauss-applications/main" },
+    { tag: "FLUX_PATCH_AREA", description: "Multiplies Q by a patch's area instead of its share of the whole surface.", remediation: "em1.electrostatics.gauss-applications/main" },
+    { tag: "BALL_INSIDE_OUTSIDE", description: "Uses the whole charge inside a ball, or only part of it outside.", remediation: "em1.electrostatics.gauss-applications/main" },
     { tag: "OUTSIDE_CHARGE_CONTRIBUTES", description: "Counts charges outside the surface.", remediation: `${GL}/outside-charge` },
     { tag: "FLUX_SCALES_WITH_AREA", description: "Thinks a bigger surface catches more flux.", remediation: `${GL}/why-area` },
     { tag: "D_VS_E_PERMITTIVITY", description: "Confuses D and E.", remediation: `${GL}/d-vs-e` },
@@ -44,6 +47,12 @@ export const gaussApplications = {
     },
   ],
   lessons: [
+    {
+      id: "main",
+      title: "Gauss's law in use (in depth)",
+      minutes: 70,
+      blocks: [{ ...meta("vivid", src(SLIDES, "pp. 58-61")), id: "idea-charge-density", type: "plate" as const, plateId: "idea-charge-density" }],
+    },
     {
       id: "worked",
       title: "Worked problems: spheres, lines and slices",
