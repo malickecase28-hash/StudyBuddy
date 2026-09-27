@@ -39,6 +39,8 @@ export const dielectricsConcept = {
         { ...meta("vivid", src(L2C, "Polarization")), id: "idea-polarization", type: "plate" as const, plateId: "idea-polarization" },
         { ...meta("vivid", src(L2C, "Boundary conditions: tangential")), id: "idea-bc-tangential", type: "plate" as const, plateId: "idea-bc-tangential" },
         { ...meta("vivid", src(L2C, "Boundary conditions: normal")), id: "idea-bc-normal", type: "plate" as const, plateId: "idea-bc-normal" },
+        { ...meta("vivid", src(L2C, "Refraction of field lines")), id: "idea-refraction", type: "plate" as const, plateId: "idea-refraction" },
+        { ...meta("vivid", src(L2C, "Conductor boundaries")), id: "idea-conductor-bc", type: "plate" as const, plateId: "idea-conductor-bc" },
       ],
     },
   ],
