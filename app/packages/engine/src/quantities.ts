@@ -17,6 +17,7 @@ const BASE: Record<string, string> = {
   V: "V",
   N: "N",
   "F/m": "F/m",
+  "J/m^3": "J/m^3",
   F: "F",
   A: "A",
   "A/m^2": "A/m^2",

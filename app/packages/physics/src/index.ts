@@ -8,3 +8,5 @@ export * from "./potential";
 export * from "./coords";
 export * from "./fields";
 export * from "./densities";
+export * from "./boundary";
+export * from "./capacitance";

@@ -45,3 +45,11 @@ it("reads current, resistance, power and energy units", () => {
   expect(toSI(8.988, "mJ").value).toBeCloseTo(8.988e-3, 15);
   expect(toSI(5.8e7, "S/m").dim).toBe("S/m");
 });
+
+it("reads capacitance, energy density and angle units", () => {
+  expect(toSI(5.208, "J/m^3")).toEqual({ value: 5.208, dim: "J/m^3" });
+  expect(toSI(88.54, "pF").value).toBeCloseTo(8.854e-11, 20);
+  expect(toSI(100.4, "pF/m").dim).toBe("F/m");
+  expect(toSI(79.5, "µF").value).toBeCloseTo(7.95e-5, 12);
+  expect(toSI(56.71, "°").dim).toBe("°");
+});
