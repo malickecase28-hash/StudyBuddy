@@ -493,5 +493,88 @@ const rhovFromD = defineTemplate<{ a: number; b: number; x0: number; y0: number 
   tags: { concepts: ["em1.electrostatics.divergence"], misconceptions: [], difficulty: 1 },
 });
 
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD];
+const vPoint = defineTemplate<{ q: number; r: number }>({
+  id: "v-point",
+  params: { q: { min: 1, max: 9, step: 1 }, r: { min: 10, max: 100, step: 10 } },
+  prompt: (p) => `Find the potential ${p.r} cm from a ${p.q} nC point charge, taking V = 0 at infinity.`,
+  solve: (p) => {
+    const value = sig((KE * p.q * 1e-9) / (p.r / 100));
+    const inverseSquare = sig((KE * p.q * 1e-9) / (p.r / 100) ** 2);
+    return {
+      answer: { value, unit: "V" },
+      distractors: inverseSquare === value ? [] : [{ value: inverseSquare, unit: "V", errorClass: "conceptual", tag: "V_INVERSE_SQUARE", feedback: "Potential falls as 1/R, not 1/R². That's the field's law." }],
+    };
+  },
+  hints: () => ["V = Q/(4πε₀R).", "R in metres.", "One power of R, not two."],
+  worked: (p) => [{ text: `V = 8.988 × 10⁹ × ${p.q} × 10⁻⁹ / ${p.r / 100} = ${sig((KE * p.q * 1e-9) / (p.r / 100))} V.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.potential"], misconceptions: ["V_INVERSE_SQUARE"], difficulty: 1 },
+});
+
+const workMove = defineTemplate<{ Q: number; q: number; ra: number }>({
+  id: "work-move",
+  params: { Q: { min: 1, max: 5, step: 1 }, q: { min: 1, max: 3, step: 1 }, ra: { min: 2, max: 5, step: 1 } },
+  prompt: (p) => `A +${p.Q} µC charge is fixed at the origin. How much work must you do to bring a +${p.q} µC charge from ${p.ra} m to 1 m from it?`,
+  solve: (p) => {
+    const W = p.q * 1e-6 * KE * p.Q * 1e-6 * (1 - 1 / p.ra);
+    return {
+      answer: { value: sig(W), unit: "J" },
+      distractors: [{ value: sig(-W), unit: "J", errorClass: "sign", tag: "WORK_SIGN", feedback: "Pushing like charges together takes positive work: W = q(V_end − V_start) > 0 here." }],
+    };
+  },
+  hints: () => ["W = q(V_end − V_start).", "V = kQ/r at each end.", "The end is closer, so V_end > V_start."],
+  worked: (p) => [{ text: `V(1 m) − V(${p.ra} m) = 8.988 × 10⁹ × ${p.Q} × 10⁻⁶ × (1 − 1/${p.ra}); multiply by ${p.q} × 10⁻⁶ C: W = ${sig(p.q * 1e-6 * KE * p.Q * 1e-6 * (1 - 1 / p.ra))} J.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.potential"], misconceptions: ["WORK_SIGN"], difficulty: 2 },
+});
+
+const currentDensity = defineTemplate<{ I: number; r: number }>({
+  id: "current-density",
+  params: { I: { min: 5, max: 50, step: 5 }, r: { min: 0.5, max: 8, step: 0.5 } },
+  prompt: (p) => `A straight conductor of radius ${p.r} mm carries ${p.I} A, spread uniformly. Find |J|.`,
+  solve: (p) => {
+    const r = p.r / 1000;
+    return {
+      answer: { value: sig(p.I / (Math.PI * r * r), 6), unit: "A/m^2" },
+      distractors: [{ value: sig(p.I / (2 * Math.PI * r)), unit: "A/m^2", errorClass: "conceptual", tag: "J_AREA", feedback: "That divides by the circumference. J is current per cross-sectional area, πr²." }],
+    };
+  },
+  hints: () => ["J = I / (cross-sectional area).", "Area = πr², with r in metres.", "mm → m first."],
+  worked: (p) => [{ text: `J = ${p.I} / (π × (${p.r / 1000})²) = ${sig(p.I / (Math.PI * (p.r / 1000) ** 2), 6)} A/m².` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.current"], misconceptions: ["J_AREA"], difficulty: 1 },
+});
+
+const ohmWire = defineTemplate<{ L: number; d: number }>({
+  id: "ohm-wire",
+  params: { L: { min: 10, max: 100, step: 10 }, d: { min: 1, max: 4, step: 1 } },
+  prompt: (p) => `Find the resistance of ${p.L} m of copper wire (σ = 5.8 × 10⁷ S/m) with diameter ${p.d} mm.`,
+  solve: (p) => {
+    const a = p.d / 2000;
+    return {
+      answer: { value: sig(p.L / (5.8e7 * Math.PI * a * a)), unit: "Ω" },
+      distractors: [{ value: sig(p.L / (5.8e7 * Math.PI * (p.d / 1000) ** 2)), unit: "Ω", errorClass: "conceptual", tag: "J_AREA", feedback: "That uses the diameter as the radius. Halve it first." }],
+    };
+  },
+  hints: () => ["R = L / (σS).", "S = πa², with a the radius in metres.", "Radius = diameter / 2."],
+  worked: (p) => [{ text: `a = ${p.d / 2} mm; S = π(${p.d / 2000})² m²; R = ${p.L} / (5.8 × 10⁷ × S) = ${sig(p.L / (5.8e7 * Math.PI * (p.d / 2000) ** 2))} Ω.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.current"], misconceptions: ["J_AREA"], difficulty: 1 },
+});
+
+const continuityRate = defineTemplate<{ a: number; x0: number }>({
+  id: "continuity-rate",
+  params: { a: { min: 1, max: 9, step: 1 }, x0: { min: 1, max: 4, step: 1 } },
+  prompt: (p) => `J = ${p.a}x² ax A/m². Find ∂ρv/∂t at x = ${p.x0} m.`,
+  solve: (p) => ({
+    answer: { value: -2 * p.a * p.x0, unit: "C/m^3" },
+    distractors: [{ value: 2 * p.a * p.x0, unit: "C/m^3", errorClass: "sign", tag: "CONTINUITY_SIGN", feedback: "∇·J = −∂ρv/∂t: charge flowing out means the density falls." }],
+  }),
+  hints: () => ["∇·J = −∂ρv/∂t.", "∇·J = ∂(ax²)/∂x = 2ax.", "So ∂ρv/∂t = −2ax (per second)."],
+  worked: (p) => [{ text: `∇·J = ${2 * p.a}x = ${2 * p.a * p.x0} at x = ${p.x0}, so ∂ρv/∂t = −${2 * p.a * p.x0} C/m³ per second.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.current"], misconceptions: ["CONTINUITY_SIGN"], difficulty: 1 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD, vPoint, workMove, currentDensity, ohmWire, continuityRate];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));
