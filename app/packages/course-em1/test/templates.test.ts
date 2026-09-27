@@ -49,6 +49,10 @@ const truth: Record<string, (p: Record<string, number>) => number> = {
     ),
   "f2425-qt": (p) => radialFlux(p.a!, p.R!),
   "flux-flat-patch": (p) => dot(vec(p.D! * 1e-6, 0, 0), vec(Math.cos((p.theta! * Math.PI) / 180), 0, Math.sin((p.theta! * Math.PI) / 180))) * p.a! * p.b!,
+  "charge-line-poly": (p) => (p.a! * (p.x2! ** 3 - p.x1! ** 3) / 3) * 1e-3,
+  "flux-patch": (p) => p.q! * 1e-6 * ((1 - Math.cos([30, 45, 60, 90][p.t!]! * Math.PI / 180)) * (p.dp! * Math.PI / 180)) / (4 * Math.PI),
+  "ball-d": (p) => (p.rv! * (p.r! / 10 < p.a! / 10 ? p.r! / 10 : (p.a! / 10) ** 3 / (p.r! / 10) ** 2) / 3) * 1e-6,
+  "rhov-from-d": (p) => p.a! * p.y0!,
 };
 
 describe("question templates", () => {

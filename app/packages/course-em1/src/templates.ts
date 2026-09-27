@@ -411,5 +411,87 @@ const eLine = defineTemplate<{ rl: number; rho: number }>({
   tags: { concepts: ["em1.electrostatics.field"], misconceptions: ["LINE_FIELD_FORM"], difficulty: 2 },
 });
 
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine];
+const chargeLinePoly = defineTemplate<{ a: number; x1: number; x2: number }>({
+  id: "charge-line-poly",
+  params: { a: { min: 3, max: 15, step: 3 }, x1: { min: 0, max: 2, step: 1 }, x2: { min: 3, max: 6, step: 1 } },
+  prompt: (p) => `A line charge on ${p.x1} < x < ${p.x2} m has density ρL = ${p.a}x² mC/m. Find the total charge.`,
+  solve: (p) => {
+    const Q = (p.a * (p.x2 ** 3 - p.x1 ** 3)) / 3;
+    return {
+      answer: { value: sig(Q, 6), unit: "mC" },
+      distractors: [{ value: sig(p.a * (p.x2 ** 3 - p.x1 ** 3), 6), unit: "mC", errorClass: "arithmetic", feedback: "∫x² dx = x³/3: don't forget the 3." }],
+    };
+  },
+  hints: () => ["Q = ∫ρL dl, and on the x-axis dl = dx.", "∫ax² dx = a x³/3.", "Upper limit minus lower limit."],
+  worked: (p) => [{ text: `Q = ∫ ${p.a}x² dx = ${p.a}[x³/3] from ${p.x1} to ${p.x2} = ${sig((p.a * (p.x2 ** 3 - p.x1 ** 3)) / 3, 6)} mC.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.gauss-applications"], misconceptions: [], difficulty: 1 },
+});
+
+const TH = [30, 45, 60, 90];
+const fluxPatch = defineTemplate<{ q: number; t: number; dp: number; rc: number }>({
+  id: "flux-patch",
+  params: { q: { min: 10, max: 90, step: 10 }, t: { min: 0, max: 3, step: 1 }, dp: { min: 15, max: 90, step: 15 }, rc: { min: 10, max: 50, step: 10 } },
+  prompt: (p) => `A ${p.q} µC point charge is at the origin. Find the flux through the part of the sphere r = ${p.rc} cm with 0 < θ < ${TH[p.t]}° and 0 < φ < ${p.dp}°.`,
+  solve: (p) => {
+    const frac = ((1 - Math.cos(TH[p.t]! * DEG)) * p.dp * DEG) / (4 * Math.PI);
+    const r = p.rc / 100;
+    return {
+      answer: { value: sig(p.q * frac), unit: "µC" },
+      distractors: [{ value: sig(p.q * frac * 4 * Math.PI * r * r), unit: "µC", errorClass: "conceptual", tag: "FLUX_PATCH_AREA", feedback: "That multiplies Q by the patch's area. The flux is Q times the patch's share of the whole sphere: area ÷ 4πr²." }],
+    };
+  },
+  hints: () => ["The charge is at the centre: flux spreads evenly over the sphere.", "Share = patch area ÷ 4πr² = (1 − cos θ₂)Δφ / 4π.", "The radius cancels."],
+  worked: (p) => {
+    const frac = ((1 - Math.cos(TH[p.t]! * DEG)) * p.dp * DEG) / (4 * Math.PI);
+    return [
+      { text: `Share = (1 − cos ${TH[p.t]}°)(${p.dp}° in radians)/(4π) = ${sig(frac, 5)}.` },
+      { text: `Ψ = ${p.q} µC × ${sig(frac, 5)} = ${sig(p.q * frac)} µC; the radius doesn't matter.` },
+    ];
+  },
+  dimension: "application",
+  tags: { concepts: ["em1.electrostatics.gauss-applications"], misconceptions: ["FLUX_PATCH_AREA"], difficulty: 2 },
+});
+
+const ballD = defineTemplate<{ rv: number; a: number; r: number }>({
+  id: "ball-d",
+  params: { rv: { min: 1, max: 9, step: 1 }, a: { min: 10, max: 20, step: 5 }, r: { min: 5, max: 30, step: 5 } },
+  prompt: (p) => `A ball of radius ${p.a / 10} m carries a uniform ρv = ${p.rv} µC/m³. Find |D| at r = ${p.r / 10} m from its centre.`,
+  solve: (p) => {
+    const a = p.a / 10, r = p.r / 10;
+    const inside = (p.rv * r) / 3;
+    const outside = (p.rv * a ** 3) / (3 * r * r);
+    const ans = r < a ? inside : outside;
+    const wrong = r < a ? outside : inside;
+    return {
+      answer: { value: sig(ans, 6), unit: "µC/m^2" },
+      distractors: Math.abs(wrong - ans) > 1e-9 ? [{ value: sig(wrong, 6), unit: "µC/m^2", errorClass: "conceptual", tag: "BALL_INSIDE_OUTSIDE", feedback: r < a ? "Inside the ball only the charge within r counts: D = ρv r / 3." : "Outside, the whole ball counts: D = ρv a³ / (3r²)." }] : [],
+    };
+  },
+  hints: () => ["Gaussian sphere of radius r: D × 4πr² = Q_enc.", "Inside: Q_enc = ρv (4/3)πr³. Outside: ρv (4/3)πa³.", "Is r inside or outside the ball?"],
+  worked: (p) => {
+    const a = p.a / 10, r = p.r / 10;
+    return r < a
+      ? [{ text: `r < a, so Q_enc = ρv(4/3)πr³ and D = ρv r/3 = ${p.rv} × ${r}/3 = ${sig((p.rv * r) / 3, 6)} µC/m².` }]
+      : [{ text: `r ≥ a, so Q_enc = ρv(4/3)πa³ and D = ρv a³/(3r²) = ${p.rv} × ${a}³/(3 × ${r}²) = ${sig((p.rv * a ** 3) / (3 * r * r), 6)} µC/m².` }];
+  },
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.gauss-applications"], misconceptions: ["BALL_INSIDE_OUTSIDE"], difficulty: 2 },
+});
+
+const rhovFromD = defineTemplate<{ a: number; b: number; x0: number; y0: number }>({
+  id: "rhov-from-d",
+  params: { a: { min: 1, max: 6, step: 1 }, b: { min: 1, max: 6, step: 1 }, x0: { min: 1, max: 4, step: 1 }, y0: { min: 1, max: 4, step: 1 } },
+  prompt: (p) => `D = ${p.a}xy ax + ${p.b}x² ay C/m². Find ρv at (${p.x0}, ${p.y0}, 1).`,
+  solve: (p) => ({
+    answer: { value: p.a * p.y0, unit: "C/m^3" },
+    distractors: [{ value: p.a * p.y0 + 2 * p.b * p.x0, unit: "C/m^3", errorClass: "conceptual", feedback: "∂D_y/∂y, not ∂D_y/∂x: bx² doesn't depend on y, so it contributes nothing." }],
+  }),
+  hints: () => ["ρv = ∇·D.", "∂(axy)/∂x = ay; ∂(bx²)/∂y = 0.", "Substitute y."],
+  worked: (p) => [{ text: `∇·D = ∂(${p.a}xy)/∂x + ∂(${p.b}x²)/∂y = ${p.a}y + 0, so ρv = ${p.a} × ${p.y0} = ${p.a * p.y0} C/m³.` }],
+  dimension: "computational",
+  tags: { concepts: ["em1.electrostatics.divergence"], misconceptions: [], difficulty: 1 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));
