@@ -14,3 +14,4 @@ Task 4: complete (commits 8e08900..9e2d05e, tests: pnpm vitest run packages/cour
 Task 5: Ruling: the continuity plate quotes a derived −5 C/m³ rate that is not a declared readout and triggers the number lint — keep the relation ∂ρv/∂t = −∇·J and state that density falls — cost if wrong: the worked note no longer gives the derived rate numerically.
 Task 5: Ruling: the proof example reused the prior state and triggered the possible-slide warning — show a different closed-box size at the proof setup — cost if wrong: the proof begins with a larger illustrative volume.
 Task 5: complete (commits d92e1f2..416721b, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 18 files/370 tests; typecheck PASS).
+Task 6: complete (commits 88a66d7..1ba0450, tests: pnpm test && pnpm typecheck && (cd apps/web && ../../node_modules/.bin/tsc -p tsconfig.json && pnpm build && pnpm e2e) -> PASS, 70 files/685 tests; e2e 44/44; typechecks/build PASS).
