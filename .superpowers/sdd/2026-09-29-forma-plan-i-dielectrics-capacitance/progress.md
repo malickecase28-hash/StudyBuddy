@@ -10,3 +10,4 @@ Task 5: complete (commits f8a8e04..8d77c97, tests: pnpm vitest run packages/cour
 Task 6: complete (commits 6a02ec1..3fa8d69, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 21 files/427 tests; package typecheck PASS).
 Task 7: Ruling: the plan's equation rendered Q²/(2C), which its global constraint explicitly forbids — render the equivalent ½Q²/C form — cost if wrong: a different but equivalent equation layout.
 Task 7: complete (commits 6473ad4..a663c6d, tests: pnpm vitest run packages/course-em1 && pnpm typecheck -> PASS, 21 files/446 tests; package typecheck PASS; publication report regenerated for the unlocked concept).
+Task 8: complete (commits 2dd272d..7fc41dd, tests: pnpm test && pnpm typecheck && (cd apps/web && ../../node_modules/.bin/tsc -p tsconfig.json && pnpm build && pnpm e2e) -> PASS, 76 files/785 tests; typechecks/build PASS; e2e 47/47; visual baselines unchanged).
