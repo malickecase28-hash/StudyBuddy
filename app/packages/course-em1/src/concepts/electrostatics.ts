@@ -203,6 +203,4 @@ const locked = (id: string, title: string, unit: number) => ({
 });
 
 export const lockedConcepts = [
-  locked("em1.dynamic.faraday", "Dynamic fields & Maxwell's equations", 4),
-  locked("em1.waves.plane-waves", "Plane waves", 5),
 ];
