@@ -10,7 +10,7 @@ function PageThumb({ pageId, version }: { pageId: string; version: number }) {
   useEffect(() => {
     let u: string | null = null, live = true;
     void inkStore().getThumb(pageId).then((b) => { if (b && live) setUrl((u = URL.createObjectURL(b))); });
-    return () => { live = false; if (u) URL.revokeObjectURL(u); };
+    return () => { live = false; if (u) { const old = u; setTimeout(() => URL.revokeObjectURL(old), 5000); } }; // the img may still be reading it
   }, [pageId, version]);
   return <div className="h-[60px] w-24 overflow-hidden rounded border border-[var(--grid)] bg-[var(--paper-2)]">{url && <img src={url} alt="" className="h-full w-full object-contain" />}</div>;
 }

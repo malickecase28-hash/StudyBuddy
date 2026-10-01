@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createBitmapProvider } from "@/lib/ink-bitmaps";
 import { inkStore, newPage } from "@/lib/ink-store";
+import { ConvertDialog } from "./ConvertDialog";
 import { EquationEditor } from "./EquationEditor";
 import { ExportMenu } from "./ExportMenu";
 import { InkCanvas } from "./InkCanvas";
@@ -39,6 +40,7 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
   const [missing, setMissing] = useState(false);
   const [tool, setTool] = useState<ToolId>("pen");
   const [edit, setEdit] = useState<EditRequest | null>(null);
+  const [converting, setConverting] = useState(false);
   const [version, setVersion] = useState(0);
   const bump = useCallback(() => setVersion((v) => v + 1), []);
   const pageRef = useRef<Page | null>(null);
@@ -217,7 +219,8 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
             onChange: (op) => { if (pageRef.current) void inkStore().applyOp(pageRef.current.id, op); scheduleThumb(); bump(); },
             onView: bump, onSelection: bump, onTool: (t) => setTool(t), onEdit: setEdit,
           }} />
-        <SelectionHandles engine={engine} version={version} />
+        <SelectionHandles engine={engine} version={version} onConvert={() => setConverting(true)} />
+        {engine && <ConvertDialog engine={engine} open={converting} onClose={() => setConverting(false)} />}
         {engine && <LinkChips engine={engine} version={version} />}
         {engine && edit?.kind === "text" && <TextLayer key={edit.item?.id ?? `${edit.at.x},${edit.at.y}`} engine={engine} request={edit} onDone={() => setEdit(null)} />}
         {engine && edit?.kind === "equation" && <EquationEditor key={edit.item?.id ?? `${edit.at.x},${edit.at.y}`} engine={engine} request={edit} onDone={() => setEdit(null)} />}

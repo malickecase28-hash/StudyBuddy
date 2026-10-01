@@ -26,3 +26,21 @@
 - Task 8 re-scores the model on equations written with Ink's own pen, which gives clean strokes with no colour noise.
 
 **Model files:** fetched from `https://huggingface.co/breezedeus/pix2text-mfr-1.5/resolve/main/` (`encoder_model.onnx`, `decoder_model.onnx`, `tokenizer.json`, `tokenizer_config.json`, `special_tokens_map.json`, `generation_config.json`), and cached in the browser on first use. Tokens: BOS 1, EOS 2, PAD 0. Preprocessing: RGB, (x/255 − 0.5)/0.5, 384×384.
+
+## In the app (Task 8, 2026-10-01)
+
+**Setup:** the browser worker runs the same two ONNX graphs through `onnxruntime-web` (the `webgpu` bundle, which runs its asyncify WASM build), with greedy decoding as above. Headless Chromium has no GPU adapter, so these runs used WASM on one thread (the page isn't cross-origin isolated). The tokenizer is decoded in the worker (byte-level BPE); transformers.js isn't used. The model, tokenizer and runtime are cached in Cache Storage (`forma-ink-model-v1`, about 146 MB) on first use.
+
+**Input:** five equations written with Ink's pen through synthetic pointer events, from simple single-stroke glyphs (not real handwriting). Selected with the lasso, rasterised black on white as a tight crop (longest side 368 px, 8 px padding), and stretched to 384 × 384 in the worker.
+
+| Written | Model output | Read in | Usable |
+|---|---|---|---|
+| `E=mc^{2}` | `\mathrm { E = } \mathrm { m \, c } ^ { 2 }` | 2.8 s | yes |
+| `x+y=2` | `\times + y = 2` | 1.9 s | no (x read as ×) |
+| `a^{2}+b^{2}=c^{2}` | `\textbf { c } ^ { 2 } { + } \textbf { b } ^ { 2 } { = } \textbf { c } ^ { 2 }` | 5.4 s | no (a read as c) |
+| `F=qE` | `\mathrm { F } = \omicron \mathrm { E }` | 5.8 s | no (q read as ο) |
+| `V=IR` | `\bigvee = \textsc { l } \mathbb { R }` | 5.8 s | no |
+
+**Offline:** a second session with `huggingface.co` and `cdn.jsdelivr.net` blocked gave the same five outputs from the cache (1.8–3.8 s each).
+
+**Reading:** the synthetic glyphs are crude (a circle-and-stem `a`, a two-line `x`), so this measures the pipeline more than the model; the lecturer-handwriting result above (6/11) is the better estimate. The converter stays **Beta**, and every result opens in the equation field for correction before it is inserted. Insert swaps the strokes for the equation in one undo step (checked: undo restored all 8 strokes of `E=mc²`).

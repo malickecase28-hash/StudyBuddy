@@ -10,7 +10,7 @@ type Drag = { t: ReturnType<InkEngine["transformSelection"]>; kind: "scale" | "r
  * Each handle drag previews live and commits one `update` op on release. `version` re-renders it when the view,
  * selection or items change.
  */
-export function SelectionHandles({ engine, version }: { engine: InkEngine | null; version: number }) {
+export function SelectionHandles({ engine, version, onConvert }: { engine: InkEngine | null; version: number; onConvert?: () => void }) {
   const drag = useRef<Drag | null>(null);
 
   useEffect(() => {
@@ -79,6 +79,7 @@ export function SelectionHandles({ engine, version }: { engine: InkEngine | null
         <button className="btn" onClick={() => engine.duplicateSelection()}>Duplicate</button>
         <button className="btn" onClick={() => engine.copySelection()}>Copy</button>
         <button className="btn" onClick={() => engine.deleteSelection()}>Delete</button>
+        {onConvert && [...engine.selection].some((id) => engine.items.get(id)?.kind === "stroke") && <button className="btn" onClick={onConvert}>Convert to equation</button>}
         {COLOR_TOKENS.map((c) => (
           <button key={c} aria-label={`Colour ${c}`} className="h-6 w-6 rounded-full border border-[var(--grid)]" style={{ background: `var(--${c})` }} onClick={() => engine.recolorSelection(c)} />
         ))}

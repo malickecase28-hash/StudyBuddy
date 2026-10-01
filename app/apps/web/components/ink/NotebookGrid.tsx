@@ -16,7 +16,7 @@ function Thumb({ pageId }: { pageId: string | undefined }) {
     if (!pageId) return;
     let u: string | null = null, live = true;
     void inkStore().getThumb(pageId).then((b) => { if (b && live) setUrl((u = URL.createObjectURL(b))); });
-    return () => { live = false; if (u) URL.revokeObjectURL(u); };
+    return () => { live = false; if (u) { const old = u; setTimeout(() => URL.revokeObjectURL(old), 5000); } }; // the img may still be reading it
   }, [pageId]);
   return (
     <div className="aspect-[8/5] w-full overflow-hidden rounded border border-[var(--grid)] bg-[var(--paper-2)]">
