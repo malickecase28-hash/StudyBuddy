@@ -14,6 +14,6 @@ Task 6: Ruling: example ids in the plan use dots, which the existing step-id sch
 Task 6: Ruling: Wentworth 4.1 and P4.31 are explained but are not worked or checked — removed those source ids from `idea-tem-wave` requirements — cost if wrong: the coverage matrix does not enforce those source items.
 Task 6: Ruling: the Ch. 4 drill gives an initial 34 V/m amplitude but its setup showed 10 V/m — set the example amplitude to 34 V/m — cost if wrong: the wave view disagrees with the problem statement.
 Task 6: Ruling: each authored plate is independently scoped and the Plan K helper comment does not define helpers — added the existing local `R`, `choice`, and `eqp` pattern — cost if wrong: plate modules fail to load.
-Task 6: complete (commit d092f26..HEAD, checks: `pnpm test` (76 files, 892 tests) and `pnpm typecheck` → PASS)
+Task 6: complete (commit d092f26..8537850, checks: `pnpm test` (76 files, 892 tests) and `pnpm typecheck` → PASS)
 Task 7: Ruling: first full e2e run had a one-off shortcut-panel timeout — the isolated test and a clean full 47-test run passed — cost if wrong: an intermittent navigation issue would be missed.
 Task 7: verification — `pnpm test` (76 files, 894 tests), `pnpm typecheck`, web `tsc`, `pnpm build`, and `pnpm e2e` (47/47) → PASS; 1360×900 Playwright visual walk passed, no baselines changed.
