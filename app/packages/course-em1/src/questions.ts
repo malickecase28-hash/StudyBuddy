@@ -82,7 +82,7 @@ export const questionBank: BankItem[] = [
   },
   { id: "f2425-q2b", source: "f2425", kind: "finals", paper: F2425, question: "Q2(b)", marks: 17, text: "Region 1 (x < 0) is a dielectric with εr1 = 5; region 2 (x > 0) is free space. Given D1 = ax + 3ay − 7az C·m⁻², calculate (i) E2, (ii) D2, (iii) the angle θ2.", concepts: w([K.diel, 1]) },
   { id: "f2425-q3a", source: "f2425", kind: "finals", paper: F2425, question: "Q3(a)", marks: 8, text: "A coaxial line has inner radius a and outer radius b, separated by an insulator of relative permeability μr. The inner conductor carries total current I along the x-axis. Develop an expression for H between the conductors.", concepts: w([K.amp, 1]) },
-  { id: "f2425-q3b", source: "f2425", kind: "finals", paper: F2425, question: "Q3(b)", marks: 17, text: "H1 = ax + 3ay + 2az A·m⁻¹ fills the region y + 2x − 4 ≤ 0, where μ1 = 2μ0. Calculate (i) the magnetization M1, (ii) B1, (iii) H2 and B2 in the region y + 2x − 4 > 0, where μ2 = 8μ0.", concepts: w([K.amp, 1]) },
+  { id: "f2425-q3b", source: "f2425", kind: "finals", paper: F2425, question: "Q3(b)", marks: 17, text: "H1 = ax + 3ay + 2az A·m⁻¹ fills the region y + 2x − 4 ≤ 0, where μ1 = 2μ0. Calculate (i) the magnetization M1, (ii) B1, (iii) H2 and B2 in the region y + 2x − 4 > 0, where μ2 = 8μ0.", concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main" },
   { id: "f2425-q4a", source: "f2425", kind: "finals", paper: F2425, question: "Q4(a)", marks: 15, text: "A long, straight, nonmagnetic conductor of radius 8.00 mm carries a uniformly distributed direct current I = 50.0 A along the z-axis. (i) State Ampère's circuital law. (ii) Find J within the conductor. (iii) Develop H and B inside (0 < ρ ≤ r). (iv) State and justify ∇ × H outside.", concepts: w([K.amp, 0.8], [K.calc, 0.2]) },
   { id: "f2425-q4b", source: "f2425", kind: "finals", paper: F2425, question: "Q4(b)", marks: 5, text: "From the principle of conservation of charge, prove the continuity equation in point form, ∇·J = −∂ρv/∂t.", concepts: w([K.cur, 1]) },
   { id: "f2425-q4c", source: "f2425", kind: "finals", paper: F2425, question: "Q4(c)", marks: 5, text: "State Poynting's theorem and comment on how it supports an important conservation law.", concepts: w([K.wave, 1]) },
@@ -98,7 +98,7 @@ export const questionBank: BankItem[] = [
   },
   { id: "f2324-q3a", source: "f2324", kind: "finals", paper: F2324, question: "Q3(a)", marks: 4, text: "State Maxwell's equations for static electromagnetic fields in point form.", concepts: w([K.dyn, 0.5], [K.div, 0.25], [K.amp, 0.25]) },
   { id: "f2324-q3b", source: "f2324", kind: "finals", paper: F2324, question: "Q3(b)", marks: 6, text: "A vertical hollow conducting cylinder has inner radius r and outer radius R and carries current I along the z-axis. Develop an expression for H everywhere.", concepts: w([K.amp, 1]) },
-  { id: "f2324-q3c", source: "f2324", kind: "finals", paper: F2324, question: "Q3(c)", marks: 15, text: "H1 = 2ax + 3ay − az A·m⁻¹ in the region y − x − 2 ≤ 0, where μ1 = μ0. Calculate (i) M1 and B1, (ii) H2 and B2 in y − x − 2 > 0, where μ2 = 3μ0.", concepts: w([K.amp, 1]) },
+  { id: "f2324-q3c", source: "f2324", kind: "finals", paper: F2324, question: "Q3(c)", marks: 15, text: "H1 = 2ax + 3ay − az A·m⁻¹ in the region y − x − 2 ≤ 0, where μ1 = μ0. Calculate (i) M1 and B1, (ii) H2 and B2 in y − x − 2 > 0, where μ2 = 3μ0.", concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main" },
   { id: "f2324-q4a", source: "f2324", kind: "finals", paper: F2324, question: "Q4(a)", marks: 15, text: "A long, straight, nonmagnetic conductor of radius 0.50 mm carries a uniform d.c. current of 8.0 A along z. Within the conductor: (i) find J; (ii) compute H and B (Ampère's law); (iii) show that ∇ × H = J.", concepts: w([K.amp, 0.8], [K.calc, 0.2]) },
   { id: "f2324-q4b", source: "f2324", kind: "finals", paper: F2324, question: "Q4(b)", marks: 5, text: "With an appropriate diagram, describe the principle of electromagnetic wave propagation in dielectrics.", concepts: w([K.wave, 1]) },
   { id: "f2324-q4c", source: "f2324", kind: "finals", paper: F2324, question: "Q4(c)", marks: 5, text: "Briefly describe the transmission of electromagnetic wave power using Poynting's theorem.", concepts: w([K.wave, 1]) },
@@ -106,7 +106,7 @@ export const questionBank: BankItem[] = [
   // ICT 02, 18 Nov 2024 (catalog: ict2-2425; solved by hand, so exact data comes from the source in content plans)
   { id: "ict2-2425-q1", source: "ict2-2425", kind: "ict", paper: ICT2, question: "Q1", text: "(a) State Biot-Savart's law and use it to find H on the axis of an N-turn circular coil. (b) State Ampère's circuital law in point and integral form, and use it to find H and J for a current-carrying conductor (see source).", concepts: w([K.amp, 1]) },
   { id: "ict2-2425-q2", source: "ict2-2425", kind: "ict", paper: ICT2, question: "Q2", text: "A dielectric boundary lies on the plane 6x + 8y = 16. Split D1 into normal and tangential parts, then find D2, E2 and the field angles (see source).", concepts: w([K.diel, 1]) },
-  { id: "ict2-2425-q3", source: "ict2-2425", kind: "ict", paper: ICT2, question: "Q3", text: "A magnetic boundary across a general plane: find B2 and H2, the angle B2 makes with the normal, and the magnetizations (see source).", concepts: w([K.amp, 1]) },
+  { id: "ict2-2425-q3", source: "ict2-2425", kind: "ict", paper: ICT2, question: "Q3", text: "A magnetic boundary across a general plane: find B2 and H2, the angle B2 makes with the normal, and the magnetizations (see source).", concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main" },
 
   // HW02 2023-24 = HW01 2024-25 (catalog: hw02-2324, hw01-2425)
   { id: "hw-2324-2.1", source: "hw02-2324", kind: "hw", paper: HW2324, question: "2.1", marks: 15, seenIn: ["hw02-2324", "hw01-2425"], text: "Find the gradient and evaluate it at the point: (a) V = 10xyz − 2x²z at P(−1, 4, 3); (b) U = 2ρ sin φ + ρz at Q(2, 90°, −1); (c) W = (4/r) sin θ cos φ at R(1, π/6, π/2).", concepts: w([K.calc, 1]) },
@@ -120,7 +120,7 @@ export const questionBank: BankItem[] = [
   { id: "hw03-2425-3.1a", source: "hw03-2425", kind: "hw", paper: HW03, question: "3.1(a)", marks: 15, text: "A 200-turn coil of radius 30.0 cm, parallel to the x–y plane and centred at the origin, carries 2.82 A in the −aφ direction. (i) State Biot-Savart's law with a diagram. (ii) Calculate H at P(0, 0, −50) cm.", concepts: w([K.amp, 1]) },
   { id: "hw03-2425-3.1b", source: "hw03-2425", kind: "hw", paper: HW03, question: "3.1(b)", marks: 15, text: "A long vertical solid conductor of radius 20.0 mm carries current uniformly, with J = 95.49 kA·m⁻² inside. (i) State Ampère's circuital law and express it mathematically. (ii) Give one drawback and one advantage of the law. (iii) Using it, find B at P(0, 0, 15) mm.", concepts: w([K.amp, 1]) },
   { id: "hw03-2425-3.2", source: "hw03-2425", kind: "hw", paper: HW03, question: "3.2", marks: 25, text: "Region 1 (ε1 = 8ε0) and region 2 (ε2 = 5ε0) meet at the plane −3x + 4z = 15. In region 1, D1 = −10.0ax − 20.0ay + 14.0az C·m⁻². Stating assumptions, calculate (a) D2, (b) E2 in terms of ε0, (c) θ1 and θ2, the angles between the field vectors and the interface tangent, (d) the ratio cos θ1 / cos θ2, and comment on it.", concepts: w([K.diel, 1]) },
-  { id: "hw03-2425-3.3", source: "hw03-2425", kind: "hw", paper: HW03, question: "3.3", marks: 25, text: "Region 1 (μr1 = 4.66) and region 2 (μr2 = 1.5μr1) meet at the plane 5x + 4y + 10z − 12 = 0. In region 1, H1 = (1/μ0)(9.44ax + 6.87ay − 12.2az) A·m⁻¹. Calculate (a) H2 in terms of μ0, (b) B2, (c) θ1 and θ2 from the interface normal, (d) the magnetizations M1 and M2.", concepts: w([K.amp, 1]) },
+  { id: "hw03-2425-3.3", source: "hw03-2425", kind: "hw", paper: HW03, question: "3.3", marks: 25, text: "Region 1 (μr1 = 4.66) and region 2 (μr2 = 1.5μr1) meet at the plane 5x + 4y + 10z − 12 = 0. In region 1, H1 = (1/μ0)(9.44ax + 6.87ay − 12.2az) A·m⁻¹. Calculate (a) H2 in terms of μ0, (b) B2, (c) θ1 and θ2 from the interface normal, (d) the magnetizations M1 and M2.", concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main" },
 
   // HW04 2024-25 (catalog: hw04-2425)
   { id: "hw04-2425-4.1", source: "hw04-2425", kind: "hw", paper: HW04, question: "4.1", marks: 8, text: "State, and express mathematically, (a) the current continuity equation and (b) Faraday's law of induction.", concepts: w([K.cur, 0.5], [K.dyn, 0.5]) },
@@ -284,7 +284,7 @@ export const questionBank: BankItem[] = [
   {
     id: "f1516-q4c", source: "f1516", kind: "finals", paper: F1516, question: "Q4(c)", marks: 10, seenIn: ["f1516", "drill23"],
     text: "In Q4(b)'s geometry (μr1 = 1, μr2 = 16), the magnetic flux density at the boundary is B1 = 5ax + 6ay + 7az Wb/m². Determine the magnetic field intensity in medium 2 at the boundary. (The paper says \"in medium 2\" but labels the vector B1; it is read as medium 1.)",
-    concepts: w([K.amp, 1]),
+    concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main",
     solution: [
       "The normal is az. Normal B is continuous: B2z = 7, so H2z = 7/(16μ₀).",
       "Tangential H is continuous (no surface current): H2x = H1x = 5/μ₀ and H2y = 6/μ₀.",
@@ -360,7 +360,7 @@ export const questionBank: BankItem[] = [
   {
     id: "f1718-q4a", source: "f1718", kind: "finals", paper: F1718, question: "Q4(a)", marks: 15, seenIn: ["f1718", "f1819s3", "drill23"],
     text: "Given H1 = −2ax + 6ay + 4az A/m in the region y − x − 2 ≤ 0, where μ1 = μ0, calculate (i) M1 and B1, (ii) H2 and B2 in the region y − x − 2 ≥ 0, where μ2 = 2μ0.",
-    concepts: w([K.amp, 1]),
+    concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main",
     solution: [
       "(i) μr1 = 1, so χm1 = 0 and M1 = 0. B1 = μ₀H1 = −2.513ax + 7.540ay + 5.027az µT.",
       "Normal: n̂ = (−ax + ay)/√2. H1·n̂ = 8/√2, so H1n = −4ax + 4ay and H1t = 2ax + 2ay + 4az.",
@@ -476,7 +476,7 @@ export const questionBank: BankItem[] = [
   {
     id: "f2425r-q3b", source: "f2425r", kind: "finals", paper: F2425R, question: "Q3(b)", marks: 15,
     text: "H1 = 6ax + 3ay + 2az A/m fills the region 3x + 4z ≤ 19, where μ1 = 2μ0. Leaving μ0 as a constant where appropriate, calculate (i) H2 in the region 3x + 4z > 19, where μ2 = 4μ0, and (ii) B2.",
-    concepts: w([K.amp, 1]),
+    concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main",
     solution: [
       "n̂ = (3, 0, 4)/5 = (0.6, 0, 0.8). H1·n̂ = 5.2, so H1n = 3.12ax + 4.16az and H1t = 2.88ax + 3ay − 2.16az A/m.",
       "Tangential H is continuous; normal B is continuous, so H2n = (μ1/μ2)H1n = 1.56ax + 2.08az.",
@@ -684,7 +684,7 @@ export const questionBank: BankItem[] = [
   {
     id: "drill25-q8", source: "drill25", kind: "finals", paper: DR25, question: "Q8",
     text: "Region 1 (z < 0, μr1 = 15) has B1 = 12ax + 10ay − 14az T; region 2 (z > 0) has μr2 = 1. Calculate (a) H2 and (b) the angles the field vectors make with a tangent to the interface.",
-    concepts: w([K.amp, 1]),
+    concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main",
     solution: [
       "The normal is az. B2z = B1z = −14 T, so H2z = −14/μ₀.",
       "H2t = H1t = (12ax + 10ay)/(15μ₀) = (0.8ax + 0.6667ay)/μ₀.",
@@ -695,7 +695,7 @@ export const questionBank: BankItem[] = [
   {
     id: "drill25-q9", source: "drill25", kind: "finals", paper: DR25, question: "Q9",
     text: "A plane interface between two magnetic regions is normal to one Cartesian axis. B1 = μ0(40.0ax − 25.0az) T and B2 = μ0(35.0ax − 25.0az) T. Find tan θ1/tan θ2, with the angles measured from the interface.",
-    concepts: w([K.amp, 1]),
+    concepts: w([K.mat, 1]), practice: "em1.magnetostatics.materials/main",
     solution: [
       "Normal B is continuous, and only the z components match, so the interface is normal to az.",
       "From the interface, tan θ = |Bn|/|Bt|: tan θ1 = 25/40 and tan θ2 = 25/35.",
