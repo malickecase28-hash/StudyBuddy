@@ -4,8 +4,8 @@ import { PX, pathD, toSvg, toSvg3, type Evaluated } from "@forma/plate";
 import type { ComponentType, KeyboardEvent, PointerEvent } from "react";
 import { Tex } from "../Tex";
 import { usePlateStage } from "./stage-context";
-import { Axes3View, BoundaryView, CoordFrameView, Vector3View } from "./views3d";
-import { CapacitorView, ConductorView, CoordRegionView, LineWorkView, ScalarSliceView, SpectrumView, UnitConvertView, VectorSliceView } from "./viewsMath";
+import { Axes3View, BoundaryView, CoordFrameView, CurrentsView, Vector3View } from "./views3d";
+import { CapacitorView, ConductorView, CoordRegionView, InductorView, LineWorkView, ScalarSliceView, SpectrumView, UnitConvertView, VectorSliceView } from "./viewsMath";
 
 export type ViewProps = { id: string; ev: Evaluated; appear: number; focused: boolean; highlighted: boolean };
 
@@ -400,7 +400,10 @@ export const views2d: Record<string, ComponentType<ViewProps>> = {
   vector3: Vector3View,
   "coord-frame": CoordFrameView,
   boundary: BoundaryView,
+  "mag-boundary": BoundaryView,
+  currents: CurrentsView,
   capacitor: CapacitorView,
+  inductor: InductorView,
   "scalar-slice": ScalarSliceView,
   "vector-slice": VectorSliceView,
   "coord-region": CoordRegionView,

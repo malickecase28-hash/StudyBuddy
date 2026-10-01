@@ -48,20 +48,21 @@ export function boxFlux(F: (p: Vec3) => Vec3, c: Vec3, s: number): number {
 }
 
 /** Counter-clockwise circulation of F round a square of side s centred at c, in the plane spanned by axes u then v (normal u × v). */
-export function loopCirculation(F: (p: Vec3) => Vec3, c: Vec3, s: number, u: number, v: number): number {
+export function loopCirculation(F: (p: Vec3) => Vec3, c: Vec3, w: number, h: number, u: number, v: number): number {
   const { nodes, weights } = gaussLegendre(4);
-  const h = s / 2;
+  const hw = w / 2, hh = h / 2;
   const edges: [number, number, number, number][] = [
     // [fixed axis, fixed offset, moving axis, direction]
-    [v, -h, u, 1], [u, h, v, 1], [v, h, u, -1], [u, -h, v, -1],
+    [v, -hh, u, 1], [u, hw, v, 1], [v, hh, u, -1], [u, -hw, v, -1],
   ];
   let sum = 0;
   for (const [fa, fo, ma, dir] of edges) {
     for (let i = 0; i < 4; i++) {
       const p = [c[0], c[1], c[2]];
       p[fa] = c[fa]! + fo;
-      p[ma] = c[ma]! + h * nodes[i]!;
-      sum += weights[i]! * h * dir * F(p as unknown as Vec3)[ma]!;
+      const half = ma === u ? hw : hh;
+      p[ma] = c[ma]! + half * nodes[i]!;
+      sum += weights[i]! * half * dir * F(p as unknown as Vec3)[ma]!;
     }
   }
   return sum;
@@ -72,7 +73,7 @@ export const VectorSlice = defineComponent({
   params: z.object({
     field: VectorId, plane: z.enum(["xz", "xy"]).default("xz"), offset: z.number().default(0),
     probe: V3, draggable: z.boolean().default(false),
-    box: z.number().min(0).default(0), loop: z.number().min(0).default(0),
+    box: z.number().min(0).default(0), loop: z.number().min(0).default(0), loopH: z.number().min(0).optional(),
   }),
   model: (p) => {
     const f = vectorFields[p.field]!;
@@ -93,9 +94,9 @@ export const VectorSlice = defineComponent({
     }
     if (p.loop > 0) {
       // xy: x then y, normal +z. xz on screen is x right, z up: counter-clockwise on screen is x then z, normal x × z = −y.
-      const k = p.plane === "xy" ? loopCirculation(cart, c, p.loop, 0, 1) : loopCirculation(cart, c, p.loop, 0, 2);
+      const k = p.plane === "xy" ? loopCirculation(cart, c, p.loop, p.loopH ?? p.loop, 0, 1) : loopCirculation(cart, c, p.loop, p.loopH ?? p.loop, 0, 2);
       out.circ = finite(k);
-      out.circRatio = finite(k / p.loop ** 2);
+      out.circRatio = finite(k / (p.loop * (p.loopH ?? p.loop)));
     }
     return out;
   },

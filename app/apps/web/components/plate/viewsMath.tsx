@@ -105,7 +105,7 @@ export function ScalarSliceView({ id, ev }: ViewProps) {
 }
 
 export function VectorSliceView({ id, ev }: ViewProps) {
-  const p = ev.params as { field: string; plane: "xz" | "xy"; offset: number; probe: [number, number, number]; draggable: boolean; box: number; loop: number };
+  const p = ev.params as { field: string; plane: "xz" | "xy"; offset: number; probe: [number, number, number]; draggable: boolean; box: number; loop: number; loopH?: number };
   const f = vectorFields[p.field]!;
   const [px, py] = toSvg([p.probe[0], 0, vert(p.plane, p.probe)]);
   return (
@@ -122,7 +122,7 @@ export function VectorSliceView({ id, ev }: ViewProps) {
       )}
       {p.loop > 0 && (
         <g aria-label={`Circulation loop, side ${p.loop} m, counter-clockwise`}>
-          <rect x={px - (p.loop * PX) / 2} y={py - (p.loop * PX) / 2} width={p.loop * PX} height={p.loop * PX} fill="none" style={{ stroke: "var(--surface)" }} strokeWidth={1.6} />
+          <rect x={px - (p.loop * PX) / 2} y={py - ((p.loopH ?? p.loop) * PX) / 2} width={p.loop * PX} height={(p.loopH ?? p.loop) * PX} fill="none" style={{ stroke: "var(--surface)" }} strokeWidth={1.6} />
           <path d={`M${px + (p.loop * PX) / 2} ${py + 6} L${px + (p.loop * PX) / 2} ${py - 6}`} style={{ stroke: "var(--surface)" }} markerEnd="url(#arrow-surface)" />
         </g>
       )}
@@ -261,6 +261,36 @@ export function CapacitorView({ ev }: ViewProps) {
       <line x1={center[0]} y1={center[1]} x2={bx} y2={by} className="ink" />
       <text x={ax + 3} y={ay - 4} className="plate-label">a</text>
       <text x={bx + 3} y={by - 4} className="plate-label">b</text>
+    </g>
+  );
+}
+
+export function InductorView({ ev }: ViewProps) {
+  const p = ev.params as { kind: "coax" | "twowire" | "solenoid" | "toroid"; a?: number; b?: number; s?: number; N?: number };
+  const center = toSvg([0, 0, 0]);
+  const [cx, cy] = center;
+  return (
+    <g role="img" aria-label={`${p.kind} inductor, schematic`}>
+      {p.kind === "coax" && <>
+        <circle cx={cx} cy={cy} r={65} fill="url(#hatch-graphite)" />
+        <circle cx={cx} cy={cy} r={65} fill="none" stroke="var(--ink)" strokeWidth={2} />
+        <circle cx={cx} cy={cy} r={30} fill="var(--charge)" />
+        <circle cx={cx} cy={cy} r={30} fill="none" stroke="var(--ink)" strokeWidth={2} />
+      </>}
+      {p.kind === "twowire" && <>
+        <circle cx={cx - 48} cy={cy} r={18} fill="var(--charge)" /><circle cx={cx + 48} cy={cy} r={18} fill="var(--field)" />
+        <line x1={cx - 48} y1={cy + 40} x2={cx + 48} y2={cy + 40} className="ink" markerEnd="url(#arrow-graphite)" />
+        <text x={cx - 3} y={cy + 56} className="plate-label">s</text><text x={cx - 70} y={cy - 24} className="plate-label">2a</text>
+      </>}
+      {p.kind === "solenoid" && <>
+        <line x1={cx - 70} y1={cy} x2={cx + 70} y2={cy} className="ink" />
+        {Array.from({ length: 12 }, (_, i) => <ellipse key={i} cx={cx - 66 + i * 12} cy={cy} rx={8} ry={26} fill="none" stroke="var(--charge)" strokeWidth={2} />)}
+        <text x={cx - 30} y={cy - 38} className="plate-label">N = {p.N}</text>
+      </>}
+      {p.kind === "toroid" && <>
+        <circle cx={cx} cy={cy} r={62} fill="url(#hatch-graphite)" /><circle cx={cx} cy={cy} r={38} fill="var(--surface)" />
+        {Array.from({ length: 8 }, (_, i) => { const a = (i * Math.PI) / 4; return <line key={i} x1={cx + 39 * Math.cos(a)} y1={cy + 39 * Math.sin(a)} x2={cx + 61 * Math.cos(a)} y2={cy + 61 * Math.sin(a)} style={{ stroke: "var(--charge)" }} strokeWidth={2} />; })}
+      </>}
     </g>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { fromSvg3, PX, toSvg3, unitVectorsAt } from "@forma/plate";
-import { cross, dot, norm, normalize, type Vec3 } from "@forma/physics";
+import { cross, dot, norm, normalize, type Current, type Vec3 } from "@forma/physics";
 import type { KeyboardEvent, PointerEvent } from "react";
 import { usePlateStage } from "./stage-context";
 import type { ViewProps } from "./views2d";
@@ -32,8 +32,10 @@ export function Axes3View({ ev }: ViewProps) {
 }
 
 export function BoundaryView({ ev }: ViewProps) {
-  const p = ev.params as { er1: number; er2: number; conductor: boolean; anchor: [number, number, number] };
-  const d = ev.model.draw as { n: Vec3; D1: Vec3; D2: Vec3; D1n: Vec3; D1t: Vec3; split: boolean };
+  const p = ev.params as { er1?: number; er2?: number; mur1?: number; mur2?: number; conductor?: boolean; anchor: [number, number, number] };
+  const d = ev.model.draw as { n: Vec3; D1: Vec3; D2: Vec3; D1n: Vec3; D1t: Vec3; split: boolean; sym?: string; mat?: string };
+  const sym = d.sym ?? "D", mat = d.mat ?? "εr";
+  const m1 = p.er1 ?? p.mur1 ?? 1, m2 = p.er2 ?? p.mur2 ?? 1;
   const c = p.anchor;
   const at = (...terms: [number, Vec3][]): number[] => terms.reduce((s, [k, v]) => [s[0]! + k * v[0], s[1]! + k * v[1], s[2]! + k * v[2]], [...c] as number[]);
   const t1 = normalize(cross(d.n, Math.abs(d.n[2]) > 0.9 ? [1, 0, 0] : [0, 0, 1]));
@@ -45,15 +47,55 @@ export function BoundaryView({ ev }: ViewProps) {
   const label = (pt: number[], text: string) => { const [x, y] = toSvg3(pt); return <text x={x} y={y} className="plate-label">{text}</text>; };
   const [n0, n1] = [toSvg3(at([-1.3, d.n])), toSvg3(at([1.3, d.n]))];
   return (
-    <g className="v-boundary" role="img" aria-label={`Boundary between region 1 (εr ${fmt(p.er1)}) and region 2 (${p.conductor ? "a conductor" : `εr ${fmt(p.er2)}`})`}>
+    <g className="v-boundary" role="img" aria-label={`Boundary between region 1 (${mat} ${fmt(m1)}) and region 2 (${p.conductor ? "a conductor" : `${mat} ${fmt(m2)}`})`}>
       <polygon points={quad} fill={p.conductor ? "var(--graphite)" : "url(#hatch-graphite)"} fillOpacity={p.conductor ? 0.35 : 1} stroke="var(--surface)" />
       <line x1={n0[0]} y1={n0[1]} x2={n1[0]} y2={n1[1]} className="ink" strokeDasharray="3 3" />
       {label(at([1.4, d.n]), "n̂")}
-      {label(at([0.9, d.n], [1, t1]), `Region 1 · εr = ${fmt(p.er1)}`)}
-      {label(at([-0.9, d.n], [1, t1]), p.conductor ? "Region 2 · conductor" : `Region 2 · εr = ${fmt(p.er2)}`)}
-      {into2 ? <Arrow from={at([-k, d.D1])} to={[...c]} tone="flux" label="D₁" /> : <Arrow from={[...c]} to={at([k, d.D1])} tone="flux" label="D₁" />}
-      {!p.conductor && norm(d.D2) > 0 && (into2 ? <Arrow from={[...c]} to={at([k, d.D2])} tone="flux" label="D₂" /> : <Arrow from={at([-k, d.D2])} to={[...c]} tone="flux" label="D₂" />)}
-      {d.split && <g opacity={0.7}><Arrow from={[...c]} to={at([k, d.D1n])} tone="surface" label="D₁ₙ" /><Arrow from={[...c]} to={at([k, d.D1t])} tone="surface" label="D₁ₜ" /></g>}
+      {label(at([0.9, d.n], [1, t1]), `Region 1 · ${mat} = ${fmt(m1)}`)}
+      {label(at([-0.9, d.n], [1, t1]), p.conductor ? "Region 2 · conductor" : `Region 2 · ${mat} = ${fmt(m2)}`)}
+      {into2 ? <Arrow from={at([-k, d.D1])} to={[...c]} tone="flux" label={`${sym}₁`} /> : <Arrow from={[...c]} to={at([k, d.D1])} tone="flux" label={`${sym}₁`} />}
+      {!p.conductor && norm(d.D2) > 0 && (into2 ? <Arrow from={[...c]} to={at([k, d.D2])} tone="flux" label={`${sym}₂`} /> : <Arrow from={at([-k, d.D2])} to={[...c]} tone="flux" label={`${sym}₂`} />)}
+      {d.split && <g opacity={0.7}><Arrow from={[...c]} to={at([k, d.D1n])} tone="surface" label={`${sym}₁ₙ`} /><Arrow from={[...c]} to={at([k, d.D1t])} tone="surface" label={`${sym}₁ₜ`} /></g>}
+    </g>
+  );
+}
+
+export function CurrentsView({ ev }: ViewProps) {
+  const p = ev.params as { items: Current[]; probe: Vec3; drawScale: number };
+  const m = ev.model as { Hx: number; Hy: number; Hz: number; Hmag: number };
+  const k = p.drawScale;
+  const scaled = (v: Vec3): Vec3 => [v[0] * k, v[1] * k, v[2] * k];
+  const circle = (r: number, z: number, reverse = false) => Array.from({ length: 49 }, (_, i) => {
+    const a = ((reverse ? -1 : 1) * i * 2 * Math.PI) / 48;
+    return toSvg3([r * Math.cos(a) * k, r * Math.sin(a) * k, z * k]).join(",");
+  }).join(" ");
+  const H: Vec3 = [m.Hx, m.Hy, m.Hz];
+  const hp = scaled(p.probe);
+  const hn = m.Hmag > 0 ? normalize(H) : [0, 0, 0];
+  const end: Vec3 = [hp[0] + hn[0] * 0.8, hp[1] + hn[1] * 0.8, hp[2] + hn[2] * 0.8];
+  const [px, py] = toSvg3(hp);
+  const [ex, ey] = toSvg3(end);
+  return (
+    <g role="img" aria-label={`Currents and the field H at the probe, |H| = ${m.Hmag.toPrecision(4)} A/m`}>
+      {p.items.map((c, i) => {
+        const key = `${c.kind}-${i}`;
+        if (c.kind === "line") {
+          const u = normalize(c.dir), a: Vec3 = [c.point[0] - 2.5 * u[0], c.point[1] - 2.5 * u[1], c.point[2] - 2.5 * u[2]], b: Vec3 = [c.point[0] + 2.5 * u[0], c.point[1] + 2.5 * u[1], c.point[2] + 2.5 * u[2]];
+          return <Arrow key={key} from={scaled(a)} to={scaled(b)} tone="charge" label={`${c.I} A`} />;
+        }
+        if (c.kind === "segment") return <Arrow key={key} from={scaled(c.from)} to={scaled(c.to)} tone="charge" label={`${c.I} A`} />;
+        if (c.kind === "loop") return <g key={key}>
+          <polyline points={circle(c.radius, c.z, c.I < 0)} fill="none" stroke="var(--charge)" strokeWidth={2} markerEnd="url(#arrow-charge)" />
+          {c.N > 1 && <text x={toSvg3([c.radius * k, 0, c.z * k])[0] + 5} y={toSvg3([c.radius * k, 0, c.z * k])[1] - 5} className="plate-label">{c.N} turns</text>}
+        </g>;
+        if (c.kind === "sheet") return <polyline key={key} points={circle(c.radius, 0)} fill="none" stroke="var(--charge)" strokeDasharray="4 3" />;
+        return <g key={key}>
+          <polygon points={circle(c.b, 0)} fill="url(#hatch-graphite)" stroke="var(--graphite)" strokeWidth={2} />
+          {c.a > 0 && <polygon points={circle(c.a, 0)} fill="var(--surface)" stroke="var(--ink)" />}
+        </g>;
+      })}
+      <circle cx={px} cy={py} r={3} fill="var(--field)" />
+      {m.Hmag > 0 && <Arrow from={hp} to={end} tone="field" label="H" />}
     </g>
   );
 }
