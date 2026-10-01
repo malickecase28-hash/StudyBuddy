@@ -9,14 +9,24 @@ export type InputHandlers = {
   onHover?(s: PointerSample | null): void;
 };
 
+/** Once any page has seen a pen, touch never draws again this session (pages share it). */
+let penEver = false;
+/** A touch that lands while the pen is down, or this soon after it moved, is a resting palm. */
+const PALM_MS = 500;
+
 /**
- * Routes pointer input. Palm rejection: once a pen is seen, touch never draws (one finger pans, two pan/pinch).
+ * Routes pointer input. Palm rejection: once a pen is seen, touch never draws (one finger pans, two pan/pinch),
+ * and touches that land while the pen is writing (or just after) are ignored entirely.
  * Before any pen, a single touch draws; a second finger cancels that stroke and starts a gesture.
  * Coordinates are screen px relative to the element.
  */
 export class InputRouter {
-  penSeen = false;
+  get penSeen(): boolean { return penEver; }
+  set penSeen(v: boolean) { penEver = v; }
   private drawing: number | null = null;
+  private drawingType: string | null = null;
+  private lastPen = -Infinity;
+  private palms = new Set<number>();
   private touches = new Map<number, { x: number; y: number }>();
   private tap: { start: number; max: number; moved: boolean } | null = null;
   private off: (() => void)[] = [];
@@ -45,12 +55,13 @@ export class InputRouter {
 
   private down(e: PointerEvent) {
     e.preventDefault();
-    if (e.pointerType === "pen") this.penSeen = true;
+    if (e.pointerType === "pen") { penEver = true; this.lastPen = e.timeStamp; }
+    if (e.pointerType === "touch" && (this.drawingType === "pen" || e.timeStamp - this.lastPen < PALM_MS)) { this.palms.add(e.pointerId); return; }
     if (e.pointerType === "touch") {
       this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
       try { this.el.setPointerCapture(e.pointerId); } catch { /* synthetic events have no active pointer */ }
       if (this.touches.size >= 2) {
-        if (this.drawing !== null) { this.drawing = null; this.h.onCancel(); }
+        if (this.drawing !== null && this.drawingType === "touch") { this.drawing = null; this.drawingType = null; this.h.onCancel(); }
         this.tap = this.tap && this.touches.size <= 3 ? { ...this.tap, max: this.touches.size } : { start: e.timeStamp, max: this.touches.size, moved: false };
         return;
       }
@@ -59,11 +70,14 @@ export class InputRouter {
     if (this.drawing !== null) return;
     if (e.pointerType === "mouse" && e.button === 1) return; // middle button pans (handled in move)
     this.drawing = e.pointerId;
+    this.drawingType = e.pointerType;
     try { this.el.setPointerCapture(e.pointerId); } catch { /* ignore */ }
     this.h.onDown(this.sample(e));
   }
 
   private move(e: PointerEvent) {
+    if (e.pointerType === "pen") { penEver = true; this.lastPen = e.timeStamp; }
+    if (this.palms.has(e.pointerId)) return;
     if (e.pointerType === "touch" && this.touches.has(e.pointerId) && this.drawing !== e.pointerId) {
       const prev = this.touches.get(e.pointerId)!;
       const before = [...this.touches.values()];
@@ -89,6 +103,8 @@ export class InputRouter {
   }
 
   private up(e: PointerEvent) {
+    if (e.pointerType === "pen") this.lastPen = e.timeStamp;
+    if (this.palms.delete(e.pointerId)) return;
     if (e.pointerType === "touch" && this.touches.has(e.pointerId)) {
       this.touches.delete(e.pointerId);
       if (this.touches.size === 0 && this.tap) {
@@ -100,12 +116,14 @@ export class InputRouter {
     }
     if (this.drawing !== e.pointerId) return;
     this.drawing = null;
+    this.drawingType = null;
     this.h.onUp(this.sample(e));
   }
 
   private cancel(e: PointerEvent) {
     this.touches.delete(e.pointerId);
-    if (this.drawing === e.pointerId) { this.drawing = null; this.h.onCancel(); }
+    this.palms.delete(e.pointerId);
+    if (this.drawing === e.pointerId) { this.drawing = null; this.drawingType = null; this.h.onCancel(); }
   }
 
   destroy(): void { for (const f of this.off) f(); }

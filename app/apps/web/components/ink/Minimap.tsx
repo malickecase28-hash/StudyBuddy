@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 const W = 168, H = 108;
 
 /** The whole page in miniature with the view outlined. Click or drag to move the view there. */
-export function Minimap({ engine, version }: { engine: InkEngine; version: number }) {
+export function Minimap({ engine, version, contentVersion }: { engine: InkEngine; version: number; contentVersion: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const art = useRef<{ canvas: HTMLCanvasElement; rect: { x: number; y: number; w: number; h: number }; k: number } | null>(null);
   const itemsVersion = useRef(-1);
@@ -22,12 +22,12 @@ export function Minimap({ engine, version }: { engine: InkEngine; version: numbe
       const k = Math.min(W / r.w, H / r.h);
       const fit = { x: r.x - (W / k - r.w) / 2, y: r.y - (H / k - r.h) / 2, w: W / k, h: H / k };
       art.current = { canvas: renderToCanvas(items, engine.renderer.colors(), W, H, { rect: fit, pad: 0 }), rect: fit, k };
-      itemsVersion.current = version;
+      itemsVersion.current = contentVersion;
       paint();
     }, itemsVersion.current < 0 ? 0 : 500);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [engine, engine.items.size, version]);
+  }, [engine, contentVersion]);
 
   const paint = () => {
     const c = ref.current?.getContext("2d"), a = art.current;
@@ -40,7 +40,7 @@ export function Minimap({ engine, version }: { engine: InkEngine; version: numbe
     c.lineWidth = 1.5;
     c.strokeRect((v.x - a.rect.x) * a.k, (v.y - a.rect.y) * a.k, v.w * a.k, v.h * a.k);
   };
-  useEffect(paint);
+  useEffect(paint, [version]); // the view outline follows every pan and zoom
 
   const jump = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const a = art.current;

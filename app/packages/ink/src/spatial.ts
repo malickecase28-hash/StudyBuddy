@@ -25,8 +25,11 @@ export class GridIndex {
     this.owned.delete(id);
   }
   query(r: Rect): Set<string> {
+    const ks = this.keys(r);
+    // A query too big to walk cell by cell (zoomed far out) covers nearly everything: return every item.
+    if (ks[0] === "wide") return new Set(this.owned.keys());
     const out = new Set<string>(this.cells.get("wide") ?? []);
-    for (const k of this.keys(r)) for (const id of this.cells.get(k) ?? []) out.add(id);
+    for (const k of ks) for (const id of this.cells.get(k) ?? []) out.add(id);
     return out;
   }
   clear(): void { this.cells.clear(); this.owned.clear(); }

@@ -207,13 +207,15 @@ export class InkEngine {
     this.clipboard = this.selected();
     if (this.clipboard.length) void navigator.clipboard?.writeText(JSON.stringify({ forma: "ink", items: this.clipboard })).catch(() => {});
   }
-  async paste(): Promise<void> {
-    let items = this.clipboard;
+  /** Items from a paste: copied ink (JSON from copySelection) when it validates, else the internal clipboard. */
+  pasteText(text: string): boolean {
+    let items = text ? [] as Item[] : this.clipboard;
     try {
-      const j = JSON.parse((await navigator.clipboard?.readText()) ?? "") as { forma?: string; items?: unknown[] };
+      const j = JSON.parse(text) as { forma?: string; items?: unknown[] };
       if (j.forma === "ink" && Array.isArray(j.items)) items = j.items.flatMap((x) => { const r = ItemSchema.safeParse(x); return r.success ? [r.data] : []; });
-    } catch { /* not ours or no permission: use the internal clipboard */ }
+    } catch { /* not ink */ }
     this.addCopies(items, 24, 24);
+    return items.length > 0;
   }
 
   select(ids: string[]): void {

@@ -22,8 +22,12 @@ export function ExportMenu({ engine, notebook, page }: { engine: InkEngine; note
   const items = () => [...engine.items.values()];
   const name = `${slug(notebook.title)}-${notebook.pageIds.indexOf(page.id) + 1}`;
   /** Every page of the notebook; this one from the engine, so unsaved ops are included. */
-  const allPages = async () => (await Promise.all(notebook.pageIds.map(async (id) => (id === page.id ? { page, items: items() } : inkStore().getPage(id)))))
-    .filter((x): x is { page: Page; items: Item[] } => !!x);
+  const allPages = async () => {
+    const got = await Promise.all(notebook.pageIds.map(async (id) => (id === page.id ? { page, items: items() } : inkStore().getPage(id))));
+    const missing = got.filter((x) => !x).length;
+    if (missing) throw new Error(`${missing} of ${got.length} pages couldn't be read, so it would be incomplete`);
+    return got as { page: Page; items: Item[] }[];
+  };
   const pdf = async (pages: { page: Page; items: Item[] }[]) => {
     const all = pages.flatMap((p) => p.items);
     const rasters = toRasters(all, await loadImages(all, PRINT_COLORS, 2), 2);

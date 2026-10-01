@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { COLOR_TOKENS, rotateAbout, scaleAbout, type InkEngine, type Vec } from "@forma/ink";
 
 type Drag = { t: ReturnType<InkEngine["transformSelection"]>; kind: "scale" | "rotate"; anchor: Vec; from: Vec };
@@ -8,26 +8,10 @@ type Drag = { t: ReturnType<InkEngine["transformSelection"]>; kind: "scale" | "r
 /**
  * Overlay for the lasso selection: its bounds, four corner scale handles, a rotate handle and a small action bar.
  * Each handle drag previews live and commits one `update` op on release. `version` re-renders it when the view,
- * selection or items change.
+ * selection or items change. Keyboard shortcuts for the selection live in InkEditor, with its focus guards.
  */
 export function SelectionHandles({ engine, version, onConvert }: { engine: InkEngine | null; version: number; onConvert?: () => void }) {
   const drag = useRef<Drag | null>(null);
-
-  useEffect(() => {
-    if (!engine) return;
-    const key = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement | null)?.closest("input, textarea, [contenteditable]")) return;
-      const mod = e.ctrlKey || e.metaKey;
-      if (mod && e.key.toLowerCase() === "v") { e.preventDefault(); void engine.paste(); return; }
-      if (!engine.selection.size) return;
-      if (e.key === "Delete" || e.key === "Backspace") { e.preventDefault(); engine.deleteSelection(); }
-      else if (e.key === "Escape") engine.select([]);
-      else if (mod && e.key.toLowerCase() === "c") { e.preventDefault(); engine.copySelection(); }
-      else if (mod && e.key.toLowerCase() === "d") { e.preventDefault(); engine.duplicateSelection(); }
-    };
-    window.addEventListener("keydown", key);
-    return () => window.removeEventListener("keydown", key);
-  }, [engine]);
 
   void version;
   const b = engine?.selection.size ? engine.selectionBounds() : null;

@@ -58,6 +58,8 @@ export function migrateWorkingPaper(): Promise<Done> {
     const prior = await load(KEY, 1500);
     if (prior === TIMED_OUT) { running = null; return {}; } // storage busy: try again next time, never twice
     if (prior && typeof prior === "object") return prior as Done;
+    // The learner state (where saved drawings live) loads asynchronously; reading it early would see none.
+    if (!useStudy.getState().hydrated) await new Promise<void>((ok) => { const un = useStudy.subscribe((st) => { if (st.hydrated) { un(); ok(); } }); });
     const done: Done = {};
     for (const n of useStudy.getState().learner.notebook) {
       if (n.kind !== "drawing" || !getConcept(n.conceptId)) continue;
@@ -70,6 +72,8 @@ export function migrateWorkingPaper(): Promise<Done> {
       const { svg, text } = d as { svg?: string; text?: string };
       if ((svg && /<path|<polyline|<text/.test(svg)) || text?.trim()) done[`draft:${c.id}`] = await migratePage(c.id, "Working paper draft", svg, text);
     }
+    // Pages that couldn't be stored would vanish on reload: then leave the flag unset, so the next visit migrates again.
+    if (inkStore().unavailable) { running = null; return done; }
     await save(KEY, done);
     return done;
   })());

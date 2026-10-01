@@ -41,7 +41,7 @@ export function PageStrip({ notebook, pageId, version, onOpen, onAdd, onReorder,
               <span className="label block text-center">{i + 1}</span>
             </button>
             {ids.length > 1 && (
-              <button className="absolute right-0 top-0 hidden rounded bg-[var(--paper)] px-1 text-xs group-hover:block group-focus-within:block" aria-label={`Delete page ${i + 1}`} onClick={() => setDoomed(id)}>×</button>
+              <button className="absolute right-0 top-0 hidden rounded bg-[var(--paper)] px-1 text-xs group-hover:block group-focus-within:block [@media(hover:none)]:block" aria-label={`Delete page ${i + 1}`} onClick={() => setDoomed(id)}>×</button>
             )}
           </li>
         ))}

@@ -56,6 +56,9 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
   const motion = useStudy((s) => s.learner.settings.motion);
   const [version, setVersion] = useState(0);
   const bump = useCallback(() => setVersion((v) => v + 1), []);
+  /** Changes only when the page's content changes (not on every pan frame), and when a thumbnail is written. */
+  const [edits, setEdits] = useState(0);
+  const [thumbs, setThumbs] = useState(0);
   const pageRef = useRef<Page | null>(null);
   const nbRef = useRef<Notebook | null>(null);
   pageRef.current = page;
@@ -71,13 +74,13 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
       if (!engine || !p || !nb) return;
       const colors = engine.renderer.colors(), items = [...engine.items.values()];
       void canvasBlob((bm) => renderToCanvas(items, colors, 320, 200, { background: colors["paper-2"], ...(bm && engine.renderer.bitmap ? { bitmap: engine.renderer.bitmap } : {}) }))
-        .then((b) => { if (b) void inkStore().putThumb(p.id, b).then(bump); });
+        .then((b) => { if (b) void inkStore().putThumb(p.id, b).then(() => setThumbs((v) => v + 1)); });
       if (!touch) return;
       const t = Date.now();
       void inkStore().putPage({ ...p, updatedAt: t });
       void inkStore().putNotebook({ ...nb, updatedAt: t });
     }, 1000);
-  }, [engine, bump]);
+  }, [engine]);
 
   // Load the notebook and page into the engine.
   useEffect(() => {
@@ -110,13 +113,14 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
     if (engine) engine.reducedMotion = motion === "reduced" || matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, [engine, motion]);
 
-  // Pasting an image adds it.
+  // Paste: an image file, copied ink, or (with nothing else on the clipboard) the last ink copied here.
   useEffect(() => {
     if (!engine) return;
     const paste = (e: ClipboardEvent) => {
       if (typing(e.target) || (compact && !root.current?.contains(document.activeElement))) return;
       const f = [...(e.clipboardData?.files ?? [])].find((x) => x.type.startsWith("image/"));
       if (f) { e.preventDefault(); void insertImage(engine, f); }
+      else if (engine.pasteText(e.clipboardData?.getData("text/plain") ?? "")) e.preventDefault();
     };
     window.addEventListener("paste", paste);
     return () => window.removeEventListener("paste", paste);
@@ -156,7 +160,12 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
     const down = (e: KeyboardEvent) => {
       if (typing(e.target) || (compact && !root.current?.contains(e.target as Node))) return;
       const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
-      if (mod && k === "z") { e.preventDefault(); if (e.shiftKey) engine.redo(); else engine.undo(); bump(); }
+      const sel = engine.selection.size > 0;
+      if (sel && !mod && (e.key === "Delete" || e.key === "Backspace")) { e.preventDefault(); engine.deleteSelection(); }
+      else if (sel && e.key === "Escape") engine.select([]);
+      else if (sel && mod && k === "c") { e.preventDefault(); engine.copySelection(); }
+      else if (sel && mod && k === "d") { e.preventDefault(); engine.duplicateSelection(); }
+      else if (mod && k === "z") { e.preventDefault(); if (e.shiftKey) engine.redo(); else engine.undo(); bump(); }
       else if (mod && k === "y") { e.preventDefault(); engine.redo(); bump(); }
       else if (mod && k === "0") { e.preventDefault(); engine.fitToContent(); }
       else if (!mod && !e.altKey && e.key === " ") {
@@ -235,13 +244,13 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
       <div className="relative min-h-0 flex-1 overflow-hidden">
         <InkCanvas onReady={setEngine} label={page && engine ? `${notebook?.title ?? "Notebook"}, ${page.title}: ${describe(engine)}` : "Ink page"}
           events={{
-            onChange: (op) => { if (pageRef.current) void inkStore().applyOp(pageRef.current.id, op); scheduleThumb(); bump(); },
+            onChange: (op) => { if (pageRef.current) void inkStore().applyOp(pageRef.current.id, op); scheduleThumb(); bump(); setEdits((v) => v + 1); },
             onView: bump, onSelection: bump, onTool: (t) => setTool(t), onEdit: setEdit,
           }} />
         <SelectionHandles engine={engine} version={version} onConvert={() => setConverting(true)} />
         {engine && <ConvertDialog engine={engine} open={converting} onClose={() => setConverting(false)} />}
         {engine && <LinkChips engine={engine} version={version} />}
-        {engine && !compact && <Minimap engine={engine} version={version} />}
+        {engine && !compact && <Minimap engine={engine} version={version} contentVersion={edits} />}
         {engine && (
           <ul className="sr-only" aria-label="Words and equations on this page">
             {[...engine.items.values()].filter((i) => i.kind === "text" || i.kind === "equation").sort((a, b) => a.transform[5] - b.transform[5] || a.transform[4] - b.transform[4])
@@ -251,7 +260,7 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
         {engine && edit?.kind === "text" && <TextLayer key={edit.item?.id ?? `${edit.at.x},${edit.at.y}`} engine={engine} request={edit} onDone={() => setEdit(null)} />}
         {engine && edit?.kind === "equation" && <EquationEditor key={edit.item?.id ?? `${edit.at.x},${edit.at.y}`} engine={engine} request={edit} onDone={() => setEdit(null)} />}
       </div>
-      {notebook && <PageStrip notebook={notebook} pageId={pageId} version={version} onOpen={openPage} onAdd={addPage} onDelete={deletePage}
+      {notebook && <PageStrip notebook={notebook} pageId={pageId} version={thumbs} onOpen={openPage} onAdd={addPage} onDelete={deletePage}
         onReorder={(ids) => void saveNotebook({ ...notebook, pageIds: ids, updatedAt: Date.now() })} />}
     </div>
   );

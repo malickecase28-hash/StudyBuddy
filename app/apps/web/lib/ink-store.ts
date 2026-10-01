@@ -45,13 +45,18 @@ class InkDb extends Dexie {
 
 /**
  * IndexedDB through Dexie. Item writes are queued per page and flushed 400 ms after the last op, and at once when
- * the tab hides or unloads, so a quick reload keeps the last stroke.
+ * the tab hides or unloads, so a quick reload keeps the last stroke. If a write fails (quota, a busy disk), the
+ * store says so once (`onError`) and keeps the data in memory, overlaid on what it reads, and retries item rows on
+ * the next flush. Reads keep coming from the disk, so nothing already saved disappears.
  */
 export class DexieInkStore implements InkStore {
   private db = new InkDb();
   private pending = new Map<string, Map<string, Item | null>>();
   /** Rows of pages opened this session, so a reorder can patch z without a read. */
   private mirror = new Map<string, Map<string, Item>>();
+  /** Notebook and page rows whose write failed, kept for this session. */
+  private memNotebooks = new Map<string, Notebook>();
+  private memPages = new Map<string, Page>();
   private timer: ReturnType<typeof setTimeout> | undefined;
   constructor(private onError: (e: unknown) => void) {
     const now = () => { if (document.visibilityState === "hidden") void this.flush(); };
@@ -62,33 +67,50 @@ export class DexieInkStore implements InkStore {
   async ready(): Promise<void> {
     await Promise.race([this.db.open(), new Promise((_, no) => setTimeout(() => no(new Error("IndexedDB did not open")), 3000))]);
   }
-  listNotebooks() { return this.db.notebooks.orderBy("updatedAt").reverse().toArray(); }
-  getNotebook(id: string) { return this.db.notebooks.get(id); }
-  async putNotebook(n: Notebook) { await this.db.notebooks.put(n); }
+  private async safe<T>(f: () => Promise<T>, fallback: T): Promise<T> {
+    try { return await f(); } catch (e) { this.onError(e); return fallback; }
+  }
+  async listNotebooks() {
+    const disk = await this.safe(() => this.db.notebooks.toArray(), [] as Notebook[]);
+    const byId = new Map(disk.map((n) => [n.id, n]));
+    for (const n of this.memNotebooks.values()) byId.set(n.id, n);
+    return [...byId.values()].sort((x, y) => y.updatedAt - x.updatedAt);
+  }
+  async getNotebook(id: string) { return this.memNotebooks.get(id) ?? (await this.safe(() => this.db.notebooks.get(id), undefined)); }
+  async putNotebook(n: Notebook) {
+    try { await this.db.notebooks.put(n); this.memNotebooks.delete(n.id); } catch (e) { this.memNotebooks.set(n.id, n); this.onError(e); }
+  }
   async deleteNotebook(id: string) {
-    await this.db.transaction("rw", [this.db.notebooks, this.db.pages, this.db.items, this.db.thumbs], async () => {
+    this.memNotebooks.delete(id);
+    for (const p of [...this.memPages.values()]) if (p.notebookId === id) this.memPages.delete(p.id);
+    await this.safe(() => this.db.transaction("rw", [this.db.notebooks, this.db.pages, this.db.items, this.db.thumbs], async () => {
       const pages = await this.db.pages.where("notebookId").equals(id).primaryKeys();
       for (const p of pages) { await this.db.items.where("pageId").equals(p).delete(); this.pending.delete(p); }
       await this.db.thumbs.bulkDelete(pages);
       await this.db.pages.bulkDelete(pages);
       await this.db.notebooks.delete(id);
-    });
+    }), undefined);
   }
   async getPage(id: string) {
     await this.flush();
-    const page = await this.db.pages.get(id);
+    const page = this.memPages.get(id) ?? (await this.safe(() => this.db.pages.get(id), undefined));
     if (!page) return undefined;
     // A row that no longer validates (an older build, a bad import) is left out rather than breaking the page.
     let skipped = 0;
-    const items = (await this.db.items.where("pageId").equals(id).toArray()).flatMap((r) => {
+    const rows = await this.safe(() => this.db.items.where("pageId").equals(id).toArray(), [] as ItemRow[]);
+    const byId = new Map<string, Item>();
+    for (const r of rows) {
       const ok = ItemSchema.safeParse(r.item);
-      if (!ok.success) skipped++;
-      return ok.success ? [ok.data] : [];
-    });
-    this.mirror.set(id, new Map(items.map((i) => [i.id, i])));
-    return { page, items, skipped };
+      if (ok.success) byId.set(ok.data.id, ok.data); else skipped++;
+    }
+    // Rows that couldn't be written yet still belong to the page.
+    for (const [rid, it] of this.pending.get(id) ?? []) if (it) byId.set(rid, it); else byId.delete(rid);
+    this.mirror.set(id, new Map(byId));
+    return { page, items: [...byId.values()], skipped };
   }
-  async putPage(p: Page) { await this.db.pages.put(p); }
+  async putPage(p: Page) {
+    try { await this.db.pages.put(p); this.memPages.delete(p.id); } catch (e) { this.memPages.set(p.id, p); this.onError(e); }
+  }
   async applyOp(pageId: string, op: Op) {
     let rows = this.pending.get(pageId);
     if (!rows) this.pending.set(pageId, (rows = new Map()));
@@ -98,6 +120,7 @@ export class DexieInkStore implements InkStore {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => void this.flush(), 400);
   }
+  /** Write queued item rows. On failure the batch goes back in the queue (newer rows win) for the next flush. */
   async flush(): Promise<void> {
     clearTimeout(this.timer);
     if (!this.pending.size) return;
@@ -113,47 +136,45 @@ export class DexieInkStore implements InkStore {
         }
       });
     } catch (e) {
+      for (const [pageId, rows] of batch) {
+        const newer = this.pending.get(pageId);
+        this.pending.set(pageId, newer ? new Map([...rows, ...newer]) : rows);
+      }
       this.onError(e);
-      throw e;
     }
   }
-  async putThumb(pageId: string, png: Blob) { await this.db.thumbs.put({ pageId, png }); }
-  async getThumb(pageId: string) { return (await this.db.thumbs.get(pageId))?.png; }
+  async putThumb(pageId: string, png: Blob) { await this.safe(() => this.db.thumbs.put({ pageId, png }), undefined); }
+  async getThumb(pageId: string) { return this.safe(async () => (await this.db.thumbs.get(pageId))?.png, undefined); }
 }
 
-/** Delegates to IndexedDB; on the first failure, switches to memory for the rest of the session and says so. */
+/**
+ * The app's store: IndexedDB when it opens, memory when it can't (private windows, blocked storage).
+ * `unavailable` (and the banner) turns on in both cases: storage that won't open, or a write that failed.
+ */
 class ResilientInkStore implements InkStore {
   unavailable = false;
   private impl: InkStore | null = null;
   private opening: Promise<InkStore> | null = null;
   private listeners = new Set<() => void>();
-  private fail = () => {
+  private warn = () => {
     if (this.unavailable) return;
     this.unavailable = true;
-    this.impl = new MemoryInkStore();
     for (const l of this.listeners) l();
   };
   private async get(): Promise<InkStore> {
     if (this.impl) return this.impl;
     return (this.opening ??= (async () => {
       try {
-        const d = new DexieInkStore(this.fail);
+        const d = new DexieInkStore(this.warn);
         await d.ready();
         return (this.impl ??= d);
       } catch {
-        this.fail();
-        return this.impl!;
+        this.warn();
+        return (this.impl = new MemoryInkStore());
       }
     })());
   }
-  private run = async <T,>(f: (s: InkStore) => Promise<T>): Promise<T> => {
-    const s = await this.get();
-    try { return await f(s); } catch (e) {
-      if (s instanceof MemoryInkStore) throw e;
-      this.fail();
-      return f(this.impl!);
-    }
-  };
+  private run = async <T,>(f: (s: InkStore) => Promise<T>): Promise<T> => f(await this.get());
   subscribe = (l: () => void) => { this.listeners.add(l); return () => void this.listeners.delete(l); };
   listNotebooks() { return this.run((s) => s.listNotebooks()); }
   getNotebook(id: string) { return this.run((s) => s.getNotebook(id)); }
