@@ -11,8 +11,8 @@ test("the question bank filters by assessment and never links to a missing lesso
   await expect(page.getByText("HW04 2024-25 · 4.2")).toHaveCount(0);
   await page.getByRole("radio", { name: "Finals" }).check();
   await expect(page.getByText("HW04 2024-25 · 4.2")).toBeVisible();
-  // A locked-only item shows no "Work this question" or "Strengthen" link.
+  // The newly unlocked coax question can strengthen the Ampere lesson.
   const coax = page.locator("article", { hasText: "UTech ELE3001 Finals 2024-25 Sem 1 · Q3(a)" });
-  await expect(coax.getByRole("link", { name: /Work this question|Strengthen/ })).toHaveCount(0);
-  await expect(coax.getByText("Coming in a later build")).toBeVisible();
+  await expect(coax.getByRole("link", { name: /Strengthen Biot–Savart and Ampère/ })).toHaveAttribute("href", "/c/em1/em1.magnetostatics.ampere?mode=learn&lesson=main");
+  await expect(coax.getByText("Coming in a later build")).toHaveCount(0);
 });
