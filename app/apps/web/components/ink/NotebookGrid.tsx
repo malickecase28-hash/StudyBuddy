@@ -1,9 +1,9 @@
 "use client";
 
-import { COLOR_TOKENS, type ColorToken, type Notebook } from "@forma/ink";
+import { COLOR_TOKENS, notebookFromJSON, type ColorToken, type Notebook } from "@forma/ink";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { conceptById, course } from "@/lib/course";
 import { createNotebook, inkStore, listNotebooksEnsuringScratch } from "@/lib/ink-store";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -50,6 +50,23 @@ export function NotebookGrid() {
     setRenaming(null);
     if (t.trim() && t.trim() !== nb.title) { await inkStore().putNotebook({ ...nb, title: t.trim(), updatedAt: Date.now() }); void refresh(); }
   };
+  const importer = useRef<HTMLInputElement>(null);
+  const [importError, setImportError] = useState("");
+  /** A backup becomes a new notebook (fresh ids), so importing twice never overwrites anything. */
+  const importBackup = async (f: File) => {
+    try {
+      const { notebook, pages } = notebookFromJSON(await f.text());
+      for (const { page, items } of pages) {
+        await inkStore().putPage(page);
+        if (items.length) await inkStore().applyOp(page.id, { type: "add", items });
+      }
+      await inkStore().putNotebook(notebook);
+      setImportError("");
+      void refresh();
+    } catch (e) {
+      setImportError(`That file couldn't be imported: ${e instanceof Error ? e.message.slice(0, 160) : "unknown error"}`);
+    }
+  };
   const shown = (list ?? []).filter((n) => n.title.toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
@@ -62,10 +79,13 @@ export function NotebookGrid() {
         </div>
         <div className="flex gap-2">
           <input className="input" type="search" placeholder="Search notebooks" aria-label="Search notebooks" value={query} onChange={(e) => setQuery(e.target.value)} />
+          <button className="btn" onClick={() => importer.current?.click()}>Import backup</button>
+          <input ref={importer} type="file" accept="application/json,.json" className="hidden" aria-label="Backup file" onChange={(e) => { const f = e.target.files?.[0]; if (f) void importBackup(f); e.target.value = ""; }} />
           <button className="btn btn-primary" onClick={() => setCreating((c) => !c)} aria-expanded={creating}>New notebook</button>
         </div>
       </div>
       <StorageBanner />
+      {importError && <p className="fb fb-again" role="alert">{importError}</p>}
       {creating && (
         <form className="card flex flex-wrap items-end gap-3" onSubmit={create}>
           <label className="flex flex-col gap-1 text-sm">Title

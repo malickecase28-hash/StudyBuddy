@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createBitmapProvider } from "@/lib/ink-bitmaps";
 import { inkStore, newPage } from "@/lib/ink-store";
 import { EquationEditor } from "./EquationEditor";
+import { ExportMenu } from "./ExportMenu";
 import { InkCanvas } from "./InkCanvas";
 import { InkToolbar, TOOLS } from "./InkToolbar";
 import { insertImage, InsertMenu, LinkChips } from "./InsertMenu";
@@ -199,6 +200,7 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
           <>
             <button className="btn" onClick={snapshotStep}>Snapshot this step</button>
             <InsertMenu engine={engine} {...(notebook?.conceptId ? { conceptId: notebook.conceptId } : {})} />
+            {notebook && page && <ExportMenu engine={engine} notebook={notebook} page={page} />}
           </>
         )}
       </div>
@@ -206,6 +208,7 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
       {engine && page && (
         <InkToolbar engine={engine} tool={tool} onTool={chooseTool} page={page} onPage={updatePage} version={version} compact={compact}>
           {!compact && <InsertMenu engine={engine} {...(notebook?.conceptId ? { conceptId: notebook.conceptId } : {})} />}
+          {!compact && notebook && <ExportMenu engine={engine} notebook={notebook} page={page} />}
         </InkToolbar>
       )}
       <div className="relative min-h-0 flex-1 overflow-hidden">

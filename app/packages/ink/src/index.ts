@@ -11,3 +11,4 @@ export type { Tool, ToolFactory, WorldSample } from "./tools/types";
 export * from "./shapes";
 export { Ruler, toggleRuler } from "./tools/ruler";
 export * from "./store";
+export * from "./export";
