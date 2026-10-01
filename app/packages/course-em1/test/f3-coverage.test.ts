@@ -23,7 +23,7 @@ describe("F3/F4 concepts", () => {
     expect(mainOf("em1.electrostatics.dielectrics")).toEqual(["idea-polarization", "idea-bc-tangential", "idea-bc-normal", "idea-refraction", "idea-conductor-bc"]);
     expect(mainOf("em1.electrostatics.capacitance")).toEqual(["idea-parallel-plate", "idea-cap-energy", "idea-coax-sphere"]);
   });
-  for (const id of ["em1.intro.em-world", "em1.math.vectors", "em1.math.vector-calculus", "em1.electrostatics.coulomb", "em1.electrostatics.field", "em1.electrostatics.gauss-applications", "em1.electrostatics.divergence", "em1.electrostatics.potential", "em1.electrostatics.current", "em1.electrostatics.dielectrics", "em1.electrostatics.capacitance", "em1.magnetostatics.ampere", "em1.magnetostatics.materials", "em1.magnetostatics.inductance"]) {
+  for (const id of ["em1.intro.em-world", "em1.math.vectors", "em1.math.vector-calculus", "em1.electrostatics.coulomb", "em1.electrostatics.field", "em1.electrostatics.gauss-applications", "em1.electrostatics.divergence", "em1.electrostatics.potential", "em1.electrostatics.current", "em1.electrostatics.dielectrics", "em1.electrostatics.capacitance", "em1.magnetostatics.ampere", "em1.magnetostatics.materials", "em1.magnetostatics.inductance", "em1.dynamic.faraday", "em1.waves.plane-waves"]) {
     it(`${id}: full coverage, and every idea is load-bearing`, () => {
       const plates = mainOf(id);
       expect(coverageGaps(merged(id, plates))).toEqual([]);

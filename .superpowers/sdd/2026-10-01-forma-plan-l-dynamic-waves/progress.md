@@ -1,4 +1,3 @@
-Task 1: in progress
 Task 1: complete (commit 66d3955..7952d3d, checks: `pnpm test` (76 files, 850 tests) and `pnpm typecheck` → PASS)
 Task 2: Ruling: the plan says I is already labeled, but the new emf-loop I readout failed the existing label assertion — added Current I, with the planned induced-current override — cost if wrong: an unlabelled current would be ambiguous.
 Task 2: complete (commit 7952d3d..5db2d7d, checks: `pnpm test` (76 files, 850 tests), `pnpm typecheck`, web `tsc` → PASS)
@@ -16,3 +15,5 @@ Task 6: Ruling: Wentworth 4.1 and P4.31 are explained but are not worked or chec
 Task 6: Ruling: the Ch. 4 drill gives an initial 34 V/m amplitude but its setup showed 10 V/m — set the example amplitude to 34 V/m — cost if wrong: the wave view disagrees with the problem statement.
 Task 6: Ruling: each authored plate is independently scoped and the Plan K helper comment does not define helpers — added the existing local `R`, `choice`, and `eqp` pattern — cost if wrong: plate modules fail to load.
 Task 6: complete (commit d092f26..HEAD, checks: `pnpm test` (76 files, 892 tests) and `pnpm typecheck` → PASS)
+Task 7: Ruling: first full e2e run had a one-off shortcut-panel timeout — the isolated test and a clean full 47-test run passed — cost if wrong: an intermittent navigation issue would be missed.
+Task 7: verification — `pnpm test` (76 files, 894 tests), `pnpm typecheck`, web `tsc`, `pnpm build`, and `pnpm e2e` (47/47) → PASS; 1360×900 Playwright visual walk passed, no baselines changed.
