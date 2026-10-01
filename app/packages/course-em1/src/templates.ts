@@ -765,5 +765,91 @@ const indSolenoidT = defineTemplate<{ N: number; len: number; r: number }>({
   tags: { concepts: [IND], misconceptions: ["IND_TURNS"], difficulty: 1 },
 });
 
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD, vPoint, workMove, currentDensity, ohmWire, continuityRate, bndTangent, bndAngle, capPlates, capEnergy, capCoaxT, bsFilament, ampInside, magBndNormal, indCoaxT, indSolenoidT];
+const DYN = "em1.dynamic.faraday";
+const WAV = "em1.waves.plane-waves";
+const ETA0 = Math.sqrt((4e-7 * Math.PI) / EPS0);
+
+const emfPeak = defineTemplate<{ N: number; s: number; B0: number; f: number }>({
+  id: "emf-peak",
+  params: { N: { min: 10, max: 200, step: 10 }, s: { min: 5, max: 20, step: 5 }, B0: { min: 10, max: 100, step: 10 }, f: { min: 50, max: 60, step: 10 } },
+  prompt: (p) => `A ${p.N}-turn square coil of side ${p.s} cm lies normal to B = ${p.B0} sin(2π × ${p.f}t) mT. Find the peak induced emf, in V.`,
+  solve: (p) => {
+    const S = (p.s / 100) ** 2, w = 2 * Math.PI * p.f;
+    return {
+      answer: { value: sig(p.N * w * p.B0 * 1e-3 * S), unit: "V" },
+      distractors: [{ value: sig(p.N * p.B0 * 1e-3 * S), unit: "V", errorClass: "conceptual", tag: "EMF_RATE", feedback: "That's NΦ, the flux linkage. The emf is its rate of change, which brings in ω." }],
+    };
+  },
+  hints: () => ["emf = −N dΦ/dt, with Φ = B₀S sin ωt.", "Peak emf = NωB₀S.", "ω = 2πf; S in m²."],
+  worked: (p) => [{ text: `S = (${p.s / 100})² m²; peak emf = ${p.N} × 2π × ${p.f} × ${p.B0} × 10⁻³ × S = ${sig(p.N * 2 * Math.PI * p.f * p.B0 * 1e-3 * (p.s / 100) ** 2)} V.` }],
+  dimension: "computational",
+  tags: { concepts: [DYN], misconceptions: ["EMF_RATE"], difficulty: 1 },
+});
+
+const lossTangent = defineTemplate<{ sig: number; er: number; f: number }>({
+  id: "loss-tangent",
+  params: { sig: { min: 0.5, max: 5, step: 0.5 }, er: { min: 5, max: 80, step: 5 }, f: { min: 1, max: 100, step: 1 } },
+  prompt: (p) => `A medium has σ = ${p.sig} S/m and εr = ${p.er}. Find the ratio of conduction to displacement current density, σ/(ωε), at ${p.f} MHz.`,
+  solve: (p) => {
+    const lt = p.sig / (2 * Math.PI * p.f * 1e6 * p.er * EPS0);
+    return {
+      answer: { value: sig(lt), unit: "" },
+      distractors: [{ value: sig(lt * 2 * Math.PI), unit: "", errorClass: "conceptual", tag: "LOSS_TAN", feedback: "That uses f, not ω = 2πf." }],
+    };
+  },
+  hints: () => ["|Jc|/|Jd| = σ/(ωε).", "ω = 2π × f in Hz.", "ε = εr × 8.854 × 10⁻¹²."],
+  worked: (p) => [{ text: `σ/(ωε) = ${p.sig}/(2π × ${p.f} × 10⁶ × ${p.er} × 8.854 × 10⁻¹²) = ${sig(p.sig / (2 * Math.PI * p.f * 1e6 * p.er * EPS0))}.` }],
+  dimension: "computational",
+  tags: { concepts: [DYN], misconceptions: ["LOSS_TAN"], difficulty: 1 },
+});
+
+const waveLambda = defineTemplate<{ f: number; er: number }>({
+  id: "wave-lambda",
+  params: { f: { min: 10, max: 1000, step: 10 }, er: { min: 2, max: 9, step: 1 } },
+  prompt: (p) => `A ${p.f} MHz plane wave travels in a lossless nonmagnetic medium with εr = ${p.er}. Find its wavelength, in m.`,
+  solve: (p) => ({
+    answer: { value: sig(C0 / Math.sqrt(p.er) / (p.f * 1e6)), unit: "m" },
+    distractors: [{ value: sig(C0 / (p.f * 1e6)), unit: "m", errorClass: "conceptual", tag: "WAVE_MEDIUM", feedback: "That's the free-space wavelength. In the medium, u = c/√εr, so λ shrinks by √εr." }],
+  }),
+  hints: () => ["u = c/√εr.", "λ = u/f.", "c = 2.998 × 10⁸ m/s."],
+  worked: (p) => [{ text: `u = ${sig(C0)}/√${p.er} = ${sig(C0 / Math.sqrt(p.er))} m/s; λ = u/f = ${sig(C0 / Math.sqrt(p.er) / (p.f * 1e6))} m.` }],
+  dimension: "computational",
+  tags: { concepts: [WAV], misconceptions: ["WAVE_MEDIUM"], difficulty: 1 },
+});
+
+const skinDepth = defineTemplate<{ f: number }>({
+  id: "skin-depth",
+  params: { f: { min: 1, max: 100, step: 1 } },
+  prompt: (p) => `Find the skin depth in copper (σ = 5.8 × 10⁷ S/m, μr = 1) at ${p.f} MHz, in µm.`,
+  solve: (p) => {
+    const k = Math.PI * p.f * 1e6 * 4e-7 * Math.PI * 5.8e7;
+    return {
+      answer: { value: sig(1 / Math.sqrt(k) / 1e-6), unit: "µm" },
+      distractors: [{ value: sig(1 / k / 1e-6), unit: "µm", errorClass: "arithmetic", tag: "SKIN_DEPTH", feedback: "Missing the square root: δ = 1/√(πfμσ)." }],
+    };
+  },
+  hints: () => ["In a good conductor α = √(πfμσ).", "δ = 1/α.", "f in Hz."],
+  worked: (p) => [{ text: `α = √(π × ${p.f} × 10⁶ × 4π × 10⁻⁷ × 5.8 × 10⁷) = ${sig(Math.sqrt(Math.PI * p.f * 1e6 * 4e-7 * Math.PI * 5.8e7))} Np/m; δ = 1/α = ${sig(1 / Math.sqrt(Math.PI * p.f * 1e6 * 4e-7 * Math.PI * 5.8e7) / 1e-6)} µm.` }],
+  dimension: "computational",
+  tags: { concepts: [WAV], misconceptions: ["SKIN_DEPTH"], difficulty: 2 },
+});
+
+const poyntingAvg = defineTemplate<{ E0: number; er: number }>({
+  id: "poynting-avg",
+  params: { E0: { min: 1, max: 100, step: 1 }, er: { min: 1, max: 9, step: 1 } },
+  prompt: (p) => `A plane wave with amplitude ${p.E0} V/m travels in a lossless nonmagnetic medium with εr = ${p.er}. Find its average power density, in W/m².`,
+  solve: (p) => {
+    const eta = ETA0 / Math.sqrt(p.er);
+    return {
+      answer: { value: sig((p.E0 * p.E0) / (2 * eta)), unit: "W/m^2" },
+      distractors: [{ value: sig((p.E0 * p.E0) / eta), unit: "W/m^2", errorClass: "conceptual", tag: "POYNTING_HALF", feedback: "Missing the ½: the time average of cos² is ½." }],
+    };
+  },
+  hints: () => ["η = 376.7/√εr Ω.", "P_ave = E₀²/(2η).", "The ½ is the average of cos²."],
+  worked: (p) => [{ text: `η = 376.7/√${p.er} = ${sig(ETA0 / Math.sqrt(p.er))} Ω; P_ave = ${p.E0}²/(2η) = ${sig((p.E0 * p.E0) / (2 * (ETA0 / Math.sqrt(p.er))))} W/m².` }],
+  dimension: "computational",
+  tags: { concepts: [WAV], misconceptions: ["POYNTING_HALF"], difficulty: 1 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD, vPoint, workMove, currentDensity, ohmWire, continuityRate, bndTangent, bndAngle, capPlates, capEnergy, capCoaxT, bsFilament, ampInside, magBndNormal, indCoaxT, indSolenoidT, emfPeak, lossTangent, waveLambda, skinDepth, poyntingAvg];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));

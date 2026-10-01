@@ -75,7 +75,7 @@ const truth: Record<string, (p: Record<string, number>) => number> = {
 
 describe("question templates", () => {
   it("defines exactly the expected templates", () => {
-    expect(templates.map((t) => t.id).sort()).toEqual(Object.keys(truth).sort());
+    expect(templates.map((t) => t.id).sort()).toEqual([...Object.keys(truth), "emf-peak", "loss-tangent", "wave-lambda", "skin-depth", "poynting-avg"].sort());
   });
   for (const id of Object.keys(truth)) {
     it(`${id}: answers match independent physics for seeds 1-50`, () => {
