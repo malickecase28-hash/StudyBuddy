@@ -5,4 +5,4 @@ Task 4: complete (commit b23891d..c4713df, checks: `pnpm test` (76 files, 894 te
 Task 5: complete (commit c4713df..59bed7c, checks: `pnpm test` (76 files, 894 tests), `pnpm typecheck`, web `tsc`, `pnpm build` → PASS)
 Task 6: complete (commit 59bed7c..128b27d, checks: `pnpm test` (76 files, 894 tests), `pnpm typecheck`, web `tsc`, `pnpm build` (`ƒ /api/battle`) → PASS)
 Task 7: smoke run skipped (no Supabase project yet)
-Task 7: complete (commit 128b27d..HEAD, checks: `pnpm test` (76 files, 894 tests), `pnpm typecheck`, web `tsc`, `pnpm build`, `pnpm e2e` (47/47), and 1360×900 off-state browser smoke → PASS; visual baselines unchanged)
+Task 7: complete (commit 128b27d..aaa785d, checks: `pnpm test` (76 files, 894 tests), `pnpm typecheck`, web `tsc`, `pnpm build`, `pnpm e2e` (47/47), and 1360×900 off-state browser smoke → PASS; visual baselines unchanged)
