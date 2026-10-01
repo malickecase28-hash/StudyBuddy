@@ -270,3 +270,6 @@ body {
   color: var(--ink-soft);
   font-style: italic;
 }
+
+.ref-chip { color: var(--ink); text-decoration: none; border-bottom: 1px dashed var(--sem-field); }
+.ref-chip::before { content: "§ "; color: var(--ink-faint); }

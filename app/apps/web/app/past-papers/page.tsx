@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { assessmentsForItem, getConcept, lessonHref, mainLesson, questionBank, splitRef } from "@/lib/course";
+import { DiscussLink } from "@/components/commons/Post";
 import { conceptProgress, pct } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
 
@@ -35,7 +36,7 @@ export default function QuestionBankPage() {
         const readiness = q.concepts.reduce((s, c) => s + c.weight * conceptProgress(learner, c.conceptId).mastery, 0);
         const practice = q.practice ? splitRef(q.practice) : undefined;
         return (
-          <article key={q.id} className="card space-y-4">
+          <article key={q.id} id={q.id} className="card space-y-4">
             <div className="flex items-baseline justify-between gap-4">
               <h2 className="font-semibold">{q.paper} · {q.question}</h2>
               {q.marks !== undefined && <span className="label">{q.marks} marks</span>}
@@ -68,6 +69,7 @@ export default function QuestionBankPage() {
             <div className="flex flex-wrap gap-2">
               {practice && <Link className="btn btn-primary" href={lessonHref(practice.conceptId, practice.lessonId)}>Work this question →</Link>}
               {weak && <Link className="btn" href={lessonHref(weak.id, mainLesson(weak)!.id)}>Strengthen {weak.title}</Link>}
+              <DiscussLink anchor={{ conceptId: q.concepts[0]!.conceptId, bankItemId: q.id, label: `${q.paper} · ${q.question}` }} />
             </div>
           </article>
         );

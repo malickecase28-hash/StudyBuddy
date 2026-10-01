@@ -10,6 +10,7 @@ import { MarginNote, Timeline } from "@forma/ui";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { conceptHref, getLesson, ideaMetaFor, lessonHref, misconceptionFor, splitRef } from "@/lib/course";
+import { DiscussLink } from "../commons/Post";
 import { answeredFromHistory, resumeStepFor, shouldCredit, useCueClock, usePlayback } from "@/lib/playback";
 import { conceptProgress } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
@@ -359,6 +360,7 @@ function PlateRun({
           <div className="flex flex-wrap gap-2 text-sm">
             {hasEdits && <button className="btn" onClick={() => { setOverrides({}); setEditedAt(null); }}>Reset the setup</button>}
             <button className="btn" onClick={saveSnapshot}>Save this setup to the notebook</button>
+            <DiscussLink anchor={{ conceptId, lessonId, blockId: block.id, step: index, label: `${plate.title} · §${index + 1} ${step.title}` }} />
           </div>
           {status && <p className="text-sm text-soft" role="status">{status}</p>}
           {finished && (
