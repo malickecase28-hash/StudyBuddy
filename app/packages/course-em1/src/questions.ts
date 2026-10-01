@@ -162,7 +162,7 @@ export const questionBank: BankItem[] = [
   {
     id: "f1415-q2b", source: "f1415", kind: "finals", paper: F1415, question: "Q2(b)", marks: 15, seenIn: ["f1415", "f1516", "f1819s1"],
     text: "Determine the per-unit-length inductance of a transmission line of two parallel cylindrical wires of radius a and separation s, in air.",
-    concepts: w([K.amp, 1]),
+    concepts: w([K.ind, 1]), practice: "em1.magnetostatics.inductance/main",
     solution: [
       "Currents I and −I. Between the wires on the line joining them, each wire's field is μ₀I/(2πx) and the two add.",
       "Flux per metre between the wires: Φ' = ∫_a^(s−a) [μ₀I/(2πx) + μ₀I/(2π(s − x))] dx = (μ₀I/π) ln((s − a)/a).",
@@ -371,7 +371,7 @@ export const questionBank: BankItem[] = [
   {
     id: "f1718-q4b", source: "f1718", kind: "finals", paper: F1718, question: "Q4(b)", marks: 10, seenIn: ["f1718", "f1819s3", "drill23"],
     text: "Determine the self-inductance of a coaxial cable of inner radius a and outer radius b.",
-    concepts: w([K.amp, 1]),
+    concepts: w([K.ind, 1]), practice: "em1.magnetostatics.inductance/main",
     solution: [
       "Between the conductors H = I/(2πρ), so the flux per metre is Φ' = ∫_a^b μI/(2πρ) dρ = (μI/2π) ln(b/a).",
       "External inductance per metre: L'_ext = (μ/2π) ln(b/a) H/m.",
