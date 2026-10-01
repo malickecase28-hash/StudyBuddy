@@ -7,7 +7,8 @@ export interface InkStore {
   getNotebook(id: string): Promise<Notebook | undefined>;
   putNotebook(n: Notebook): Promise<void>;
   deleteNotebook(id: string): Promise<void>;
-  getPage(id: string): Promise<{ page: Page; items: Item[] } | undefined>;
+  /** `skipped` counts stored rows that failed validation and were left out. */
+  getPage(id: string): Promise<{ page: Page; items: Item[]; skipped?: number } | undefined>;
   putPage(p: Page): Promise<void>;
   /** Upsert or delete the item rows an op touches. */
   applyOp(pageId: string, op: Op): Promise<void>;

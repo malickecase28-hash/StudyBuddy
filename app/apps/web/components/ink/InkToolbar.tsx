@@ -26,7 +26,7 @@ export function InkToolbar({ engine, tool, onTool, page, onPage, version, compac
   return (
     <div role="toolbar" aria-label="Ink tools" className={`flex min-w-0 ${compact ? "flex-nowrap overflow-x-auto" : "flex-wrap"} items-center gap-1 border-b border-[var(--grid)] bg-[var(--paper)] px-2 py-1.5 text-sm [&>*]:shrink-0`}>
       {TOOLS.filter((t) => engine.hasTool(t.id)).map((t) => (
-        <button key={t.id} className={`btn ${tool === t.id ? "btn-primary" : ""}`} aria-pressed={tool === t.id} title={t.key ? `${t.label} (${t.key})` : t.label} onClick={() => onTool(t.id)}>{t.label}</button>
+        <button key={t.id} className={`btn ${tool === t.id ? "btn-primary" : ""}`} aria-pressed={tool === t.id} title={t.key ? `${t.label} (${t.key})` : t.label} {...(t.key ? { "aria-keyshortcuts": t.key } : {})} onClick={() => onTool(t.id)}>{t.label}</button>
       ))}
       <span className="mx-1 h-6 w-px bg-[var(--grid)]" aria-hidden />
       {SIZES.map((s) => (
@@ -40,11 +40,11 @@ export function InkToolbar({ engine, tool, onTool, page, onPage, version, compac
           onClick={() => { engine.setStyle({ color: c }); onPage({}); }} />
       ))}
       <span className="mx-1 h-6 w-px bg-[var(--grid)]" aria-hidden />
-      <button className="btn" onClick={() => engine.undo()} disabled={!engine.history.canUndo()} title="Undo (Ctrl+Z)">Undo</button>
-      <button className="btn" onClick={() => engine.redo()} disabled={!engine.history.canRedo()} title="Redo (Ctrl+Y)">Redo</button>
+      <button className="btn" onClick={() => engine.undo()} disabled={!engine.history.canUndo()} title="Undo (Ctrl+Z)" aria-keyshortcuts="Control+Z">Undo</button>
+      <button className="btn" onClick={() => engine.redo()} disabled={!engine.history.canRedo()} title="Redo (Ctrl+Y)" aria-keyshortcuts="Control+Y Control+Shift+Z">Redo</button>
       <span className="mx-1 h-6 w-px bg-[var(--grid)]" aria-hidden />
       <button className="btn tabular-nums" onClick={() => engine.setZoom(1)} title="Zoom to 100%" aria-label={`Zoom ${Math.round(engine.camera.zoom * 100)}%, reset to 100%`}>{Math.round(engine.camera.zoom * 100)}%</button>
-      <button className="btn" onClick={() => engine.fitToContent()} title="Fit (Ctrl+0)">Fit</button>
+      <button className="btn" onClick={() => engine.fitToContent()} title="Fit (Ctrl+0)" aria-keyshortcuts="Control+0">Fit</button>
       <button className={`btn ${engine.ruler ? "btn-primary" : ""}`} aria-pressed={!!engine.ruler} onClick={() => { toggleRuler(engine); onPage({}); }}>Show ruler</button>
       <span className="ml-auto" />
       {children}

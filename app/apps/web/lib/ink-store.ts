@@ -1,6 +1,6 @@
 import Dexie, { type Table } from "dexie";
 import { useSyncExternalStore } from "react";
-import { applyOpToRows, newId, type InkStore, type Item, type Notebook, type Op, type Page, type Template } from "@forma/ink";
+import { applyOpToRows, ItemSchema, newId, type InkStore, type Item, type Notebook, type Op, type Page, type Template } from "@forma/ink";
 
 type ItemRow = { pageId: string; id: string; item: Item };
 
@@ -78,9 +78,15 @@ export class DexieInkStore implements InkStore {
     await this.flush();
     const page = await this.db.pages.get(id);
     if (!page) return undefined;
-    const items = (await this.db.items.where("pageId").equals(id).toArray()).map((r) => r.item);
+    // A row that no longer validates (an older build, a bad import) is left out rather than breaking the page.
+    let skipped = 0;
+    const items = (await this.db.items.where("pageId").equals(id).toArray()).flatMap((r) => {
+      const ok = ItemSchema.safeParse(r.item);
+      if (!ok.success) skipped++;
+      return ok.success ? [ok.data] : [];
+    });
     this.mirror.set(id, new Map(items.map((i) => [i.id, i])));
-    return { page, items };
+    return { page, items, skipped };
   }
   async putPage(p: Page) { await this.db.pages.put(p); }
   async applyOp(pageId: string, op: Op) {

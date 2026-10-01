@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createBitmapProvider } from "@/lib/ink-bitmaps";
 import { inkStore, newPage } from "@/lib/ink-store";
+import { useStudy } from "@/lib/store";
 import { ConvertDialog } from "./ConvertDialog";
 import { EquationEditor } from "./EquationEditor";
 import { ExportMenu } from "./ExportMenu";
 import { InkCanvas } from "./InkCanvas";
 import { InkToolbar, TOOLS } from "./InkToolbar";
 import { insertImage, InsertMenu, LinkChips } from "./InsertMenu";
+import { Minimap } from "./Minimap";
 import { PageStrip } from "./PageStrip";
 import { plateItem } from "./PlateSnapshotPicker";
 import { SelectionHandles } from "./SelectionHandles";
@@ -25,6 +27,15 @@ export function canvasBlob(draw: (withBitmaps: boolean) => HTMLCanvasElement): P
   return new Promise((ok) => {
     try { draw(true).toBlob(ok, "image/png"); } catch { draw(false).toBlob(ok, "image/png"); }
   });
+}
+
+/** "12 strokes, 2 equations, 1 text note" — the canvas's accessible description. */
+function describe(engine: InkEngine): string {
+  const n: Record<string, number> = {};
+  for (const it of engine.items.values()) n[it.kind] = (n[it.kind] ?? 0) + 1;
+  const names: Record<string, [string, string]> = { stroke: ["stroke", "strokes"], shape: ["shape", "shapes"], text: ["text note", "text notes"], equation: ["equation", "equations"], image: ["image", "images"], plate: ["plate snapshot", "plate snapshots"], bank: ["question card", "question cards"], link: ["link", "links"] };
+  const parts = Object.entries(n).map(([k, c]) => `${c} ${names[k]![c === 1 ? 0 : 1]}`);
+  return parts.length ? parts.join(", ") : "empty";
 }
 
 /**
@@ -41,6 +52,8 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
   const [tool, setTool] = useState<ToolId>("pen");
   const [edit, setEdit] = useState<EditRequest | null>(null);
   const [converting, setConverting] = useState(false);
+  const [skipped, setSkipped] = useState(0);
+  const motion = useStudy((s) => s.learner.settings.motion);
   const [version, setVersion] = useState(0);
   const bump = useCallback(() => setVersion((v) => v + 1), []);
   const pageRef = useRef<Page | null>(null);
@@ -73,7 +86,7 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
     void Promise.all([inkStore().getNotebook(notebookId), inkStore().getPage(pageId)]).then(([nb, p]) => {
       if (!live) return;
       if (!nb || !p) { setMissing(true); return; }
-      setNotebook(nb); setPage(p.page); setMissing(false); setEdit(null);
+      setNotebook(nb); setPage(p.page); setMissing(false); setEdit(null); setSkipped(p.skipped ?? 0);
       engine.setTemplate(p.page.template);
       engine.load(p.items);
       engine.fitToContent();
@@ -91,6 +104,11 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
     if (!engine) return;
     engine.setBitmapProvider(createBitmapProvider(() => engine.renderer.colors(), () => { engine.renderer.invalidate(); engine.requestFrame(); }));
   }, [engine]);
+
+  // Reduced motion (Forma's setting or the system's) drops the predicted-ink tail.
+  useEffect(() => {
+    if (engine) engine.reducedMotion = motion === "reduced" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, [engine, motion]);
 
   // Pasting an image adds it.
   useEffect(() => {
@@ -207,6 +225,7 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
         )}
       </div>
       <StorageBanner />
+      {skipped > 0 && <p className="fb fb-again mx-3" role="status">{skipped} {skipped === 1 ? "item" : "items"} on this page couldn&apos;t be read and {skipped === 1 ? "was" : "were"} left out.</p>}
       {engine && page && (
         <InkToolbar engine={engine} tool={tool} onTool={chooseTool} page={page} onPage={updatePage} version={version} compact={compact}>
           {!compact && <InsertMenu engine={engine} {...(notebook?.conceptId ? { conceptId: notebook.conceptId } : {})} />}
@@ -214,7 +233,7 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
         </InkToolbar>
       )}
       <div className="relative min-h-0 flex-1 overflow-hidden">
-        <InkCanvas onReady={setEngine} label={page ? `${notebook?.title ?? "Notebook"}, ${page.title}` : "Ink page"}
+        <InkCanvas onReady={setEngine} label={page && engine ? `${notebook?.title ?? "Notebook"}, ${page.title}: ${describe(engine)}` : "Ink page"}
           events={{
             onChange: (op) => { if (pageRef.current) void inkStore().applyOp(pageRef.current.id, op); scheduleThumb(); bump(); },
             onView: bump, onSelection: bump, onTool: (t) => setTool(t), onEdit: setEdit,
@@ -222,6 +241,13 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
         <SelectionHandles engine={engine} version={version} onConvert={() => setConverting(true)} />
         {engine && <ConvertDialog engine={engine} open={converting} onClose={() => setConverting(false)} />}
         {engine && <LinkChips engine={engine} version={version} />}
+        {engine && !compact && <Minimap engine={engine} version={version} />}
+        {engine && (
+          <ul className="sr-only" aria-label="Words and equations on this page">
+            {[...engine.items.values()].filter((i) => i.kind === "text" || i.kind === "equation").sort((a, b) => a.transform[5] - b.transform[5] || a.transform[4] - b.transform[4])
+              .map((i) => <li key={i.id}>{i.kind === "text" ? i.text : `Equation: ${i.latex}`}</li>)}
+          </ul>
+        )}
         {engine && edit?.kind === "text" && <TextLayer key={edit.item?.id ?? `${edit.at.x},${edit.at.y}`} engine={engine} request={edit} onDone={() => setEdit(null)} />}
         {engine && edit?.kind === "equation" && <EquationEditor key={edit.item?.id ?? `${edit.at.x},${edit.at.y}`} engine={engine} request={edit} onDone={() => setEdit(null)} />}
       </div>
