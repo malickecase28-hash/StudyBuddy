@@ -26,6 +26,14 @@ describe("question bank", () => {
       "ict2-2425-q1", "ict2-2425-q2", "ict2-2425-q3",
       "hw-2324-2.1", "hw-2324-2.2", "hw-2324-2.3", "hw-2324-2.4", "hw-2324-2.5", "hw-2324-2.6",
       "hw03-2425-3.1a", "hw03-2425-3.1b", "hw03-2425-3.2", "hw03-2425-3.3", "hw04-2425-4.1", "hw04-2425-4.2", "hw04-2425-4.3",
+      "f1415-q1a", "f1415-q1b", "f1415-q2a", "f1415-q2b", "f1415-q3a", "f1415-q3b", "f1415-q4",
+      "f1516-q1a", "f1516-q1b", "f1516-q2a", "f1516-q2b", "f1516-q2c", "f1516-q4a", "f1516-q4b", "f1516-q4c",
+      "f1718-q1a", "f1718-q1b", "f1718-q2", "f1718-q3a", "f1718-q3b", "f1718-q3c", "f1718-q4a", "f1718-q4b",
+      "f1819s1-q4", "f1819s3-q1", "f1819s3-q2c",
+      "f2425r-q1a", "f2425r-q1b", "f2425r-q2a", "f2425r-q2b", "f2425r-q3a", "f2425r-q3b", "f2425r-q4a", "f2425r-q4b", "f2425r-q4c",
+      "drill23-q7", "drill23-q8", "drill23-q10",
+      "drill24-q1", "drill24-q2", "drill24-q3", "drill24-q4", "drill24-q8",
+      "drill25-q1", "drill25-q2", "drill25-q3", "drill25-q4", "drill25-q5", "drill25-q6", "drill25-q7", "drill25-q8", "drill25-q9",
     ];
     expect(questionBank.map((q) => q.id).sort()).toEqual([...want].sort());
   });
