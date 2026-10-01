@@ -1,4 +1,4 @@
-import { EPS0 } from "./constants";
+import { EPS0, MU0 } from "./constants";
 import { add, dot, norm, scale, sub, type Vec3 } from "./vec";
 
 export type BoundaryInput = { D1: Vec3; normal: Vec3; er1: number; er2: number; rhoS?: number; conductor?: boolean };
@@ -32,4 +32,16 @@ export function dielectricBoundary({ D1, normal, er1, er2, rhoS = 0, conductor =
   const D2t = scale(D1t, er2 / er1);
   const D2 = add(scale(n, d2n), D2t);
   return { n, D1n, D1t, D2, E1, E2: scale(D2, 1 / (er2 * EPS0)), P1, P2: scale(D2, 1 - 1 / er2), rhoS, theta1: angle(D1t, d1n), theta2: angle(D2t, d2n) };
+}
+
+/** The magnetic twin of dielectricBoundary (K = 0): B ↔ D, H ↔ E, μr ↔ εr, M = (B/μ₀)(1 − 1/μr). Normal B and tangential H are continuous. */
+export function magneticBoundary({ B1, normal, mur1, mur2 }: { B1: Vec3; normal: Vec3; mur1: number; mur2: number }) {
+  const r = dielectricBoundary({ D1: B1, normal, er1: mur1, er2: mur2 });
+  const k = EPS0 / MU0;
+  return {
+    n: r.n, B1n: r.D1n, B1t: r.D1t, B2: r.D2,
+    H1: scale(r.E1, k), H2: scale(r.E2, k),
+    M1: scale(r.P1, 1 / MU0), M2: scale(r.P2, 1 / MU0),
+    theta1: r.theta1, theta2: r.theta2!,
+  };
 }

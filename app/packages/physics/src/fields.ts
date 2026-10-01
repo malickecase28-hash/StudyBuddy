@@ -84,4 +84,13 @@ export const vectorFields: Record<string, VectorField> = {
     F: ([x, y]) => [y, x, 2], div: () => 0, curl: () => [0, 0, 0] }),
   "cont-5x": V({ id: "cont-5x", text: "J = 5x ax", latex: String.raw`\mathbf J=5x\,\mathbf a_x`, system: "cart",
     F: ([x]) => [5 * x, 0, 0], div: () => 5, curl: () => [0, 0, 0] }),
+  "d7.6": V({ id: "d7.6", text: "H = 6xy ax − 3y² ay", latex: String.raw`\mathbf H=6xy\,\mathbf a_x-3y^2\,\mathbf a_y`, system: "cart",
+    F: ([x, y]) => [6 * x * y, -3 * y * y, 0], div: () => 0, curl: ([x]) => [0, 0, -6 * x] }),
+  "d7.5a": V({ id: "d7.5a", text: "H = x²z ay − y²x az", latex: String.raw`\mathbf H=x^2z\,\mathbf a_y-y^2x\,\mathbf a_z`, system: "cart",
+    F: ([x, y, z]) => [0, x * x * z, -y * y * x], div: () => 0, curl: ([x, y, z]) => [-2 * x * y - x * x, y * y, 2 * x * z] }),
+  "f1718-3c": V({ id: "f1718-3c", text: "H = yz(x² + y²) ax − y²xz ay + 4x²y² az", latex: String.raw`\mathbf H=yz(x^2+y^2)\,\mathbf a_x-y^2xz\,\mathbf a_y+4x^2y^2\,\mathbf a_z`, system: "cart",
+    F: ([x, y, z]) => [y * z * (x * x + y * y), -y * y * x * z, 4 * x * x * y * y], div: () => 0,
+    curl: ([x, y, z]) => [x * y * (8 * x + y), y * (x * x - 8 * x * y + y * y), -z * (x * x + 4 * y * y)] }),
+  filament: V({ id: "filament", text: "H = (−y ax + x ay)/(2π(x² + y²)), a 1 A filament on z", latex: String.raw`\mathbf H=\dfrac{-y\,\mathbf a_x+x\,\mathbf a_y}{2\pi(x^2+y^2)}`, system: "cart",
+    F: ([x, y]) => [-y / (2 * Math.PI * (x * x + y * y)), x / (2 * Math.PI * (x * x + y * y)), 0], div: () => 0, curl: () => [0, 0, 0] }),
 };
