@@ -10,6 +10,7 @@ Forma is a study app with exact physics, living "plates" (animated, interactive 
   - `@forma/ui` — primitives, tokens
   - `@forma/course-em1` — EMag content
   - `apps/web` — Next.js 16 app
+- `app/supabase/` — Commons schema and setup (optional; Commons is off without its env)
 - `docs/superpowers/specs/` — design specs (the authority)
 - `docs/superpowers/plans/` — implementation plans (what you execute)
 - `docs/superpowers/resources/emag-catalog.md` — every course source by id
