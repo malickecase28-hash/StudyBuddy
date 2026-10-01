@@ -32,6 +32,9 @@ importers:
       '@forma/engine':
         specifier: workspace:*
         version: link:../../packages/engine
+      '@forma/ink':
+        specifier: workspace:*
+        version: link:../../packages/ink
       '@forma/physics':
         specifier: workspace:*
         version: link:../../packages/physics
@@ -138,6 +141,15 @@ importers:
       '@cortex-js/compute-engine':
         specifier: 0.135.0
         version: 0.135.0
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+
+  packages/ink:
+    dependencies:
+      perfect-freehand:
+        specifier: ^1.2.3
+        version: 1.2.3
       zod:
         specifier: ^4.6.5
         version: 4.6.5
@@ -1384,6 +1396,9 @@ packages:
   path-key@3.1.1:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
     engines: {node: '>=8'}
+
+  perfect-freehand@1.2.3:
+    resolution: {integrity: sha512-bHZSfqDHGNlPpgH2yxXgPHlQSPpEbo+qg7li0M78J9vNAi2yjwLeA4x79BEQhX44lEWpCLSFCeRZwpw0niiXPA==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -2653,6 +2668,8 @@ snapshots:
   obug@2.2.1: {}
 
   path-key@3.1.1: {}
+
+  perfect-freehand@1.2.3: {}
 
   picocolors@1.1.1: {}
 
