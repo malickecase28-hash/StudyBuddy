@@ -23,7 +23,7 @@ export default function NotebookPage() {
       <div>
         <p className="label">Notebook</p>
         <h1 className="text-2xl font-semibold">Your notebook</h1>
-        <Link href="/paper" className="btn mt-3 text-sm">✎ Open working paper</Link>
+        <Link href="/ink" className="btn mt-3 text-sm">✎ Open Ink notebooks</Link>
       </div>
       <form
         className="flex gap-2"
@@ -56,7 +56,7 @@ export default function NotebookPage() {
               </button>
             </div>
             <p className="font-medium">{n.title}</p>
-            {n.kind === "equation" ? <Tex latex={n.body} display /> : n.kind === "drawing" ? <><img src={`data:image/svg+xml,${encodeURIComponent(n.body)}`} alt={`Drawing: ${n.title}`} className="max-h-72 w-full rounded-lg border border-line bg-white object-contain" /><p className="read text-soft">{n.text}</p><Link className="text-sm underline" href={`/paper?note=${encodeURIComponent(n.id)}`}>Open in working paper</Link></> : <p className="read text-soft">{n.body}</p>}
+            {n.kind === "equation" ? <Tex latex={n.body} display /> : n.kind === "drawing" ? <><img src={`data:image/svg+xml,${encodeURIComponent(n.body)}`} alt={`Drawing: ${n.title}`} className="max-h-72 w-full rounded-lg border border-line bg-white object-contain" /><p className="read text-soft">{n.text}</p><Link className="text-sm underline" href={`/paper?note=${encodeURIComponent(n.id)}`}>Open in Ink</Link></> : <p className="read text-soft">{n.body}</p>}
             {n.kind === "sim-state" && n.simState?.scene === "gauss-lab" && (
               <>
                 <button className="btn text-sm" onClick={() => setOpen(open === n.id ? null : n.id)}>

@@ -15,6 +15,7 @@ export function InkCanvas({ onReady, events, className = "", label = "Ink page" 
       onSelection: (ids) => ev.current?.onSelection?.(ids),
       onView: () => ev.current?.onView?.(),
       onTool: (t) => ev.current?.onTool?.(t),
+      onEdit: (r) => ev.current?.onEdit?.(r),
     });
     (window as unknown as { __ink?: InkEngine }).__ink = engine; // handle for the browser walkthrough and debugging
     onReady(engine);

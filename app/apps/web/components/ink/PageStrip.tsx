@@ -1,7 +1,6 @@
 "use client";
 
 import type { Notebook, Template } from "@forma/ink";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { inkStore } from "@/lib/ink-store";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -17,8 +16,8 @@ function PageThumb({ pageId, version }: { pageId: string; version: number }) {
 }
 
 /** The notebook's pages: open, add with a template, drag to reorder, delete. */
-export function PageStrip({ notebook, pageId, version, onAdd, onReorder, onDelete }: {
-  notebook: Notebook; pageId: string; version: number;
+export function PageStrip({ notebook, pageId, version, onOpen, onAdd, onReorder, onDelete }: {
+  notebook: Notebook; pageId: string; version: number; onOpen: (id: string) => void;
   onAdd: (t: Template) => void; onReorder: (ids: string[]) => void; onDelete: (id: string) => void;
 }) {
   const [template, setTemplate] = useState<Template>("grid");
@@ -37,10 +36,10 @@ export function PageStrip({ notebook, pageId, version, onAdd, onReorder, onDelet
         {ids.map((id, i) => (
           <li key={id} draggable onDragStart={() => setDrag(id)} onDragEnd={() => setDrag(null)} onDragOver={(e) => e.preventDefault()} onDrop={() => drop(id)}
             className={`group relative rounded p-0.5 ${id === pageId ? "outline outline-2 outline-[var(--field)]" : ""}`}>
-            <Link href={`/ink/${notebook.id}/${id}`} aria-label={`Page ${i + 1}`} aria-current={id === pageId ? "page" : undefined}>
+            <button onClick={() => onOpen(id)} aria-label={`Page ${i + 1}`} aria-current={id === pageId ? "page" : undefined}>
               <PageThumb pageId={id} version={id === pageId ? version : 0} />
               <span className="label block text-center">{i + 1}</span>
-            </Link>
+            </button>
             {ids.length > 1 && (
               <button className="absolute right-0 top-0 hidden rounded bg-[var(--paper)] px-1 text-xs group-hover:block group-focus-within:block" aria-label={`Delete page ${i + 1}`} onClick={() => setDoomed(id)}>×</button>
             )}

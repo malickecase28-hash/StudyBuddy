@@ -1,8 +1,8 @@
 import { Camera } from "./camera";
-import { itemBounds, mul, unionRect } from "./geometry";
+import { distToItem, itemBounds, mul, unionRect } from "./geometry";
 import { History } from "./history";
 import { InputRouter, type Gesture, type PointerSample } from "./input";
-import { DEFAULT_STYLE, ItemSchema, newId, type Affine, type ColorToken, type InkPoint, type Item, type StrokeItem, type Style, type Template } from "./model";
+import { DEFAULT_STYLE, ItemSchema, newId, type Affine, type ColorToken, type InkPoint, type Item, type StrokeItem, type Style, type Template, type Vec } from "./model";
 import type { Op } from "./ops";
 import { Renderer, type BitmapProvider } from "./render";
 import { GridIndex } from "./spatial";
@@ -12,10 +12,13 @@ import { makeLasso } from "./tools/lasso";
 import { makePen } from "./tools/pen";
 import { makeRulerTool } from "./tools/ruler";
 import { makeShape } from "./tools/shape";
+import { makeEditTool } from "./tools/text";
 import type { Tool, ToolFactory, WorldSample } from "./tools/types";
 
 export type ToolId = "pen" | "highlighter" | "eraser" | "precise-eraser" | "lasso" | "shape" | "ruler" | "text" | "equation" | "hand";
-export type EngineEvents = { onChange?: (op: Op, origin: "do" | "undo" | "redo") => void; onSelection?: (ids: string[]) => void; onView?: () => void; onTool?: (t: ToolId) => void };
+/** A request to open the text or equation editor: on an existing item, or new at a world point. */
+export type EditRequest = { kind: "text" | "equation"; at: Vec; item?: Item };
+export type EngineEvents = { onChange?: (op: Op, origin: "do" | "undo" | "redo") => void; onSelection?: (ids: string[]) => void; onView?: () => void; onTool?: (t: ToolId) => void; onEdit?: (r: EditRequest) => void };
 /** A ruler that can straighten strokes near its edge (Task 4 provides it). */
 export type RulerLike = { snapper(): ((pts: InkPoint[]) => InkPoint[]) | null; drawLive(ctx: CanvasRenderingContext2D): void };
 
@@ -46,7 +49,8 @@ export class InkEngine {
 
   constructor(readonly host: HTMLElement, private ev: EngineEvents = {}) {
     this.history = new History(this.items, (op, origin) => this.changed(op, origin));
-    this.renderer = new Renderer(host, () => this.requestFrame());
+    // When the host resizes, keep the world point at its centre where it was.
+    this.renderer = new Renderer(host, (dw, dh) => { this.camera.pan(dw / 2, dh / 2); this.requestFrame(); });
     this.reducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.registerTool("pen", makePen("pen"));
     this.registerTool("highlighter", makePen("highlighter"));
@@ -56,6 +60,8 @@ export class InkEngine {
     this.registerTool("lasso", makeLasso);
     this.registerTool("shape", makeShape);
     this.registerTool("ruler", makeRulerTool);
+    this.registerTool("text", makeEditTool("text"));
+    this.registerTool("equation", makeEditTool("equation"));
     this.input = new InputRouter(host, {
       onDown: (s) => this.pointer("down", s),
       onMove: (ss, pr) => this.active?.move(ss.map((s) => this.world(s)), pr.map((s) => this.world(s))),
@@ -149,6 +155,18 @@ export class InkEngine {
     this.renderer.invalidate();
     this.requestFrame();
   }
+
+  /** Topmost item within `r` world units of p that passes `filter`. */
+  itemAt(p: Vec, r = 0, filter: (it: Item) => boolean = () => true): Item | undefined {
+    let best: Item | undefined;
+    for (const id of this.index.query({ x: p.x - r, y: p.y - r, w: 2 * r, h: 2 * r })) {
+      const it = this.items.get(id);
+      if (it && filter(it) && distToItem(p, it) <= r && (!best || it.z > best.z)) best = it;
+    }
+    return best;
+  }
+  /** Ask the host to open an editor (text and equation tools call this). */
+  requestEdit(r: EditRequest): void { this.ev.onEdit?.(r); }
 
   /** Show items mid-gesture without history; the gesture's final op (or a restore) follows. */
   preview(items: Item[]): void {

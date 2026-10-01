@@ -38,7 +38,8 @@ export function NotebookGrid() {
   const [doomed, setDoomed] = useState<Notebook | null>(null);
 
   const refresh = () => listNotebooksEnsuringScratch().then(setList);
-  useEffect(() => { void refresh(); }, []);
+  // First visit: bring old working-paper pages across, then list.
+  useEffect(() => { void import("@/lib/ink-migrate").then((m) => m.migrateWorkingPaper()).then(() => refresh()); }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();

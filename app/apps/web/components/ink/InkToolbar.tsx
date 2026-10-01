@@ -18,13 +18,13 @@ export const SIZES = [{ label: "Fine", size: 1.5 }, { label: "Medium", size: 3 }
 const TEMPLATES: [Template, string][] = [["blank", "Blank"], ["grid", "Grid"], ["lined", "Lined"], ["dot", "Dot"], ["derivation", "Derivation"]];
 
 /** Tools, size, colour, history, zoom, template and frame for one page. */
-export function InkToolbar({ engine, tool, onTool, page, onPage, version }: {
-  engine: InkEngine; tool: ToolId; onTool: (t: ToolId) => void; page: Page; onPage: (p: Partial<Page>) => void; version: number;
+export function InkToolbar({ engine, tool, onTool, page, onPage, version, compact = false, children }: {
+  engine: InkEngine; tool: ToolId; onTool: (t: ToolId) => void; page: Page; onPage: (p: Partial<Page>) => void; version: number; compact?: boolean; children?: React.ReactNode;
 }) {
   void version;
   const style = engine.style;
   return (
-    <div role="toolbar" aria-label="Ink tools" className="flex flex-wrap items-center gap-1 border-b border-[var(--grid)] bg-[var(--paper)] px-2 py-1.5 text-sm">
+    <div role="toolbar" aria-label="Ink tools" className={`flex min-w-0 ${compact ? "flex-nowrap overflow-x-auto" : "flex-wrap"} items-center gap-1 border-b border-[var(--grid)] bg-[var(--paper)] px-2 py-1.5 text-sm [&>*]:shrink-0`}>
       {TOOLS.filter((t) => engine.hasTool(t.id)).map((t) => (
         <button key={t.id} className={`btn ${tool === t.id ? "btn-primary" : ""}`} aria-pressed={tool === t.id} title={t.key ? `${t.label} (${t.key})` : t.label} onClick={() => onTool(t.id)}>{t.label}</button>
       ))}
@@ -46,7 +46,9 @@ export function InkToolbar({ engine, tool, onTool, page, onPage, version }: {
       <button className="btn tabular-nums" onClick={() => engine.setZoom(1)} title="Zoom to 100%" aria-label={`Zoom ${Math.round(engine.camera.zoom * 100)}%, reset to 100%`}>{Math.round(engine.camera.zoom * 100)}%</button>
       <button className="btn" onClick={() => engine.fitToContent()} title="Fit (Ctrl+0)">Fit</button>
       <button className={`btn ${engine.ruler ? "btn-primary" : ""}`} aria-pressed={!!engine.ruler} onClick={() => { toggleRuler(engine); onPage({}); }}>Show ruler</button>
-      <label className="ml-auto flex items-center gap-1">
+      <span className="ml-auto" />
+      {children}
+      <label className="flex items-center gap-1">
         <span className="label">Template</span>
         <select className="input py-1" value={page.template} onChange={(e) => onPage({ template: e.target.value as Template })}>
           {TEMPLATES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}

@@ -8,7 +8,7 @@ import { conceptHref, formulaSheet, getConcept, lessonForPlate } from "@/lib/cou
 import { useStudy } from "@/lib/store";
 import { TOOLS } from "@/lib/tools";
 import { useUi } from "@/lib/ui";
-import { WorkingPaper } from "../paper/WorkingPaper";
+import { ConceptInk } from "../ink/InkEditor";
 import { Calculator } from "./Calculator";
 
 export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string | null }) {
@@ -16,7 +16,7 @@ export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string 
   const concept = conceptId ? getConcept(conceptId) : undefined;
   switch (tool) {
     case "paper":
-      return <WorkingPaper compact {...(conceptId ? { conceptId } : {})} />;
+      return <ConceptInk conceptId={conceptId && getConcept(conceptId) ? conceptId : "em1.electrostatics.gauss-law"} />;
     case "calculator":
       return <Calculator />;
     case "formulas":

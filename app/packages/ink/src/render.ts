@@ -6,7 +6,7 @@ import type { GridIndex } from "./spatial";
 
 export type Colors = Record<ColorToken | "paper" | "paper-2" | "grid", string>;
 /** Supplies a raster for box items (text, equation, image, plate, bank, link); null = not ready yet. */
-export type BitmapProvider = (it: Item) => CanvasImageSource | null;
+export type BitmapProvider = (it: Item, zoom: number) => CanvasImageSource | null;
 
 const pathCache = new WeakMap<object, Path2D>();
 const strokePath = (s: StrokeItem) => {
@@ -48,7 +48,7 @@ export function drawItem(ctx: CanvasRenderingContext2D, it: Item, colors: Colors
     drawShape(ctx, it, col);
   } else {
     const box = localBox(it);
-    const img = bitmap?.(it) ?? null;
+    const img = bitmap?.(it, zoom) ?? null;
     if (img) ctx.drawImage(img, box.x, box.y, box.w, box.h);
     else {
       ctx.strokeStyle = colors.graphite;
@@ -118,7 +118,7 @@ export class Renderer {
   private colorsCache: Colors | null = null;
   private ro: ResizeObserver;
 
-  constructor(private host: HTMLElement, private onResize: () => void) {
+  constructor(private host: HTMLElement, private onResize: (dw: number, dh: number) => void) {
     const mk = (name: string) => {
       const c = document.createElement("canvas");
       c.dataset.layer = name;
@@ -136,10 +136,11 @@ export class Renderer {
   private resize() {
     const r = this.host.getBoundingClientRect();
     this.dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const w0 = this.w, h0 = this.h;
     this.w = Math.max(1, r.width); this.h = Math.max(1, r.height);
     for (const c of [this.bg, this.items, this.live]) { c.width = Math.round(this.w * this.dpr); c.height = Math.round(this.h * this.dpr); }
     this.dirty = true; this.camKey = "";
-    this.onResize();
+    this.onResize(w0 ? this.w - w0 : 0, h0 ? this.h - h0 : 0);
   }
 
   /** Theme tokens resolved from CSS; refresh on theme change. */
