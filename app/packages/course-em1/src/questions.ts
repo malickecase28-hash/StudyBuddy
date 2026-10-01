@@ -33,6 +33,8 @@ const K = {
   diel: "em1.electrostatics.dielectrics",
   cap: "em1.electrostatics.capacitance",
   amp: "em1.magnetostatics.ampere",
+  mat: "em1.magnetostatics.materials",
+  ind: "em1.magnetostatics.inductance",
   dyn: "em1.dynamic.faraday",
   wave: "em1.waves.plane-waves",
 } as const;
