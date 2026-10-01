@@ -80,6 +80,31 @@ function drawShape(ctx: CanvasRenderingContext2D, s: ShapeItem, col: string) {
 /** Items in paint order: highlighters beneath everything else, then by z. */
 export const paintOrder = (items: Item[]) => [...items].sort((a, b) => ((a.kind === "stroke" && a.tool === "highlighter" ? 0 : 1) - (b.kind === "stroke" && b.tool === "highlighter" ? 0 : 1)) || a.z - b.z);
 
+/**
+ * Draws items fitted into a w×h canvas (thumbnails, PNG export). `rect` defaults to the items' bounds;
+ * `background` fills first (omit for transparency).
+ */
+export function renderToCanvas(items: Item[], colors: Colors, w: number, h: number, opts: { rect?: { x: number; y: number; w: number; h: number }; pad?: number; background?: string; bitmap?: BitmapProvider } = {}): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  const ctx = c.getContext("2d")!;
+  if (opts.background) { ctx.fillStyle = opts.background; ctx.fillRect(0, 0, w, h); }
+  const r = opts.rect ?? items.map(itemBounds).reduce<{ x: number; y: number; w: number; h: number } | null>((a, b) => {
+    if (!a) return b;
+    const x = Math.min(a.x, b.x), y = Math.min(a.y, b.y);
+    return { x, y, w: Math.max(a.x + a.w, b.x + b.w) - x, h: Math.max(a.y + a.h, b.y + b.h) - y };
+  }, null);
+  if (!r) return c;
+  const pad = opts.pad ?? 8;
+  const k = Math.min((w - 2 * pad) / Math.max(r.w, 1), (h - 2 * pad) / Math.max(r.h, 1));
+  ctx.setTransform(k, 0, 0, k, (w - r.w * k) / 2 - r.x * k, (h - r.h * k) / 2 - r.y * k);
+  for (const it of paintOrder(items)) drawItem(ctx, it, colors, opts.bitmap, k);
+  return c;
+}
+
+/** A4 at 96 dpi, in world units (CSS px). */
+export const A4 = { w: 794, h: 1123 };
+
 /** Three stacked canvases: template background, committed items (redrawn only when dirty), live overlay (every frame). */
 export class Renderer {
   readonly bg: HTMLCanvasElement;

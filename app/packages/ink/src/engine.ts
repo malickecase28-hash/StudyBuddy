@@ -78,6 +78,7 @@ export class InkEngine {
   }
 
   registerTool(id: ToolId, f: ToolFactory): void { this.factories.set(id, f); this.tools.delete(id); }
+  hasTool(id: ToolId): boolean { return this.factories.has(id); }
   private tool(id: ToolId): Tool | null {
     let t = this.tools.get(id);
     if (!t) { const f = this.factories.get(id); if (!f) return null; this.tools.set(id, (t = f(this))); }
