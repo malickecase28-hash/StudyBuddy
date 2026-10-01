@@ -684,5 +684,86 @@ const capCoaxT = defineTemplate<{ a: number; b: number; er: number }>({
   tags: { concepts: [CAP], misconceptions: ["CAP_LN"], difficulty: 2 },
 });
 
-export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD, vPoint, workMove, currentDensity, ohmWire, continuityRate, bndTangent, bndAngle, capPlates, capEnergy, capCoaxT];
+const AMP = "em1.magnetostatics.ampere";
+const MAT = "em1.magnetostatics.materials";
+const IND = "em1.magnetostatics.inductance";
+const MU = 4e-7 * Math.PI;
+
+const bsFilament = defineTemplate<{ I: number; d: number }>({
+  id: "bs-filament",
+  params: { I: { min: 1, max: 20, step: 1 }, d: { min: 5, max: 50, step: 5 } },
+  prompt: (p) => `An infinite straight filament carries ${p.I} A. Find |H| at ${p.d} cm from it, in A/m.`,
+  solve: (p) => ({
+    answer: { value: sig(p.I / (2 * Math.PI * (p.d / 100))), unit: "A/m" },
+    distractors: [{ value: sig(p.I / (4 * Math.PI * (p.d / 100))), unit: "A/m", errorClass: "conceptual", tag: "H_B_UNITS", feedback: "That's half: an infinite filament gives I/(2πρ), not I/(4πρ)." }],
+  }),
+  hints: () => ["H = I/(2πρ), circling the wire.", "ρ in metres.", "No μ: H doesn't depend on the medium."],
+  worked: (p) => [{ text: `H = ${p.I}/(2π × ${p.d / 100}) = ${sig(p.I / (2 * Math.PI * (p.d / 100)))} A/m.` }],
+  dimension: "computational",
+  tags: { concepts: [AMP], misconceptions: ["H_B_UNITS"], difficulty: 1 },
+});
+
+const ampInside = defineTemplate<{ I: number; a: number; k: number }>({
+  id: "amp-inside",
+  params: { I: { min: 5, max: 50, step: 5 }, a: { min: 2, max: 10, step: 1 }, k: { min: 1, max: 9, step: 1 } },
+  prompt: (p) => `A solid round conductor of radius ${p.a} mm carries ${p.I} A, uniformly spread. Find |H| inside it at ρ = ${sig((p.a * p.k) / 10)} mm, in A/m.`,
+  solve: (p) => {
+    const a = p.a / 1000, r = (p.a * p.k) / 10000;
+    return {
+      answer: { value: sig((p.I * r) / (2 * Math.PI * a * a)), unit: "A/m" },
+      distractors: [{ value: sig(p.I / (2 * Math.PI * r)), unit: "A/m", errorClass: "conceptual", tag: "AMP_ENC_INSIDE", feedback: "That uses the whole current. Inside, only the fraction (ρ/a)² is enclosed." }],
+    };
+  },
+  hints: () => ["Ampère: H · 2πρ = I_enc.", "Uniform current: I_enc = I(ρ/a)².", "So H = Iρ/(2πa²)."],
+  worked: (p) => [{ text: `I_enc = ${p.I} × (${p.k / 10})² A; H = Iρ/(2πa²) = ${sig((p.I * ((p.a * p.k) / 10000)) / (2 * Math.PI * (p.a / 1000) ** 2))} A/m.` }],
+  dimension: "computational",
+  tags: { concepts: [AMP], misconceptions: ["AMP_ENC_INSIDE"], difficulty: 2 },
+});
+
+const magBndNormal = defineTemplate<{ m1: number; m2: number; Hz: number }>({
+  id: "mag-bnd-normal",
+  params: { m1: { min: 1, max: 5, step: 1 }, m2: { min: 6, max: 12, step: 1 }, Hz: { min: 1, max: 9, step: 1 } },
+  prompt: (p) => `The plane z = 0 separates region 1 (μr1 = ${p.m1}) from region 2 (μr2 = ${p.m2}), with no surface current. In region 1, H₁z = ${p.Hz} A/m at the boundary. Find H₂z.`,
+  solve: (p) => ({
+    answer: { value: sig((p.m1 * p.Hz) / p.m2), unit: "A/m" },
+    distractors: [{ value: p.Hz, unit: "A/m", errorClass: "conceptual", tag: "MBND_SWAP", feedback: "Normal H isn't continuous; normal B is. So μ1H₁z = μ2H₂z." }],
+  }),
+  hints: () => ["z is normal to z = 0.", "Normal B is continuous: μ1H₁z = μ2H₂z.", "H₂z = (μr1/μr2)H₁z."],
+  worked: (p) => [{ text: `B₂z = B₁z, so H₂z = (${p.m1}/${p.m2}) × ${p.Hz} = ${sig((p.m1 * p.Hz) / p.m2)} A/m.` }],
+  dimension: "computational",
+  tags: { concepts: [MAT], misconceptions: ["MBND_SWAP"], difficulty: 1 },
+});
+
+const indCoaxT = defineTemplate<{ a: number; b: number; mur: number }>({
+  id: "ind-coax",
+  params: { a: { min: 0.5, max: 2, step: 0.5 }, b: { min: 3, max: 10, step: 1 }, mur: { min: 1, max: 5, step: 1 } },
+  prompt: (p) => `A coax has inner radius ${p.a} mm, outer radius ${p.b} mm and μr = ${p.mur} between the conductors. Find its external inductance per metre, in µH/m.`,
+  solve: (p) => ({
+    answer: { value: sig(((p.mur * MU) / (2 * Math.PI)) * Math.log(p.b / p.a) / 1e-6), unit: "µH/m" },
+    distractors: [{ value: sig(((p.mur * MU) / (2 * Math.PI)) * Math.log10(p.b / p.a) / 1e-6), unit: "µH/m", errorClass: "conceptual", tag: "IND_LN", feedback: "That's log₁₀. The flux integral ∫dρ/ρ gives the natural log." }],
+  }),
+  hints: () => ["L' = (μ/2π) ln(b/a).", "μ/2π = μr × 2 × 10⁻⁷ H/m.", "Only b/a matters."],
+  worked: (p) => [{ text: `L' = ${p.mur} × 2 × 10⁻⁷ × ln(${p.b}/${p.a}) = ${sig(((p.mur * MU) / (2 * Math.PI)) * Math.log(p.b / p.a) / 1e-6)} µH/m.` }],
+  dimension: "computational",
+  tags: { concepts: [IND], misconceptions: ["IND_LN"], difficulty: 1 },
+});
+
+const indSolenoidT = defineTemplate<{ N: number; len: number; r: number }>({
+  id: "ind-solenoid",
+  params: { N: { min: 100, max: 1000, step: 100 }, len: { min: 10, max: 50, step: 10 }, r: { min: 0.5, max: 2, step: 0.5 } },
+  prompt: (p) => `An air-cored solenoid has ${p.N} turns, length ${p.len} cm and radius ${p.r} cm. Find L, in mH.`,
+  solve: (p) => {
+    const L = (MU * p.N * p.N * Math.PI * (p.r / 100) ** 2) / (p.len / 100);
+    return {
+      answer: { value: sig(L / 1e-3), unit: "mH" },
+      distractors: [{ value: sig((L / p.N) / 1e-3), unit: "mH", errorClass: "conceptual", tag: "IND_TURNS", feedback: "L grows as N²: N turns make the field, and the flux links all N turns." }],
+    };
+  },
+  hints: () => ["L = μN²S/ℓ.", "S = πr², with r in metres.", "N appears squared."],
+  worked: (p) => [{ text: `L = 4π × 10⁻⁷ × ${p.N}² × π(${p.r / 100})² / ${p.len / 100} = ${sig((MU * p.N * p.N * Math.PI * (p.r / 100) ** 2) / (p.len / 100) / 1e-3)} mH.` }],
+  dimension: "computational",
+  tags: { concepts: [IND], misconceptions: ["IND_TURNS"], difficulty: 1 },
+});
+
+export const templates: TemplateDef<any>[] = [q06, q08e, q08q, q09a, f2425, fluxFlat, emWavelength, unitSiLength, vecSumMag, vecDistanceMm, vecAngle, coordPhi, sphPatchArea, gradComp, gradCylPhi, divCart, curlZ, coulombMag, ePoint, eLine, chargeLinePoly, fluxPatch, ballD, rhovFromD, vPoint, workMove, currentDensity, ohmWire, continuityRate, bndTangent, bndAngle, capPlates, capEnergy, capCoaxT, bsFilament, ampInside, magBndNormal, indCoaxT, indSolenoidT];
 export const templatesFor = (conceptId: string) => templates.filter((t) => t.tags.concepts.includes(conceptId));

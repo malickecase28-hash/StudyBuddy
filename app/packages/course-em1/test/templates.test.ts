@@ -66,6 +66,11 @@ const truth: Record<string, (p: Record<string, number>) => number> = {
   "cap-parallel": (p) => (p.er! * EPS0 * p.S! * 1e-4) / (p.d! * 1e-3),
   "cap-energy": (p) => 0.5 * p.C! * 1e-9 * p.V! ** 2,
   "cap-coax": (p) => (2 * Math.PI * p.er! * EPS0) / Math.log(p.b! / p.a!),
+  "bs-filament": (p) => p.I! / (2 * Math.PI * (p.d! / 100)),
+  "amp-inside": (p) => (p.I! * ((p.a! * p.k!) / 10000)) / (2 * Math.PI * (p.a! / 1000) ** 2),
+  "mag-bnd-normal": (p) => (p.m1! * p.Hz!) / p.m2!,
+  "ind-coax": (p) => ((p.mur! * 4e-7 * Math.PI) / (2 * Math.PI)) * Math.log(p.b! / p.a!),
+  "ind-solenoid": (p) => (4e-7 * Math.PI * p.N! * p.N! * Math.PI * (p.r! / 100) ** 2) / (p.len! / 100),
 };
 
 describe("question templates", () => {

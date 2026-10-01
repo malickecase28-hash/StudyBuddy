@@ -24,6 +24,7 @@ const BASE: Record<string, string> = {
   "A/m": "A/m",
   Wb: "Wb",
   H: "H",
+  "H/m": "H/m",
   "A/m^2": "A/m^2",
   "Ω": "Ω",
   ohm: "Ω",
