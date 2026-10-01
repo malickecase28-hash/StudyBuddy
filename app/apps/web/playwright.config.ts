@@ -18,6 +18,7 @@ export default defineConfig({
   webServer: {
     command: "pnpm build && pnpm next start -p 3101",
     url: "http://localhost:3101",
+    env: { NEXT_PUBLIC_COMMONS: "off" },
     reuseExistingServer: true,
     timeout: 300_000,
   },

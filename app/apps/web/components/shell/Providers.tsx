@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { useMeSync } from "@/lib/commons/client";
 import { useStudy } from "@/lib/store";
 
 /** Hydrates the learner store and mirrors cognitive-environment settings onto <html>. */
 export function Providers({ children }: { children: ReactNode }) {
+  useMeSync();
   const hydrate = useStudy((s) => s.hydrate);
   const settings = useStudy((s) => s.learner.settings);
   useEffect(() => void hydrate(), [hydrate]);

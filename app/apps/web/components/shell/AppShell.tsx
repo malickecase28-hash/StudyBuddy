@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { conceptHref, course, getConcept } from "@/lib/course";
+import { commonsEnabled, useMe } from "@/lib/commons/client";
 import { useStudy } from "@/lib/store";
 import { useUi } from "@/lib/ui";
 import { CommandPalette, useShortcuts } from "./CommandPalette";
@@ -81,10 +82,17 @@ function TopBar() {
           Search <kbd className="label">{shortcut}</kbd>
         </button>
         <SettingsDialog />
-        <span className="label" title="Accounts arrive with sub-project 5">Guest</span>
+        <AccountLink />
       </div>
     </header>
   );
+}
+
+/** Off: the old Guest label, unchanged (visual baselines). On: a link into Commons. */
+function AccountLink() {
+  const name = useMe((s) => s.name);
+  if (!commonsEnabled) return <span className="label" title="Accounts arrive with sub-project 5">Guest</span>;
+  return <Link className="btn" href="/commons">{name ?? "Commons"}</Link>;
 }
 
 /** "Ctrl K" everywhere, "⌘K" on Apple devices (decided after mount, so server and client HTML match). */
