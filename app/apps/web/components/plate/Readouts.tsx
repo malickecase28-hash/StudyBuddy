@@ -25,6 +25,7 @@ const LABEL: Record<string, string> = {
   H1x: "H₁ x", H1y: "H₁ y", H1z: "H₁ z", H2x: "H₂ x", H2y: "H₂ y", H2z: "H₂ z",
   B1x: "B₁ x", B1y: "B₁ y", B1z: "B₁ z", B2x: "B₂ x", B2y: "B₂ y", B2z: "B₂ z",
   M1x: "M₁ x", M1y: "M₁ y", M1z: "M₁ z", M2x: "M₂ x", M2y: "M₂ y", M2z: "M₂ z",
+  I: "Current I", emf: "emf", emfPeak: "Peak emf", Phi: "Flux Φ", alpha: "α", beta: "β", u: "Phase velocity u", eta: "|η|", thetaEta: "θη", lossTan: "Loss tangent σ/ωε", delta: "Skin depth δ", Eamp: "E amplitude here", Ewave: "E(z, t)", Hwave: "H(z, t)", Pave: "Average power density",
   H1mag: "|H₁|", H2mag: "|H₂|", B1mag: "|B₁|", B2mag: "|B₂|", L: "Inductance L", link: "Flux linkage LI",
   nx: "n̂ₓ", ny: "n̂ᵧ", nz: "n̂z", D1nx: "D₁ normal, x", D1ny: "D₁ normal, y", D1nz: "D₁ normal, z", D1tx: "D₁ tangential, x", D1ty: "D₁ tangential, y", D1tz: "D₁ tangential, z",
   D1x: "D₁ x", D1y: "D₁ y", D1z: "D₁ z", D2x: "D₂ x", D2y: "D₂ y", D2z: "D₂ z", E1x: "E₁ x", E1y: "E₁ y", E1z: "E₁ z", E2x: "E₂ x", E2y: "E₂ y", E2z: "E₂ z",
@@ -33,6 +34,7 @@ const LABEL: Record<string, string> = {
 };
 const SYS: Record<string, [string, string, string]> = { cart: ["x", "y", "z"], cyl: ["ρ", "φ", "z"], sph: ["r", "θ", "φ"] };
 const TONE: Record<string, "flux" | "charge" | "surface" | "field"> = {
+  Ewave: "field", Eamp: "field", Hwave: "flux", Pave: "charge", emf: "charge",
   flux: "flux", enclosed: "charge", area: "surface", probeD: "flux", probeE: "field", outerQ: "charge", eMid: "field", dMid: "flux", total: "charge", Fmag: "charge", Emag: "field",
   Hmag: "field", Hphi: "field", Bmag: "flux", Ienc: "charge", H2x: "field", H2y: "field", H2z: "field", B2x: "flux", B2y: "flux", B2z: "flux", L: "surface",
   dPsi: "flux", Dn: "flux", shadow: "surface", theta: "surface", magnitude: "flux", sum: "flux", vmag: "field", Q: "charge", patchFlux: "flux", Dmag: "flux",
@@ -52,6 +54,7 @@ export function PlateReadouts({ plate, frame, hidden = [] }: { plate: PlateDef; 
         if (inst.component === "conductor" && name === "E") label = "|E| in the conductor";
         if (inst.component === "capacitor" && name === "W") label = "Stored energy W";
         if (inst.component === "inductor" && name === "W") label = "Stored energy W";
+        if (inst.component === "emf-loop" && name === "I") label = "Induced current";
         if (inst.component === "coulomb-force" && name === "R") label = "Separation R";
         if (inst.component === "scalar-slice" || inst.component === "vector-slice") {
           const sys = SYS[String(ev.model.system)] ?? SYS.cart!;

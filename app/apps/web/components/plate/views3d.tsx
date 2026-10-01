@@ -100,6 +100,38 @@ export function CurrentsView({ ev }: ViewProps) {
   );
 }
 
+export function PlaneWaveView({ ev }: ViewProps) {
+  const p = ev.params as { f: number; phi: number; z: number; t: number; drawScale: number };
+  const m = ev.model as { alpha: number; beta: number; lambda: number; Eamp: number };
+  const points = (axis: "E" | "H" | "envelope", sign = 1) => Array.from({ length: 96 }, (_, i) => {
+    const s = (2 * m.lambda * i) / 95;
+    const y = (s / m.lambda) * p.drawScale;
+    const decay = Math.exp(-m.alpha * s);
+    const phase = 2 * Math.PI * p.f * p.t - m.beta * s + (p.phi * Math.PI) / 180;
+    const value = axis === "E" ? 0.8 * decay / Math.exp(-m.alpha * p.z) * Math.cos(phase) : axis === "H" ? 0.8 * decay * Math.cos(phase - ((ev.model.thetaEta as number) * Math.PI) / 180) : sign * 0.8 * decay;
+    const xyz: Vec3 = axis === "H" ? [value, y, 0] : [0, y, value];
+    return toSvg3(xyz).join(",");
+  }).join(" ");
+  const probe = (p.z / m.lambda) * p.drawScale;
+  const [x1, y1] = toSvg3([0, probe, -0.95]);
+  const [x2, y2] = toSvg3([0, probe, 0.95]);
+  const decay = m.alpha > 0;
+  return (
+    <g role="img" aria-label={`Plane wave, f = ${p.f.toPrecision(3)} Hz, wavelength ${m.lambda.toPrecision(3)} m${decay ? ", decaying" : ""}`}>
+      {decay && <>
+        <polyline points={points("envelope", 1)} fill="none" stroke="var(--graphite)" strokeDasharray="4 3" />
+        <polyline points={points("envelope", -1)} fill="none" stroke="var(--graphite)" strokeDasharray="4 3" />
+      </>}
+      <polyline points={points("E")} fill="none" stroke="var(--field)" strokeWidth={2} />
+      <polyline points={points("H")} fill="none" stroke="var(--flux)" strokeWidth={2} />
+      <text x={toSvg3([0, 0, 0.95])[0] + 5} y={toSvg3([0, 0, 0.95])[1]} className="plate-label">E</text>
+      <text x={toSvg3([0.95, 0, 0])[0] + 5} y={toSvg3([0.95, 0, 0])[1]} className="plate-label">H</text>
+      <line x1={x1} y1={y1} x2={x2} y2={y2} className="ink" strokeWidth={0.7} />
+      <Arrow from={[0, 0, 0]} to={[0, 2 * p.drawScale + 0.6, 0]} tone="graphite" label="travel" />
+    </g>
+  );
+}
+
 export function Vector3View({ ev }: ViewProps) {
   const raw = ev.params as { from: number[]; to: number[]; label: string; tone: string; components: boolean; drawScale: number };
   const p = { ...raw, from: raw.from.map((v) => v * raw.drawScale), to: raw.to.map((v) => v * raw.drawScale) };

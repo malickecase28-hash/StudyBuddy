@@ -295,6 +295,37 @@ export function InductorView({ ev }: ViewProps) {
   );
 }
 
+export function EmfLoopView({ ev }: ViewProps) {
+  const p = ev.params as { mode: "ramp" | "transformer" | "rod"; N: number; f: number; t: number; B0: number; B: number; rps: number };
+  const m = ev.model as { emf: number };
+  const [cx, cy] = toSvg([0, 0, 0]);
+  const side = 1.6 * PX;
+  const label = `Faraday loop, ${p.mode}, emf ${m.emf.toPrecision(3)} V`;
+  if (p.mode === "rod") {
+    const angle = 2 * Math.PI * p.rps * 0.1;
+    const length = 1.35 * PX;
+    const x2 = cx + length * Math.cos(angle), y2 = cy - length * Math.sin(angle);
+    return <g role="img" aria-label={label}>
+      <circle cx={cx} cy={cy} r={length} fill="none" stroke="var(--graphite)" strokeDasharray="4 3" />
+      {[-0.65, 0, 0.65].flatMap((x) => [-0.65, 0, 0.65].map((y) => <text key={`${x}-${y}`} x={cx + x * PX} y={cy + y * PX} className="plate-label" fill="var(--flux)">⊙</text>))}
+      <line x1={cx} y1={cy} x2={x2} y2={y2} stroke="var(--charge)" strokeWidth={3} />
+      <text x={x2 + 5} y={y2 - 5} className="plate-label">ℓ</text>
+    </g>;
+  }
+  const half = side / 2;
+  const field = p.mode === "transformer" ? p.B0 * Math.sin(2 * Math.PI * p.f * p.t) : 1;
+  const radius = p.mode === "transformer" ? 2 + 4 * Math.abs(field) / Math.max(p.B0, 1e-12) : 4;
+  const clockwise = m.emf < 0;
+  const arcStart = [cx - half * 0.3, cy] as const;
+  const arcEnd = [cx, cy - half * 0.3] as const;
+  return <g role="img" aria-label={label}>
+    <rect x={cx - half} y={cy - half} width={side} height={side} fill="none" stroke="var(--ink)" strokeWidth={2} />
+    {[-0.42, 0, 0.42].flatMap((x) => [-0.42, 0, 0.42].map((y) => <text key={`${x}-${y}`} x={cx + x * PX - radius} y={cy + y * PX + radius / 2} fontSize={radius * 2} className="plate-label" fill="var(--flux)">⊙</text>))}
+    <text x={cx - 22} y={cy + half + 24} className="plate-label">N = {p.N}</text>
+    <path d={`M ${arcStart[0]} ${arcStart[1]} A ${half * 0.3} ${half * 0.3} 0 0 ${clockwise ? 0 : 1} ${arcEnd[0]} ${arcEnd[1]}`} fill="none" stroke="var(--charge)" strokeWidth={2} markerEnd="url(#arrow-charge)" />
+  </g>;
+}
+
 const LOG0 = 3, LOG1 = 21; // 1 kHz … 1 ZHz
 const BAND_EDGES: [number, string][] = [[3e8, "Radio"], [3e11, "Microwave"], [4e14, "IR"], [7.9e14, "Vis"], [3e16, "UV"], [3e19, "X-ray"], [1e21, "Gamma"]];
 export function SpectrumView({ id, ev }: ViewProps) {

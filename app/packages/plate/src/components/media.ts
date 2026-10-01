@@ -1,4 +1,4 @@
-import { capCoax, capParallel, capSphere, dielectricBoundary, enclosedCurrentAt, hphiAt, indCoax, indSolenoid, indToroid, indTwoWire, magneticBoundary, magneticFieldH, EPS0, MU0, norm, scale, sub, dot, type Current, type Vec3 } from "@forma/physics";
+import { capCoax, capParallel, capSphere, dielectricBoundary, enclosedCurrentAt, hphiAt, indCoax, indSolenoid, indToroid, indTwoWire, magneticBoundary, magneticFieldH, planeWave, EPS0, MU0, norm, scale, sub, dot, type Current, type Vec3 } from "@forma/physics";
 import { z } from "zod";
 import { defineComponent } from "../component";
 
@@ -168,4 +168,54 @@ export const Inductor = defineComponent({
   quotable: { L: "H", link: "Wb", W: "J" },
 });
 
-export const mediaComponents = [Boundary, Capacitor, Currents, MagBoundary, Inductor];
+export const EmfLoop = defineComponent({
+  id: "emf-loop",
+  params: z.object({
+    mode: z.enum(["ramp", "transformer", "rod"]),
+    N: z.number().positive().default(1), S: z.number().positive().default(0.01),
+    /** ramp: dB/dt in T/s. */ rate: z.number().default(0),
+    /** transformer: B = B0 sin(2πft). */ B0: z.number().default(0), f: z.number().positive().default(50), t: z.number().default(0),
+    /** rod: a bar of length `length` spinning about one end at `rps` revolutions per second in B. */ B: z.number().default(0), length: z.number().positive().default(0.1), rps: z.number().default(0),
+    R: z.number().positive().optional(),
+  }),
+  model: (p) => {
+    let emf: number, extra: Record<string, number> = {};
+    if (p.mode === "ramp") emf = -p.N * p.rate * p.S;
+    else if (p.mode === "transformer") {
+      const w = 2 * Math.PI * p.f;
+      emf = -p.N * w * p.B0 * p.S * Math.cos(w * p.t);
+      extra = { Phi: p.B0 * p.S * Math.sin(w * p.t), emfPeak: p.N * w * p.B0 * p.S, f: p.f };
+    } else emf = 0.5 * p.B * (2 * Math.PI * p.rps) * p.length * p.length;
+    return { emf, ...extra, ...(p.R ? { I: Math.abs(emf) / p.R } : {}), S: p.S };
+  },
+  handles: [],
+  readouts: { emf: "V", emfPeak: "V", Phi: "Wb", I: "A" },
+  quotable: { emf: "V", emfPeak: "V", Phi: "Wb", I: "A", f: "Hz", S: "m^2" },
+});
+
+export const PlaneWave = defineComponent({
+  id: "plane-wave",
+  params: z.object({
+    f: z.number().positive(), er: z.number().positive().default(1), mur: z.number().positive().default(1), sigma: z.number().min(0).default(0),
+    E0: z.number().positive().default(1), phi: z.number().default(0), z: z.number().default(0), t: z.number().default(0),
+    /** Drawing only: plate units per wavelength. */ drawScale: z.number().positive().default(1),
+  }),
+  model: (p) => {
+    const w = planeWave({ f: p.f, er: p.er, mur: p.mur, sigma: p.sigma });
+    const ph = w.omega * p.t - w.beta * p.z + (p.phi * Math.PI) / 180;
+    const env = Math.exp(-w.alpha * p.z);
+    const th = (w.thetaEta * Math.PI) / 180;
+    return {
+      alpha: w.alpha, beta: w.beta, lambda: w.lambda, u: w.u, eta: w.eta, thetaEta: w.thetaEta, lossTan: w.lossTan,
+      ...(w.alpha > 0 ? { delta: 1 / w.alpha } : {}),
+      Eamp: p.E0 * env, Ewave: p.E0 * env * Math.cos(ph), Hwave: (p.E0 / w.eta) * env * Math.cos(ph - th),
+      Pave: ((p.E0 * p.E0) / (2 * w.eta)) * env * env * Math.cos(th),
+      f: p.f,
+    };
+  },
+  handles: [],
+  readouts: { alpha: "Np/m", beta: "rad/m", lambda: "m", u: "m/s", eta: "Ω", thetaEta: "°", lossTan: "", delta: "m", Eamp: "V/m", Ewave: "V/m", Hwave: "A/m", Pave: "W/m^2" },
+  quotable: { alpha: "Np/m", beta: "rad/m", lambda: "m", u: "m/s", eta: "Ω", thetaEta: "°", lossTan: "", delta: "m", Eamp: "V/m", Ewave: "V/m", Hwave: "A/m", Pave: "W/m^2", f: "Hz" },
+});
+
+export const mediaComponents = [Boundary, Capacitor, Currents, MagBoundary, Inductor, EmfLoop, PlaneWave];
