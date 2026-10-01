@@ -4,7 +4,7 @@ import { course } from "./course";
 export type RetrievalItem = { conceptId: string; dimension: Dimension; block: McqBlock };
 
 /** Every mcq in the course, grouped by concept: the pool for retrieval practice. */
-const pool: RetrievalItem[] = course.concepts.flatMap((c) => {
+export const pool: RetrievalItem[] = course.concepts.flatMap((c) => {
   const out: RetrievalItem[] = [];
   for (const l of c.lessons) {
     walkBlocks(l.blocks, (b: Block) => {
