@@ -30,6 +30,11 @@ const BASE: Record<string, string> = {
   ohm: "Ω",
   W: "W",
   "W/m^3": "W/m^3",
+  "Np/m": "Np/m",
+  "rad/m": "rad/m",
+  "m/s": "m/s",
+  "W/m^2": "W/m^2",
+  "rad/s": "rad/s",
   "S/m": "S/m",
   J: "J",
 };

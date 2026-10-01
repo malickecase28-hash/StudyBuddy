@@ -11,3 +11,4 @@ export * from "./densities";
 export * from "./boundary";
 export * from "./capacitance";
 export * from "./magnetics";
+export * from "./waves";
