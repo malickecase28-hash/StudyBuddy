@@ -1,13 +1,17 @@
 import { Camera } from "./camera";
-import { itemBounds, unionRect } from "./geometry";
+import { itemBounds, mul, unionRect } from "./geometry";
 import { History } from "./history";
 import { InputRouter, type Gesture, type PointerSample } from "./input";
-import { DEFAULT_STYLE, type InkPoint, type Item, type StrokeItem, type Style, type Template } from "./model";
+import { DEFAULT_STYLE, ItemSchema, newId, type Affine, type ColorToken, type InkPoint, type Item, type StrokeItem, type Style, type Template } from "./model";
 import type { Op } from "./ops";
 import { Renderer, type BitmapProvider } from "./render";
 import { GridIndex } from "./spatial";
+import { makeEraser, makePreciseEraser } from "./tools/eraser";
 import { makeHand } from "./tools/hand";
+import { makeLasso } from "./tools/lasso";
 import { makePen } from "./tools/pen";
+import { makeRulerTool } from "./tools/ruler";
+import { makeShape } from "./tools/shape";
 import type { Tool, ToolFactory, WorldSample } from "./tools/types";
 
 export type ToolId = "pen" | "highlighter" | "eraser" | "precise-eraser" | "lasso" | "shape" | "ruler" | "text" | "equation" | "hand";
@@ -47,6 +51,11 @@ export class InkEngine {
     this.registerTool("pen", makePen("pen"));
     this.registerTool("highlighter", makePen("highlighter"));
     this.registerTool("hand", makeHand);
+    this.registerTool("eraser", makeEraser);
+    this.registerTool("precise-eraser", makePreciseEraser);
+    this.registerTool("lasso", makeLasso);
+    this.registerTool("shape", makeShape);
+    this.registerTool("ruler", makeRulerTool);
     this.input = new InputRouter(host, {
       onDown: (s) => this.pointer("down", s),
       onMove: (ss, pr) => this.active?.move(ss.map((s) => this.world(s)), pr.map((s) => this.world(s))),
@@ -138,6 +147,54 @@ export class InkEngine {
     for (const it of items) { this.items.set(it.id, it); this.index.upsert(it.id, itemBounds(it)); if (it.z > this.maxZ) this.maxZ = it.z; }
     this.renderer.invalidate();
     this.requestFrame();
+  }
+
+  /** Show items mid-gesture without history; the gesture's final op (or a restore) follows. */
+  preview(items: Item[]): void {
+    for (const it of items) { this.items.set(it.id, it); this.index.upsert(it.id, itemBounds(it)); }
+    this.renderer.invalidate();
+    this.requestFrame();
+    this.ev.onView?.();
+  }
+
+  /** Live transform of the selection: set(m) previews m ∘ transform; commit() is one `update` op (one undo step). */
+  transformSelection() {
+    const before = this.selected();
+    let after = before;
+    return {
+      set: (m: Affine) => { after = before.map((it) => ({ ...it, transform: mul(m, it.transform) })); this.preview(after); },
+      commit: () => { if (before.length && after !== before) { this.preview(before); this.do({ type: "update", before, after }); } },
+      cancel: () => this.preview(before),
+    };
+  }
+
+  private selected(): Item[] { return [...this.selection].map((id) => this.items.get(id)).filter((x): x is Item => !!x); }
+  deleteSelection(): void { const its = this.selected(); if (its.length) this.do({ type: "remove", items: its }); }
+  recolorSelection(color: ColorToken): void {
+    const before = this.selected();
+    if (before.length) this.do({ type: "update", before, after: before.map((it) => ({ ...it, style: { ...it.style, color } })) });
+  }
+  /** Adds copies offset by (dx, dy) world units as one step and selects them. */
+  addCopies(items: Item[], dx: number, dy: number): void {
+    if (!items.length) return;
+    const copies = items.map((it) => ({ ...it, id: newId(), z: this.nextZ(), transform: mul([1, 0, 0, 1, dx, dy], it.transform) }));
+    this.do({ type: "add", items: copies });
+    this.select(copies.map((c) => c.id));
+  }
+  duplicateSelection(): void { this.addCopies(this.selected(), 16, 16); }
+  /** Internal clipboard; also written to the system clipboard as JSON so it pastes across tabs. */
+  clipboard: Item[] = [];
+  copySelection(): void {
+    this.clipboard = this.selected();
+    if (this.clipboard.length) void navigator.clipboard?.writeText(JSON.stringify({ forma: "ink", items: this.clipboard })).catch(() => {});
+  }
+  async paste(): Promise<void> {
+    let items = this.clipboard;
+    try {
+      const j = JSON.parse((await navigator.clipboard?.readText()) ?? "") as { forma?: string; items?: unknown[] };
+      if (j.forma === "ink" && Array.isArray(j.items)) items = j.items.flatMap((x) => { const r = ItemSchema.safeParse(x); return r.success ? [r.data] : []; });
+    } catch { /* not ours or no permission: use the internal clipboard */ }
+    this.addCopies(items, 24, 24);
   }
 
   select(ids: string[]): void {
