@@ -42,6 +42,14 @@ export default function QuestionBankPage() {
             </div>
             {q.seenIn && q.seenIn.length > 1 && <p className="label">Set {q.seenIn.length} times</p>}
             <p className="read">{q.text}</p>
+            {q.solution && (
+              <details>
+                <summary className="label cursor-pointer">Worked solution</summary>
+                <ol className="read mt-2 list-decimal space-y-1 pl-5">
+                  {q.solution.map((s, i) => <li key={i}>{s}</li>)}
+                </ol>
+              </details>
+            )}
             <div className="space-y-2">
               <p className="label">This question tests</p>
               {q.concepts.map((c) => {

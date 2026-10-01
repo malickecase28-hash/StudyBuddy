@@ -14,6 +14,8 @@ export type BankItem = {
   seenIn?: string[];
   /** conceptId/lessonId to practise it, when a lesson exists. */
   practice?: string;
+  /** Worked solution, one step per entry, ending with the answer. Solved independently; see the plan that added it. */
+  solution?: string[];
 };
 
 const K = {
