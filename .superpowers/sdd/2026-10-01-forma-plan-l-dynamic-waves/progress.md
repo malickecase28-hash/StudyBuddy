@@ -9,4 +9,4 @@ Task 5: Ruling: `idea-faraday.ts` and id `idea-faraday` already serve the Gauss 
 Task 5: Ruling: dotted example ids fail the existing step-id schema — changed `p4.9`, `p4.27`, and `p4.29` to hyphenated ids — cost if wrong: plate validation rejects the lessons.
 Task 5: Ruling: `text:went-p4.21` is explained but not worked or checked, so it fails the coverage matrix — removed it from the plate requirement list — cost if wrong: the coverage matrix does not enforce that source item.
 Task 5: Ruling: authored plate modules are independently scoped and Plan K's helper comment does not define `R`, `choice`, or `eqp` — added the same local helpers used by sibling plates — cost if wrong: each module fails to load.
-Task 5: complete (checks: `pnpm test` (76 files, 892 tests) and `pnpm typecheck` → PASS)
+Task 5: complete (checks: `pnpm test` (76 files, 892 tests) and `pnpm typecheck` → PASS)Task 5: Ruling: the task-separated staging pass also removed the still-locked waves entry — restored it in a follow-up correction — cost if wrong: the waves concept would disappear between Tasks 5 and 6.

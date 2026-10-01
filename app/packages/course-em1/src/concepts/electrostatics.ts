@@ -203,4 +203,5 @@ const locked = (id: string, title: string, unit: number) => ({
 });
 
 export const lockedConcepts = [
+  locked("em1.waves.plane-waves", "Plane waves", 5),
 ];
