@@ -10,8 +10,8 @@ test("a tool opens as a wide split without remounting the lesson, expands, and c
   await page.getByRole("button", { name: "Commit prediction" }).click();
   await expect(page.getByText("Measured")).toBeVisible();
 
-  await page.getByRole("button", { name: "Working paper" }).click();
-  const pane = page.getByRole("complementary", { name: "Tool: Working paper" });
+  await page.getByRole("button", { name: "Ink", exact: true }).click();
+  const pane = page.getByRole("complementary", { name: "Tool: Ink" });
   await expect(pane).toBeVisible();
   const vw = page.viewportSize()!.width;
   const box = (await pane.boundingBox())!;
@@ -23,19 +23,19 @@ test("a tool opens as a wide split without remounting the lesson, expands, and c
   await expect(page.getByRole("complementary", { name: "Margin" })).toBeHidden();
   expect((await pane.boundingBox())!.width).toBeGreaterThan(vw * 0.85);
   await page.getByRole("button", { name: "Show the page again" }).click();
-  await page.getByRole("button", { name: "Close Working paper" }).click();
+  await page.getByRole("button", { name: "Close Ink" }).click();
   await expect(pane).toHaveCount(0);
   await expect(page.getByText("Measured")).toBeVisible();
 });
 
 test("Solve opens with working paper pinned beside the problem; closing unpins it", async ({ page }) => {
   await open(page, concept("em1.electrostatics.gauss-applications", "mode=solve"));
-  await expect(page.getByRole("complementary", { name: "Tool: Working paper" })).toBeVisible();
-  await page.getByRole("button", { name: "Close Working paper" }).click();
+  await expect(page.getByRole("complementary", { name: "Tool: Ink" })).toBeVisible();
+  await page.getByRole("button", { name: "Close Ink" }).click();
   await page.waitForTimeout(400); // learner state saves on a 250 ms debounce
   await page.reload();
   await expect(page.locator("main h1").first()).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByRole("complementary", { name: "Tool: Working paper" })).toHaveCount(0);
+  await expect(page.getByRole("complementary", { name: "Tool: Ink" })).toHaveCount(0);
 });
 
 test.describe("phone", () => {
@@ -54,7 +54,7 @@ test.describe("phone", () => {
 
 test("an expanded tool doesn't leak into the next one, and switching mode shows that mode's tool", async ({ page }) => {
   await open(page, concept(G, "mode=solve"));
-  await expect(page.getByRole("complementary", { name: "Tool: Working paper" })).toBeVisible();
+  await expect(page.getByRole("complementary", { name: "Tool: Ink" })).toBeVisible();
   await page.getByRole("button", { name: "Expand the tool" }).click();
   await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
   await page.keyboard.press("1");
@@ -65,5 +65,5 @@ test("an expanded tool doesn't leak into the next one, and switching mode shows 
   await expect(page.getByRole("complementary", { name: "Margin" })).toBeVisible();
   await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
   await page.keyboard.press("2");
-  await expect(page.getByRole("complementary", { name: "Tool: Working paper" })).toBeVisible();
+  await expect(page.getByRole("complementary", { name: "Tool: Ink" })).toBeVisible();
 });

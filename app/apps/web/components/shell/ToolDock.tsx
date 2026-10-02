@@ -28,14 +28,14 @@ const ICONS: Record<string, ReactNode> = {
 const PLACES: { href: string; label: string; caption: string; icon: string; match: (p: string) => boolean }[] = [
   { href: "/", label: "Desk", caption: "Desk", icon: "desk", match: (p) => p === "/" },
   { href: "/courses", label: "Learn: courses and lessons", caption: "Learn", icon: "courses", match: (p) => p.startsWith("/courses") || p.startsWith("/c/") || p.startsWith("/learn") },
-  { href: "/ink", label: "Ink notebooks", caption: "Ink", icon: "ink", match: (p) => p.startsWith("/ink") || p.startsWith("/paper") },
+  { href: "/ink", label: "Ink: your handwritten notebooks", caption: "Ink", icon: "ink", match: (p) => p.startsWith("/ink") || p.startsWith("/paper") },
   { href: "/past-papers", label: "Question bank", caption: "Questions", icon: "bank", match: (p) => p.startsWith("/past-papers") },
   { href: "/review", label: "Review what's due", caption: "Review", icon: "review", match: (p) => p.startsWith("/review") },
   { href: "/dashboard", label: "Progress and exam readiness", caption: "Progress", icon: "progress", match: (p) => p.startsWith("/dashboard") || p.startsWith("/diagnostic") },
   { href: "/map", label: "Concept map", caption: "Map", icon: "map", match: (p) => p.startsWith("/map") },
 ];
 
-const CAPTIONS: Record<string, string> = { paper: "Paper", notebook: "Notes", formulas: "Formulas", sources: "Sources", calculator: "Calc" };
+const CAPTIONS: Record<string, string> = { notebook: "Saved", formulas: "Formulas", sources: "Sources", calculator: "Calc" };
 
 /**
  * The left rail: places to go, then tools that open beside the page.
@@ -49,16 +49,22 @@ export function ToolDock() {
     <div className="tool-dock">
       <div className="rail-inner">
       <nav aria-label="Main" className="rail-group">
-        {PLACES.map((p) => (
+        {PLACES.map((p) => (p.icon === "ink" && mode ? (
+          <button key={p.href} className="rail-item tool-button" aria-pressed={tool === "paper"} aria-label="Ink" title="Ink: write beside this lesson (your notebook for this concept)"
+            onClick={(e) => { if (e.shiftKey) togglePin("paper"); else if (tool === "paper") close(); else open("paper"); }}>
+            {ICONS.ink}
+            <span className="rail-caption" aria-hidden>Ink</span>
+          </button>
+        ) : (
           <Link key={p.href} href={p.href} className="rail-item" title={p.label} aria-label={p.label} aria-current={p.match(path) ? "page" : undefined}>
             {ICONS[p.icon]}
             <span className="rail-caption" aria-hidden>{p.caption}</span>
           </Link>
-        ))}
+        )))}
       </nav>
       <nav aria-label="Tools" className="rail-group rail-tools">
         <span className="rail-heading" aria-hidden>Tools</span>
-        {TOOLS.map((t) => (
+        {TOOLS.filter((t) => t.id !== "paper").map((t) => (
           <button
             key={t.id} className="rail-item tool-button" aria-pressed={tool === t.id}
             title={`${t.label}: opens beside the page${mode ? ". Shift-click to keep it open in this mode" : ""}`} aria-label={t.label}

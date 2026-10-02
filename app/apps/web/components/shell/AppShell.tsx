@@ -17,7 +17,7 @@ import { ToolSplit } from "./ToolPanel";
 const MODES = [["learn", "Learn"], ["solve", "Solve"], ["explore", "Explore"], ["revise", "Revise"]] as const;
 const PAGES: Record<string, string> = {
   "/courses": "Library", "/notebook": "Notebook", "/dashboard": "Progress", "/past-papers": "Question bank",
-  "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Working paper", "/lab": "Classic lab", "/map": "Concept map", "/commons": "Commons", "/ink": "Ink",
+  "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Ink", "/lab": "Classic lab", "/map": "Concept map", "/commons": "Commons", "/ink": "Ink", "/calculator": "Calculator",
 };
 
 /** The shell reads no search params, so every page pre-renders with its frame (no blank first paint). */
