@@ -3,12 +3,12 @@
 import type { ToolId } from "@forma/engine";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Tex } from "@/components/Tex";
-import { conceptHref, formulaSheet, getConcept, lessonForPlate } from "@/lib/course";
+import { conceptHref, getConcept, lessonForPlate } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { TOOLS } from "@/lib/tools";
 import { useUi } from "@/lib/ui";
 import { ConceptInk } from "../ink/InkEditor";
+import { FormulaSheet } from "../calc/FormulaSheet";
 import { GraphingCalculator } from "../calc/GraphingCalculator";
 
 export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string | null }) {
@@ -26,15 +26,10 @@ export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string 
       );
     case "formulas":
       return (
-        <ul className="space-y-3">
-          {formulaSheet.map((f) => (
-            <li key={f.id}>
-              <p className="label">{f.title}</p>
-              <Tex latex={f.latex} display />
-              <p className="text-xs text-soft">{f.source}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-2">
+          <Link className="text-sm underline" href="/formulas">Open full screen ↗</Link>
+          <FormulaSheet />
+        </div>
       );
     case "sources":
       return concept ? (
