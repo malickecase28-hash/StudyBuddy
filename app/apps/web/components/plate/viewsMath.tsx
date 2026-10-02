@@ -1,6 +1,6 @@
 "use client";
 
-import { cartOf, nativeOf, scalarFields, vectorFields, type Vec3 } from "@forma/physics";
+import { functions1d, cartOf, nativeOf, scalarFields, vectorFields, type Vec3 } from "@forma/physics";
 import { pathAt, toSvg, toSvg3, PX } from "@forma/plate";
 import type { KeyboardEvent, PointerEvent } from "react";
 import { usePlateStage } from "./stage-context";
@@ -373,6 +373,63 @@ export function UnitConvertView({ ev }: ViewProps) {
       <text x={-200} y={-10} className="plate-label" style={{ fontSize: 22 }}>{`${p.value} ${p.unit}`}</text>
       <text x={-40} y={-10} className="plate-label" style={{ fontSize: 22 }}>=</text>
       <text x={0} y={-10} className="plate-label" style={{ fontSize: 22 }}>{m.ok ? `${Number(m.si!.toPrecision(6))} ${m.dim === "1" ? "" : m.dim}` : "?"}</text>
+    </g>
+  );
+}
+
+
+const GX0 = -2.4, GX1 = 2.4, GY0 = -1.7, GY1 = 1.7;
+
+/** graph-1d: the curve, an optional shaded area with midpoint rectangles, and a probe with its tangent. */
+export function Graph1DView({ id, ev }: ViewProps) {
+  const p = ev.params as { fn: string; x: [number, number]; y: [number, number]; probe: number | null; tangent: boolean; area: [number, number] | null; rects: number; label: string };
+  const fn = functions1d[p.fn]!;
+  const [x0, x1] = p.x, [y0, y1] = p.y;
+  const sx = (x: number) => (GX0 + ((x - x0) / (x1 - x0)) * (GX1 - GX0)) * PX;
+  const sy = (y: number) => -(GY0 + ((y - y0) / (y1 - y0)) * (GY1 - GY0)) * PX;
+  const span = y1 - y0;
+  const ok = (y: number) => Number.isFinite(y) && y > y0 - 4 * span && y < y1 + 4 * span;
+  const curve: string[] = [];
+  let run = "";
+  for (let i = 0; i <= 320; i++) {
+    const x = x0 + ((x1 - x0) * i) / 320, y = fn.f(x);
+    if (!ok(y)) { if (run) curve.push(run); run = ""; continue; }
+    run += `${run ? "L" : "M"}${sx(x).toFixed(1)} ${sy(y).toFixed(1)}`;
+  }
+  if (run) curve.push(run);
+  const clip = `graph-clip-${id}`;
+  const area = p.area ? (() => {
+    const [a, b] = p.area!;
+    let d = `M${sx(a).toFixed(1)} ${sy(0).toFixed(1)}`;
+    for (let i = 0; i <= 160; i++) { const x = a + ((b - a) * i) / 160, y = fn.f(x); if (ok(y)) d += `L${sx(x).toFixed(1)} ${sy(y).toFixed(1)}`; }
+    return `${d}L${sx(b).toFixed(1)} ${sy(0).toFixed(1)}Z`;
+  })() : null;
+  const n = p.area ? Math.round(p.rects) : 0;
+  const w = p.area && n >= 1 ? (p.area[1] - p.area[0]) / n : 0;
+  const slope = p.probe !== null ? fn.df(p.probe) : NaN, fy = p.probe !== null ? fn.f(p.probe) : NaN, dx = (x1 - x0) * 0.18;
+  return (
+    <g role="img" aria-label={`Graph of ${p.label || p.fn}`}>
+      <defs><clipPath id={clip}><rect x={GX0 * PX} y={-GY1 * PX} width={(GX1 - GX0) * PX} height={(GY1 - GY0) * PX} /></clipPath></defs>
+      <rect x={GX0 * PX} y={-GY1 * PX} width={(GX1 - GX0) * PX} height={(GY1 - GY0) * PX} fill="none" style={{ stroke: "var(--grid)" }} />
+      <g clipPath={`url(#${clip})`}>
+        {x0 < 0 && x1 > 0 && <line x1={sx(0)} x2={sx(0)} y1={-GY1 * PX} y2={-GY0 * PX} style={{ stroke: "var(--graphite)" }} strokeWidth={1} />}
+        {y0 < 0 && y1 > 0 && <line x1={GX0 * PX} x2={GX1 * PX} y1={sy(0)} y2={sy(0)} style={{ stroke: "var(--graphite)" }} strokeWidth={1} />}
+        {area && <path d={area} style={{ fill: "var(--surface)" }} fillOpacity={0.22} />}
+        {Array.from({ length: n }, (_, k) => {
+          const a = p.area![0] + k * w, h = fn.f(a + w / 2);
+          return <rect key={k} x={Math.min(sx(a), sx(a + w))} width={Math.abs(sx(a + w) - sx(a))} y={Math.min(sy(0), sy(h))} height={Math.abs(sy(h) - sy(0))} fill="none" style={{ stroke: "var(--surface)" }} strokeWidth={1.2} />;
+        })}
+        {curve.map((d, i) => <path key={i} d={d} fill="none" style={{ stroke: "var(--flux)" }} strokeWidth={2.4} />)}
+        {p.probe !== null && p.tangent && Number.isFinite(slope) && (
+          <line x1={sx(p.probe - dx)} y1={sy(fy - slope * dx)} x2={sx(p.probe + dx)} y2={sy(fy + slope * dx)} style={{ stroke: "var(--charge)" }} strokeWidth={1.6} strokeDasharray="6 4" />
+        )}
+        {p.probe !== null && Number.isFinite(fy) && <circle cx={sx(p.probe)} cy={sy(fy)} r={4.5} className="fill-charge" />}
+      </g>
+      {p.label && <text x={GX0 * PX + 8} y={-GY1 * PX + 16} className="plate-label">{p.label}</text>}
+      <text x={GX0 * PX} y={-GY0 * PX + 14} className="plate-label">{x0}</text>
+      <text x={GX1 * PX - 24} y={-GY0 * PX + 14} className="plate-label">{x1}</text>
+      <text x={GX0 * PX - 30} y={-GY0 * PX} className="plate-label">{y0}</text>
+      <text x={GX0 * PX - 30} y={-GY1 * PX + 10} className="plate-label">{y1}</text>
     </g>
   );
 }

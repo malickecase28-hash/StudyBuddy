@@ -1,4 +1,4 @@
-import { cartOf, densities, fromCyl, fromSph, gaussLegendre, nativeOf, scalarFields, totalCharge, unitVectors, vectorFields, type CoordSystem, type Vec3 } from "@forma/physics";
+import { areaUnder, cartOf, functions1d, midpointSum, densities, fromCyl, fromSph, gaussLegendre, nativeOf, scalarFields, totalCharge, unitVectors, vectorFields, type CoordSystem, type Vec3 } from "@forma/physics";
 import { toSI } from "@forma/engine";
 import { z } from "zod";
 import { defineComponent } from "../component";
@@ -182,6 +182,45 @@ export const CoordRegion = defineComponent({
   quotable: { len1: "m", len2: "m", len3: "m", area: "m^2", volume: "m^3", Q: "C", patchFlux: "µC", centralCharge: "µC" },
 });
 
+const Fn1Id = z.enum(Object.keys(functions1d) as [string, ...string[]]);
+const Window = z.tuple([z.number(), z.number()]).refine(([a, b]) => b > a, "window must increase");
+
+/**
+ * A function on axes: a probe point with its value and slope (the tangent), and a shaded signed area from a to b
+ * with optional midpoint rectangles. `rects` is rounded, so it can tween through fractions between steps.
+ */
+export const Graph1D = defineComponent({
+  id: "graph-1d",
+  params: z.object({
+    fn: Fn1Id,
+    x: Window,
+    y: Window,
+    probe: z.number().nullable().default(null),
+    tangent: z.boolean().default(false),
+    area: z.tuple([z.number(), z.number()]).nullable().default(null),
+    rects: z.number().min(0).max(64).default(0),
+    label: z.string().default(""),
+  }),
+  model: (p) => {
+    const fn = functions1d[p.fn]!;
+    const out: Record<string, number | null> = {};
+    if (p.probe !== null) {
+      out.gx = p.probe;
+      out.gfx = finite(fn.f(p.probe));
+      out.gslope = finite(fn.df(p.probe));
+    }
+    if (p.area !== null) {
+      out.garea = finite(areaUnder(fn, p.area[0], p.area[1]));
+      const n = Math.round(p.rects);
+      if (n >= 1) out.gsum = finite(midpointSum(fn, p.area[0], p.area[1], n));
+    }
+    return out;
+  },
+  handles: [],
+  readouts: { gx: "", gfx: "", gslope: "", garea: "", gsum: "" },
+  quotable: { gx: "", gfx: "", gslope: "", garea: "", gsum: "" },
+});
+
 export const C0 = 299_792_458;
 const BANDS: [number, string][] = [[3e8, "Radio"], [3e11, "Microwave"], [4e14, "Infrared"], [7.9e14, "Visible"], [3e16, "Ultraviolet"], [3e19, "X-ray"], [Infinity, "Gamma"]];
 
@@ -264,4 +303,4 @@ export const Conductor = defineComponent({
   quotable: { J: "A/m^2", E: "V/m", R: "Ω", P: "W", pd: "W/m^3" },
 });
 
-export const mathComponents = [ScalarSlice, VectorSlice, CoordRegion, Spectrum, UnitConvert, LineWork, Conductor];
+export const mathComponents = [ScalarSlice, VectorSlice, CoordRegion, Spectrum, UnitConvert, LineWork, Conductor, Graph1D];

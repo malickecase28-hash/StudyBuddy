@@ -11,6 +11,7 @@ const LABEL: Record<string, string> = {
   vx: "x-component", vy: "y-component", vz: "z-component", vmag: "Magnitude",
   vxm: "x-component", vym: "y-component", vzm: "z-component", vmagm: "Length",
   px: "x", py: "y", pz: "z", pRho: "ρ", pPhi: "φ", pR: "r", pTheta: "θ (from +z)",
+  gx: "x at the probe", gfx: "Value at the probe", gslope: "Slope at the probe", garea: "Signed area, a to b", gsum: "Midpoint rectangle sum",
   f: "Value at the probe", gmag: "|∇| at the probe",
   F1: "1st component", F2: "2nd component", F3: "3rd component", div: "∇· at the probe",
   c1: "curl, 1st", c2: "curl, 2nd", c3: "curl, 3rd",
