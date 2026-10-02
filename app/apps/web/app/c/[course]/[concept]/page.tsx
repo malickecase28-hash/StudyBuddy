@@ -1,9 +1,9 @@
-import { course } from "@forma/course-em1";
+import { courses } from "@/lib/course";
 import { Suspense } from "react";
 import { ConceptWorkspace } from "@/components/workspace/ConceptWorkspace";
 
 export function generateStaticParams() {
-  return course.concepts.filter((c) => !c.locked).map((c) => ({ course: course.id, concept: c.id }));
+  return courses.flatMap((k) => k.concepts.filter((c) => !c.locked).map((c) => ({ course: k.id, concept: c.id })));
 }
 export const dynamicParams = false;
 

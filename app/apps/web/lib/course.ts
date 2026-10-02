@@ -1,15 +1,23 @@
-import { assessmentsForItem, course, diagnostic, formulaSheet, ideaPlates, questionBank } from "@forma/course-em1";
-import { topoOrder, type Concept, type Lesson } from "@forma/engine";
+import { assessmentsForItem, course, diagnostic, formulaSheet, foundations, ideaPlates, questionBank } from "@forma/course-em1";
+import { topoOrder, type Concept, type Course, type Lesson } from "@forma/engine";
 
-export { assessmentsForItem, course, diagnostic, formulaSheet, questionBank };
+export { assessmentsForItem, course, diagnostic, formulaSheet, foundations, questionBank };
 export { templatesFor } from "@forma/course-em1";
 
-export const conceptById = new Map(course.concepts.map((c) => [c.id, c]));
+/** Every course, prerequisite first. `course` stays the EMag course the Desk, map and assessments are built around. */
+export const courses: Course[] = [foundations, course];
+export const getCourse = (id: string): Course | undefined => courses.find((k) => k.id === id);
+/** The course a concept belongs to (EMag when unknown). */
+export const courseOf = (conceptId: string): Course => courses.find((k) => k.concepts.some((c) => c.id === conceptId)) ?? course;
+
+export const conceptById = new Map(courses.flatMap((k) => k.concepts).map((c) => [c.id, c]));
 export const examDateMs = Date.parse(`${course.examDate}T09:00:00-05:00`);
 /** Concepts in prerequisite order (locked ones last). */
 export const conceptOrder = topoOrder(course).sort(
   (a, b) => Number(conceptById.get(a)!.locked) - Number(conceptById.get(b)!.locked),
 );
+/** Foundation concepts in prerequisite order. */
+export const foundationsOrder = topoOrder(foundations);
 
 export function getConcept(id: string): Concept | undefined {
   return conceptById.get(id);
@@ -28,7 +36,7 @@ export function splitRef(ref: string): { conceptId: string; lessonId: string } {
 export const isPlateLesson = (l: Lesson) => l.blocks.length > 0 && l.blocks.every((b) => b.type === "plate");
 
 export const conceptHref = (conceptId: string, mode = "learn", query: Record<string, string> = {}) =>
-  `/c/${course.id}/${encodeURIComponent(conceptId)}?${new URLSearchParams({ mode, ...query }).toString()}`;
+  `/c/${courseOf(conceptId).id}/${encodeURIComponent(conceptId)}?${new URLSearchParams({ mode, ...query }).toString()}`;
 
 /** Plate lessons live in the concept workspace; classic block lessons keep their v1 route. */
 export function lessonHref(conceptId: string, lessonId: string, extra = "") {
@@ -48,8 +56,9 @@ export const mainLesson = (c: Concept) => c.lessons[0];
 
 /** Next unlocked concept after `conceptId` in study order. */
 export function nextConcept(conceptId: string): Concept | undefined {
-  const i = conceptOrder.indexOf(conceptId);
-  return conceptOrder
+  const order = courseOf(conceptId).id === course.id ? conceptOrder : foundationsOrder;
+  const i = order.indexOf(conceptId);
+  return order
     .slice(i + 1)
     .map((id) => conceptById.get(id)!)
     .find((c) => !c.locked);
@@ -58,11 +67,11 @@ export function nextConcept(conceptId: string): Concept | undefined {
 /** Lessons that are detours (remediation targets) rather than the main path. */
 export function isDetour(conceptId: string, lessonId: string): boolean {
   const ref = `${conceptId}/${lessonId}`;
-  return course.concepts.some((c) => c.misconceptions.some((m) => m.remediation === ref));
+  return courses.some((k) => k.concepts.some((c) => c.misconceptions.some((m) => m.remediation === ref)));
 }
 
 export const misconceptionInfo = new Map(
-  course.concepts.flatMap((c) => c.misconceptions.map((m) => [m.tag, m] as const)),
+  courses.flatMap((k) => k.concepts).flatMap((c) => c.misconceptions.map((m) => [m.tag, m] as const)),
 );
 
 /** Misconception description as worded by the concept where it fired (falls back to any concept). */

@@ -1,6 +1,6 @@
 "use client";
 
-import { checks, course, plates, registry, templates } from "@forma/course-em1";
+import { checks, plates, registry, templates } from "@forma/course-em1";
 import { instantiate, pickRoute, seedOf, type Block, type Effect, type Interaction } from "@forma/engine";
 import {
   applyCues, applyOverrides, askState, createEvaluator, frameAt, hiddenReadouts, lockIndex, readAloudText, stateAt, stepLocation, stillFrame, termTargets, timelineMarks,
@@ -9,7 +9,7 @@ import {
 import { MarginNote, Timeline } from "@forma/ui";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { conceptHref, getLesson, ideaMetaFor, lessonHref, misconceptionFor, splitRef } from "@/lib/course";
+import { conceptHref, courseOf, getLesson, ideaMetaFor, lessonHref, misconceptionFor, splitRef } from "@/lib/course";
 import { DiscussLink } from "../commons/Post";
 import { answeredFromHistory, resumeStepFor, shouldCredit, useCueClock, usePlayback } from "@/lib/playback";
 import { conceptProgress } from "@/lib/progress";
@@ -294,7 +294,7 @@ function PlateRun({
             {step.kind === "recap" && idea ? (
               <>
                 <RecapCard title={idea.title} points={idea.recap.points} traps={idea.recap.traps} />
-                <Link className="underline" href={`/c/${course.id}/${encodeURIComponent(conceptId)}/sheet`}>Open the revision sheet →</Link>
+                <Link className="underline" href={`/c/${courseOf(conceptId).id}/${encodeURIComponent(conceptId)}/sheet`}>Open the revision sheet →</Link>
               </>
             ) : (
               <p><Markup text={step.note} /></p>

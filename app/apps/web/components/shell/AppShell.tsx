@@ -4,7 +4,7 @@ import { Mark, Segmented, TitleBlock, Wordmark } from "@forma/ui";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { conceptHref, course, getConcept } from "@/lib/course";
+import { conceptHref, course, getConcept, getCourse } from "@/lib/course";
 import { commonsEnabled, useMe } from "@/lib/commons/client";
 import { useStudy } from "@/lib/store";
 import { useUi } from "@/lib/ui";
@@ -53,7 +53,7 @@ function TopBar() {
   const mode = useUi((s) => s.workspaceMode);
   const crumbs: { label: string; href?: string }[] =
     path === "/" ? [{ label: "Desk" }]
-    : path.startsWith("/c/") ? [{ label: "Library", href: "/courses" }, { label: course.title, ...(concept ? { href: `/c/${courseId}` } : {}) }, ...(concept ? [{ label: `Unit ${concept.unit}` }, { label: concept.title }] : [])]
+    : path.startsWith("/c/") ? [{ label: "Library", href: "/courses" }, { label: (getCourse(courseId ?? "") ?? course).title, ...(concept ? { href: `/c/${courseId}` } : {}) }, ...(concept ? [{ label: `Unit ${concept.unit}` }, { label: concept.title }] : [])]
     : [{ label: PAGES[path] ?? (path.startsWith("/learn/") ? "Classic lesson" : path.startsWith("/ink/") ? "Ink" : "Forma") }];
   return (
     <header className="topbar">

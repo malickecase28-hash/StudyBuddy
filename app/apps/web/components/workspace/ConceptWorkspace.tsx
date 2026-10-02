@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import { course, getConcept } from "@/lib/course";
+import { course, courseOf, getConcept } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { useUi } from "@/lib/ui";
 import { parseWorkspaceParams } from "@/lib/workspace";
@@ -42,7 +42,7 @@ export function ConceptWorkspace({ conceptId }: { conceptId: string }) {
   return (
     <div className="workspace space-y-4" data-mode={p.mode}>
       <header>
-        <p className="kicker">Unit {concept.unit} · {course.title}</p>
+        <p className="kicker">Unit {concept.unit} · {courseOf(concept.id).title}</p>
         <h1 className="text-3xl">{concept.title}</h1>
       </header>
       {p.mode === "learn" && <LearnMode conceptId={conceptId} p={p} split={layout.split} onSplit={onSplit} />}

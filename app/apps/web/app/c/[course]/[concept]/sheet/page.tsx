@@ -1,8 +1,8 @@
-import { course } from "@forma/course-em1";
+import { courses } from "@/lib/course";
 import { RevisionSheet } from "@/components/plate/RevisionSheet";
 
 export function generateStaticParams() {
-  return course.concepts.filter((c) => !c.locked).map((c) => ({ course: course.id, concept: c.id }));
+  return courses.flatMap((k) => k.concepts.filter((c) => !c.locked).map((c) => ({ course: k.id, concept: c.id })));
 }
 export const dynamicParams = false;
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 export function generateStaticParams() {
-  return [{ course: "em1" }];
+  return [{ course: "em1" }, { course: "math0" }];
 }
 export const dynamicParams = false;
 
