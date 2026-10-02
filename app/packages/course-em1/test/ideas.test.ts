@@ -1,7 +1,7 @@
 import { instantiate } from "@forma/engine";
 import { coverageGaps, validateIdeas, validatePlate } from "@forma/plate";
 import { describe, expect, it } from "vitest";
-import { checks, course, ideaPlates, plates, registry, templates } from "../src";
+import { checks, course, foundations, ideaPlates, plates, registry, templates } from "../src";
 
 describe("idea lessons", () => {
   const all = Object.values(ideaPlates);
@@ -9,7 +9,7 @@ describe("idea lessons", () => {
     expect(all.map((c) => c.plate.id)).toContain("flux-surface");
     for (const c of all) {
       expect(plates[c.plate.id]).toBe(c.plate);
-      expect(course.concepts.some((k) => k.lessons.some((l) => l.blocks.some((b) => b.type === "plate" && b.plateId === c.plate.id)))).toBe(true);
+      expect([course, foundations].some((k) => k.concepts.some((x) => x.lessons.some((l) => l.blocks.some((b) => b.type === "plate" && b.plateId === c.plate.id))))).toBe(true);
     }
   });
   for (const c of all) {

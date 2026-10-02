@@ -11,7 +11,7 @@ import {
   type Charge,
 } from "@forma/physics";
 import { describe, expect, it } from "vitest";
-import { course, diagnostic, GaussLabConfig, LAB_CHECKS, questionBank } from "../src";
+import { course, diagnostic, foundations, GaussLabConfig, LAB_CHECKS, questionBank } from "../src";
 
 const allBlocks: Block[] = [];
 for (const c of course.concepts) for (const l of c.lessons) walkBlocks(l.blocks, (b) => allBlocks.push(b));
@@ -41,7 +41,7 @@ describe("course structure", () => {
     );
   });
   it("diagnostic refreshers and bank-item concepts exist", () => {
-    const ids = new Set(course.concepts.map((c) => c.id));
+    const ids = new Set([...course.concepts, ...foundations.concepts].map((c) => c.id));
     for (const t of diagnostic.topics) if (t.refresher) expect(ids.has(t.refresher), t.refresher).toBe(true);
     for (const p of questionBank) {
       expect(p.concepts.reduce((s, c) => s + c.weight, 0)).toBeCloseTo(1, 10);

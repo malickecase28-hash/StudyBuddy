@@ -34,6 +34,7 @@ export const course = Course.parse({
 });
 
 export { diagnostic } from "./diagnostic";
+export { foundations } from "./foundations";
 export { formulaSheet } from "./reference";
 export { questionBank } from "./questions";
 export type { BankItem } from "./questions";
