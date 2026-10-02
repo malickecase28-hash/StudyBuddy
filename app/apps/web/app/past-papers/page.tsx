@@ -6,6 +6,7 @@ import { assessmentsForItem, getConcept, lessonHref, mainLesson, questionBank, s
 import { DiscussLink } from "@/components/commons/Post";
 import { conceptProgress, pct } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
+import { Markup } from "@/components/Markup";
 
 /** Questions from course assessments, grouped by what they test. */
 export default function QuestionBankPage() {
@@ -42,12 +43,12 @@ export default function QuestionBankPage() {
               {q.marks !== undefined && <span className="label">{q.marks} marks</span>}
             </div>
             {q.seenIn && q.seenIn.length > 1 && <p className="label">Set {q.seenIn.length} times</p>}
-            <p className="read">{q.text}</p>
+            <p className="read"><Markup text={q.text} /></p>
             {q.solution && (
               <details>
                 <summary className="label cursor-pointer">Worked solution</summary>
                 <ol className="read mt-2 list-decimal space-y-1 pl-5">
-                  {q.solution.map((s, i) => <li key={i}>{s}</li>)}
+                  {q.solution.map((s, i) => <li key={i}><Markup text={s} /></li>)}
                 </ol>
               </details>
             )}

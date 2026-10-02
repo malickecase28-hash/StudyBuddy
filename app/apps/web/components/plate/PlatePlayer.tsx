@@ -20,6 +20,7 @@ import { AsksList, RecapCard, recapMarkdown, TrapNote, WorkedLines } from "./ide
 import { InteractionView, type AnswerInput } from "./interactions";
 import { PlateStage } from "./PlateStage";
 import { PlateReadouts } from "./Readouts";
+import { Markup } from "@/components/Markup";
 
 type PlateBlock = Extract<Block, { type: "plate" }>;
 type Snapshot = { plateId: string; stepId: string; state: Overrides };
@@ -296,7 +297,7 @@ function PlateRun({
                 <Link className="underline" href={`/c/${course.id}/${encodeURIComponent(conceptId)}/sheet`}>Open the revision sheet →</Link>
               </>
             ) : (
-              <p>{step.note}</p>
+              <p><Markup text={step.note} /></p>
             )}
             {step.latex && <Tex latex={step.latex} display />}
             {(() => {
@@ -306,13 +307,13 @@ function PlateRun({
             {step.why && (
               <details>
                 <summary>Why?</summary>
-                <p>{step.why}</p>
+                <p><Markup text={step.why} /></p>
               </details>
             )}
             {step.derivation && (
               <details>
                 <summary>Derivation</summary>
-                <p>{step.derivation}</p>
+                <p><Markup text={step.derivation} /></p>
               </details>
             )}
             {narration === "device" && <ReadAloud text={readAloudText(plate, index)} />}
@@ -347,7 +348,7 @@ function PlateRun({
           {idea && <AsksList asks={idea.asks} open={askOpen} onOpen={openAsk} />}
           {offers.map((o) => (
             <div key={o.key} className="fb fb-again text-sm" role="status">
-              ↺ {o.text} <Link className="underline" href={o.href}>Take the detour</Link>
+              ↺ <Markup text={o.text} /> <Link className="underline" href={o.href}>Take the detour</Link>
             </div>
           ))}
           {hasEdits && editedAt !== null && editedAt !== index && (

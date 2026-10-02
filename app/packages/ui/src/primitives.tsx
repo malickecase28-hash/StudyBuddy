@@ -3,10 +3,21 @@
 import type { KeyboardEvent, ReactNode } from "react";
 import { formatValue } from "./format";
 
+/**
+ * Small-caps labels without mangling maths: the text is unchanged, but symbol words (Greek, single letters like the
+ * x in "H₁ x", indexed names) are exempt from the label's CSS uppercase, which would turn χ into Χ and x into X.
+ */
+export function capsLabel(text: string): ReactNode {
+  // A symbol word: any non-ASCII letter (Greek, subscripts, primes), a lone letter other than "a"/"A", or letters
+  // fused with digits (H1, 2x). The separators · — – are plain punctuation.
+  const symbol = (w: string) => !/^[·—–]$/.test(w) && (/[^\u0000-\u007F·’‘—–]/.test(w) || /^[(\[]?[b-zB-Z][,.:;)\]]?$/.test(w) || /\d[A-Za-z]|[A-Za-z]\d/.test(w));
+  return text.split(/(\s+)/).map((w, i) => (symbol(w) ? <span key={i} className="nocaps">{w}</span> : w));
+}
+
 export function Readout({ label, value, unit, digits = 4, tone }: { label: string; value: number | null; unit: string; digits?: number; tone?: "charge" | "field" | "flux" | "surface" }) {
   return (
     <div className="readout" data-tone={tone}>
-      <span className="readout-label">{label}</span>
+      <span className="readout-label">{capsLabel(label)}</span>
       <output className="readout-value">
         {formatValue(value, digits)}
         {value !== null && Number.isFinite(value) && <span className="readout-unit"> {unit}</span>}
@@ -32,7 +43,7 @@ export function TitleBlock({ cells }: { cells: { label: string; value: ReactNode
 export function MarginNote({ kicker, title, children }: { kicker: string; title: string; children: ReactNode }) {
   return (
     <section className="margin-note" aria-label={title}>
-      <p className="kicker">{kicker}</p>
+      <p className="kicker">{capsLabel(kicker)}</p>
       <h2>{title}</h2>
       <div className="margin-body">{children}</div>
     </section>
@@ -83,7 +94,7 @@ export function Timeline({ steps, pos, lock, playing, onScrub, onTogglePlay, mar
         />
         <ol className="timeline-ticks">
           {visibleTicks(steps.length, marks).map((t) => (
-            <li key={t.index} style={marks ? { position: "absolute", left: `${(100 * t.index) / Math.max(1, steps.length - 1)}%` } : undefined}>
+            <li key={t.index} style={marks ? (t.index === steps.length - 1 && t.index > 0 ? { position: "absolute", right: 0 } : { position: "absolute", left: `${(100 * t.index) / Math.max(1, steps.length - 1)}%` }) : undefined}>
               <button type="button" disabled={t.index > lock} aria-current={t.index === i ? "step" : undefined} onClick={() => onScrub(t.index)}>
                 {t.label}
                 <span className="sr-only"> {steps[t.index]?.title}</span>

@@ -44,7 +44,7 @@ export function AnchorCard({ anchor }: { anchor: Anchor }) {
     <div className="card space-y-2">
       <p className="label">About</p>
       {href ? <Link className="ref-chip" href={href}>{anchor.label}</Link> : <span>{anchor.label}</span>}
-      {bank && <p className="read text-sm">{bank.text}</p>}
+      {bank && <p className="read text-sm"><Markup text={bank.text} /></p>}
     </div>
   );
 }

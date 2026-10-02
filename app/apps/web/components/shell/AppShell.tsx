@@ -79,7 +79,7 @@ function TopBar() {
       )}
       <div className="topbar-end">
         <button className="btn" onClick={() => setPalette(true)} aria-label="Search and jump (Control K)">
-          Search <kbd className="label">{shortcut}</kbd>
+          <span className="topbar-wide">Search </span><span className="topbar-narrow" aria-hidden>⌕</span><kbd className="label topbar-wide">{shortcut}</kbd>
         </button>
         <SettingsDialog />
         <AccountLink />
@@ -91,7 +91,7 @@ function TopBar() {
 /** Off: the old Guest label, unchanged (visual baselines). On: a link into Commons. */
 function AccountLink() {
   const name = useMe((s) => s.name);
-  if (!commonsEnabled) return <span className="label" title="Accounts arrive with sub-project 5">Guest</span>;
+  if (!commonsEnabled) return <span className="label topbar-wide" title="Accounts arrive with sub-project 5">Guest</span>;
   return <Link className="btn" href="/commons">{name ?? "Commons"}</Link>;
 }
 

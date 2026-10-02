@@ -39,7 +39,7 @@ export function SettingsDialog() {
   return (
     <>
       <button className="btn px-2.5 py-1" {...api.getTriggerProps()} aria-label="Settings">
-        <span aria-hidden>⚙</span> Settings
+        <span aria-hidden>⚙</span><span className="topbar-wide"> Settings</span>
       </button>
       {api.open && (
         <Portal>
