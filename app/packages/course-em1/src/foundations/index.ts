@@ -2,8 +2,10 @@ import { Course } from "@forma/engine";
 import { EXAM_DATE } from "../assessments";
 
 /** Units and concepts of Maths Foundations; plans N2–N6 add theirs here. Course.parse validates them below. */
-const foundationUnits: { number: number; title: string }[] = [];
-const foundationConcepts: unknown[] = [];
+import { integrationConcepts } from "./integration";
+
+const foundationUnits = [{ number: 4, title: "Integration" }];
+const foundationConcepts: unknown[] = [...integrationConcepts];
 
 /**
  * Maths Foundations for Engineering: the prerequisite course the readiness check recommends from. It shares EMag's
