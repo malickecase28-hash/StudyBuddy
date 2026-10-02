@@ -25,7 +25,7 @@ The fix is a short prerequisite course built with the same living plates. Each c
 
 ## The course
 
-A new package `@forma/course-math0`, course id `math0`, titled **"Maths Foundations for Engineering"**. Its concepts form one prerequisite graph. Each concept has one main idea lesson, built with `defineIdeaPlate` like the EMag idea plates. A lesson has:
+A second course, id `math0` (exported from `@forma/course-em1` until a second module justifies its own package), titled **"Maths Foundations for Engineering"**. Its concepts form one prerequisite graph. Each concept has one main idea lesson, built with `defineIdeaPlate` like the EMag idea plates. A lesson has:
 - explanation steps with claims checked against plate readouts;
 - worked examples (basic, tutorial and exam level) with traps;
 - asks, checks and a recap.
@@ -64,7 +64,7 @@ Every new component gets the same claims and lint support as the existing ones, 
 
 ## Readiness checks and routing
 
-- **Background section.** `Diagnostic` gains an optional `background` list of topics, each with a core item, a probe item and a `refresher` that names a concept in **any** course (e.g. `m0.int.substitution`). EMag's check gets 8 background topics:
+- **Background topics.** No schema change is needed: background topics are ordinary diagnostic topics whose `refresher` names a foundation concept (e.g. `m0.int.choosing`). The existing route machinery already recommends them, and they can be skipped. EMag's check gets 8 background topics:
   1. rearranging;
   2. trig and Pythagoras;
   3. units and prefixes;
@@ -104,11 +104,11 @@ The web app currently imports one course. `lib/course.ts` becomes a registry (`c
 
 | Plan | Contents | Depends on |
 |---|---|---|
-| **N1** | Course registry; `@forma/course-math0` skeleton; diagnostic `background` and the foundations route; Desk card; the four new plate components | — |
+| **N1** | Course registry; the foundations course (inside `@forma/course-em1` for now, so existing plate and idea tests cover it); `graph-1d`; Desk card | — |
 | **N2** | Unit D · Integration (5 idea lessons), the owner's sharpest need | N1 |
-| **N3** | Unit E · Multiple integrals (4) | N2 |
+| **N3** | Unit E · Multiple integrals (4), with `region-2d` | N2 |
 | **N4** | Unit C · Differentiation (3) | N1 |
-| **N5** | Units A and B · Algebra, trig, units, notation (8) | N1 |
+| **N5** | Units A and B · Algebra, trig, units, notation (8), with `triangle` and `unit-circle` | N1 |
 | **N6** | Unit F · Vectors (3), and EMag's background readiness items | N5 |
 
 Claude writes each plan with every lesson word for word, and Codex executes them.
