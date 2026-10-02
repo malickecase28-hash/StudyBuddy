@@ -7,6 +7,7 @@ import { useStudy } from "@/lib/store";
 import { ConceptMap } from "../map/ConceptMap";
 import { RetrievalQuiz } from "../screens/RetrievalQuiz";
 import { Split } from "./Split";
+import { Markup } from "@/components/Markup";
 
 export function ReviseMode({ conceptId, split, onSplit }: { conceptId: string; split: number; onSplit: (r: number) => void }) {
   const now = useStudy((s) => s.now);
@@ -30,7 +31,7 @@ export function ReviseMode({ conceptId, split, onSplit }: { conceptId: string; s
               {exam.map((q) => (
                 <li key={q.id} className="card space-y-1 text-sm">
                   <p className="label">{q.paper} · {q.question}{q.marks ? ` · ${q.marks} marks` : ""}</p>
-                  <p>{q.text}</p>
+                  <p><Markup text={q.text} /></p>
                 </li>
               ))}
             </ul>

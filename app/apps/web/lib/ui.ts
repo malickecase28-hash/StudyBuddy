@@ -3,7 +3,13 @@
 import type { Mode, ToolId } from "@forma/engine";
 import { create } from "zustand";
 
-/** Ephemeral UI state (not persisted). Pinned tools live in the learner's per-mode layouts. */
+const PIN_KEY = "forma:pinned-tool";
+const readPin = (): ToolId | null => { try { return typeof window === "undefined" ? null : (localStorage.getItem(PIN_KEY) as ToolId | null); } catch { return null; } };
+
+/**
+ * Ephemeral UI state. Pinned tools inside a concept live in the learner's per-mode layouts; outside a concept
+ * (Desk, Questions, Ink…) the one pinned tool is kept in this browser (`pin`).
+ */
 export const useUi = create<{
   panel: ToolId | null;
   paletteOpen: boolean;
@@ -13,6 +19,11 @@ export const useUi = create<{
   /** Tool width outside a concept workspace (session only). */
   toolWidth: number;
   toolExpanded: boolean;
+  /** The tool pinned outside a concept workspace. */
+  pin: ToolId | null;
+  setPin: (t: ToolId | null) => void;
+  /** Read the saved pin after mount (the server render has none). */
+  loadPin: () => void;
   togglePanel: (t: ToolId) => void;
   openPanel: (t: ToolId) => void;
   closePanel: () => void;
@@ -28,6 +39,9 @@ export const useUi = create<{
   workspaceMode: null,
   toolWidth: 0.45,
   toolExpanded: false,
+  pin: null,
+  setPin: (pin) => { try { if (pin) localStorage.setItem(PIN_KEY, pin); else localStorage.removeItem(PIN_KEY); } catch { /* private mode: pin lasts the session */ } set({ pin }); },
+  loadPin: () => set({ pin: readPin() }),
   togglePanel: (t) => set((s) => ({ panel: s.panel === t ? null : t })),
   openPanel: (t) => set({ panel: t }),
   closePanel: () => set({ panel: null, toolExpanded: false }),

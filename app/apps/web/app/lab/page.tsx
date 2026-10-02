@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useStudy } from "@/lib/store";
+import { Markup } from "@/components/Markup";
 
 const GaussLab = dynamic(() => import("@/components/lab/GaussLab"), { ssr: false });
 
@@ -63,7 +64,7 @@ export default function LabPage() {
           </div>
           <div className="mt-5 border-t border-line pt-4">
             <h2 className="font-semibold">{current.title}</h2>
-            <p className="mt-2 text-sm leading-6 text-soft">{current.prompt}</p>
+            <p className="mt-2 text-sm leading-6 text-soft"><Markup text={current.prompt} /></p>
             <p className={`mt-4 text-sm font-medium ${complete ? "text-confirmed" : "text-faint"}`} role="status">{complete ? "✓ You made it happen. Try another setup." : "Observe the flux readout as you change the model."}</p>
           </div>
           <Link href="/learn/em1.electrostatics.gauss-law/main" className="mt-5 inline-block text-sm underline">Learn the reasoning →</Link>

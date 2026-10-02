@@ -3,33 +3,33 @@
 import type { ToolId } from "@forma/engine";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Tex } from "@/components/Tex";
-import { conceptHref, formulaSheet, getConcept, lessonForPlate } from "@/lib/course";
+import { conceptHref, getConcept, lessonForPlate } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { TOOLS } from "@/lib/tools";
 import { useUi } from "@/lib/ui";
-import { WorkingPaper } from "../paper/WorkingPaper";
-import { Calculator } from "./Calculator";
+import { ConceptInk } from "../ink/InkEditor";
+import { FormulaSheet } from "../calc/FormulaSheet";
+import { GraphingCalculator } from "../calc/GraphingCalculator";
 
 export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string | null }) {
   const notebook = useStudy((s) => s.learner.notebook);
   const concept = conceptId ? getConcept(conceptId) : undefined;
   switch (tool) {
     case "paper":
-      return <WorkingPaper compact {...(conceptId ? { conceptId } : {})} />;
+      return <ConceptInk conceptId={conceptId && getConcept(conceptId) ? conceptId : "em1.electrostatics.gauss-law"} />;
     case "calculator":
-      return <Calculator />;
+      return (
+        <div className="space-y-2">
+          <Link className="text-sm underline" href="/calculator">Open full screen ↗</Link>
+          <GraphingCalculator />
+        </div>
+      );
     case "formulas":
       return (
-        <ul className="space-y-3">
-          {formulaSheet.map((f) => (
-            <li key={f.id}>
-              <p className="label">{f.title}</p>
-              <Tex latex={f.latex} display />
-              <p className="text-xs text-soft">{f.source}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-2">
+          <Link className="text-sm underline" href="/formulas">Open full screen ↗</Link>
+          <FormulaSheet />
+        </div>
       );
     case "sources":
       return concept ? (
@@ -63,10 +63,10 @@ export function ToolBody({ tool, conceptId }: { tool: ToolId; conceptId: string 
 }
 
 export function useToolState() {
-  const { panel, openPanel, closePanel, workspaceMode: mode, toolWidth, setToolWidth } = useUi();
+  const { panel, openPanel, closePanel, workspaceMode: mode, toolWidth, setToolWidth, pin, setPin } = useUi();
   const layouts = useStudy((s) => s.learner.workspace.layouts);
   const setLayout = useStudy((s) => s.setLayout);
-  const pinnedTool = mode ? layouts[mode].pinned[0] ?? null : null;
+  const pinnedTool = mode ? layouts[mode].pinned[0] ?? null : pin;
   const tool = panel ?? pinnedTool;
   return {
     tool,
@@ -76,12 +76,12 @@ export function useToolState() {
     open: (t: ToolId) => openPanel(t),
     /** Closing a pinned tool unpins it for this mode, so it doesn't come back on the next page. */
     close: () => {
-      if (mode && tool === pinnedTool) setLayout(mode, { pinned: [] });
+      if (tool === pinnedTool) { if (mode) setLayout(mode, { pinned: [] }); else setPin(null); }
       closePanel();
     },
     togglePin: (t: ToolId) => {
-      if (!mode) return;
-      setLayout(mode, { pinned: pinnedTool === t ? [] : [t] });
+      if (mode) setLayout(mode, { pinned: pinnedTool === t ? [] : [t] });
+      else setPin(pinnedTool === t ? null : t);
       openPanel(t);
     },
   };
@@ -90,6 +90,9 @@ export function useToolState() {
 /** Page | handle | tool. The page is always the first child, so opening a tool never remounts it. */
 export function ToolSplit({ children }: { children: ReactNode }) {
   const { tool, pinned, width, setWidth, close, togglePin } = useToolState();
+  const mode = useUi((s) => s.workspaceMode);
+  const loadPin = useUi((s) => s.loadPin);
+  useEffect(() => { loadPin(); }, [loadPin]);
   const { activeConceptId, toolExpanded, setToolExpanded } = useUi();
   const box = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -144,7 +147,7 @@ export function ToolSplit({ children }: { children: ReactNode }) {
         <aside className="tool-pane" aria-label={`Tool: ${label}`}>
           <header className="tool-pane-head">
             <h2 className="label">{label}</h2>
-            <button className="btn text-sm" aria-pressed={pinned} onClick={() => togglePin(tool)} title="Keep this tool open in this mode">
+            <button className="btn text-sm" aria-pressed={pinned} onClick={() => togglePin(tool)} title={mode ? "Keep this tool open whenever you use this mode" : "Keep this tool open on every page outside a lesson"}>
               {pinned ? "Pinned" : "Pin"}
             </button>
             <button className="btn text-sm" aria-pressed={toolExpanded} onClick={() => setToolExpanded(!toolExpanded)} aria-label={toolExpanded ? "Show the page again" : "Expand the tool"}>

@@ -1,0 +1,14 @@
+{
+  "name": "@forma/ink",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1",
+    "perfect-freehand": "^1.2.3",
+    "zod": "^4.6.5"
+  }
+}

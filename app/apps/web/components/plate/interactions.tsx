@@ -6,6 +6,7 @@ import { Readout } from "@forma/ui";
 import { useEffect, useRef, useState } from "react";
 import { Feedback } from "../blocks/Feedback";
 import { NumericField } from "../blocks/numeric";
+import { Markup } from "@/components/Markup";
 
 export type AnswerInput = { correct: boolean; attempt: number; tag?: string; errorClass?: ErrorClass };
 type Patch = Record<string, Record<string, unknown>>;
@@ -39,7 +40,7 @@ function PredictDrag({ i, truth, onAnswer, onReveal, onComplete }: { i: I<"predi
   };
   return (
     <div className="interaction space-y-3">
-      <p className="prompt">{i.prompt}</p>
+      <p className="prompt"><Markup text={i.prompt} /></p>
       <input
         type="range" className="w-full" aria-label={`Your prediction, in ${i.unit}`}
         min={i.range[0]} max={i.range[1]} step={(i.range[1] - i.range[0]) / 200}
@@ -98,22 +99,22 @@ function Choose({ i, onAnswer, onComplete, strict, onMiss }: { i: I<"choose"> } 
   };
   return (
     <fieldset className="interaction space-y-2">
-      <legend className="prompt">{i.prompt}</legend>
+      <legend className="prompt"><Markup text={i.prompt} /></legend>
       {i.options.map((o) => (
         <label key={o.id} className="option flex gap-2">
           <input type="radio" name={i.id} value={o.id} checked={picked === o.id} disabled={!!choice?.correct} onChange={() => setPicked(o.id)} />
-          {o.label}
+          <Markup text={o.label} />
         </label>
       ))}
       {!choice?.correct && <button className="btn btn-primary" disabled={!picked} onClick={check}>Check</button>}
       {choice && <Feedback correct={choice.correct} text={choice.feedback} />}
       {choice?.correct && i.selfExplain && (
         <fieldset className="space-y-1">
-          <legend className="text-sm">{i.selfExplain.prompt}</legend>
+          <legend className="text-sm"><Markup text={i.selfExplain.prompt} /></legend>
           {i.selfExplain.options.map((o) => (
             <label key={o.id} className="option flex gap-2 text-sm">
               <input type="radio" name={`${i.id}-why`} checked={reason === o.id} onChange={() => setReason(o.id)} />
-              {o.label}
+              <Markup text={o.label} />
             </label>
           ))}
           {reason && <Feedback correct={!!i.selfExplain.options.find((o) => o.id === reason)?.correct} text={i.selfExplain.options.find((o) => o.id === reason)!.feedback} />}
@@ -128,7 +129,7 @@ function Identify({ i, onAnswer, onComplete, onHighlight, strict, onMiss }: { i:
   const [last, setLast] = useState<(typeof i.targets)[number] | null>(null);
   return (
     <div className="interaction space-y-2">
-      <p className="prompt">{i.prompt}</p>
+      <p className="prompt"><Markup text={i.prompt} /></p>
       <div className="flex flex-wrap gap-2">
         {i.targets.map((t) => (
           <button
@@ -143,7 +144,7 @@ function Identify({ i, onAnswer, onComplete, onHighlight, strict, onMiss }: { i:
               if (t.correct || (!strict && a >= 2)) onComplete();
             }}
           >
-            {t.label}
+            <Markup text={t.label} />
           </button>
         ))}
       </div>

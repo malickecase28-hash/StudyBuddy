@@ -17,7 +17,7 @@ import { ToolSplit } from "./ToolPanel";
 const MODES = [["learn", "Learn"], ["solve", "Solve"], ["explore", "Explore"], ["revise", "Revise"]] as const;
 const PAGES: Record<string, string> = {
   "/courses": "Library", "/notebook": "Notebook", "/dashboard": "Progress", "/past-papers": "Question bank",
-  "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Working paper", "/lab": "Classic lab", "/map": "Concept map", "/commons": "Commons",
+  "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Ink", "/lab": "Classic lab", "/map": "Concept map", "/commons": "Commons", "/ink": "Ink", "/calculator": "Calculator", "/formulas": "Formulas",
 };
 
 /** The shell reads no search params, so every page pre-renders with its frame (no blank first paint). */
@@ -54,7 +54,7 @@ function TopBar() {
   const crumbs: { label: string; href?: string }[] =
     path === "/" ? [{ label: "Desk" }]
     : path.startsWith("/c/") ? [{ label: "Library", href: "/courses" }, { label: course.title, ...(concept ? { href: `/c/${courseId}` } : {}) }, ...(concept ? [{ label: `Unit ${concept.unit}` }, { label: concept.title }] : [])]
-    : [{ label: PAGES[path] ?? (path.startsWith("/learn/") ? "Classic lesson" : "Forma") }];
+    : [{ label: PAGES[path] ?? (path.startsWith("/learn/") ? "Classic lesson" : path.startsWith("/ink/") ? "Ink" : "Forma") }];
   return (
     <header className="topbar">
       <Link href="/" className="brand" aria-label="Forma: go to your desk">
@@ -79,7 +79,7 @@ function TopBar() {
       )}
       <div className="topbar-end">
         <button className="btn" onClick={() => setPalette(true)} aria-label="Search and jump (Control K)">
-          Search <kbd className="label">{shortcut}</kbd>
+          <span className="topbar-wide">Search </span><span className="topbar-narrow" aria-hidden>⌕</span><kbd className="label topbar-wide">{shortcut}</kbd>
         </button>
         <SettingsDialog />
         <AccountLink />
@@ -91,7 +91,7 @@ function TopBar() {
 /** Off: the old Guest label, unchanged (visual baselines). On: a link into Commons. */
 function AccountLink() {
   const name = useMe((s) => s.name);
-  if (!commonsEnabled) return <span className="label" title="Accounts arrive with sub-project 5">Guest</span>;
+  if (!commonsEnabled) return <span className="label topbar-wide" title="Accounts arrive with sub-project 5">Guest</span>;
   return <Link className="btn" href="/commons">{name ?? "Commons"}</Link>;
 }
 

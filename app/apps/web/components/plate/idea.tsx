@@ -2,6 +2,7 @@
 
 import type { AskInput } from "@forma/plate";
 import { Tex } from "../Tex";
+import { Markup } from "@/components/Markup";
 
 export function AsksList({ asks, open, onOpen }: { asks: AskInput[]; open: string | null; onOpen: (id: string | null) => void }) {
   const current = asks.find((a) => a.id === open);
@@ -45,7 +46,7 @@ export function WorkedLines({ title, lines }: { title: string; lines: { text: st
       <ol className="list-decimal space-y-1 pl-5">
         {lines.map((l, i) => (
           <li key={i}>
-            {l.text}
+            <Markup text={l.text} />
             {l.latex && <Tex latex={l.latex} display />}
           </li>
         ))}

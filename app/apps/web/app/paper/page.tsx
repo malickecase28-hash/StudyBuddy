@@ -1,14 +1,29 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import { WorkingPaper } from "@/components/paper/WorkingPaper";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { getConcept } from "@/lib/course";
+import { conceptNotebook, migrateWorkingPaper } from "@/lib/ink-migrate";
 
-function Paper() {
+/** Old working-paper links: ?note= opens the migrated page, ?concept= that concept's notebook, otherwise Ink. */
+function Redirect() {
   const search = useSearchParams();
-  return <WorkingPaper {...(search.get("concept") ? { conceptId: search.get("concept")! } : {})} {...(search.get("note") ? { noteId: search.get("note")! } : {})} />;
+  const router = useRouter();
+  useEffect(() => {
+    const note = search.get("note"), concept = search.get("concept");
+    void (async () => {
+      const done = await migrateWorkingPaper();
+      if (note && done[note]) return router.replace(done[note]);
+      if (concept && getConcept(concept)) {
+        const nb = await conceptNotebook(concept);
+        return router.replace(`/ink/${nb.id}/${nb.pageIds[nb.pageIds.length - 1]}`);
+      }
+      router.replace("/ink");
+    })();
+  }, [search, router]);
+  return <p className="p-8 text-soft">Opening your working paper in Ink…</p>;
 }
 
 export default function PaperPage() {
-  return <Suspense fallback={<p className="p-8 text-soft">Opening working paper…</p>}><Paper /></Suspense>;
+  return <Suspense fallback={<p className="p-8 text-soft">Opening your working paper in Ink…</p>}><Redirect /></Suspense>;
 }

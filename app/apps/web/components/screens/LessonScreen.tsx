@@ -124,7 +124,7 @@ function LessonBody({ conceptId, lessonId, returnTo, resumeBlockId }: { conceptI
           <div className="card">
             <p className="label">Your desk</p>
             <nav className="mt-3 space-y-1 text-sm" aria-label="Study tools">
-              <Link href={`/paper?concept=${encodeURIComponent(conceptId)}`} className="block rounded-lg px-2 py-2 hover:bg-sunken">✎ Working paper <span className="float-right">↗</span></Link>
+              <Link href={`/paper?concept=${encodeURIComponent(conceptId)}`} className="block rounded-lg px-2 py-2 hover:bg-sunken">✎ Ink <span className="float-right">↗</span></Link>
               <Link href="/lab" className="block rounded-lg px-2 py-2 hover:bg-sunken">◉ Simulation lab <span className="float-right">↗</span></Link>
               <Link href="/notebook" className="block rounded-lg px-2 py-2 hover:bg-sunken">▤ Notebook <span className="float-right">↗</span></Link>
               <Link href="/past-papers" className="block rounded-lg px-2 py-2 hover:bg-sunken">↗ Problems and papers <span className="float-right">↗</span></Link>
