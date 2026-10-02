@@ -373,6 +373,8 @@ function PlateRun({
                 <Link className="btn btn-primary" href={returnTo}>Back to where you were →</Link>
               ) : conceptId.startsWith("m0.") && following?.lessons[0] ? (
                 <Link className="btn btn-primary" href={conceptHref(following.id, "learn", { lesson: following.lessons[0].id })}>Next: {following.title} →</Link>
+              ) : conceptId.startsWith("m0.") ? (
+                <Link className="btn btn-primary" href="/">Back to Electromagnetics →</Link>
               ) : (
                 <Link className="btn btn-primary" href={conceptHref(conceptId, "solve")}>Practise in Solve mode →</Link>
               )}

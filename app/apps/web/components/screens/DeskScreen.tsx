@@ -56,7 +56,8 @@ export function DeskScreen() {
             <button className="btn" onClick={() => { try { localStorage.setItem(SKIP_KEY, "1"); } catch { /* session only */ } setSkipped(true); }}>Skip for now</button>
           </div>
         </section>
-      )}      <section className="desk-continue" data-plate={!!c.plate} aria-labelledby="continue-title">
+      )}
+      <section className="desk-continue" data-plate={!!c.plate} aria-labelledby="continue-title">
         {c.plate && <PlateThumb plateId={c.plate.plateId} step={c.plate.step} label={`Where you stopped: ${c.title}`} />}
         <div className="space-y-3">
           <p className="kicker">Continue</p>

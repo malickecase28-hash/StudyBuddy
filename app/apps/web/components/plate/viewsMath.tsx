@@ -428,8 +428,8 @@ export function Graph1DView({ id, ev }: ViewProps) {
       {p.label && <text x={GX0 * PX + 8} y={-GY1 * PX + 16} className="plate-label">{p.label}</text>}
       <text x={GX0 * PX} y={-GY0 * PX + 14} className="plate-label">{x0}</text>
       <text x={GX1 * PX - 24} y={-GY0 * PX + 14} className="plate-label">{x1}</text>
-      <text x={GX0 * PX - 30} y={-GY0 * PX} className="plate-label">{y0}</text>
-      <text x={GX0 * PX - 30} y={-GY1 * PX + 10} className="plate-label">{y1}</text>
+      <text x={GX0 * PX + 4} y={-GY0 * PX - 6} className="plate-label">{y0}</text>
+      <text x={GX1 * PX - 4} y={-GY1 * PX + 16} textAnchor="end" className="plate-label">{y1}</text>
     </g>
   );
 }

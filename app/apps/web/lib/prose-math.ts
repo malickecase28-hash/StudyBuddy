@@ -16,7 +16,7 @@ const GREEK_SUB: Record<string, string> = { ρ: "vSLs", ε: "r0123R", μ: "r0123
 
 const RULES: { re: RegExp; make: (m: RegExpExecArray) => ProseToken }[] = [
   // base^exponent: the exponent is (…), {…}, or a signed run of letters, digits and dots.
-  { re: /([A-Za-z0-9)\]²³])\^(\([^)]*\)|\{[^}]*\}|[−-]?[A-Za-z0-9.]+)/y, make: (m) => ({ kind: "sup", base: m[1]!, s: strip(m[2]!) }) },
+  { re: /([A-Za-z0-9)\]²³₀-₉ₐ-ₜ])\^(\([^)]*\)|\{[^}]*\}|[−-]?[A-Za-z0-9.]+)/y, make: (m) => ({ kind: "sup", base: m[1]!, s: strip(m[2]!) }) },
   // base_subscript.
   { re: /([A-Za-zΑ-Ωα-ω∂])_(\{[^}]*\}|[A-Za-z0-9]+)/y, make: (m) => ({ kind: "sub", base: m[1]!, s: strip(m[2]!) }) },
 ];
