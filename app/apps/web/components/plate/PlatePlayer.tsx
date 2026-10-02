@@ -9,7 +9,7 @@ import {
 import { MarginNote, Timeline } from "@forma/ui";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { conceptHref, courseOf, getLesson, ideaMetaFor, lessonHref, misconceptionFor, splitRef } from "@/lib/course";
+import { conceptHref, courseOf, getLesson, ideaMetaFor, lessonHref, misconceptionFor, nextConcept, splitRef } from "@/lib/course";
 import { DiscussLink } from "../commons/Post";
 import { answeredFromHistory, resumeStepFor, shouldCredit, useCueClock, usePlayback } from "@/lib/playback";
 import { conceptProgress } from "@/lib/progress";
@@ -276,6 +276,7 @@ function PlateRun({
 
   const last = plate.steps.length - 1;
   const finished = index === last && plate.steps.every((s) => !s.interaction || answered.has(s.interaction.id));
+  const following = nextConcept(conceptId);
   const hasEdits = Object.keys(overrides).length > 0;
 
   return (
@@ -370,6 +371,8 @@ function PlateRun({
                 <button className="btn btn-primary" onClick={next.go}>Continue: {next.title} →</button>
               ) : returnTo ? (
                 <Link className="btn btn-primary" href={returnTo}>Back to where you were →</Link>
+              ) : conceptId.startsWith("m0.") && following?.lessons[0] ? (
+                <Link className="btn btn-primary" href={conceptHref(following.id, "learn", { lesson: following.lessons[0].id })}>Next: {following.title} →</Link>
               ) : (
                 <Link className="btn btn-primary" href={conceptHref(conceptId, "solve")}>Practise in Solve mode →</Link>
               )}
