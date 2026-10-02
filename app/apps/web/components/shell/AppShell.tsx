@@ -17,7 +17,7 @@ import { ToolSplit } from "./ToolPanel";
 const MODES = [["learn", "Learn"], ["solve", "Solve"], ["explore", "Explore"], ["revise", "Revise"]] as const;
 const PAGES: Record<string, string> = {
   "/courses": "Library", "/notebook": "Notebook", "/dashboard": "Progress", "/past-papers": "Question bank",
-  "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Working paper", "/lab": "Classic lab", "/map": "Concept map", "/commons": "Commons",
+  "/review": "Review", "/diagnostic": "Readiness check", "/paper": "Working paper", "/lab": "Classic lab", "/map": "Concept map", "/commons": "Commons", "/ink": "Ink",
 };
 
 /** The shell reads no search params, so every page pre-renders with its frame (no blank first paint). */
@@ -54,7 +54,7 @@ function TopBar() {
   const crumbs: { label: string; href?: string }[] =
     path === "/" ? [{ label: "Desk" }]
     : path.startsWith("/c/") ? [{ label: "Library", href: "/courses" }, { label: course.title, ...(concept ? { href: `/c/${courseId}` } : {}) }, ...(concept ? [{ label: `Unit ${concept.unit}` }, { label: concept.title }] : [])]
-    : [{ label: PAGES[path] ?? (path.startsWith("/learn/") ? "Classic lesson" : "Forma") }];
+    : [{ label: PAGES[path] ?? (path.startsWith("/learn/") ? "Classic lesson" : path.startsWith("/ink/") ? "Ink" : "Forma") }];
   return (
     <header className="topbar">
       <Link href="/" className="brand" aria-label="Forma: go to your desk">

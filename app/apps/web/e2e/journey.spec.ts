@@ -40,29 +40,31 @@ test("@perf lab stays usable on a 4x throttled CPU with low-power quality", asyn
   expect(Date.now() - start).toBeLessThan(20_000);
 });
 
-test("workbench changes the physics and working paper restores from the notebook", async ({ page }) => {
+test("workbench changes the physics and working paper keeps what you wrote", async ({ page }) => {
   await page.goto("/lab");
   await expect(page.getByText(/Ψ = ∮ D·dS = 1\.00 µC/)).toBeVisible();
   await page.getByRole("slider", { name: "Q1" }).focus();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByText(/Ψ = ∮ D·dS = 1\.50 µC/)).toBeVisible();
 
+  // Working paper is Ink now: it saves as you write, so a reopened page still has the working.
   await page.goto("/paper?concept=em1.electrostatics.gauss-law");
-  await expect(page.getByRole("button", { name: "Save page to notebook" })).toBeEnabled();
-  await page.getByLabel("Typed working").fill("Flux follows enclosed charge.");
-  await expect(page.getByLabel("Typed working")).toHaveValue("Flux follows enclosed charge.");
-  await page.getByRole("button", { name: "Save page to notebook" }).click();
-  await expect(page.getByText("Saved to your notebook.", { exact: false })).toBeVisible();
-  await page.goto("/notebook");
-  await expect(page.getByText("Flux follows enclosed charge.")).toBeVisible();
-  await page.getByRole("link", { name: "Open in working paper" }).click();
-  await expect(page.getByLabel("Typed working")).toHaveValue("Flux follows enclosed charge.");
+  await expect(page).toHaveURL(/\/ink\//);
+  await page.getByRole("button", { name: "Text", exact: true }).click();
+  await page.getByRole("img", { name: /Gauss's Law/ }).click({ position: { x: 120, y: 120 } });
+  await page.getByLabel("Text").fill("Flux follows enclosed charge.");
+  await page.getByLabel("Text").press("Control+Enter");
+  await page.waitForTimeout(600); // item rows are written 400 ms after the last change
+  await page.goto("/paper?concept=em1.electrostatics.gauss-law");
+  await expect(page).toHaveURL(/\/ink\//);
+  await expect.poll(() => page.evaluate(() => [...(window as unknown as { __ink: { items: Map<string, { kind: string; text?: string }> } }).__ink.items.values()]
+    .some((i) => i.kind === "text" && i.text === "Flux follows enclosed charge."))).toBe(true);
 });
 
-test("working paper's colour picker stays hidden and its colours parse", async ({ page }) => {
+test("working paper opens in Ink with its tools, and nothing reads NaN", async ({ page }) => {
   await page.goto("/paper?concept=em1.electrostatics.gauss-law");
-  await expect(page.getByRole("button", { name: "Save page to notebook" })).toBeEnabled();
-  await expect(page.locator(".clr-picker")).toBeHidden();
+  await expect(page.getByRole("toolbar", { name: "Ink tools" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Colour charge" })).toBeVisible();
   await expect(page.getByText(/NaN/)).toHaveCount(0);
 });
 
