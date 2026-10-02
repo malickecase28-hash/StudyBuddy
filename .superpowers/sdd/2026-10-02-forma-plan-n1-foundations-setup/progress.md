@@ -6,4 +6,4 @@ Task 3: assertion edit: app/packages/course-em1/test/course.test.ts:44 — readi
 Task 3: complete (commits 72813b6..0857d73, checks: pnpm test → 894/894; pnpm typecheck → PASS).
 Task 4: complete (commits 0857d73..0835b42, checks: pnpm test → 894/894; pnpm typecheck → PASS; web tsc → PASS; pnpm build → PASS).
 Task 5: complete (commits 0835b42..6407ac7, checks: pnpm test → 894/894; pnpm typecheck → PASS; web tsc → PASS; pnpm build → PASS; pnpm e2e → 47/47).
-Task 6: complete (commits 6407ac7..6407ac7, checks: pnpm test → 894/894; pnpm typecheck → PASS; web tsc → PASS; pnpm build → PASS; pnpm e2e → 47/47).
+Task 6: complete (commits 6407ac7..b76efcc, checks: pnpm test → 894/894; pnpm typecheck → PASS; web tsc → PASS; pnpm build → PASS; pnpm e2e → 47/47).

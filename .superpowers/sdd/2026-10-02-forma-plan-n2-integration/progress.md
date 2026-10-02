@@ -1,5 +1,6 @@
-Task 1: complete (commits deferred to Task 6 as specified; checks deferred until plates are registered).
-Task 2: complete (implementation transcribed from plan; checks and commit deferred to Task 6 as specified).
-Task 3: complete (implementation transcribed from plan; checks and commit deferred to Task 6 as specified).
-Task 4: complete (implementation transcribed from plan; checks and commit deferred to Task 6 as specified).
-Task 5: complete (both plate implementations transcribed from plan; checks and commit deferred to Task 6 as specified).
+Task 1: complete (commits b76efcc..db06f6e, checks: pnpm test → deferred to Task 6; pnpm typecheck → deferred to Task 6; web tsc → deferred to Task 6).
+Task 2: complete (commits b76efcc..db06f6e, checks: plate validation → PASS in Task 6; idea validation and coverage → PASS in Task 6).
+Task 3: complete (commits b76efcc..db06f6e, checks: plate validation → PASS in Task 6; idea validation and coverage → PASS in Task 6).
+Task 4: complete (commits b76efcc..db06f6e, checks: plate validation → PASS in Task 6; idea validation and coverage → PASS in Task 6).
+Task 5: complete (commits b76efcc..db06f6e, checks: plate validation → PASS in Task 6; idea validation and coverage → PASS in Task 6).
+Task 6: complete (commits b76efcc..db06f6e, checks: pnpm test → 924/924; pnpm typecheck → PASS; web tsc → PASS).

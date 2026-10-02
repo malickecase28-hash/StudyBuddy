@@ -7,7 +7,8 @@ export const diagnostic = Diagnostic.parse({
   topics: [
     { id: "dot", label: "Vectors & dot product", refresher: "em1.math.vectors" },
     { id: "coords", label: "Spherical coordinates", refresher: "em1.math.surface-integrals" },
-    { id: "calculus", label: "Integration", refresher: "em1.math.surface-integrals" },
+    { id: "calculus", label: "Integration", refresher: "m0.int.antiderivatives" },
+    { id: "techniques", label: "Substitution or parts", refresher: "m0.int.choosing" },
     { id: "surface", label: "Surface integrals & normals", refresher: "em1.math.surface-integrals" },
     { id: "coulomb", label: "Coulomb's law", refresher: "em1.electrostatics.coulomb" },
     { id: "superposition", label: "Field superposition", refresher: "em1.electrostatics.field" },
@@ -64,6 +65,23 @@ export const diagnostic = Diagnostic.parse({
       options: [opt("a", "4r³", true, "Power rule."), opt("b", "r³", false, "Bring the power down: 4r³.")],
     },
     {
+      id: "techniques-core",
+      topic: "techniques",
+      role: "core",
+      prompt: "∫2x cos(x²) dx = ?",
+      options: [
+        opt("a", "sin(x²) + C", true, "u = x², du = 2x dx: ∫cos u du."),
+        opt("b", "2x sin(x²) + C", false, "Differentiate it: the product rule gives extra terms. Substitute u = x² instead."),
+        opt("c", "cos(x²)·x² + C", false, "The x and x² can't be integrated separately. Substitute u = x²."),
+      ],
+    },
+    {
+      id: "techniques-probe",
+      topic: "techniques",
+      role: "probe",
+      prompt: "To integrate x eˣ, which technique works?",
+      options: [opt("a", "Integration by parts", true, "u = x, dv = eˣ dx."), opt("b", "Substitution with u = eˣ", false, "There's no derivative of eˣ left to absorb the x.")],
+    },    {
       id: "surface-core",
       topic: "surface",
       role: "core",
