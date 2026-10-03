@@ -290,7 +290,7 @@ export const gaussLaw = {
           ...meta("quiet", src(SLIDES, "pp. 35, 37")),
           id: "gauss-statement",
           type: "prose",
-          text: "**Gauss's law:** the electric flux passing through any closed surface equals the total charge enclosed by that surface. $Q_{enc}$ can be point charges $\\sum Q_i$, a line $\\int \\rho_L\\,dl$, a sheet $\\int \\rho_S\\,dS$ or a volume $\\int \\rho_v\\,dv$. Whichever form it takes, only what is **inside** counts.",
+          text: "**Gauss's law:** wrap any closed surface around some charge; the electric flux out through it equals the charge inside. $Q_{enc}$ can be point charges $\\sum Q_i$, a line $\\int \\rho_L\\,dl$, a sheet $\\int \\rho_S\\,dS$ or a volume $\\int \\rho_v\\,dv$. Whichever form it takes, only what is **inside** counts.",
         },
         // ── Explore branches ────────────────────────────────────────────────
         {

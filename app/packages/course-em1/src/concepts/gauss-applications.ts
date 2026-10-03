@@ -119,7 +119,7 @@ export const gaussApplications = {
             },
             {
               id: "q8b",
-              prompt: "(b) Find the total charge within the sphere r = 3.",
+              prompt: "(b) How much charge lies inside the sphere r = 3?",
               answer: { value: 305.4, unit: "nC" },
               distractors: [
                 { value: 2.7, unit: "nC", errorClass: "conceptual", feedback: "2.7 nC/m² is D at r = 3. Multiply by the sphere's area, 4πr²." },
@@ -239,7 +239,7 @@ export const gaussApplications = {
           ...meta("assessment", src(SLIDES, "p. 61 (Q.09a)")),
           id: "q9a",
           type: "numeric",
-          prompt: "(a) Two point charges: 0.1 µC at (1, −2, 3) and 1/7 µC at (−1, 2, −2).",
+          prompt: "(a) Point charges of 0.1 µC and 1/7 µC, placed at (1, −2, 3) and (−1, 2, −2).",
           answer: { value: 0.2429, unit: "µC" },
           distractors: [],
           hints: ["Are both charges inside |x|,|y|,|z| < 5?", "Both are inside.", "0.1 + 1/7 µC."],
@@ -249,7 +249,7 @@ export const gaussApplications = {
           ...meta("assessment", src(SLIDES, "p. 61 (Q.09b)")),
           id: "q9b",
           type: "numeric",
-          prompt: "(b) A uniform line charge of π µC/m on the line x = −2, y = 3 (parallel to z).",
+          prompt: "(b) A line x = −2, y = 3 (running parallel to z) charged evenly with π µC/m.",
           answer: { value: 31.42, unit: "µC" },
           distractors: [
             { value: 3.142, unit: "µC", errorClass: "conceptual", feedback: "That's the charge per metre. How many metres of the line are inside the cube?" },
@@ -265,7 +265,7 @@ export const gaussApplications = {
           ...meta("assessment", src(SLIDES, "p. 61 (Q.09c)")),
           id: "q9c",
           type: "numeric",
-          prompt: "(c) A uniform surface charge of 0.1 µC/m² on the plane y = 3x.",
+          prompt: "(c) The plane y = 3x, charged evenly with 0.1 µC/m².",
           answer: { value: 10.54, unit: "µC" },
           distractors: [
             { value: 10, unit: "µC", errorClass: "conceptual", feedback: "The cut isn't 10 m wide: the line y = 3x crosses the square |x|,|y| ≤ 5 on a slant." },

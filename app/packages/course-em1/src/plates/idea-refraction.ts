@@ -75,7 +75,7 @@ export const ideaRefraction = defineIdeaPlate({
         {
           id: "hw03", level: "exam", title: "Angles from the tangent",
           setup: { b: { ...HW03 } },
-          problem: "For the boundary with ε₁ = 8ε₀, ε₂ = 5ε₀, plane −3x + 4z = 15), find θ₁ and θ₂, the angles between the field vectors and the interface's tangent, then cos θ₁/cos θ₂, and comment.",
+          problem: "For the boundary with ε₁ = 8ε₀, ε₂ = 5ε₀, plane −3x + 4z = 15), measure θ₁ and θ₂ from the interface (not the normal), then find cos θ₁/cos θ₂ and say what it shows.",
           lines: [
             { text: "From the tangent, tan θ = |Dₙ|/|Dₜ|. Region 1: tan θ₁ = 17.2/20.004 = 0.8598, so θ₁ = 40.69°.", focus: ["b"], claims: [{ instance: "b", readout: "th1", value: 40.6899, unit: "°" }] },
             { text: "Region 2: |D₂ₙ| = 17.2 and |D₂ₜ| = 12.502, so tan θ₂ = 1.376 and θ₂ = 53.99°.", focus: ["b"], claims: [{ instance: "b", readout: "th2", value: 53.987, unit: "°" }] },

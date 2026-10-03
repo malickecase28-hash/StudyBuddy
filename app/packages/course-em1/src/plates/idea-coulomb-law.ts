@@ -30,7 +30,7 @@ export const ideaCoulombLaw = defineIdeaPlate({
       explain: [
         {
           id: "law", title: "The law", show: ["q", "fc", "eq"], focus: ["q", "fc"],
-          note: "Coulomb's law (1785): the force between two point charges is proportional to the product of the charges and inversely proportional to the square of their separation. In free space |F| = |Q1Q2|/(4πε₀R²), with ε₀ = 8.854 × 10⁻¹² F/m, so 1/(4πε₀) is about 8.988 × 10⁹ N·m²/C². On the plate, +2 µC and +1 µC sit 1.6 m apart, and the force on each is 0.007022 N.",
+          note: "Coulomb's law (1785): two point charges push or pull on each other with a force that grows with each charge and weakens with the square of the gap between them. In free space |F| = |Q1Q2|/(4πε₀R²), with ε₀ = 8.854 × 10⁻¹² F/m, so 1/(4πε₀) is about 8.988 × 10⁹ N·m²/C². On the plate, +2 µC and +1 µC sit 1.6 m apart, and the force on each is 0.007022 N.",
           claims: [{ instance: "fc", readout: "Fmag", value: 0.00702152, unit: "N" }, { instance: "fc", readout: "R", value: 1.6, unit: "m" }],
         },
         {
@@ -58,7 +58,7 @@ export const ideaCoulombLaw = defineIdeaPlate({
         {
           id: "lec-ex1", level: "basic", title: "Lecture 2b, Example 1",
           setup: { q: EX1, fc: { on: "b", oblique: true, drawScale: 0.3 } },
-          problem: "Calculate the force that Q1 = 3 × 10⁻⁴ C at M(1, 2, 3) exerts on Q2 = −1 × 10⁻⁴ C at N(2, 0, 5), in a vacuum.",
+          problem: "In a vacuum, Q1 = 3 × 10⁻⁴ C sits at M(1, 2, 3) and Q2 = −1 × 10⁻⁴ C at N(2, 0, 5). What force does Q1 put on Q2?",
           lines: [
             { text: "R12 = N − M = âₓ − 2âᵧ + 2âz, so R12 = 3 m and a12 = (âₓ − 2âᵧ + 2âz)/3.", focus: ["q"], claims: [{ instance: "fc", readout: "R", value: 3, unit: "m" }] },
             { text: "Size and sign: Q1Q2/(4πε₀R²) = (3 × 10⁻⁴)(−1 × 10⁻⁴)/(4π × 8.854 × 10⁻¹² × 9) = −29.96 N.", focus: ["fc"], claims: [{ instance: "fc", readout: "Fmag", value: 29.9585, unit: "N" }] },

@@ -24,7 +24,7 @@ export const ideaWork = defineIdeaPlate({
       explain: [
         {
           id: "definition", title: "The work we do", show: ["axes", "lw", "eq"], focus: ["lw", "eq"],
-          note: "The field pushes on a charge with force QE. To move the charge along a path without letting it speed up, we push back with −QE. So the work we do is W = −Q∫E·dL along the path. Lecture 2b's Example 4 moves a +2 C charge along the unit circle at z = 1, from B(1, 0, 1) to A(0.8, 0.6, 1), through E = y âₓ + x âᵧ + 2 âz. The plate evaluates the integral: W = −0.96 J.",
+          note: "The field pushes on a charge with force QE. To move the charge along a path without letting it speed up, we push back with −QE. So the work we do is W = −Q∫E·dL along the path. Move a +2 C charge round the unit circle at z = 1, from B(1, 0, 1) to A(0.8, 0.6, 1), through E = y âₓ + x âᵧ + 2 âz. The plate evaluates the integral: W = −0.96 J.",
           claims: [{ instance: "lw", readout: "W", value: -0.96, unit: "J" }],
         },
         {
@@ -47,7 +47,7 @@ export const ideaWork = defineIdeaPlate({
         {
           id: "ex4", level: "basic", title: "Lecture 2b Example 4: along the arc",
           setup: { lw: { path: ARC, q: 2 } },
-          problem: "E = y âₓ + x âᵧ + 2 âz. Determine the work done carrying +2 C from B(1, 0, 1) to A(0.8, 0.6, 1) along the shorter arc of the unit circle at z = 1.",
+          problem: "In the field E = y âₓ + x âᵧ + 2 âz, a +2 C charge travels the short way round the unit circle at z = 1, from B(1, 0, 1) to A(0.8, 0.6, 1). How much work do we do?",
           lines: [
             { text: "dL = dx âₓ + dy âᵧ + dz âz, and dz = 0 on the circle: W = −2∫(y dx + x dy).", focus: ["lw"] },
             { text: "On the circle y = √(1 − x²) and x = √(1 − y²): W = −2∫₁^0.8 √(1 − x²) dx − 2∫₀^0.6 √(1 − y²) dy.", latex: R`W=-2\int_1^{0.8}\!\sqrt{1-x^2}\,dx-2\int_0^{0.6}\!\sqrt{1-y^2}\,dy`, focus: ["lw"] },

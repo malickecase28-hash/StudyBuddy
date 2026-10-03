@@ -46,7 +46,7 @@ export const ideaMagnetization = defineIdeaPlate({
         {
           id: "d8-6a", level: "basic", title: "Hayt D8.6(a): M from μ and H",
           setup: { mb: { given: "H", F1: [120, 0, 0], normal: [1, 0, 0], mur1: 14.3239, mur2: 1, show: ["H", "B", "M"] } },
-          problem: "Find the magnetization in a magnetic material where μ = 1.8 × 10⁻⁵ H/m and H = 120 A/m.",
+          problem: "A magnetic material has μ = 1.8 × 10⁻⁵ H/m, and H = 120 A/m inside it. What is M?",
           lines: [
             { text: "μr = μ/μ₀ = 1.8 × 10⁻⁵/(4π × 10⁻⁷) = 14.32, so χm = μr − 1 = 13.32.", focus: ["mb"] },
             { text: "M = χmH = 13.32 × 120 = 1599 A/m.", focus: ["mb"], claims: [{ instance: "mb", readout: "M1x", value: 1598.87, unit: "A/m" }] },

@@ -50,7 +50,7 @@ export const ideaSelfInductance = defineIdeaPlate({
         {
           id: "solenoid", level: "basic", title: "Hayt D8.13(a): a cored solenoid",
           setup: { ind: D813 },
-          problem: "A solenoid is 50 cm long, 2 cm in diameter and has 1500 turns. Its core has a relative permeability of 75. Find L.",
+          problem: "1500 turns are wound on a core 50 cm long and 2 cm across, with μr = 75. What is the solenoid's L?",
           lines: [
             { text: "S = π(0.01)² = 3.142 × 10⁻⁴ m², with the radius, not the diameter.", focus: ["ind"] },
             { text: "L = μN²S/ℓ = 75 × 4π × 10⁻⁷ × 1500² × 3.142 × 10⁻⁴/0.5 = 133.2 mH.", focus: ["ind"], claims: [{ instance: "ind", readout: "L", value: 0.13324, unit: "H" }] },
@@ -61,7 +61,7 @@ export const ideaSelfInductance = defineIdeaPlate({
         {
           id: "coax", level: "tutorial", title: "Hayt D8.12(a): a coax",
           setup: { ind: { kind: "coax", a: 0.0008, b: 0.004, length: 3.5, mur: 50, I: 2 } },
-          problem: "Find the self-inductance of 3.5 m of coaxial cable with a = 0.8 mm and b = 4 mm, filled with a material of μr = 50.",
+          problem: "A 3.5 m length of coax has a = 0.8 mm, b = 4 mm and a filling with μr = 50. What is its self-inductance?",
           lines: [
             { text: "ln(b/a) = ln 5 = 1.609; μ/2π = 50 × 2 × 10⁻⁷ = 10⁻⁵ H/m.", focus: ["ind"] },
             { text: "L = 10⁻⁵ × 1.609 × 3.5 = 56.33 µH (external only, as Hayt intends).", focus: ["ind"], claims: [{ instance: "ind", readout: "L", value: 5.63303e-5, unit: "H" }] },
@@ -72,7 +72,7 @@ export const ideaSelfInductance = defineIdeaPlate({
         {
           id: "lines", level: "exam", title: "Derive them",
           setup: { ind: { kind: "twowire", a: 0.001, s: 0.1, length: 1, mur: 1, internal: true, I: 1 } },
-          problem: "Determine the self-inductance per metre of (a) a coaxial cable of inner radius a and outer radius b and (b) a two-wire line of radius a and separation s, in air. Evaluate (b) for a = 1 mm and s = 10 cm.",
+          problem: "Derive L per metre, in air, for (a) coax with radii a and b and (b) two parallel wires of radius a spaced s apart. Then put a = 1 mm and s = 10 cm into (b).",
           lines: [
             { text: "(a) Between the conductors B = μI/(2πρ), so the flux per metre is ∫_a^b μI/(2πρ) dρ = (μI/2π) ln(b/a), and L' = (μ/2π) ln(b/a). The inner conductor's own flux adds μ/(8π).", focus: ["eq"] },
             { text: "(b) Between the wires, both fields add: Φ' = ∫_a^(s−a) [μ₀I/(2πx) + μ₀I/(2π(s − x))] dx = (μ₀I/π) ln((s − a)/a).", focus: ["ind"] },

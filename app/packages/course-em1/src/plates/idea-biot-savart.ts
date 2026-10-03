@@ -131,7 +131,7 @@ export const ideaBiotSavart = defineIdeaPlate({
           id: "hw03-num", title: "Check: Hz on the coil's axis",
           note: "Last one.",
           patch: { c: HW03 },
-          interaction: { id: "hw03-num", type: "numeric", prompt: "200 turns, radius 30.0 cm, 2.82 A in −aφ, centred at the origin in the xy plane. Find Hz at P(0, 0, −50) cm, in A/m.", answer: { value: -128.019, unit: "A/m" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "hw03-num", type: "numeric", prompt: "A 200-turn coil of radius 30.0 cm lies flat in the xy plane, centred on the origin, carrying 2.82 A in −aφ. What is Hz at P(0, 0, −50) cm, in A/m?", answer: { value: -128.019, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 128.019, unit: "A/m", errorClass: "sign", tag: "BS_DIRECTION", feedback: "The current runs in −aφ, so H points along −az." }],
             hints: ["On the axis, H = NIa²/(2(a² + z²)^(3/2)).", "a = 0.3, z = −0.5 (in metres).", "Sign: −aφ current gives −az."] },
           covers: ["hw03-2425-3.1a"],

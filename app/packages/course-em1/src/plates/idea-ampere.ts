@@ -55,7 +55,7 @@ export const ideaAmpere = defineIdeaPlate({
         },
         {
           id: "coax", title: "The coax", patch: { c: COAX }, focus: ["c"],
-          note: "The coax puts it all together (Wentworth Example 3.8): an inner conductor of radius a carrying I, and an outer one from b to c carrying −I. H = Iρ/(2πa²) inside the inner conductor and I/(2πρ) between them. It falls to zero across the outer conductor and is zero outside, where the net enclosed current is zero. Hayt D7.3(b): a = 0.3, b = 0.5, c = 0.6 m and 2.5 A give H = −0.884ax A/m at (0, 0.2, 0).",
+          note: "The coax puts it all together (Wentworth Example 3.8): an inner conductor of radius a carrying I, and an outer one from b to c carrying −I. H = Iρ/(2πa²) inside the inner conductor and I/(2πρ) between them. It falls to zero across the outer conductor and is zero outside, where the net enclosed current is zero. With a = 0.3, b = 0.5, c = 0.6 m and 2.5 A (Hayt D7.3), the result is H = −0.884ax A/m at (0, 0.2, 0).",
           claims: [{ instance: "c", readout: "Hx", value: -0.884194, unit: "A/m" }],
         },
       ],
@@ -63,7 +63,7 @@ export const ideaAmpere = defineIdeaPlate({
         {
           id: "d7-7", level: "basic", title: "Hayt D7.7: inside a solid conductor",
           setup: { c: { ...WIRE, probe: [0.0005, 0, 0] } },
-          problem: "A solid nonmagnetic conductor of radius 1 mm on the z axis carries 20 A in az. Find (a) Hφ at ρ = 0.5 mm, (b) Bφ at ρ = 0.8 mm, (c) the total magnetic flux per metre inside the conductor.",
+          problem: "20 A flows along az through a solid nonmagnetic wire of radius 1 mm centred on the z axis. Work out (a) Hφ at ρ = 0.5 mm, (b) Bφ at ρ = 0.8 mm and (c) how much magnetic flux, per metre of wire, lies inside it.",
           lines: [
             { text: "(a) I_enc = 20 × (0.5/1)² = 5 A, so Hφ = 5/(2π × 0.0005) = 1592 A/m.", focus: ["c"], claims: [{ instance: "c", readout: "Hphi", value: 1591.55, unit: "A/m" }] },
             { text: "(b) At 0.8 mm, H = 20 × 0.0008/(2π × 10⁻⁶) = 2546 A/m, so Bφ = μ₀H = 3.2 mT.", patch: { c: { probe: [0.0008, 0, 0] } }, focus: ["c"], claims: [{ instance: "c", readout: "Bmag", value: 0.0032, unit: "T" }] },
@@ -75,7 +75,7 @@ export const ideaAmpere = defineIdeaPlate({
         {
           id: "f1415", level: "tutorial", title: "J, H and B in and out",
           setup: { c: { items: [{ id: "w", kind: "cylinder", I: 2, a: 0, b: 0.0002 }], probe: [0.0001, 0, 0], drawScale: 1000 } },
-          problem: "A long straight nonmagnetic conductor of 0.2 mm radius carries a uniform 2 A d.c. Find J, then H and B within and outside it.",
+          problem: "A steady 2 A spreads evenly through a long, straight nonmagnetic wire 0.2 mm in radius. Work out J, then H and B both inside and outside the wire.",
           lines: [
             { text: "J = I/(πa²) = 2/(π(2 × 10⁻⁴)²) = 1.592 × 10⁷ az A/m².", focus: ["c"] },
             { text: "Inside: H = Iρ/(2πa²) = 7.958 × 10⁶ ρ aφ A/m, and B = μ₀H = 10.00ρ aφ T. At ρ = 0.1 mm, H = 795.8 A/m.", focus: ["c"], claims: [{ instance: "c", readout: "Hphi", value: 795.775, unit: "A/m" }] },

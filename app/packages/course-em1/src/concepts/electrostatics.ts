@@ -31,7 +31,7 @@ export const coulomb = {
           ...meta("quiet", src(SLIDES, "pp. 9-11")),
           id: "law",
           type: "prose",
-          text: "The force on $Q_2$ from $Q_1$ acts along the line joining them. It is proportional to the product of the charges and falls off as the square of the distance: $\\mathbf F_{12} = \\dfrac{Q_1Q_2}{4\\pi\\varepsilon_0 R^2}\\,\\mathbf a_{R}$, with $\\varepsilon_0 = 8.854\\times10^{-12}$ F/m. Like charges repel; opposite charges attract.",
+          text: "The force on $Q_2$ from $Q_1$ acts along the line joining them. Double either charge and the force doubles; double the distance and it drops to a quarter: $\\mathbf F_{12} = \\dfrac{Q_1Q_2}{4\\pi\\varepsilon_0 R^2}\\,\\mathbf a_{R}$, with $\\varepsilon_0 = 8.854\\times10^{-12}$ F/m. Like charges repel; opposite charges attract.",
         },
         {
           ...meta("assessment", src(SLIDES, "pp. 13-14 (Example 1)")),
@@ -111,7 +111,7 @@ export const field = {
           ...meta("assessment", src(SLIDES, "pp. 20-21 (Example 2)")),
           id: "ex2",
           type: "numeric",
-          prompt: "Example 2: four identical 3 nC charges at (1,1,0), (−1,1,0), (−1,−1,0) and (1,−1,0). Find E_z, the z-component of E at P(1, 1, 1).",
+          prompt: "Charges of 3 nC each sit at the four corners (±1, ±1, 0). What is E_z, the z-component of the field at P(1, 1, 1)?",
           answer: { value: 32.78, unit: "V/m" },
           distractors: [{ value: 26.96, unit: "V/m", errorClass: "conceptual", feedback: "That's only the nearest charge. Superposition means adding all four." }],
           hints: [

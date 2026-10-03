@@ -56,7 +56,7 @@ export const ideaDivTheorem = defineIdeaPlate({
         {
           id: "hw26c-vol", level: "tutorial", title: "Charge in the cube, volume route",
           setup: { region: { system: "cart", ranges: [[0, 2], [0, 2], [0, 2]], density: "hw-2.6", drawScale: 0.7 } },
-          problem: "Calculate the total charge in the region 0 < x, y, z < 2 m.",
+          problem: "How much charge sits inside the cube 0 < x, y, z < 2 m?",
           show: ["region"],
           lines: [
             { text: "ρv = ∇·D = 3y C/m³.", focus: ["region"] },

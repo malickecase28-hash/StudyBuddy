@@ -45,7 +45,7 @@ export const ideaCurlStokes = defineIdeaPlate({
         {
           id: "d7-6", level: "basic", title: "Hayt D7.6: both sides of Stokes' theorem",
           setup: { vs: D76 },
-          problem: "Evaluate both sides of Stokes' theorem for H = 6xy ax − 3y² ay A/m round the rectangular path 2 ≤ x ≤ 5, −1 ≤ y ≤ 1, z = 0, with dS along az.",
+          problem: "Check Stokes' theorem both ways for H = 6xy ax − 3y² ay A/m on the rectangle 2 ≤ x ≤ 5, −1 ≤ y ≤ 1 in the plane z = 0, taking dS along az.",
           lines: [
             { text: "Along y = −1, x from 2 to 5: H·dL = −6x dx, giving −3(25 − 4) = −63.", focus: ["vs"] },
             { text: "Up x = 5: −3y² dy from −1 to 1 gives −2. Back along y = 1: ∫ from 5 to 2 of 6x dx = −63. Down x = 2: ∫ from 1 to −1 of −3y² dy = +2.", focus: ["vs"] },
@@ -58,7 +58,7 @@ export const ideaCurlStokes = defineIdeaPlate({
         {
           id: "d7-5", level: "tutorial", title: "Hayt D7.5: J in three coordinate systems",
           setup: { vs: { field: "d7.5a", probe: [2, 3, 4], offset: 4, loop: 0, plane: "xy" } },
-          problem: "Find J: (a) at P_A(2, 3, 4) if H = x²z ay − y²x az; (b) at P_B(1.5, 90°, 0.5) if H = (2/ρ) cos 0.2φ aρ; (c) at P_C(2, 30°, 20°) if H = (1/sin θ) aθ.",
+          problem: "Take the curl to get J in three systems: (a) H = x²z ay − y²x az, at P_A(2, 3, 4); (b) H = (2/ρ) cos 0.2φ aρ, at P_B(1.5, 90°, 0.5); (c) H = (1/sin θ) aθ, at P_C(2, 30°, 20°).",
           lines: [
             { text: "(a) ∇ × H = (−2xy − x²)ax + y² ay + 2xz az = −16ax + 9ay + 16az A/m².", focus: ["vs"], claims: [{ instance: "vs", readout: "c1", value: -16, unit: "" }] },
             { text: "(b) Only Hρ exists, so J = −(1/ρ)∂Hρ/∂φ az = (0.4/ρ²) sin 0.2φ az = 0.055az A/m².", focus: ["eq"] },

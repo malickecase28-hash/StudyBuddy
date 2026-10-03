@@ -22,7 +22,7 @@ export function SourceTag({ doc, locator, licence }: { doc: string; locator: str
   return (
     <span
       className="cursor-help text-xs text-faint"
-      title={`${doc}, ${locator}${licence === "restricted" ? ". Quoted material (restricted)." : ""}`}
+      title={`${doc}, ${locator}${licence === "restricted" ? ". Quoted material." : ""}`}
       aria-label={`Source: ${doc}, ${locator}`}
     >
       ⓘ

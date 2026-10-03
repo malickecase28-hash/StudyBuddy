@@ -36,7 +36,7 @@ export const ideaDivergence = defineIdeaPlate({
         },
         {
           id: "curved", title: "Curved coordinates: multiply, differentiate, divide", patch: { vs: { field: "hw-2.2b", probe: B_PT, box: 0, offset: 0.5 }, eq: eqp(R`\nabla\cdot\mathbf D=\dfrac1\rho\dfrac{\partial(\rho D_\rho)}{\partial\rho}+\dfrac1\rho\dfrac{\partial D_\phi}{\partial\phi}+\dfrac{\partial D_z}{\partial z}`, "the divergence in cylindrical coordinates") }, focus: ["vs", "eq"],
-          note: "In curved coordinates the scale factors sit inside the derivatives. Cylindrical: ∇·D = (1/ρ)∂(ρDρ)/∂ρ + (1/ρ)∂Dφ/∂φ + ∂D_z/∂z. Spherical: ∇·D = (1/r²)∂(r²D_r)/∂r + (1/(r sin θ))∂(sin θ D_θ)/∂θ + (1/(r sin θ))∂D_φ/∂φ. Multiply first, then differentiate, then divide. For B = ρz² âρ + ρ sin²φ âφ + 2ρz sin²φ âz, this gives ∇·B = 2z² + sin 2φ + 2ρ sin²φ, which is 9.366 at ρ = 1, φ = 30°, z = 2.",
+          note: "In curved coordinates the scale factors sit inside the derivatives. Cylindrical: ∇·D = (1/ρ)∂(ρDρ)/∂ρ + (1/ρ)∂Dφ/∂φ + ∂D_z/∂z. Spherical: ∇·D = (1/r²)∂(r²D_r)/∂r + ∂(sin θ D_θ)/∂θ ÷ (r sin θ) + ∂D_φ/∂φ ÷ (r sin θ). Multiply first, then differentiate, then divide. For B = ρz² âρ + ρ sin²φ âφ + 2ρz sin²φ âz, this gives ∇·B = 2z² + sin 2φ + 2ρ sin²φ, which is 9.366 at ρ = 1, φ = 30°, z = 2.",
           claims: [{ instance: "vs", readout: "div", value: 9.36603, unit: "" }],
         },
         {

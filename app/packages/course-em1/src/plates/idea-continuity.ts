@@ -28,7 +28,7 @@ export const ideaContinuity = defineIdeaPlate({
         },
         {
           id: "point", title: "The point form", patch: { eq: eqp(R`\nabla\cdot\mathbf J=-\dfrac{\partial\rho_v}{\partial t}`, "divergence of J equals minus the rate of change of rho v") }, focus: ["vs", "eq"],
-          note: "Apply the divergence theorem to the left side and write Q_enc = ∫ρv dv on the right: ∫∇·J dv = −∫∂ρv/∂t dv. This holds for every volume, however small, so the integrands must match: ∇·J = −∂ρv/∂t. For J = 5x âₓ, ∇·J = 5, so the charge density is falling everywhere.",
+          note: "Turn the left side into a volume integral with the divergence theorem, and write Q_enc = ∫ρv dv on the right: ∫∇·J dv = −∫∂ρv/∂t dv. This holds for every volume, however small, so the integrands must match: ∇·J = −∂ρv/∂t. For J = 5x âₓ, ∇·J = 5, so the charge density is falling everywhere.",
           claims: [{ instance: "vs", readout: "div", value: 5, unit: "" }],
         },
         {

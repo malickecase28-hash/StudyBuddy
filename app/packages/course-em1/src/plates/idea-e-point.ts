@@ -85,7 +85,7 @@ export const ideaEPoint = defineIdeaPlate({
         { id: "units", q: "Are N/C and V/m really the same?", a: "Yes. A volt is a joule per coulomb, and a joule is a newton-metre. So V/m = J/(C·m) = N·m/(C·m) = N/C." },
         { id: "neg", q: "Which way does E point near a negative charge?", tags: ["E_DIRECTION_NEGATIVE"], a: "Toward it. E is the force on a positive test charge, which is pulled toward a negative charge. In the formula the negative Q flips a_R." },
         { id: "at-charge", q: "What is E at the charge itself?", a: "Undefined: R = 0 makes the formula blow up. A point charge is an idealisation, and the field is asked for elsewhere. The plate's probe shows '—' if you put it on a charge." },
-        { id: "define-marks", q: "How should I word the definition in an exam?", a: "'The electric field intensity at a point is the force per unit charge experienced by an infinitesimally small, positive test charge placed at that point.' Add E = F/q and the units, N/C or V/m." },
+        { id: "define-marks", q: "How should I word the definition in an exam?", a: "Say what E measures and how: 'E at a point is the force a tiny positive test charge would feel there, divided by that charge.' Then give E = F/q and the units, N/C or V/m." },
         { id: "field-real", q: "Is the field real, or just a calculation?", a: "Real: it carries energy and momentum. When charges move, changes in the field travel outward at the speed of light, and that is what light and radio are." },
       ],
       checks: [

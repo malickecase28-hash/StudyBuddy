@@ -54,7 +54,7 @@ export const ideaESuperposition = defineIdeaPlate({
         {
           id: "square", level: "tutorial", title: "Four charges at a square's corners",
           setup: { q: SQUARE, ep: { point: [1, 1, 1], oblique: true, drawScale: 0.9 } },
-          problem: "Four identical 3 nC charges are at (1, 1, 0), (−1, 1, 0), (−1, −1, 0) and (1, −1, 0) m. Find E at P(1, 1, 1) m.",
+          problem: "Put 3 nC at each corner of the square (±1, ±1, 0) m. What is E at P(1, 1, 1) m?",
           lines: [
             { text: "The four vectors from the charges to P are (0, 0, 1), (2, 0, 1), (2, 2, 1) and (0, 2, 1), with lengths 1, √5, 3 and √5.", focus: ["q"] },
             { text: "Each term is 26.96 × (vector)/(length)³, since 8.988 × 10⁹ × 3 × 10⁻⁹ = 26.96.", focus: ["q"] },

@@ -6,12 +6,12 @@ export const WENT = "Wentworth, Fundamentals of Electromagnetics with Engineerin
 export const HAYT = "Hayt & Buck, Engineering Electromagnetics";
 export const F2425 = "Exam-style question";
 export const F2324 = "Exam-style question";
-export const ORIGINAL = "StudyBuddy original";
+export const ORIGINAL = "Forma original";
 
 export const src = (doc: string, locator: string): Source => ({ doc, locator });
 
-/** Block metadata: mood + source + licence. Original content uses licence "original". */
-export const meta = (mood: Mood, source: Source, licence: Licence = source.doc === ORIGINAL ? "original" : "restricted") => ({
+/** Block metadata: mood + source + licence. All teaching text is written in our own words; the source is a citation. */
+export const meta = (mood: Mood, source: Source, licence: Licence = "original") => ({
   mood,
   source,
   licence,

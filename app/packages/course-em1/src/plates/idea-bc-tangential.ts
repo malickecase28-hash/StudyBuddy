@@ -72,7 +72,7 @@ export const ideaBcTangential = defineIdeaPlate({
         {
           id: "f2425", level: "exam", title: "E₂ and D₂ across x = 0",
           setup: { b: { ...F2425 } },
-          problem: "Region 1 (x < 0) is a dielectric with εr1 = 5; region 2 (x > 0) is free space. Given D₁ = âₓ + 3âᵧ − 7âz C/m², calculate (i) E₂ and (ii) D₂.",
+          problem: "For x < 0 the material has εr1 = 5; for x > 0 there is free space. With D₁ = âₓ + 3âᵧ − 7âz C/m² on the dielectric side, work out (i) E₂ and (ii) D₂.",
           lines: [
             { text: "n̂ = âₓ: D₁ₙ = âₓ and D₁ₜ = 3âᵧ − 7âz C/m².", focus: ["b"], claims: [{ instance: "b", readout: "D1nx", value: 1, unit: "C/m^2" }] },
             { text: "E₂ₜ = E₁ₜ = D₁ₜ/(5ε₀), so D₂ₜ = ε₀E₂ₜ = (3âᵧ − 7âz)/5 = 0.6âᵧ − 1.4âz C/m².", focus: ["b"], claims: [{ instance: "b", readout: "D2y", value: 0.6, unit: "C/m^2" }] },

@@ -47,7 +47,7 @@ export const ideaMaxwell = defineIdeaPlate({
             { text: "Gauss (electric): ∇·D = ρv ⇔ ∮S D·dS = ∫v ρv dv.", focus: ["eq"] },
             { text: "Gauss (magnetic): ∇·B = 0 ⇔ ∮S B·dS = 0.", focus: ["eq"] },
             { text: "Faraday: ∇ × E = −∂B/∂t ⇔ ∮L E·dL = −(d/dt)∫S B·dS.", focus: ["eq"] },
-            { text: "Ampère–Maxwell: ∇ × H = J + ∂D/∂t ⇔ ∮L H·dL = ∫S (J + ∂D/∂t)·dS.", focus: ["eq"] },
+            { text: "Ampère–Maxwell, point form: ∇ × H = J + ∂D/∂t. Integral form: the circulation of H round a loop equals the conduction plus displacement current through it.", focus: ["eq"] },
           ],
           covers: ["f1516-q4a"],
           trap: "Mixing up the pairs: the divergence equations become closed-surface integrals; the curl equations become closed-line integrals.",
@@ -72,7 +72,7 @@ export const ideaMaxwell = defineIdeaPlate({
           lines: [
             { text: "(i) A static E is conservative: zero work round any closed path, and E = −∇V.", focus: ["eq"] },
             { text: "(ii) Both conduction current and a changing D make a circulating H. The ∂D/∂t term keeps charge conserved and lets H exist in empty space, which makes waves possible.", focus: ["eq"] },
-            { text: "Divergence is the net outward flux per unit volume as the volume shrinks to a point. E lines start and end on charges, so ∇·D = ρv; there are no magnetic charges, so ∇·B = 0 everywhere.", focus: ["eq"] },
+            { text: "Divergence measures how much flux leaves a tiny volume, per unit of that volume. E lines start and end on charges, so ∇·D = ρv; there are no magnetic charges, so ∇·B = 0 everywhere.", focus: ["eq"] },
           ],
           covers: ["drill24-q8"],
           trap: "Saying B has no divergence because B is weak. It's because magnetic charges don't exist.",

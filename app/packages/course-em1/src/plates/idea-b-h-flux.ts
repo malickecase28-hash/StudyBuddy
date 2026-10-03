@@ -50,7 +50,7 @@ export const ideaBHFlux = defineIdeaPlate({
         {
           id: "d7-2", level: "basic", title: "Hayt D7.2: H in rectangular components",
           setup: { c: { ...WIRE } },
-          problem: "A filament carrying 15 A in the az direction lies along the entire z axis. Find H in rectangular coordinates at (a) P_A(√20, 0, 4) and (b) P_B(2, −4, 4).",
+          problem: "An infinite filament on the z axis carries 15 A along az. Give H, in rectangular components, at (a) P_A(√20, 0, 4) and (b) P_B(2, −4, 4).",
           lines: [
             { text: "ρ = √20 at both points, so |H| = 15/(2π√20) = 0.5338 A/m.", focus: ["c"], claims: [{ instance: "c", readout: "Hmag", value: 0.533822, unit: "A/m" }] },
             { text: "(a) At P_A, aφ = ay: H = 0.534ay A/m.", focus: ["c"], claims: [{ instance: "c", readout: "Hy", value: 0.533822, unit: "A/m" }] },
