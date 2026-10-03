@@ -162,7 +162,8 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .calc-tabs > [role="tab"] { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px 4px 0 0; color: var(--ink); background: var(--grid); }
 .calc-tabs > [role="tab"][aria-selected="true"] { background: var(--paper-2); font-weight: 600; }
 .calc-page { font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.75; }
-.calc-status { margin-left: auto; align-self: center; padding: 0 8px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--paper); }
+.calc-status { margin-left: auto; align-self: center; margin-bottom: 3px; padding: 3px 8px; border-radius: 4px; border: 1px solid color-mix(in srgb, var(--paper) 40%, transparent); font-family: var(--font-mono); font-size: 0.72rem; color: var(--paper); }
+.calc-status:focus-visible { outline: 2px solid var(--paper); outline-offset: 1px; }
 .calc-body { padding: 10px; max-height: min(640px, 68vh); overflow-y: auto; }
 .calc-keys { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px 8px; margin-top: 16px; }
 .calc-key {

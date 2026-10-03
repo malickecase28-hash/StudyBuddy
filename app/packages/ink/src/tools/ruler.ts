@@ -14,6 +14,10 @@ const LEN = 720, H = 56, SNAP = 12;
 export class Ruler implements RulerLike {
   angle = 0;
   constructor(private engine: InkEngine, public c: Vec) {}
+  /** The angle as shown on the ruler: degrees anticlockwise from the page's x axis, 0 ≤ deg < 360. */
+  degrees() { const d = ((-this.angle * 180) / Math.PI) % 360; return d < 0 ? d + 360 : d; }
+  /** Rotate to `deg` degrees anticlockwise, rounded to 0.1°. */
+  setDegrees(deg: number) { this.angle = (-Math.round(deg * 10) / 10) * (Math.PI / 180); this.engine.requestFrame(); }
   private dir() { return { x: Math.cos(this.angle), y: Math.sin(this.angle) }; }
   /** Position along the edge and signed offset from it, world units. */
   local(p: Vec) {
@@ -55,9 +59,7 @@ export class Ruler implements RulerLike {
     ctx.fillStyle = col.ink;
     ctx.font = "12px system-ui, sans-serif";
     ctx.textAlign = "center";
-    let deg = ((-this.angle * 180) / Math.PI) % 360;
-    if (deg < 0) deg += 360;
-    ctx.fillText(`${deg.toFixed(1)}°`, 0, H / 2 + 4);
+    ctx.fillText(`${this.degrees().toFixed(1)}°`, 0, H / 2 + 4);
     ctx.restore();
   }
 }
@@ -87,10 +89,10 @@ export const makeRulerTool = (engine: InkEngine): Tool => {
       const s = samples[samples.length - 1], r = engine.ruler as Ruler | null;
       if (!s || !mode || !r) return;
       if (mode.kind === "move") r.c = { x: mode.c0.x + s.wx - mode.from.x, y: mode.c0.y + s.wy - mode.from.y };
-      else r.angle = mode.a0 + Math.atan2(s.wy - r.c.y, s.wx - r.c.x) - Math.atan2(mode.from.y - r.c.y, mode.from.x - r.c.x);
+      else r.setDegrees(Math.round(-((mode.a0 + Math.atan2(s.wy - r.c.y, s.wx - r.c.x) - Math.atan2(mode.from.y - r.c.y, mode.from.x - r.c.x)) * 180) / Math.PI));
       engine.requestFrame();
     },
-    up() { mode = null; },
+    up() { mode = null; engine.viewChanged(); },
     cancel() { mode = null; },
   };
 };

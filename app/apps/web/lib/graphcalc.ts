@@ -22,7 +22,17 @@ export function normalize(src: string): string {
     .replace(/²/g, "^2").replace(/³/g, "^3").replace(/⁻¹/g, "^(-1)");
 }
 
-const scopeBase = () => Object.fromEntries(Object.entries(CONSTANTS).map(([k, v]) => [k, v.value])) as Record<string, number>;
+/** Radians or degrees for trig on plain numbers. Angles with units ("30 deg", "1 rad") are exact either way. */
+export type AngleMode = "rad" | "deg";
+const D = Math.PI / 180;
+const DEG_TRIG: Record<string, (x: unknown) => unknown> = {
+  ...Object.fromEntries(["sin", "cos", "tan", "sec", "csc", "cot"].map((f) => [f, (x: unknown) => (typeof x === "number" ? (math as unknown as Record<string, (n: number) => number>)[f]!(x * D) : (math as unknown as Record<string, (u: unknown) => unknown>)[f]!(x))])),
+  ...Object.fromEntries(["asin", "acos", "atan", "asec", "acsc", "acot"].map((f) => [f, (x: unknown) => { const r = (math as unknown as Record<string, (u: unknown) => unknown>)[f]!(x); return typeof r === "number" ? r / D : r; }])),
+  atan2: (y: unknown, x?: unknown) => Math.atan2(Number(y), Number(x)) / D,
+} as Record<string, (x: unknown) => unknown>;
+
+/** Constants, plus degree trig in degree mode (mathjs looks functions up in the scope first). */
+const scopeBase = (angle: AngleMode = "rad") => ({ ...Object.fromEntries(Object.entries(CONSTANTS).map(([k, v]) => [k, v.value])), ...(angle === "deg" ? DEG_TRIG : {}) }) as Record<string, number>;
 
 export type Line =
   | { kind: "empty" }
@@ -68,8 +78,8 @@ export function texNumber(v: number, scale = 1): string {
  * Reads the graph list top to bottom. "a = 3" makes a slider variable; "y = …" or anything in x is a curve;
  * "z = …" or anything in x and y is a surface (contour or 3D); "r = …(theta)" is polar; "(f(t), g(t))" is parametric.
  */
-export function readLines(lines: string[]): { lines: Line[]; scope: Record<string, number> } {
-  const scope = scopeBase();
+export function readLines(lines: string[], angle: AngleMode = "rad"): { lines: Line[]; scope: Record<string, number> } {
+  const scope = scopeBase(angle);
   const known = new Set(Object.keys(scope));
   const out = lines.map((raw): Line => {
     const src = normalize(raw.trim());
@@ -109,10 +119,10 @@ export function formatResult(v: unknown): string {
 const fmt = (v: number) => (v !== 0 && (Math.abs(v) >= 1e6 || Math.abs(v) < 1e-3) ? v.toExponential(5).replace(/\.?0+e/, "e") : String(Number(v.toPrecision(7))));
 
 /** Calculate tab: one expression, numbers and units ("2 mA * 3 kohm to V"), with constants and earlier answers. */
-export function calculate(src: string, vars: Record<string, unknown>): { text: string; tex: string; value: unknown } {
+export function calculate(src: string, vars: Record<string, unknown>, angle: AngleMode = "rad"): { text: string; tex: string; value: unknown } {
   const s = normalize(src.trim());
   const node = math.parse(s);
-  let value = node.compile().evaluate({ ...scopeBase(), ...vars });
+  let value = node.compile().evaluate({ ...scopeBase(angle), ...vars });
   // "a = 2; a^2" evaluates to a result set: show the last value.
   if (value && typeof value === "object" && "entries" in value && Array.isArray((value as { entries: unknown[] }).entries)) value = (value as { entries: unknown[] }).entries.at(-1);
   return { text: formatResult(value), tex: tex(node), value };

@@ -20,7 +20,7 @@ export type ToolId = "pen" | "highlighter" | "eraser" | "precise-eraser" | "lass
 export type EditRequest = { kind: "text" | "equation"; at: Vec; item?: Item };
 export type EngineEvents = { onChange?: (op: Op, origin: "do" | "undo" | "redo") => void; onSelection?: (ids: string[]) => void; onView?: () => void; onTool?: (t: ToolId) => void; onEdit?: (r: EditRequest) => void };
 /** A ruler that can straighten strokes near its edge (Task 4 provides it). */
-export type RulerLike = { snapper(): ((pts: InkPoint[]) => InkPoint[]) | null; drawLive(ctx: CanvasRenderingContext2D): void };
+export type RulerLike = { snapper(): ((pts: InkPoint[]) => InkPoint[]) | null; drawLive(ctx: CanvasRenderingContext2D): void; degrees(): number; setDegrees(deg: number): void };
 
 /** The ink engine: items, undo, camera, renderer, input and tools. Framework-free; React wraps it in <InkCanvas>. */
 export class InkEngine {
@@ -123,6 +123,8 @@ export class InkEngine {
     else this.redo();
   }
 
+  /** Tell the UI the view changed (ruler moved or turned), so readouts follow. */
+  viewChanged(): void { this.ev.onView?.(); }
   panBy(dx: number, dy: number): void { this.camera.pan(dx, dy); this.ev.onView?.(); this.requestFrame(); }
   zoomAt(sx: number, sy: number, f: number): void { this.camera.zoomAt(sx, sy, f); this.ev.onView?.(); this.requestFrame(); }
   setZoom(z: number): void { this.zoomAt(this.renderer.w / 2, this.renderer.h / 2, z / this.camera.zoom); }

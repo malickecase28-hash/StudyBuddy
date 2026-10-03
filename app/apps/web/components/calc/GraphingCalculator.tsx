@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Wordmark } from "@forma/ui";
 import { Tex } from "@/components/Tex";
-import { calculate, CONSTANTS, COORDS, differentiate, integrate, readLines, suggestJacobian, texNumber, type Coords, type Line } from "@/lib/graphcalc";
+import { calculate, CONSTANTS, COORDS, type AngleMode, differentiate, integrate, readLines, suggestJacobian, texNumber, type Coords, type Line } from "@/lib/graphcalc";
 
 type Tab = "graph" | "calc" | "integrate";
 const TABS: [Tab, string][] = [["graph", "Graph"], ["calc", "Calculate"], ["integrate", "Integrate"]];
@@ -26,6 +26,7 @@ export function GraphingCalculator({ tall = false }: { tall?: boolean }) {
   const [tab, setTab] = useSaved<Tab>("tab", "graph");
   const [keys, setKeys] = useSaved<boolean>("keys", true);
   const [abc, setAbc] = useState(false);
+  const [angle, setAngle] = useSaved<AngleMode>("angle", "rad");
   const screen = useRef<HTMLDivElement>(null);
   const last = useRef<HTMLInputElement | null>(null);
   // On touch screens the keypad replaces the system keyboard, until "abc" asks for it (units, names).
@@ -40,15 +41,19 @@ export function GraphingCalculator({ tall = false }: { tall?: boolean }) {
       <div ref={screen} className="calc-screen"
         onFocus={(e) => { if (isField(e.target)) last.current = e.target; }}
         onPointerDownCapture={(e) => { if (isField(e.target)) keyboardFor(e.target); }}>
-        <div role="tablist" aria-label="Calculator pages" className="calc-tabs">
-          {TABS.map(([id, label], i) => (
-            <button key={id} role="tab" type="button" aria-selected={tab === id} onClick={() => setTab(id)}><span className="calc-page">1.{i + 1}</span> {label}</button>
-          ))}
-          <span className="calc-status" aria-hidden>RAD</span>
+        <div className="calc-tabs">
+          <div role="tablist" aria-label="Calculator pages" className="contents">
+            {TABS.map(([id, label], i) => (
+              <button key={id} role="tab" type="button" aria-selected={tab === id} onClick={() => setTab(id)}><span className="calc-page">1.{i + 1}</span> {label}</button>
+            ))}
+          </div>
+          <button type="button" className="calc-status" onClick={() => setAngle(angle === "rad" ? "deg" : "rad")}
+            aria-label={`Angles in ${angle === "rad" ? "radians" : "degrees"}; switch to ${angle === "rad" ? "degrees" : "radians"}`}
+            title={tab === "integrate" ? "Integrals always use radians (φ from 0 to 2π)" : "Switch radians and degrees"}>{angle === "rad" ? "RAD" : "DEG"}</button>
         </div>
         <div className="calc-body">
-          {tab === "graph" && <GraphTab tall={tall} />}
-          {tab === "calc" && <CalcTab />}
+          {tab === "graph" && <GraphTab tall={tall} angle={angle} />}
+          {tab === "calc" && <CalcTab angle={angle} />}
           {tab === "integrate" && <IntegrateTab />}
         </div>
       </div>
@@ -130,7 +135,7 @@ const css = (name: string, el: Element = document.documentElement) => getCompute
 const range = (a: number, b: number, n: number) => Array.from({ length: n }, (_, i) => a + ((b - a) * i) / (n - 1));
 const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && Math.abs(v) < 1e9 ? v : null);
 
-function GraphTab({ tall }: { tall: boolean }) {
+function GraphTab({ tall, angle }: { tall: boolean; angle: AngleMode }) {
   const [src, setSrc] = useSaved<string[]>("graph", ["a = 1", "y = a*sin(x)", "z = x^2 - y^2"]);
   const [view, setView] = useSaved<{ x0: number; x1: number; y0: number; y1: number; mode3d: boolean }>("view", { x0: -5, x1: 5, y0: -5, y1: 5, mode3d: false });
   const [sliders, setSliders] = useState<Record<number, number>>({});
@@ -138,7 +143,7 @@ function GraphTab({ tall }: { tall: boolean }) {
 
   // A slider overrides its line's value until the line is edited.
   const effective = src.map((s, i) => (sliders[i] !== undefined ? s.replace(/=.*$/, `= ${sliders[i]}`) : s));
-  const { lines, scope } = useMemo(() => readLines(effective), [effective.join("\n")]); // eslint-disable-line react-hooks/exhaustive-deps
+  const { lines, scope } = useMemo(() => readLines(effective, angle), [effective.join("\n"), angle]); // eslint-disable-line react-hooks/exhaustive-deps
   const hasSurface = lines.some((l) => l.kind === "surface");
 
   useEffect(() => {
@@ -156,9 +161,10 @@ function GraphTab({ tall }: { tall: boolean }) {
       for (const l of lines) {
         if (flat && l.kind === "curve") data.push({ type: "scatter", mode: "lines", x: xs, y: xs.map((x) => { try { return num(l.f.evaluate({ ...scope, x })); } catch { return null; } }), name: "", line: { color: color(), width: 2.5 }, hovertemplate: "x=%{x:.4g}<br>y=%{y:.4g}<extra></extra>" });
         if (flat && (l.kind === "polar" || l.kind === "parametric")) {
-          const ts = range(0, 2 * Math.PI, 720);
+          const turn = angle === "deg" ? 360 : 2 * Math.PI, toRad = (2 * Math.PI) / turn; // θ and t sweep one turn in the current angle unit
+          const ts = range(0, turn, 720);
           const pts = ts.map((t) => { try {
-            if (l.kind === "polar") { const r = Number(l.f.evaluate({ ...scope, theta: t })); return [r * Math.cos(t), r * Math.sin(t)]; }
+            if (l.kind === "polar") { const r = Number(l.f.evaluate({ ...scope, theta: t })); return [r * Math.cos(t * toRad), r * Math.sin(t * toRad)]; }
             return [Number(l.fx.evaluate({ ...scope, t })), Number(l.fy.evaluate({ ...scope, t }))];
           } catch { return [NaN, NaN]; } });
           data.push({ type: "scatter", mode: "lines", x: pts.map((p) => num(p[0])), y: pts.map((p) => num(p[1])), line: { color: color(), width: 2.5 }, hovertemplate: "(%{x:.4g}, %{y:.4g})<extra></extra>" });
@@ -178,7 +184,7 @@ function GraphTab({ tall }: { tall: boolean }) {
       void Plotly.react(el, data, layout, { displaylogo: false, responsive: true, modeBarButtonsToRemove: ["select2d", "lasso2d", "toImage"] });
     });
     return () => { live = false; };
-  }, [lines, scope, view, hasSurface]);
+  }, [lines, scope, view, hasSurface, angle]);
   useEffect(() => () => { void import("plotly.js-dist-min").then(({ default: P }) => plot.current && P.purge(plot.current)); }, []);
 
   const set = (i: number, v: string) => { const next = [...src]; next[i] = v; setSrc(next); setSliders(({ [i]: _, ...rest }) => rest); };
@@ -253,7 +259,7 @@ function LineInfo({ line }: { line: Line }) {
 
 type Entry = { src: string; tex: string; text: string; error?: boolean };
 
-function CalcTab() {
+function CalcTab({ angle }: { angle: AngleMode }) {
   const [history, setHistory] = useSaved<Entry[]>("history", []);
   const [input, setInput] = useState("");
   const [dSrc, setDSrc] = useState("x^2*sin(x)");
@@ -266,7 +272,7 @@ function CalcTab() {
   const run = () => {
     if (!input.trim()) return;
     let e: Entry;
-    try { const r = calculate(input, vars); e = { src: input, tex: r.tex, text: r.text }; }
+    try { const r = calculate(input, vars, angle); e = { src: input, tex: r.tex, text: r.text }; }
     catch (err) { e = { src: input, tex: "", text: err instanceof Error ? err.message : String(err), error: true }; }
     setHistory([...history, e].slice(-40));
     setInput("");

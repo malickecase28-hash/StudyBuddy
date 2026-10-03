@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { COLOR_TOKENS, toggleRuler, type InkEngine, type Page, type Template, type ToolId } from "@forma/ink";
 
 export const TOOLS: { id: ToolId; label: string; key?: string }[] = [
@@ -46,6 +47,7 @@ export function InkToolbar({ engine, tool, onTool, page, onPage, version, compac
       <button className="btn tabular-nums" onClick={() => engine.setZoom(1)} title="Zoom to 100%" aria-label={`Zoom ${Math.round(engine.camera.zoom * 100)}%, reset to 100%`}>{Math.round(engine.camera.zoom * 100)}%</button>
       <button className="btn" onClick={() => engine.fitToContent()} title="Fit (Ctrl+0)" aria-keyshortcuts="Control+0">Fit</button>
       <button className={`btn ${engine.ruler ? "btn-primary" : ""}`} aria-pressed={!!engine.ruler} onClick={() => { toggleRuler(engine); onPage({}); }}>Show ruler</button>
+      {engine.ruler && <RulerAngle engine={engine} onSet={() => onPage({})} />}
       <span className="ml-auto" />
       {children}
       <label className="flex items-center gap-1">
@@ -56,5 +58,27 @@ export function InkToolbar({ engine, tool, onTool, page, onPage, version, compac
       </label>
       <button className={`btn ${page.frame === "a4" ? "btn-primary" : ""}`} aria-pressed={page.frame === "a4"} onClick={() => onPage({ frame: page.frame === "a4" ? "none" : "a4" })}>A4 frame</button>
     </div>
+  );
+}
+
+/** Type the ruler's angle (degrees anticlockwise, as printed on it) instead of turning it by hand; or tap a common one. */
+function RulerAngle({ engine, onSet }: { engine: InkEngine; onSet: () => void }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const r = engine.ruler!;
+  const set = (deg: number) => { r.setDegrees(deg); onSet(); };
+  return (
+    <span className="flex items-center gap-1">
+      <label className="flex items-center gap-1">
+        <span className="label">Angle</span>
+        <input type="number" inputMode="decimal" step="any" className="input w-20 py-1 tabular-nums" aria-label="Ruler angle in degrees"
+          value={draft ?? String(Number(r.degrees().toFixed(1)))}
+          onChange={(e) => { setDraft(e.target.value); const n = Number(e.target.value); if (e.target.value.trim() && Number.isFinite(n)) set(n); }}
+          onBlur={() => setDraft(null)} onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }} />
+        <span aria-hidden>°</span>
+      </label>
+      {[0, 30, 45, 60, 90].map((d) => (
+        <button key={d} className="btn px-2" aria-label={`Ruler to ${d} degrees`} onClick={() => { setDraft(null); set(d); }}>{d}°</button>
+      ))}
+    </span>
   );
 }
