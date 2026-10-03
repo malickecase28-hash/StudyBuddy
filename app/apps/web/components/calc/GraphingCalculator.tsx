@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Wordmark } from "@forma/ui";
 import { Tex } from "@/components/Tex";
 import { calculate, CONSTANTS, COORDS, differentiate, integrate, readLines, suggestJacobian, texNumber, type Coords, type Line } from "@/lib/graphcalc";
 
@@ -19,25 +20,113 @@ function useSaved<T>(key: string, initial: T): [T, (v: T) => void] {
  * A graphing calculator in the spirit of a TI-Nspire: a list of expressions drawn on one graph (curves, polar,
  * parametric, and z = f(x, y) as a contour map or a 3D surface, with sliders for constants), a calculation history
  * with units and constants, and an integrator for single, double and triple integrals in any coordinate system.
+ * It sits in a handheld's body: a screen with numbered pages, and a keypad that types into the last field used.
  */
 export function GraphingCalculator({ tall = false }: { tall?: boolean }) {
   const [tab, setTab] = useSaved<Tab>("tab", "graph");
+  const [keys, setKeys] = useSaved<boolean>("keys", true);
+  const [abc, setAbc] = useState(false);
+  const screen = useRef<HTMLDivElement>(null);
+  const last = useRef<HTMLInputElement | null>(null);
+  // On touch screens the keypad replaces the system keyboard, until "abc" asks for it (units, names).
+  const keyboardFor = (el: HTMLInputElement) => { el.inputMode = keys && !abc && matchMedia("(pointer: coarse)").matches ? "none" : ""; };
   return (
-    <div className="space-y-3">
-      <div role="tablist" aria-label="Calculator" className="segmented w-full">
-        {TABS.map(([id, label]) => (
-          <button key={id} role="tab" type="button" aria-selected={tab === id} aria-checked={tab === id} className="flex-1" onClick={() => setTab(id)}>{label}</button>
-        ))}
+    <div className="calc-device" data-theme="paper">
+      <div className="calc-brand">
+        <Wordmark height={13} title="Forma" />
+        <span className="calc-model">graphing</span>
+        <button type="button" className="calc-hide" aria-pressed={keys} onClick={() => setKeys(!keys)}>{keys ? "Hide keypad" : "Show keypad"}</button>
       </div>
-      {tab === "graph" && <GraphTab tall={tall} />}
-      {tab === "calc" && <CalcTab />}
-      {tab === "integrate" && <IntegrateTab />}
+      <div ref={screen} className="calc-screen"
+        onFocus={(e) => { if (isField(e.target)) last.current = e.target; }}
+        onPointerDownCapture={(e) => { if (isField(e.target)) keyboardFor(e.target); }}>
+        <div role="tablist" aria-label="Calculator pages" className="calc-tabs">
+          {TABS.map(([id, label], i) => (
+            <button key={id} role="tab" type="button" aria-selected={tab === id} onClick={() => setTab(id)}><span className="calc-page">1.{i + 1}</span> {label}</button>
+          ))}
+          <span className="calc-status" aria-hidden>RAD</span>
+        </div>
+        <div className="calc-body">
+          {tab === "graph" && <GraphTab tall={tall} />}
+          {tab === "calc" && <CalcTab />}
+          {tab === "integrate" && <IntegrateTab />}
+        </div>
+      </div>
+      {keys && <Keypad abc={abc} press={(k) => {
+        const root = screen.current;
+        if (!root) return;
+        if (k.act === "abc") { setAbc(!abc); const el = last.current; if (el?.isConnected) { el.inputMode = abc ? "none" : ""; el.blur(); el.focus(); } return; }
+        press(k, last.current?.isConnected ? last.current : null, root);
+      }} />}
     </div>
   );
 }
 
+/** Text-like inputs the keypad can type into (not sliders or selects). */
+const isField = (t: EventTarget | null): t is HTMLInputElement => t instanceof HTMLInputElement && t.type !== "range";
+
+type Key = { label: string; ins?: string; act?: "del" | "clear" | "left" | "right" | "enter" | "tab" | "abc"; aria?: string; kind?: "num" | "nav" | "enter"; wide?: boolean };
+const K = (label: string, ins = label, aria?: string, kind?: Key["kind"]): Key => ({ label, ins, ...(aria ? { aria } : {}), ...(kind ? { kind } : {}) });
+const N = (d: string) => K(d, d, undefined, "num");
+const KEYS: Key[] = [
+  { label: "tab", act: "tab", aria: "Next field", kind: "nav" }, { label: "◀", act: "left", aria: "Cursor left", kind: "nav" }, { label: "▶", act: "right", aria: "Cursor right", kind: "nav" },
+  { label: "abc", act: "abc", aria: "Letters keyboard", kind: "nav" }, { label: "del", act: "del", aria: "Delete", kind: "nav" }, { label: "clear", act: "clear", aria: "Clear field", kind: "nav" },
+  K("sin", "sin("), K("cos", "cos("), K("tan", "tan("), K("ln", "log(", "natural log"), K("log", "log10(", "log base 10"), K("√", "√(", "square root"),
+  K("x"), K("y"), K("z"), K("θ", "θ", "theta"), K("ρ", "ρ", "rho"), K("φ", "φ", "phi"),
+  K("("), K(")"), K("^", "^", "power"), K("x²", "^2", "squared"), K("π", "π", "pi"), K("e", "e", "e, Euler's number"),
+  N("7"), N("8"), N("9"), K("÷", "/", "divide"), K("EE", "e", "times ten to the power"), K(","),
+  N("4"), N("5"), N("6"), K("×", "*", "multiply"), K("ans", "ans", "previous answer"), K("=", " = ", "equals"),
+  N("1"), N("2"), N("3"), K("−", "-", "minus"), K("to", " to ", "convert units to"), K("|x|", "abs(", "absolute value"),
+  N("0"), N("."), K("r"), K("+", "+", "plus"), { label: "enter", act: "enter", kind: "enter", wide: true },
+];
+
+function Keypad({ abc, press }: { abc: boolean; press: (k: Key) => void }) {
+  return (
+    <div className="calc-keys" role="group" aria-label="Calculator keypad">
+      {KEYS.map((k) => (
+        <button key={k.label + (k.act ?? "")} type="button" aria-label={k.aria ?? k.label} {...(k.act === "abc" ? { "aria-pressed": abc } : {})}
+          className={`calc-key${k.kind ? ` calc-key-${k.kind}` : ""}${k.wide ? " calc-key-wide" : ""}`}
+          onPointerDown={(e) => e.preventDefault() /* keep the field focused */} onClick={() => press(k)}>{k.label}</button>
+      ))}
+    </div>
+  );
+}
+
+const setValue = (el: HTMLInputElement, v: string) => {
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(el, v);
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+};
+
+/** One key press on `target` (or the screen's first field). Typed text goes through the browser, so Ctrl+Z undoes it. */
+function press(k: Key, target: HTMLInputElement | null, screen: HTMLElement) {
+  const fields = [...screen.querySelectorAll("input")].filter(isField);
+  const el = target ?? fields[0];
+  if (!el) return;
+  el.focus({ preventScroll: true });
+  const caret = (d: number) => { try { const p = Math.max(0, Math.min(el.value.length, (el.selectionStart ?? el.value.length) + d)); el.setSelectionRange(p, p); } catch { /* number fields have no caret API */ } };
+  const next = () => fields[(fields.indexOf(el) + 1) % fields.length]?.focus();
+  switch (k.act) {
+    case "left": return caret(-1);
+    case "right": return caret(1);
+    case "clear": return setValue(el, "");
+    case "tab": return next();
+    case "del": if (!document.execCommand("delete")) setValue(el, el.value.slice(0, -1)); return;
+    case "enter": {
+      if (el.form) return el.form.requestSubmit();
+      const go = screen.querySelector<HTMLButtonElement>("[data-calc-enter]");
+      return go ? go.click() : next();
+    }
+  }
+  const text = k.ins ?? k.label;
+  if (!document.execCommand("insertText", false, text)) {
+    const a = el.selectionStart ?? el.value.length, b = el.selectionEnd ?? a;
+    setValue(el, el.value.slice(0, a) + text + el.value.slice(b));
+    try { el.setSelectionRange(a + text.length, a + text.length); } catch { /* number field */ }
+  }
+}
+
 const TOKENS = ["flux", "charge", "field", "surface", "graphite"] as const;
-const css = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim() || "gray";
+const css = (name: string, el: Element = document.documentElement) => getComputedStyle(el).getPropertyValue(`--${name}`).trim() || "gray";
 const range = (a: number, b: number, n: number) => Array.from({ length: n }, (_, i) => a + ((b - a) * i) / (n - 1));
 const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && Math.abs(v) < 1e9 ? v : null);
 
@@ -58,10 +147,10 @@ function GraphTab({ tall }: { tall: boolean }) {
     let live = true;
     void import("plotly.js-dist-min").then(({ default: Plotly }) => {
       if (!live) return;
-      const ink = css("ink"), grid = css("grid"), paper = css("paper-2");
+      const ink = css("ink", el), grid = css("grid", el), paper = css("paper-2", el);
       const data: object[] = [];
       let c = 0;
-      const color = () => css(TOKENS[c++ % TOKENS.length]!);
+      const color = () => css(TOKENS[c++ % TOKENS.length]!, el);
       const xs = range(view.x0, view.x1, 600);
       const flat = !(view.mode3d && hasSurface);
       for (const l of lines) {
@@ -130,7 +219,7 @@ function GraphTab({ tall }: { tall: boolean }) {
         )}
         {hasSurface && view.mode3d && lines.some((l) => l.kind === "curve" || l.kind === "polar" || l.kind === "parametric") && <span className="text-xs text-soft">Curves show in the contour view.</span>}
       </div>
-      <div ref={plot} className="w-full overflow-hidden rounded border border-[var(--grid)]" style={{ height: tall ? 520 : 340 }} role="img" aria-label="Graph of the expressions above" />
+      <div ref={plot} className="w-full overflow-hidden rounded border border-[var(--grid)]" style={{ height: tall ? 420 : 340 }} role="img" aria-label="Graph of the expressions above" />
       <div className="flex flex-wrap items-center gap-2">
         {numberField("x from", view.x0, (n) => setView({ ...view, x0: n }))}
         {numberField("to", view.x1, (n) => setView({ ...view, x1: n }))}
@@ -273,7 +362,7 @@ function IntegrateTab() {
         <input className="input w-36 font-mono text-sm" value={jacobian} onChange={(e) => setJac(e.target.value)} aria-label="Jacobian" spellCheck={false} />
         {jac !== null && <button className="btn px-2 py-0.5 text-xs" onClick={() => setJac(null)}>Suggested</button>}
       </label>
-      <button className="btn btn-primary" onClick={go}>Integrate</button>
+      <button className="btn btn-primary" data-calc-enter onClick={go}>Integrate</button>
       {result && (result.error
         ? <p className="text-sm text-[var(--charge-text)]" role="status">{result.error}</p>
         : <div className="overflow-x-auto rounded border border-[var(--grid)] bg-[var(--paper)] p-2" role="status">

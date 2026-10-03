@@ -1,6 +1,6 @@
 "use client";
 
-import { Mark, Segmented, TitleBlock, Wordmark } from "@forma/ui";
+import { Segmented, TitleBlock, Wordmark } from "@forma/ui";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -11,6 +11,7 @@ import { useUi } from "@/lib/ui";
 import { CommandPalette, useShortcuts } from "./CommandPalette";
 import { Hydrated } from "./Providers";
 import { SettingsDialog } from "./SettingsDialog";
+import { Snip } from "./Snip";
 import { ToolDock } from "./ToolDock";
 import { ToolSplit } from "./ToolPanel";
 
@@ -58,8 +59,7 @@ function TopBar() {
   return (
     <header className="topbar">
       <Link href="/" className="brand" aria-label="Forma: go to your desk">
-        <Mark size={22} title="" />
-        <Wordmark height={16} title="" />
+        <Wordmark height={20} title="" />
       </Link>
       <nav aria-label="Breadcrumb" className="crumbs">
         <ol>
@@ -78,6 +78,7 @@ function TopBar() {
         />
       )}
       <div className="topbar-end">
+        <Snip />
         <button className="btn" onClick={() => setPalette(true)} aria-label="Search and jump (Control K)">
           <span className="topbar-wide">Search </span><span className="topbar-narrow" aria-hidden>⌕</span><kbd className="label topbar-wide">{shortcut}</kbd>
         </button>

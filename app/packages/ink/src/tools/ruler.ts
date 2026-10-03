@@ -6,8 +6,10 @@ import { vec, type Tool, type WorldSample } from "./types";
 const LEN = 720, H = 56, SNAP = 12;
 
 /**
- * A straightedge on the page. Its top edge passes through `c` at `angle`. Pen points within 12 screen px of that
- * edge are projected onto it.
+ * A straightedge on the page. Its top edge passes through `c` at `angle`; its body lies below that edge. Like a real
+ * ruler, ink cannot cross the body: a stroke stays on the side it started on, points that would enter the body
+ * are pushed back onto the nearer long edge, and points within 12 screen px of that edge are projected onto it.
+ * Past the ends of the ruler, ink goes anywhere.
  */
 export class Ruler implements RulerLike {
   angle = 0;
@@ -19,12 +21,17 @@ export class Ruler implements RulerLike {
     return { along: dx * d.x + dy * d.y, off: -dx * d.y + dy * d.x };
   }
   snapper() {
+    let edge: number | null = null; // the long edge this stroke writes against (offset, world units), set by its first point beside the ruler
     return (pts: InkPoint[]): InkPoint[] => {
-      const z = this.engine.camera.zoom, d = this.dir();
+      const z = this.engine.camera.zoom, d = this.dir(), h = H / z;
       return pts.map((p): InkPoint => {
         const l = this.local({ x: p[0], y: p[1] });
-        if (Math.abs(l.off) * z > SNAP || Math.abs(l.along) * z > LEN / 2) return p;
-        return [this.c.x + l.along * d.x, this.c.y + l.along * d.y, p[2], p[3], p[4], p[5]];
+        if (Math.abs(l.along) * z > LEN / 2) return p;
+        edge ??= l.off < h / 2 ? 0 : h;
+        const off = edge === 0 ? Math.min(l.off, 0) : Math.max(l.off, h);
+        const snapped = Math.abs(off - edge) * z <= SNAP ? edge : off;
+        if (snapped === l.off) return p;
+        return [this.c.x + l.along * d.x - snapped * d.y, this.c.y + l.along * d.y + snapped * d.x, p[2], p[3], p[4], p[5]];
       });
     };
   }
@@ -60,7 +67,7 @@ export function toggleRuler(engine: InkEngine): void {
   if (engine.ruler) engine.ruler = null;
   else {
     const v = engine.camera.visibleRect(engine.renderer.w, engine.renderer.h);
-    engine.ruler = new Ruler(engine, { x: v.x + v.w / 4, y: v.y + v.h / 2 });
+    engine.ruler = new Ruler(engine, { x: v.x + v.w / 2, y: v.y + v.h / 2 });
   }
   engine.requestFrame();
 }

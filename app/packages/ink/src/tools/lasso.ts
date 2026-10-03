@@ -3,7 +3,10 @@ import { lassoHits, translate } from "../geometry";
 import type { Item, Vec } from "../model";
 import { vec, type Tool, type WorldSample } from "./types";
 
-/** Lasso: draw round items to select them; press inside the selection to drag it (one update op on release). */
+/**
+ * Select: tap an item, or draw round several, to select them; press inside the selection to drag it (one update op
+ * on release).
+ */
 export const makeLasso = (engine: InkEngine): Tool => {
   let poly: Vec[] | null = null;
   let drag: { from: Vec; t: ReturnType<InkEngine["transformSelection"]> } | null = null;
@@ -27,9 +30,13 @@ export const makeLasso = (engine: InkEngine): Tool => {
     up() {
       if (drag) { drag.t.commit(); drag = null; }
       else if (poly) {
-        if (poly.length > 2) {
-          const xs = poly.map((p) => p.x), ys = poly.map((p) => p.y);
-          const x0 = Math.min(...xs), y0 = Math.min(...ys);
+        const xs = poly.map((p) => p.x), ys = poly.map((p) => p.y);
+        const x0 = Math.min(...xs), y0 = Math.min(...ys), z = engine.camera.zoom;
+        if (Math.max(Math.max(...xs) - x0, Math.max(...ys) - y0) * z < 6) {
+          // A tap selects the topmost item under the finger, within 10 screen px.
+          const hit = engine.itemAt(poly[0]!, 10 / z);
+          if (hit) engine.select([hit.id]);
+        } else if (poly.length > 2) {
           const near = [...engine.index.query({ x: x0, y: y0, w: Math.max(...xs) - x0, h: Math.max(...ys) - y0 })]
             .map((id) => engine.items.get(id))
             .filter((x): x is Item => !!x);

@@ -10,7 +10,7 @@ export default function CalculatorPage() {
         <h1 className="mt-1 text-3xl font-semibold tracking-tight">Graphing calculator</h1>
         <p className="mt-1 text-sm text-soft">Graph curves, contours and surfaces; calculate with units and constants; integrate in any coordinate system.</p>
       </div>
-      <GraphingCalculator tall />
+      <div className="mx-auto max-w-3xl"><GraphingCalculator tall /></div>
     </div>
   );
 }

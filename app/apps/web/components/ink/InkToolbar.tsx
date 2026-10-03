@@ -7,7 +7,7 @@ export const TOOLS: { id: ToolId; label: string; key?: string }[] = [
   { id: "highlighter", label: "Highlighter", key: "H" },
   { id: "eraser", label: "Eraser", key: "E" },
   { id: "precise-eraser", label: "Precise eraser" },
-  { id: "lasso", label: "Lasso", key: "L" },
+  { id: "lasso", label: "Select", key: "L" },
   { id: "shape", label: "Shapes", key: "S" },
   { id: "text", label: "Text", key: "T" },
   { id: "equation", label: "Equation", key: "M" },

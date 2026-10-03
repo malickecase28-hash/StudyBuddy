@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createBitmapProvider } from "@/lib/ink-bitmaps";
 import { inkStore, newPage } from "@/lib/ink-store";
+import { SNIP_EVENT, takeSnip } from "@/lib/snip";
 import { useStudy } from "@/lib/store";
 import { ConvertDialog } from "./ConvertDialog";
 import { EquationEditor } from "./EquationEditor";
@@ -97,6 +98,8 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
       else if (engine.camera.zoom > 1) engine.setZoom(1); // a little ink opens at 100%, not blown up
       if (p.items.length) void inkStore().getThumb(p.page.id).then((t) => { if (!t && live) scheduleThumb(false); });
       (window as unknown as { __inkLoaded?: number }).__inkLoaded = performance.now();
+      const snip = takeSnip(); // a snip sent here from elsewhere in the app
+      if (snip) void insertImage(engine, snip);
       bump();
     });
     return () => { live = false; };
@@ -125,6 +128,14 @@ export function InkEditor({ notebookId, pageId, compact = false, onOpenPage }: {
     window.addEventListener("paste", paste);
     return () => window.removeEventListener("paste", paste);
   }, [engine, compact]);
+
+  // A snip sent to Ink while this page is open lands here.
+  useEffect(() => {
+    if (!engine) return;
+    const on = (e: Event) => { e.preventDefault(); void insertImage(engine, (e as CustomEvent<Blob>).detail); };
+    window.addEventListener(SNIP_EVENT, on);
+    return () => window.removeEventListener(SNIP_EVENT, on);
+  }, [engine]);
 
   // A4 frame overlay.
   useEffect(() => {
