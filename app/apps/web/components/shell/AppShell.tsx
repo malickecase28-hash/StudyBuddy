@@ -11,6 +11,7 @@ import { useUi } from "@/lib/ui";
 import { CommandPalette, useShortcuts } from "./CommandPalette";
 import { Hydrated } from "./Providers";
 import { SettingsDialog } from "./SettingsDialog";
+import { AccountMenu } from "./AccountMenu";
 import { SearchIcon } from "./icons";
 import { Snip } from "./Snip";
 import { ToolDock } from "./ToolDock";
@@ -90,11 +91,15 @@ function TopBar() {
   );
 }
 
-/** Off: the old Guest label, unchanged (visual baselines). On: a link into Commons. */
+/** The malickecase.com account menu; with Commons on, a link into Commons beside it. */
 function AccountLink() {
   const name = useMe((s) => s.name);
-  if (!commonsEnabled) return <span className="label topbar-wide" title="Accounts arrive with sub-project 5">Guest</span>;
-  return <Link className="btn" href="/commons">{name ?? "Commons"}</Link>;
+  return (
+    <>
+      {commonsEnabled && <Link className="btn topbar-wide" href="/commons">{name ?? "Commons"}</Link>}
+      <AccountMenu />
+    </>
+  );
 }
 
 /** "Ctrl K" everywhere, "⌘K" on Apple devices (decided after mount, so server and client HTML match). */
