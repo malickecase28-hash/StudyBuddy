@@ -32,7 +32,7 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .segmented { display: inline-flex; border: 1.5px solid var(--ink); }
 .segmented > button { padding: 4px 12px; font-size: 0.85rem; }
 .segmented > button + button { border-left: 1.5px solid var(--ink); }
-.segmented > button[aria-checked="true"] { background: var(--ink); color: var(--paper); }
+.segmented > button[aria-checked="true"], .segmented > button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
 
 .timeline { display: flex; align-items: center; gap: 12px; }
 .timeline-track { flex: 1; display: grid; gap: 4px; }
