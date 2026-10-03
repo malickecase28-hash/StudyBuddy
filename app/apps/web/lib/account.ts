@@ -5,17 +5,18 @@ import { create } from "zustand";
 import { useStudy } from "./store";
 
 /**
- * One account for malickecase.com and Forma. The session cookie belongs to malickecase.com and is shared with its
- * subdomains, so Forma asks that site who is signed in and keeps the learner's progress there (/api/forma/state).
+ * Forma's own accounts (pages /signin and /account, API /api/account/* and /api/state on this site). The user store
+ * is shared with malickecase.com's journal, so the same email and password work on both.
  * Sync: a device signing in to an account for the first time takes the account's copy (if it has one); after that,
  * the newer copy wins on sign-in, and every change is saved to the account a few seconds later. Ink notebooks stay
  * on the device.
  */
-export const ACCOUNT_ORIGIN = process.env.NEXT_PUBLIC_ACCOUNT_ORIGIN ?? "https://malickecase.com";
-export const signInHref = () => `${ACCOUNT_ORIGIN}/signin?next=${encodeURIComponent(typeof window === "undefined" ? "https://forma.malickecase.com/" : window.location.href)}`;
-export const accountHref = () => `${ACCOUNT_ORIGIN}/account?next=${encodeURIComponent(typeof window === "undefined" ? "https://forma.malickecase.com/" : window.location.href)}`;
+const here = () => (typeof window === "undefined" ? "/" : window.location.pathname + window.location.search);
+export const signInHref = () => `/signin?next=${encodeURIComponent(here())}`;
+export const accountHref = () => "/account";
 
-export type AccountUser = { email: string; name?: string; picture?: string | null };
+export type AccountUser = { email: string; name?: string; picture?: string | null; hasPassword?: boolean };
+type Result = { ok: boolean; error?: string; user?: AccountUser };
 type Sync = "idle" | "saving" | "saved" | "error";
 
 const LOCAL_AT = "forma:progress-updated";
@@ -26,7 +27,11 @@ const readLocalAt = () => { try { return Number(localStorage.getItem(LOCAL_AT)) 
 const writeLocalAt = (t: number) => { try { localStorage.setItem(LOCAL_AT, String(t)); } catch { /* private mode */ } };
 
 const api = (path: string, init: RequestInit = {}) =>
-  fetch(`${ACCOUNT_ORIGIN}${path}`, { ...init, credentials: "include", signal: AbortSignal.timeout(8000), headers: { "Content-Type": "application/json", ...init.headers } });
+  fetch(path, { ...init, credentials: "same-origin", signal: AbortSignal.timeout(15000), headers: { "Content-Type": "application/json", ...init.headers } });
+const post = async (action: string, body: object): Promise<Result> => {
+  try { return (await (await api(`/api/account/${action}`, { method: "POST", body: JSON.stringify(body) })).json()) as Result; }
+  catch { return { ok: false, error: "Couldn't reach Forma. Check your connection and try again." }; }
+};
 
 export const useAccount = create<{
   status: "loading" | "in" | "out";
@@ -34,6 +39,11 @@ export const useAccount = create<{
   sync: Sync;
   start: () => Promise<void>;
   signOut: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<Result>;
+  signUp: (name: string, email: string, password: string) => Promise<Result>;
+  rename: (name: string) => Promise<Result>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<Result>;
+  deleteAccount: (password: string) => Promise<Result>;
 }>((set, get) => ({
   status: "loading",
   user: null,
@@ -41,7 +51,7 @@ export const useAccount = create<{
   start: async () => {
     if (get().status !== "loading") return;
     try {
-      const me = (await (await api("/api/auth/me")).json()) as { ok: boolean; user?: AccountUser };
+      const me = (await (await api("/api/account/me")).json()) as Result;
       if (!me.ok || !me.user) { set({ status: "out" }); return; }
       set({ status: "in", user: me.user });
       await pullThenPush(me.user.email);
@@ -50,10 +60,23 @@ export const useAccount = create<{
     }
   },
   signOut: async () => {
-    try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch { /* offline: the cookie expires on its own */ }
+    await post("logout", {});
     set({ status: "out", user: null, sync: "idle" });
   },
+  signIn: async (email, password) => signedIn(await post("login", { email, password })),
+  signUp: async (name, email, password) => signedIn(await post("signup", { name, email, password })),
+  rename: async (name) => { const r = await post("profile", { name }); if (r.ok && r.user) set({ user: r.user }); return r; },
+  changePassword: (currentPassword, newPassword) => post("password", { currentPassword, newPassword }),
+  deleteAccount: async (password) => { const r = await post("delete", { password, confirm: "DELETE" }); if (r.ok) set({ status: "out", user: null, sync: "idle" }); return r; },
 }));
+
+async function signedIn(r: Result): Promise<Result> {
+  if (r.ok && r.user) {
+    useAccount.setState({ status: "in", user: r.user });
+    await pullThenPush(r.user.email);
+  }
+  return r;
+}
 
 let applyingRemote = false;
 let pulling = false; // no auto-save until the sign-in pull has decided which copy wins
@@ -64,7 +87,7 @@ async function push(): Promise<void> {
   const at = readLocalAt() || Date.now();
   useAccount.setState({ sync: "saving" });
   try {
-    const res = await api("/api/forma/state", { method: "PUT", body: JSON.stringify({ state: useStudy.getState().learner, updatedAt: at }) });
+    const res = await api("/api/state", { method: "PUT", body: JSON.stringify({ state: useStudy.getState().learner, updatedAt: at }) });
     if (res.status === 401) { useAccount.setState({ status: "out", user: null, sync: "idle" }); return; }
     useAccount.setState({ sync: res.ok ? "saved" : "error" });
   } catch {
@@ -81,7 +104,7 @@ async function pullThenPush(email: string): Promise<void> {
 async function pullOrPush(email: string): Promise<void> {
   await waitForHydration();
   try {
-    const res = await api("/api/forma/state");
+    const res = await api("/api/state");
     const body = (await res.json()) as { ok: boolean; state?: unknown; updatedAt?: number };
     if (body.ok && body.state && (syncedWith() !== email || (body.updatedAt ?? 0) > readLocalAt())) {
       const { state, reset } = migrate(body.state);

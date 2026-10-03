@@ -5,14 +5,14 @@ import { accountHref, signInHref, useAccount } from "@/lib/account";
 
 const SYNC: Record<string, string> = { idle: "Progress saves to your account", saving: "Saving to your account…", saved: "Progress saved to your account", error: "Couldn't reach your account; saved on this device" };
 
-/** Top bar: "Sign in" (one account with malickecase.com), or the signed-in name with sync status, account and sign-out. */
+/** Top bar: "Sign in" (Forma's own sign-in page), or the signed-in name with sync status, account and sign-out. */
 export function AccountMenu() {
   const { status, user, sync, start, signOut } = useAccount();
   const menu = useRef<HTMLDetailsElement>(null);
   useEffect(() => { void start(); }, [start]);
 
   if (status !== "in" || !user) {
-    return <a className="btn" href={signInHref()} onClick={(e) => { e.currentTarget.href = signInHref(); }}>Sign in</a>;
+    return <a className="btn" href="/signin" onClick={(e) => { e.currentTarget.href = signInHref(); /* adds ?next=this page, decided at click so server and client HTML match */ }}>Sign in</a>;
   }
   const name = user.name || user.email;
   const initials = name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();

@@ -14,3 +14,6 @@ const config: NextConfig = {
 };
 
 export default config;
+
+// Local `next dev` gets the Worker bindings (KV) through Wrangler, so accounts work locally too.
+import("@opennextjs/cloudflare").then((m) => m.initOpenNextCloudflareForDev());

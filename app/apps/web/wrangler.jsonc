@@ -5,6 +5,8 @@
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  // Accounts and saved progress; the same store as malickecase.com's journal.
+  "kv_namespaces": [{ "binding": "USERS", "id": "7342513afc9f47258728851efbc89767" }],
   "minify": true,
   "routes": [{ "pattern": "forma.malickecase.com", "custom_domain": true }],
   "observability": { "enabled": true }
