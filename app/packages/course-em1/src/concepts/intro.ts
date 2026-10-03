@@ -1,7 +1,7 @@
 import { meta, orig, src } from "../sources";
 
 const ID = "em1.intro.em-world";
-const UNIT1 = "UTech ELE3001 Unit 1 slides (G. D. Boswell)";
+const UNIT1 = "Course notes, Unit 1";
 
 export const emWorld = {
   id: ID,
@@ -18,7 +18,7 @@ export const emWorld = {
     { tag: "PREFIX_POWER", description: "Squares or cubes the unit but not its prefix (1 cm² = 0.01 m²).", remediation: `${ID}/main` },
     { tag: "SYMBOL_CASE", description: "Confuses m (milli) with M (mega), or similar case slips.", remediation: `${ID}/main` },
   ],
-  examLinks: [{ paper: "UTech ELE3001 Finals 2024-25 Sem 1", question: "Q1(a)", marks: 4, weight: 1 }],
+  examLinks: [{ paper: "Exam-style question", question: "Q1(a)", marks: 4, weight: 1 }],
   sources: [src(UNIT1, "pp. 1-12")],
   status: "verified" as const,
   rules: [],

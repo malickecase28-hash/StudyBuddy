@@ -30,12 +30,12 @@ export const ideaBcNormal = defineIdeaPlate({
         },
         {
           id: "unit-normal", title: "The unit normal of any plane", focus: ["b"],
-          note: "ICT 2's boundary is the plane −6x + 8y = 16. The gradient of −6x + 8y gives its normal, (−6, 8, 0); divide by its length, 10, for the unit normal n̂ = (−0.6, 0.8, 0). Normalising matters: projecting onto (−6, 8, 0) makes every normal component ten times too big. The 16 only locates the plane; it never enters the field calculation.",
+          note: "The boundary is the plane −6x + 8y = 16. The gradient of −6x + 8y gives its normal, (−6, 8, 0); divide by its length, 10, for the unit normal n̂ = (−0.6, 0.8, 0). Normalising matters: projecting onto (−6, 8, 0) makes every normal component ten times too big. The 16 only locates the plane; it never enters the field calculation.",
           claims: [{ instance: "b", readout: "nx", value: -0.6, unit: "" }, { instance: "b", readout: "ny", value: 0.8, unit: "" }],
         },
         {
           id: "project", title: "Project, then subtract", focus: ["b"],
-          note: "With D₁ = −10âₓ − 20âᵧ + 14âz C/m² and εr1 = 21: D₁·n̂ = 6 − 16 + 0 = −10, so D₁ₙ = −10n̂ = 6âₓ − 8âᵧ C/m². The rest is tangential: D₁ₜ = D₁ − D₁ₙ = −16âₓ − 12âᵧ + 14âz C/m². The lecturer's advice: keep n̂ as a symbol until the dot product is done, and only then substitute, so nothing gets rounded early.",
+          note: "With D₁ = −10âₓ − 20âᵧ + 14âz C/m² and εr1 = 21: D₁·n̂ = 6 − 16 + 0 = −10, so D₁ₙ = −10n̂ = 6âₓ − 8âᵧ C/m². The rest is tangential: D₁ₜ = D₁ − D₁ₙ = −16âₓ − 12âᵧ + 14âz C/m². Good practice: keep n̂ as a symbol until the dot product is done, and only then substitute, so nothing gets rounded early.",
           claims: [
             { instance: "b", readout: "D1nx", value: 6, unit: "C/m^2" }, { instance: "b", readout: "D1ny", value: -8, unit: "C/m^2" },
             { instance: "b", readout: "D1tx", value: -16, unit: "C/m^2" }, { instance: "b", readout: "D1ty", value: -12, unit: "C/m^2" }, { instance: "b", readout: "D1tz", value: 14, unit: "C/m^2" },
@@ -43,7 +43,7 @@ export const ideaBcNormal = defineIdeaPlate({
         },
         {
           id: "assemble", title: "Assemble D₂ and E₂", patch: { b: { show: ["n", "split", "D", "E"] } }, focus: ["b"],
-          note: "Apply both rules. Normal D carries over: D₂ₙ = 6âₓ − 8âᵧ. Tangential E carries over, so D₂ₜ = (ε₂/ε₁)D₁ₜ = (7/21)(−16, −12, 14) = (−5.333, −4, 4.667) C/m². Add them: D₂ = 0.667âₓ − 12âᵧ + 4.667âz C/m². Then E₂ = D₂/(7ε₀) = (0.1076, −1.936, 0.7529) × 10¹¹ V/m, which matches the lecturer's (1.08, −19.4, 7.53) × 10¹⁰.",
+          note: "Apply both rules. Normal D carries over: D₂ₙ = 6âₓ − 8âᵧ. Tangential E carries over, so D₂ₜ = (ε₂/ε₁)D₁ₜ = (7/21)(−16, −12, 14) = (−5.333, −4, 4.667) C/m². Add them: D₂ = 0.667âₓ − 12âᵧ + 4.667âz C/m². Then E₂ = D₂/(7ε₀) = (0.1076, −1.936, 0.7529) × 10¹¹ V/m, which matches the model answer's (1.08, −19.4, 7.53) × 10¹⁰.",
           claims: [
             { instance: "b", readout: "D2x", value: 0.666667, unit: "C/m^2" }, { instance: "b", readout: "D2y", value: -12, unit: "C/m^2" }, { instance: "b", readout: "D2z", value: 4.66667, unit: "C/m^2" },
             { instance: "b", readout: "E2y", value: -1.9361e11, unit: "V/m" },
@@ -51,7 +51,7 @@ export const ideaBcNormal = defineIdeaPlate({
         },
         {
           id: "surface-charge", title: "When ρs isn't zero", patch: { b: { ...SHEET, show: ["D", "rhoS"] } }, focus: ["b"],
-          note: "Free charge on the interface makes normal D jump by exactly ρs. The mid-semester test's infinite sheet with ρs = 120 µC/m² is the extreme case: the same medium on both sides, so symmetry splits the jump evenly. D is 60 µC/m² pointing away from the sheet on each side, so D₁ₙ − D₂ₙ = 60 − (−60) = 120 µC/m². In free space, E = D/ε₀ = 6.776 × 10⁶ V/m on either side.",
+          note: "Free charge on the interface makes normal D jump by exactly ρs. An infinite sheet with ρs = 120 µC/m² is the extreme case: the same medium on both sides, so symmetry splits the jump evenly. D is 60 µC/m² pointing away from the sheet on each side, so D₁ₙ − D₂ₙ = 60 − (−60) = 120 µC/m². In free space, E = D/ε₀ = 6.776 × 10⁶ V/m on either side.",
           claims: [{ instance: "b", readout: "rhoS", value: 1.2e-4, unit: "C/m^2" }, { instance: "b", readout: "D1z", value: 6e-5, unit: "C/m^2" }, { instance: "b", readout: "D2z", value: -6e-5, unit: "C/m^2" }],
         },
       ],
@@ -68,7 +68,7 @@ export const ideaBcNormal = defineIdeaPlate({
           trap: "Getting n̂ backwards gives D₂ₙ = 5 + 2 = 7. The rule D₁ₙ − D₂ₙ = ρs needs n̂ pointing from region 2 into region 1.",
         },
         {
-          id: "ict2", level: "tutorial", title: "ICT 2 (Nov 2024) Q2(a)–(c)",
+          id: "ict2", level: "tutorial", title: "A slanted boundary, εr 21 into 7",
           setup: { b: { ...ICT, show: ["n", "split", "D", "E"] } },
           problem: "Region 1 (εr1 = 21) and region 2 (εr2 = 7) meet at the plane −6x + 8y = 16. D₁ = −10âₓ − 20âᵧ + 14âz C/m². Find (a) the unit normal, (b) D₂, (c) E₂.",
           lines: [
@@ -81,7 +81,7 @@ export const ideaBcNormal = defineIdeaPlate({
           trap: "Scaling the whole of D₁ by 7/21. Only the tangential part changes; the normal part crosses unchanged.",
         },
         {
-          id: "hw03", level: "exam", title: "HW03 3.2(a)–(b)",
+          id: "hw03", level: "exam", title: "A slanted boundary, 8ε₀ into 5ε₀",
           setup: { b: { ...HW03, show: ["n", "split", "D", "E"] } },
           problem: "Region 1 (ε₁ = 8ε₀) and region 2 (ε₂ = 5ε₀) meet at the plane −3x + 4z = 15. D₁ = −10.0âₓ − 20.0âᵧ + 14.0âz C/m². Stating your assumptions, calculate (a) D₂ and (b) E₂ in terms of ε₀.",
           lines: [
@@ -97,11 +97,11 @@ export const ideaBcNormal = defineIdeaPlate({
       ],
       asks: [
         { id: "flat", q: "Why must the pillbox be flat?", a: "With zero height, no flux leaves through the curved side, and the only charge inside is what sits on the surface itself: ρs times the face area." },
-        { id: "normalise", q: "Why divide the normal by its length?", tags: ["BND_NORMAL_UNIT"], a: "The projection D·n̂ gives the normal component only when n̂ has length 1. ICT 2's (−6, 8, 0) has length 10, so skipping the step makes D₁ₙ ten times too large." },
+        { id: "normalise", q: "Why divide the normal by its length?", tags: ["BND_NORMAL_UNIT"], a: "The projection D·n̂ gives the normal component only when n̂ has length 1. Here (−6, 8, 0) has length 10, so skipping the step makes D₁ₙ ten times too large." },
         { id: "the-16", q: "What does the 16 in −6x + 8y = 16 do?", a: "It sets where the plane sits, not which way it faces. Every parallel plane has the same normal and gives the same D₂ and E₂." },
         { id: "which-side", q: "Does it matter which way n̂ points?", a: "Not when ρs = 0: the split into D₁ₙ and D₁ₜ is the same either way. With surface charge it does: D₁ₙ − D₂ₙ = ρs assumes n̂ points from region 2 into region 1." },
-        { id: "en-jumps", q: "So is normal E continuous?", tags: ["BND_E_NORMAL"], a: "No. D₁ₙ = D₂ₙ means ε₁E₁ₙ = ε₂E₂ₙ, so E₂ₙ = (ε₁/ε₂)E₁ₙ. In ICT 2, E's normal part triples on the way from εr1 = 21 into εr2 = 7." },
-        { id: "assumptions", q: "What assumptions should I state?", a: "No free surface charge on the interface (ρs = 0), and linear, isotropic, homogeneous media, so D = εE with a single ε on each side. HW03 3.2 gives marks for stating them." },
+        { id: "en-jumps", q: "So is normal E continuous?", tags: ["BND_E_NORMAL"], a: "No. D₁ₙ = D₂ₙ means ε₁E₁ₙ = ε₂E₂ₙ, so E₂ₙ = (ε₁/ε₂)E₁ₙ. On the plate, E's normal part triples on the way from εr1 = 21 into εr2 = 7." },
+        { id: "assumptions", q: "What assumptions should I state?", a: "No free surface charge on the interface (ρs = 0), and linear, isotropic, homogeneous media, so D = εE with a single ε on each side. Questions give marks for stating them." },
         { id: "sheet", q: "How is a charged sheet a boundary problem?", a: "It's an interface carrying ρs with the same medium on both sides. D₁ₙ − D₂ₙ = ρs, and symmetry makes the two sides equal and opposite: ρs/2 each, pointing away." },
       ],
       checks: [
@@ -130,19 +130,19 @@ export const ideaBcNormal = defineIdeaPlate({
             feedback: { close: "Right: 5 − 4 = 1 C/m².", far: "D₂ₙ = D₁ₙ − ρs = 5 − 4 = 1 C/m²." } },
         },
         {
-          id: "mst-sheet", title: "Check: MST Q3(b)",
+          id: "mst-sheet", title: "Check: D beside a charged sheet",
           note: "The charged sheet.",
           patch: { b: { ...SHEET, show: ["D", "rhoS"] } },
-          interaction: { id: "mst-sheet", type: "numeric", prompt: "MST Q3(b): an infinite plane in free space carries ρs = 120 µC/m². Find |D| at a point off the plane, in µC/m².", answer: { value: 60, unit: "µC/m^2" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "mst-sheet", type: "numeric", prompt: "An infinite plane in free space carries ρs = 120 µC/m². Find |D| at a point off the plane, in µC/m².", answer: { value: 60, unit: "µC/m^2" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 120, unit: "µC/m^2", errorClass: "conceptual", feedback: "That's the whole jump. Half goes each way: ρs/2." }],
             hints: ["D₁ₙ − D₂ₙ = ρs.", "By symmetry D₁ₙ = −D₂ₙ.", "|D| = ρs/2."] },
           covers: ["mst-2324-q3b"],
         },
         {
-          id: "hw03-d2", title: "Check: HW03 3.2(a)",
+          id: "hw03-d2", title: "Check: D₂ across a slanted boundary",
           note: "Last one.",
           patch: { b: { ...HW03, show: ["n", "split", "D"] } },
-          interaction: { id: "hw03-d2", type: "numeric", prompt: "HW03 3.2: ε₁ = 8ε₀, ε₂ = 5ε₀, plane −3x + 4z = 15, D₁ = −10âₓ − 20âᵧ + 14âz C/m². Find D₂ᵧ in C/m².", answer: { value: -12.5, unit: "C/m^2" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "hw03-d2", type: "numeric", prompt: "ε₁ = 8ε₀, ε₂ = 5ε₀, plane −3x + 4z = 15, D₁ = −10âₓ − 20âᵧ + 14âz C/m². Find D₂ᵧ in C/m².", answer: { value: -12.5, unit: "C/m^2" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: -20, unit: "C/m^2", errorClass: "conceptual", tag: "BND_D_TANGENT", feedback: "y is tangential to this plane, so D₂ᵧ = (5/8)D₁ᵧ." }],
             hints: ["n̂ = (−0.6, 0, 0.8) has no y part, so D₁ᵧ is all tangential.", "D₂ₜ = (ε₂/ε₁)D₁ₜ.", "(5/8) × (−20)."] },
           covers: ["hw03-2425-3.2"],

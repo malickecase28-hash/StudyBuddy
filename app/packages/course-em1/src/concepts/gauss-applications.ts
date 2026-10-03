@@ -22,7 +22,7 @@ export const gaussApplications = {
     { tag: "D_VS_E_PERMITTIVITY", description: "Confuses D and E.", remediation: `${GL}/d-vs-e` },
     { tag: "GAUSS_WITHOUT_SYMMETRY", description: "Pulls D out of the integral without symmetry.", remediation: `${GL}/symmetry` },
   ],
-  examLinks: [{ paper: "Finals 2024-25 Sem 1", question: "Q2(a)", marks: 8, weight: 0.3 }],
+  examLinks: [{ paper: "Exam-style question", question: "Q2(a)", marks: 8, weight: 0.3 }],
   sources: [src(SLIDES, "pp. 58-61"), src(WENT, "§2.7, pp. 47-53")],
   status: "verified",
   rules: [
@@ -101,7 +101,7 @@ export const gaussApplications = {
           ...meta("assessment", src(SLIDES, "p. 60 (Q.08)")),
           id: "q8",
           type: "step-solve",
-          prompt: "Q.08: Given $\\mathbf D = 0.3r^2\\,\\mathbf a_r$ nC/m² in free space. Work through it one part at a time.",
+          prompt: "Given $\\mathbf D = 0.3r^2\\,\\mathbf a_r$ nC/m² in free space. Work through it one part at a time.",
           steps: [
             {
               id: "q8a",
@@ -148,7 +148,7 @@ export const gaussApplications = {
           ...meta("assessment", src(SLIDES, "p. 58 (Q.06)")),
           id: "q6",
           type: "step-solve",
-          prompt: "Q.06: A 60 µC point charge sits at the origin. Find the flux passing through each surface.",
+          prompt: "A 60 µC point charge sits at the origin. Find the flux passing through each surface.",
           steps: [
             {
               id: "q6a",
@@ -192,7 +192,7 @@ export const gaussApplications = {
           ...meta("quiet", src(SLIDES, "p. 27")),
           id: "line-text",
           type: "prose",
-          text: "**Line charge by Gauss.** Wrap an infinite line of $\\rho_L$ C/m in a coaxial cylinder of radius $\\rho$ and length $L$. On the curved side D is radial and constant; on the flat end caps D is tangent, so no flux crosses them. $D\\,(2\\pi\\rho L) = \\rho_L L$, so $\\mathbf D = \\dfrac{\\rho_L}{2\\pi\\rho}\\mathbf a_\\rho$ and $\\mathbf E = \\dfrac{\\rho_L}{2\\pi\\varepsilon_0\\rho}\\mathbf a_\\rho$, exactly the slide result.",
+          text: "**Line charge by Gauss.** Wrap an infinite line of $\\rho_L$ C/m in a coaxial cylinder of radius $\\rho$ and length $L$. On the curved side D is radial and constant; on the flat end caps D is tangent, so no flux crosses them. $D\\,(2\\pi\\rho L) = \\rho_L L$, so $\\mathbf D = \\dfrac{\\rho_L}{2\\pi\\rho}\\mathbf a_\\rho$ and $\\mathbf E = \\dfrac{\\rho_L}{2\\pi\\varepsilon_0\\rho}\\mathbf a_\\rho$, exactly the standard result.",
         },
         {
           ...meta("assessment", orig()),
@@ -218,7 +218,7 @@ export const gaussApplications = {
           ...meta("quiet", src(SLIDES, "p. 61 (Q.09)")),
           id: "q9-setup",
           type: "prose",
-          text: "Q.09: Find the total flux leaving the cube formed by the six planes $x, y, z = \\pm 5$ for each charge distribution. Remember: closed surface, so count only what's inside.",
+          text: "Find the total flux leaving the cube formed by the six planes $x, y, z = \\pm 5$ for each charge distribution. Remember: closed surface, so count only what's inside.",
         },
         {
           ...meta("vivid", orig()),
@@ -233,7 +233,7 @@ export const gaussApplications = {
             surface: { kind: "cube", side: 2 },
             show: { field: true, normals: false, contributions: true, readout: true },
           },
-          caption: "Q.09(a) scaled 1:5 so it fits the lab (positions ÷ 5, cube side 10 → 2). Scaling doesn't change which charges are inside, so the flux doesn't change.",
+          caption: "The cube scaled 1:5 so it fits the lab (positions ÷ 5, cube side 10 → 2). Scaling doesn't change which charges are inside, so the flux doesn't change.",
         },
         {
           ...meta("assessment", src(SLIDES, "p. 61 (Q.09a)")),
@@ -300,14 +300,14 @@ export const gaussApplications = {
     },
     {
       id: "past-paper",
-      title: "Past paper: Finals 2024-25 Q2(a)",
+      title: "Exam question: D given as a radial field",
       minutes: 10,
       blocks: [
         {
           ...meta("assessment", src(F2425, "Question 2(a), 8 marks")),
           id: "pp-question",
           type: "prose",
-          text: "**Finals 2024-25, Q2(a) [8 marks].** In a region of free space the electric flux density is $\\mathbf D = 5.0r^2\\,\\mathbf a_r$ (nC/m²). A sphere of radius $r = 10.0$ m is centred at the origin. (i) Compute $Q_T$, the total charge inside the sphere [6]. (ii) Stating your reason, deduce the total electric flux leaving the sphere [2].",
+          text: "**Exam question [8 marks].** In a region of free space the electric flux density is $\\mathbf D = 5.0r^2\\,\\mathbf a_r$ (nC/m²). A sphere of radius $r = 10.0$ m is centred at the origin. (i) Compute $Q_T$, the total charge inside the sphere [6]. (ii) Stating your reason, deduce the total electric flux leaving the sphere [2].",
         },
         {
           ...meta("assessment", src(F2425, "Question 2(a)(i)")),

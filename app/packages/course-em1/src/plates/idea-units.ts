@@ -29,7 +29,7 @@ export const ideaUnits = defineIdeaPlate({
         },
         {
           id: "prefixes", title: "The prefix ladder", show: ["eq"], patch: { conv: { value: 250, unit: "µm" }, eq: eq(R`\text{p}=10^{-12}\ \ \text{n}=10^{-9}\ \ \mu=10^{-6}\ \ \text{m}=10^{-3}\ \ \text{c}=10^{-2}\ \ \text{k}=10^{3}\ \ \text{M}=10^{6}\ \ \text{G}=10^{9}`, "the prefix ladder") }, focus: ["conv", "eq"],
-          note: "A prefix is a power of ten attached to a unit. Past papers use all of these: nanometres for point charges, micrometres for field points, millimetres for displacements, nanocoulombs and millicoulombs for charge, gigahertz for signals. Case matters. Lower-case m is milli (10⁻³) but capital M is mega (10⁶), so 200 mC is 0.2 C while 200 MC would be two hundred million coulombs. On the plate, 250 µm becomes 0.00025 m.",
+          note: "A prefix is a power of ten attached to a unit. Exam questions use all of these: nanometres for point charges, micrometres for field points, millimetres for displacements, nanocoulombs and millicoulombs for charge, gigahertz for signals. Case matters. Lower-case m is milli (10⁻³) but capital M is mega (10⁶), so 200 mC is 0.2 C while 200 MC would be two hundred million coulombs. On the plate, 250 µm becomes 0.00025 m.",
           claims: [{ instance: "conv", readout: "siM", value: 0.00025, unit: "m" }],
           givens: [{ value: 0.2, unit: "C" }],
         },
@@ -40,19 +40,19 @@ export const ideaUnits = defineIdeaPlate({
         },
         {
           id: "inches", title: "Inches, and when not to convert", patch: { conv: { value: 0.28, unit: "in" }, eq: eq(R`1\ \text{inch}=0.0254\ \text{m}\ \text{(exactly)}`, "one inch is exactly 0.0254 metres") }, focus: ["conv", "eq"],
-          note: "The 2023 mid-semester test gave a coaxial cable in inches. One inch is exactly 0.0254 m, so the 0.28 inch core radius is 0.007112 m. Now look at what the formula needs. The coax capacitance uses ln(b/a), a ratio of two radii. A ratio has no units, so b/a is the same in inches or metres. Convert what the formula needs in SI (the length, the permittivity) and leave ratios alone.",
+          note: "Some questions give a coaxial cable in inches. One inch is exactly 0.0254 m, so the 0.28 inch core radius is 0.007112 m. Now look at what the formula needs. The coax capacitance uses ln(b/a), a ratio of two radii. A ratio has no units, so b/a is the same in inches or metres. Convert what the formula needs in SI (the length, the permittivity) and leave ratios alone.",
           claims: [{ instance: "conv", readout: "siM", value: 0.007112, unit: "m" }],
           givens: [{ value: INCH, unit: "m" }],
         },
         {
           id: "sigfigs", title: "Significant figures and symbols", patch: { conv: { value: 25, unit: "nC" } }, focus: ["conv"],
-          note: "The lecturer marks presentation. State the formula, show the substitution with units, and give the answer to a sensible number of significant figures, usually three or four, to match the data. Write vectors in bold or with an arrow, and unit vectors with a hat: âₓ, not ax. On the plate, 25 nC is 2.5 × 10⁻⁸ C. Write it that way, not as 0.000000025.",
+          note: "Examiners mark presentation. State the formula, show the substitution with units, and give the answer to a sensible number of significant figures, usually three or four, to match the data. Write vectors in bold or with an arrow, and unit vectors with a hat: âₓ, not ax. On the plate, 25 nC is 2.5 × 10⁻⁸ C. Write it that way, not as 0.000000025.",
           claims: [{ instance: "conv", readout: "siC", value: 2.5e-8, unit: "C" }],
         },
       ],
       examples: [
         {
-          id: "radius", level: "basic", title: "Diameter to radius (MST Q2(c))",
+          id: "radius", level: "basic", title: "Diameter to radius",
           setup: { conv: { value: 12.8, unit: "cm" } },
           problem: "A thin metal sphere has a diameter of 12.8 cm. Find its radius in metres, ready for V = Q/(4πε₀R).",
           lines: [
@@ -63,7 +63,7 @@ export const ideaUnits = defineIdeaPlate({
           trap: "Using the diameter as the radius doubles R and halves V. Read the question twice: diameter or radius?",
         },
         {
-          id: "mm", level: "tutorial", title: "Millimetre coordinates (MST Q1(b))",
+          id: "mm", level: "tutorial", title: "Millimetre coordinates",
           setup: { conv: { value: 10, unit: "mm" } },
           problem: "Two charges sit at P1(2, 2, 13) mm and P2(10, 2, 7) mm. Find the length of R12 in metres.",
           lines: [
@@ -75,7 +75,7 @@ export const ideaUnits = defineIdeaPlate({
           trap: "Squaring millimetres and then converting with × 10⁻³ gives a wrong R²: squares need × 10⁻⁶. Convert the length first, then square.",
         },
         {
-          id: "coax", level: "exam", title: "Coax radii in inches (MST Q4(c))",
+          id: "coax", level: "exam", title: "Coax radii in inches",
           setup: { conv: { value: 0.28, unit: "in" } },
           problem: "A 100 km coaxial cable has a solid core of radius 0.28 inch and insulation of diameter 0.90 inch. Prepare every quantity for C = 2πεL / ln(b/a).",
           givens: [{ value: 0.9 * INCH, unit: "m" }],
@@ -96,7 +96,7 @@ export const ideaUnits = defineIdeaPlate({
         { id: "sigfig", q: "How many significant figures should I give?", a: "Match the data. If the question gives values to three significant figures, answer to three or four. Keep extra digits in your working and round only the final answer." },
         { id: "ratio", q: "Why did b/a not need converting?", a: "Units cancel in a ratio. 0.45 ÷ 0.28 in inches and 0.01143 ÷ 0.007112 in metres both give 1.607. A logarithm needs a pure number, and a ratio of two lengths is one." },
         { id: "case", q: "What's the difference between m and M?", tags: ["SYMBOL_CASE"], a: "Lower-case m is milli (10⁻³); capital M is mega (10⁶). Between them is a factor of a billion. The same goes for mC and MC. Symbols are case-sensitive, so copy them exactly." },
-        { id: "hat", q: "Why does the lecturer insist on âₓ, not ax?", a: "Because ax could mean a times x. The hat marks a unit vector: a direction with length one. Clear notation earns marks, and it stops you mixing up a vector and its magnitude." },
+        { id: "hat", q: "Why insist on âₓ, not ax?", a: "Because ax could mean a times x. The hat marks a unit vector: a direction with length one. Clear notation earns marks, and it stops you mixing up a vector and its magnitude." },
       ],
       checks: [
         {
@@ -127,7 +127,7 @@ export const ideaUnits = defineIdeaPlate({
         {
           id: "inch", title: "Check: the coax core",
           note: "Last one: the inch.",
-          interaction: { id: "inch", type: "numeric", prompt: "The mid-semester test's coax core has radius 0.28 inch. Give it in metres.", answer: { value: 0.007112, unit: "m" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "inch", type: "numeric", prompt: "A coax core has radius 0.28 inch. Give it in metres.", answer: { value: 0.007112, unit: "m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 0.0028, unit: "m", errorClass: "unit", feedback: "That treats inches like centimetres. One inch is exactly 0.0254 m." }],
             hints: ["1 inch = 0.0254 m exactly.", "Multiply.", "0.28 × 0.0254."] },
           covers: ["mst-2324-q4c"],

@@ -1,11 +1,11 @@
 import type { Licence, Mood, Source } from "@forma/engine";
 
-export const SLIDES = "UTech ELE3001 Unit 2b slides (G. D. Boswell)";
-export const SLIDES_2A = "UTech ELE3001 Unit 2a slides (G. D. Boswell)";
+export const SLIDES = "Course notes, Unit 2b";
+export const SLIDES_2A = "Course notes, Unit 2a";
 export const WENT = "Wentworth, Fundamentals of Electromagnetics with Engineering Applications (2006)";
 export const HAYT = "Hayt & Buck, Engineering Electromagnetics";
-export const F2425 = "UTech ELE3001 Finals 2024-25 Sem 1";
-export const F2324 = "UTech ELE3001 Finals 2023-24 Sem 1";
+export const F2425 = "Exam-style question";
+export const F2324 = "Exam-style question";
 export const ORIGINAL = "StudyBuddy original";
 
 export const src = (doc: string, locator: string): Source => ({ doc, locator });

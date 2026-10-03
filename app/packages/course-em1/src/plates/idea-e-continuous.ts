@@ -67,7 +67,7 @@ export const ideaEContinuous = defineIdeaPlate({
           trap: "Dividing by the distance. There is no distance in a sheet's field.",
         },
         {
-          id: "mst", level: "exam", title: "MST 2023-24 Q3(b): a sheet at z = 5 m",
+          id: "mst", level: "exam", title: "A sheet at z = 5 m",
           setup: { q: { items: [{ id: "s", kind: "sheet", rhoS: 120, z0: 5 }], drawScale: 0.1 }, ep: { point: [4, 5, 6], drawScale: 0.1 } },
           problem: "An infinite plane at z = 5.00 m in free space carries ρS = 120 µC/m². (i) State the formula relating E, D and ε₀. (ii) Calculate E at P(4, 5, 6) m. (iii) Hence compute D there.",
           lines: [
@@ -110,7 +110,7 @@ export const ideaEContinuous = defineIdeaPlate({
             feedback: { close: "Right: unchanged, 169411 V/m.", far: "An infinite sheet's field doesn't depend on distance: still 169411 V/m." } },
         },
         {
-          id: "mst-e", title: "Check: MST Q3(b)(ii)",
+          id: "mst-e", title: "Check: E beside an offset sheet",
           note: "Last one.",
           interaction: { id: "mst-e", type: "numeric", prompt: "An infinite plane at z = 5 m carries ρS = 120 µC/m². Find E_z at P(4, 5, 6) m, in V/m.", answer: { value: 6.776e6, unit: "V/m" }, relTol: 0.01, dimension: "application",
             distractors: [{ value: 1.355e7, unit: "V/m", errorClass: "conceptual", feedback: "That's ρS/ε₀. A single sheet gives ρS/(2ε₀)." }],

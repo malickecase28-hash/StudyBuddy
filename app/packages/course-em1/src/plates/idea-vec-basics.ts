@@ -52,7 +52,7 @@ export const ideaVecBasics = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "sum", level: "basic", title: "Tutorial 1.1: |A + B|, 5A − B, and a unit vector",
+          id: "sum", level: "basic", title: "|A + B|, 5A − B, and a unit vector",
           show: ["axes", "a", "b", "s"], hide: ["r", "u", "eq"], setup: { s: { to: [6, 2, -3], label: "A + B" } },
           problem: "Given A = âₓ + 3âz and B = 5âₓ + 2âᵧ − 6âz, find |A + B|, 5A − B, the component of A along âᵧ, and a unit vector parallel to 3A + B.",
           lines: [
@@ -65,7 +65,7 @@ export const ideaVecBasics = defineIdeaPlate({
           trap: "Adding magnitudes: |A| + |B| = 11.22 is not |A + B| = 7. Add components first, then take the length.",
         },
         {
-          id: "distance", level: "tutorial", title: "Tutorial 1.2: position and distance vectors",
+          id: "distance", level: "tutorial", title: "Position and distance vectors",
           show: ["axes", "s"], hide: ["a", "b", "r", "u", "eq"], setup: { s: { from: [2, 4, 6], to: [0, 3, 8], label: "r_QR", drawScale: 0.2 } },
           problem: "Given P(1, −3, 5), Q(2, 4, 6) and R(0, 3, 8), find the position vectors of P and R, the distance vector r_QR, and the distance between Q and R.",
           lines: [
@@ -77,7 +77,7 @@ export const ideaVecBasics = defineIdeaPlate({
           trap: "Writing r_QR = r_Q − r_R points the vector the wrong way. The length is the same, but in Coulomb's law the direction is the whole answer.",
         },
         {
-          id: "mst", level: "exam", title: "MST 2023-24 Q1(b)(i): R12 in metres",
+          id: "mst", level: "exam", title: "R12 in metres",
           show: ["r"], hide: ["axes", "a", "b", "s", "u", "eq"], setup: {},
           problem: "q1 is at P1(2, 2, 13) mm and q2 is at P2(10, 2, 7) mm. Find the displacement vector R12 and its length in metres, and the unit vector a12.",
           lines: [
@@ -122,7 +122,7 @@ export const ideaVecBasics = defineIdeaPlate({
         },
         {
           id: "dist-num", title: "Check: a displacement in metres",
-          note: "Millimetres, like the mid-semester test.",
+          note: "Millimetres, as many questions use.",
           interaction: { id: "dist-num", type: "numeric", prompt: dist.prompt, answer: dist.spec.answer, distractors: dist.spec.distractors, relTol: dist.spec.relTol, hints: dist.hints, template: "vec-distance-mm", dimension: "computational" },
           covers: ["mst-2324-q1b"],
         },

@@ -2,7 +2,7 @@ import { assessmentTime, daysUntil, nextAssessment, type LearnerState } from "@f
 import { course } from "./course";
 import { conceptProgress } from "./progress";
 
-/** "ICT 1 in 16 days" / "ICT 1 today" / "" when nothing is ahead. */
+/** "Test 1 in 16 days" / "Test 1 today" / "" when nothing is ahead. */
 export function countdownText(now: number, conceptId?: string): string {
   const a = nextAssessment(course, now, conceptId);
   if (!a) return "";

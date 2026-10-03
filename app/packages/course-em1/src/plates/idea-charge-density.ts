@@ -39,13 +39,13 @@ export const ideaChargeDensity = defineIdeaPlate({
         },
         {
           id: "cancel", title: "When the Jacobian cancels the density", patch: { region: { system: "sph", ranges: [[0, 5.25], [0, 180], [0, 360]], face: null, density: "hw-2.5c", drawScale: 0.3 }, eq: eqp(R`\int\frac{3.05}{r\sin\theta}\;r^2\sin\theta\,dr\,d\theta\,d\phi=3.05\int r\,dr\int d\theta\int d\phi`, "the sin theta cancels") }, focus: ["region", "eq"],
-          note: "HW02 2.5(c) gives ρv = 3.05/(r sin θ) C/m³ in a sphere of radius 5.25 m. It looks awkward until you multiply by dv = r² sin θ dr dθ dφ: the sin θ cancels and one r cancels, leaving 3.05 r. Then Q = 3.05 × (5.25²/2) × π × 2π = 829.7 C. The density was designed to meet the Jacobian. Forget the Jacobian, and the integral of 1/sin θ blows up.",
+          note: "Suppose ρv = 3.05/(r sin θ) C/m³ in a sphere of radius 5.25 m. It looks awkward until you multiply by dv = r² sin θ dr dθ dφ: the sin θ cancels and one r cancels, leaving 3.05 r. Then Q = 3.05 × (5.25²/2) × π × 2π = 829.7 C. The density was designed to meet the Jacobian. Forget the Jacobian, and the integral of 1/sin θ blows up.",
           claims: [{ instance: "region", readout: "Q", value: 829.6945, unit: "C" }],
         },
       ],
       examples: [
         {
-          id: "hw25a", level: "basic", title: "HW02 2.5(a): a line",
+          id: "hw25a", level: "basic", title: "A line",
           setup: { region: { system: "cart", ranges: [[1, 5], [0, 0.05], [0, 0.05]], face: null, density: "hw-2.5a", drawScale: 0.4 } },
           problem: "Determine the total charge on the line 1 < x < 5 m if ρL = 12x² mC/m.",
           lines: [
@@ -56,7 +56,7 @@ export const ideaChargeDensity = defineIdeaPlate({
           trap: "Leaving out the 1/3 from ∫x² dx gives 1488 mC, three times too much.",
         },
         {
-          id: "hw25b", level: "tutorial", title: "HW02 2.5(b): a cylinder's side",
+          id: "hw25b", level: "tutorial", title: "A cylinder's side",
           setup: { region: { system: "cyl", ranges: [[0, 4], [0, 360], [0, 7]], face: 0, density: "hw-2.5b", drawScale: 0.25 } },
           problem: "Determine the total charge on the cylinder 0 < z < 7 m, ρ = 4 m, with ρS = πρz² pC/m².",
           lines: [
@@ -68,7 +68,7 @@ export const ideaChargeDensity = defineIdeaPlate({
           trap: "Using dS = dφ dz drops the ρ = 4 and gives a quarter of the charge. The ρ appears twice: once in the density, once in dS.",
         },
         {
-          id: "mst4b", level: "exam", title: "MST Q4(b): a nonlinear volume density",
+          id: "mst4b", level: "exam", title: "A nonlinear volume density",
           setup: { region: { system: "cyl", ranges: [[0, 0.2], [0, 180], [-4, -2]], face: null, density: "mst-4b", drawScale: 0.45 } },
           problem: "Calculate Q_T within 0 ≤ ρ ≤ 0.2 m, 0 ≤ φ ≤ π, −4 ≤ z ≤ −2 m if ρv = ρ² sin φ µC/m³.",
           lines: [
@@ -101,12 +101,12 @@ export const ideaChargeDensity = defineIdeaPlate({
         },
         {
           id: "line-num", title: "Check: a line charge, your numbers",
-          note: "HW02 2.5(a) with your numbers.",
+          note: "The line again, with your numbers.",
           interaction: { id: "line-num", type: "numeric", prompt: clp.prompt, answer: clp.spec.answer, distractors: clp.spec.distractors, relTol: clp.spec.relTol, hints: clp.hints, template: "charge-line-poly", dimension: "computational" },
           covers: ["hw-2324-2.5"],
         },
         {
-          id: "sphere-c", title: "Check: HW02 2.5(c)",
+          id: "sphere-c", title: "Check: charge in a sphere",
           note: "The awkward-looking density.",
           interaction: { id: "sphere-c", type: "numeric", prompt: "Find the total charge within the sphere r = 5.25 m if ρv = 3.05/(r sin θ) C/m³.", answer: { value: 829.7, unit: "C" }, relTol: 0.01, dimension: "application",
             distractors: [{ value: 5717, unit: "C", errorClass: "conceptual", feedback: "That integrates 3.05 r sin θ, not 3.05/(r sin θ). Read the density carefully: it's divided by r sin θ." }],
@@ -114,7 +114,7 @@ export const ideaChargeDensity = defineIdeaPlate({
           covers: ["hw-2324-2.5"],
         },
         {
-          id: "mst-num", title: "Check: MST Q4(b)",
+          id: "mst-num", title: "Check: charge in a cylindrical wedge",
           note: "Last one.",
           interaction: { id: "mst-num", type: "numeric", prompt: "ρv = ρ² sin φ µC/m³ over 0 ≤ ρ ≤ 0.2 m, 0 ≤ φ ≤ π, −4 ≤ z ≤ −2 m. Find Q_T in nC.", answer: { value: 1.6, unit: "nC" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 10.67, unit: "nC", errorClass: "conceptual", feedback: "That leaves out the ρ in dv." }],

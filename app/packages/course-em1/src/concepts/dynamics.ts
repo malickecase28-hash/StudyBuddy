@@ -2,7 +2,7 @@ import { meta, src } from "../sources";
 
 const WENT4 = "Wentworth, Fundamentals of Electromagnetics with Engineering Applications, Ch. 4";
 const WENT5 = "Wentworth, Fundamentals of Electromagnetics with Engineering Applications, Ch. 5";
-const MAXH = "UTech ELE3001 handout: Maxwell's Equations Explained (G. D. Boswell)";
+const MAXH = "Course notes: Maxwell's equations explained";
 const plate = (id: string, ref: string, where: string) => ({ ...meta("vivid", src(ref, where)), id, type: "plate" as const, plateId: id });
 
 const D = "em1.dynamic.faraday";
@@ -24,8 +24,8 @@ export const faradayConcept = {
     { tag: "MAXWELL_STATIC", description: "Writes ∇ × E = 0 or ∇ × H = J for time-varying fields.", remediation: `${D}/main` },
   ],
   examLinks: [
-    { paper: "UTech ELE3001 Finals 2024-25 Sem 1 (resit)", question: "Q4(a)", marks: 8, weight: 1 },
-    { paper: "UTech ELE3001 Finals 2015-16 Sem 1", question: "Q4(a)", marks: 4, weight: 1 },
+    { paper: "Exam-style question", question: "Q4(a)", marks: 8, weight: 1 },
+    { paper: "Exam-style question", question: "Q4(a)", marks: 4, weight: 1 },
   ],
   sources: [src(WENT4, "§4.3–4.6"), src(MAXH, "the four equations")],
   status: "verified" as const,
@@ -59,8 +59,8 @@ export const wavesConcept = {
     { tag: "POYNTING_HALF", description: "Drops the ½ in the average Poynting vector.", remediation: `${W}/main` },
   ],
   examLinks: [
-    { paper: "UTech ELE3001 Finals 2024-25 Sem 1", question: "Q4(c)", marks: 5, weight: 1 },
-    { paper: "UTech ELE3001 Finals 2023-24 Sem 1", question: "Q4(b), Q4(c)", marks: 10, weight: 1 },
+    { paper: "Exam-style question", question: "Q4(c)", marks: 5, weight: 1 },
+    { paper: "Exam-style question", question: "Q4(b), Q4(c)", marks: 10, weight: 1 },
   ],
   sources: [src(WENT4, "§4.2, 4.7–4.8"), src(WENT5, "§5.1–5.5")],
   status: "verified" as const,

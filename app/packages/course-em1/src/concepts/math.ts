@@ -35,7 +35,7 @@ export const vectors = {
         { ...meta("vivid", src(SLIDES_2A, "Vector algebra")), id: "idea-vec-basics", type: "plate", plateId: "idea-vec-basics" },
         { ...meta("vivid", src(SLIDES_2A, "Multiplication")), id: "idea-vec-products", type: "plate", plateId: "idea-vec-products" },
         { ...meta("vivid", src(SLIDES_2A, "Coordinate systems")), id: "idea-coords", type: "plate", plateId: "idea-coords" },
-        { ...meta("vivid", src("UTech ELE3001 U2.W02(b) extract", "pp. 35-36")), id: "idea-elements", type: "plate", plateId: "idea-elements" },
+        { ...meta("vivid", src("Course notes, Unit 2 worksheet", "pp. 35-36")), id: "idea-elements", type: "plate", plateId: "idea-elements" },
       ],
     },
     {
@@ -100,7 +100,7 @@ export const surfaceIntegrals = {
   misconceptions: [
     { tag: "SURFACE_NORMAL_DIRECTION", description: "Uses a normal that isn't outward, or ignores the angle.", remediation: `${GL}/normal-direction` },
   ],
-  examLinks: [{ paper: "Finals 2024-25 Sem 1", question: "Q2(a)", marks: 8, weight: 0.2 }],
+  examLinks: [{ paper: "Exam-style question", question: "Q2(a)", marks: 8, weight: 0.2 }],
   sources: [src(WENT, "§2.3 Spherical coordinates, p. 22"), src(SLIDES_2A, "Coordinate systems")],
   status: "verified",
   rules: [

@@ -36,7 +36,7 @@ export const ideaDivergence = defineIdeaPlate({
         },
         {
           id: "curved", title: "Curved coordinates: multiply, differentiate, divide", patch: { vs: { field: "hw-2.2b", probe: B_PT, box: 0, offset: 0.5 }, eq: eqp(R`\nabla\cdot\mathbf D=\dfrac1\rho\dfrac{\partial(\rho D_\rho)}{\partial\rho}+\dfrac1\rho\dfrac{\partial D_\phi}{\partial\phi}+\dfrac{\partial D_z}{\partial z}`, "the divergence in cylindrical coordinates") }, focus: ["vs", "eq"],
-          note: "In curved coordinates the scale factors sit inside the derivatives. Cylindrical: ∇·D = (1/ρ)∂(ρDρ)/∂ρ + (1/ρ)∂Dφ/∂φ + ∂D_z/∂z. Spherical: ∇·D = (1/r²)∂(r²D_r)/∂r + (1/(r sin θ))∂(sin θ D_θ)/∂θ + (1/(r sin θ))∂D_φ/∂φ. Multiply first, then differentiate, then divide. For HW02's B = ρz² âρ + ρ sin²φ âφ + 2ρz sin²φ âz, this gives ∇·B = 2z² + sin 2φ + 2ρ sin²φ, which is 9.366 at ρ = 1, φ = 30°, z = 2.",
+          note: "In curved coordinates the scale factors sit inside the derivatives. Cylindrical: ∇·D = (1/ρ)∂(ρDρ)/∂ρ + (1/ρ)∂Dφ/∂φ + ∂D_z/∂z. Spherical: ∇·D = (1/r²)∂(r²D_r)/∂r + (1/(r sin θ))∂(sin θ D_θ)/∂θ + (1/(r sin θ))∂D_φ/∂φ. Multiply first, then differentiate, then divide. For B = ρz² âρ + ρ sin²φ âφ + 2ρz sin²φ âz, this gives ∇·B = 2z² + sin 2φ + 2ρ sin²φ, which is 9.366 at ρ = 1, φ = 30°, z = 2.",
           claims: [{ instance: "vs", readout: "div", value: 9.36603, unit: "" }],
         },
         {
@@ -48,7 +48,7 @@ export const ideaDivergence = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "tut36a", level: "basic", title: "Tutorial 3.6(a): a cartesian divergence",
+          id: "tut36a", level: "basic", title: "A cartesian divergence",
           setup: { vs: { field: "tut-3.6a", probe: [1, -2, 3], box: 0, offset: -2 } },
           problem: "Find the divergence of A = yz âₓ + 4xy âᵧ + y âz and evaluate it at (1, −2, 3).",
           lines: [
@@ -59,7 +59,7 @@ export const ideaDivergence = defineIdeaPlate({
           trap: "Differentiating a component along the wrong axis, such as ∂(yz)/∂y = z, adds terms that aren't there. Aₓ goes with ∂/∂x only.",
         },
         {
-          id: "hw22b", level: "tutorial", title: "HW02 2.2(b): a cylindrical divergence",
+          id: "hw22b", level: "tutorial", title: "A cylindrical divergence",
           setup: { vs: { field: "hw-2.2b", probe: B_PT, box: 0, offset: 0.5 } },
           problem: "Evaluate the divergence of B = ρz² âρ + ρ sin²φ âφ + 2ρz sin²φ âz.",
           lines: [
@@ -72,7 +72,7 @@ export const ideaDivergence = defineIdeaPlate({
           trap: "Using the cartesian pattern, ∂Bρ/∂ρ + ∂Bφ/∂φ + ∂B_z/∂z, gives z² + 2ρ sin φ cos φ + 2ρ sin²φ. The ρ inside the derivative and the 1/ρ outside are not optional.",
         },
         {
-          id: "tut36c", level: "exam", title: "Tutorial 3.6(c): a spherical divergence",
+          id: "tut36c", level: "exam", title: "A spherical divergence",
           setup: { vs: { field: "tut-3.6c", probe: C_PT, box: 0, offset: S3 / 4 } },
           problem: "Find the divergence of C = 2r cos θ cos φ âr + √r âφ and evaluate it at (1, π/6, π/3).",
           lines: [
@@ -117,7 +117,7 @@ export const ideaDivergence = defineIdeaPlate({
         },
         {
           id: "which", title: "Check: which formula?",
-          note: "From HW02 2.2(a).",
+          note: "A cartesian field.",
           interaction: { id: "which", type: "choose", prompt: "A = xy âₓ + y² âᵧ − xz âz. Its divergence is…", dimension: "application",
             options: [
               choice("right", "3y − x", true, "Right: y + 2y − x, using the cartesian formula."),

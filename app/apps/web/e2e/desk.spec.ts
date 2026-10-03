@@ -6,7 +6,7 @@ test("the Desk continues to the exact plate step, and the countdown lives only t
   await margin(page, "§1 Charge");
   await next(page);
   await margin(page, "§2 Field");
-  await expect(page.locator(".status-footer")).not.toContainText(/(ICT \d|Finals) (in|today)/);
+  await expect(page.locator(".status-footer")).not.toContainText(/(Test \d|Final exam) (in|today)/);
   await expect.poll(() => page.evaluate(() => new Promise<number | undefined>((resolve) => {
     const r = indexedDB.open("studybuddy");
     r.onsuccess = () => {
@@ -18,12 +18,12 @@ test("the Desk continues to the exact plate step, and the countdown lives only t
   }))).toBe(1);
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "§2 Field" })).toBeVisible();
-  await expect(page.getByText(/(ICT \d|Finals) (in \d+ days?|today)/).first()).toBeVisible();
+  await expect(page.getByText(/(Test \d|Final exam) (in \d+ days?|today)/).first()).toBeVisible();
   await expect(page.getByText("StudyBuddy")).toHaveCount(0);
   await page.getByRole("link", { name: "Continue →" }).click();
   await margin(page, "§2 Field");
   await page.goto(concept(G, "mode=revise"));
-  await expect(page.getByText(/(ICT \d|Finals) (in \d+ days?|today)/).first()).toBeVisible();
+  await expect(page.getByText(/(Test \d|Final exam) (in \d+ days?|today)/).first()).toBeVisible();
 });
 
 test("first run points at the readiness check", async ({ page }) => {

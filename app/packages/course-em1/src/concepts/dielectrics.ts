@@ -1,7 +1,7 @@
 import { meta, src } from "../sources";
 
 const ID = "em1.electrostatics.dielectrics";
-const L2C = "UTech ELE3001 Lec 2c slides (G. D. Boswell)";
+const L2C = "Course notes, Unit 2c";
 export const dielectricsConcept = {
   id: ID,
   title: "Dielectrics and boundary conditions",
@@ -24,8 +24,8 @@ export const dielectricsConcept = {
     { tag: "COND_E_INSIDE", description: "Allows a field inside a conductor, or a tangential field on its surface.", remediation: `${ID}/main` },
   ],
   examLinks: [
-    { paper: "UTech ELE3001 Finals 2024-25 Sem 1", question: "Q2(b)", marks: 17, weight: 1 },
-    { paper: "UTech ELE3001 Finals 2023-24 Sem 1", question: "Q2(a)", marks: 13, weight: 1 },
+    { paper: "Exam-style question", question: "Q2(b)", marks: 17, weight: 1 },
+    { paper: "Exam-style question", question: "Q2(a)", marks: 13, weight: 1 },
   ],
   sources: [src(L2C, "Dielectrics and boundary conditions")],
   status: "verified" as const,

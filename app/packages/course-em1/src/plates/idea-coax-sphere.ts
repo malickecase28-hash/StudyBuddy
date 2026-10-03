@@ -66,7 +66,7 @@ export const ideaCoaxSphere = defineIdeaPlate({
           trap: "log₁₀ 3.5 = 0.544 gives 231.1 pF/m. The formula's ln is the natural log.",
         },
         {
-          id: "mst4c", level: "exam", title: "MST Q4(c): 100 km of coax, in inches",
+          id: "mst4c", level: "exam", title: "100 km of coax, in inches",
           setup: { cap: { ...MST } },
           problem: "Calculate the capacitance of a 100 km coaxial cable with a solid core of radius 0.28 inch, insulated to a 0.90 inch diameter by a material with εr = 6.78.",
           lines: [
@@ -84,7 +84,7 @@ export const ideaCoaxSphere = defineIdeaPlate({
         { id: "per-length", q: "Why quote coax in pF/m?", a: "C grows in proportion to L, so the per-metre value describes the cable itself. Multiply by the length for a particular run." },
         { id: "isolated", q: "What's the capacitance of a single sphere?", a: "Take b → ∞: C = 4πεa. The 'other plate' is infinitely far away. Even the Earth, radius 6370 km, has only about 709 µF." },
         { id: "breakdown", q: "Where does a coax's insulation fail first?", a: "At the inner conductor, where E = V/(a ln(b/a)) is largest. A very thin core concentrates the field." },
-        { id: "diameter", q: "Radius or diameter?", tags: ["CAP_LN"], a: "The formulas use radii. Papers often give a diameter, as MST Q4(c) does for the insulation: halve it first." },
+        { id: "diameter", q: "Radius or diameter?", tags: ["CAP_LN"], a: "The formulas use radii. Questions often give a diameter, as this one does for the insulation: halve it first." },
       ],
       checks: [
         {
@@ -109,10 +109,10 @@ export const ideaCoaxSphere = defineIdeaPlate({
           interaction: { id: "coax-num", type: "numeric", prompt: cc.prompt, answer: cc.spec.answer, distractors: cc.spec.distractors, relTol: cc.spec.relTol, hints: cc.hints, template: "cap-coax", dimension: "computational" },
         },
         {
-          id: "mst4c-c", title: "Check: MST Q4(c)",
+          id: "mst4c-c", title: "Check: capacitance of 100 km of coax",
           note: "Last one.",
           patch: { cap: { ...MST } },
-          interaction: { id: "mst4c-c", type: "numeric", prompt: "MST Q4(c): 100 km of coax, core radius 0.28 inch, insulation diameter 0.90 inch, εr = 6.78. Find C in µF.", answer: { value: 79.4988, unit: "µF" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "mst4c-c", type: "numeric", prompt: "100 km of coax, core radius 0.28 inch, insulation diameter 0.90 inch, εr = 6.78. Find C in µF.", answer: { value: 79.4988, unit: "µF" }, relTol: 0.01, dimension: "computational",
             distractors: [
               { value: 183.053, unit: "µF", errorClass: "conceptual", tag: "CAP_LN", feedback: "That uses log₁₀. Use the natural log." },
               { value: 32.3044, unit: "µF", errorClass: "conceptual", tag: "CAP_LN", feedback: "That takes 0.90 inch as b. It's a diameter: b = 0.45 inch." },

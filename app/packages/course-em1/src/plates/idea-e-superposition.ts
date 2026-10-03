@@ -64,7 +64,7 @@ export const ideaESuperposition = defineIdeaPlate({
           trap: "Forgetting that the charge directly below P, only 1 m away, dominates. Its term alone is 26.96âz V/m.",
         },
         {
-          id: "mst", level: "exam", title: "MST 2023-24 Q2(b): micrometres",
+          id: "mst", level: "exam", title: "Micrometres",
           setup: { q: MST, ep: { point: [u, 2 * u, 5 * u], oblique: true, drawScale: 2e5 } },
           problem: "In a vacuum, QA = 0.5 µC is at A(4, −3, 7) µm and QB = −0.3 µC is at B(2, −3, 1) µm. Calculate E at P(1, 2, 5) µm.",
           lines: [
@@ -80,7 +80,7 @@ export const ideaESuperposition = defineIdeaPlate({
         { id: "cube", q: "Why is the denominator cubed?", a: "Because the numerator is the full vector r − rᵢ, not a unit vector. Dividing that vector by its length once gives the unit vector, and by its length squared gives the inverse square. That makes the length cubed in total." },
         { id: "zero", q: "Can the total field be zero somewhere?", a: "Yes. Between two equal positive charges, halfway, their fields cancel exactly. Superposition gives zeros that no single charge could." },
         { id: "sign", q: "Do I include each charge's sign?", a: "Always. A negative Qᵢ flips its whole term. Most superposition errors are a dropped minus sign." },
-        { id: "tv", q: "What is TV/m?", a: "Teravolts per metre, 10¹² V/m. Micrometre distances make fields enormous, so the lecturer's answers use T (tera). It's just a prefix." },
+        { id: "tv", q: "What is TV/m?", a: "Teravolts per metre, 10¹² V/m. Micrometre distances make fields enormous, so model answers use T (tera). It's just a prefix." },
         { id: "grid", q: "How do I keep the arithmetic organised?", a: "Make a table: for each charge, the vector r − rᵢ, its length, the factor kQᵢ/length³, then the three components. Add the columns at the end." },
         { id: "field-lines", q: "What do field lines show here?", a: "The direction of the total field at every point: they start on positive charges and end on negative ones, and never cross, because the total field has only one direction at any point." },
       ],
@@ -102,8 +102,8 @@ export const ideaESuperposition = defineIdeaPlate({
             feedback: { close: "Right: zero. Now the x-parts cancel and the z-parts add.", far: "With two equal positive charges, the x-parts cancel: Eₓ = 0 and E points straight up." } },
         },
         {
-          id: "mst-z", title: "Check: MST Q2(b)'s z-component",
-          note: "The mid-semester question, one component.",
+          id: "mst-z", title: "Check: the z-component",
+          note: "The worked example, one component.",
           interaction: { id: "mst-z", type: "numeric", prompt: "QA = 0.5 µC at A(4, −3, 7) µm and QB = −0.3 µC at B(2, −3, 1) µm. Find E_z at P(1, 2, 5) µm, in V/m.", answer: { value: -7.799e13, unit: "V/m" }, relTol: 0.01, dimension: "application",
             distractors: [{ value: 1.255e12, unit: "V/m", errorClass: "sign", feedback: "That treats QB as positive. Its term must carry the minus sign." }],
             hints: ["Work each charge's term with (P − rᵢ)/|P − rᵢ|³.", "E_A,z = −38.37 × 10¹²; E_B,z = −39.62 × 10¹².", "Add them."] },

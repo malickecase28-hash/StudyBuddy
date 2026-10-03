@@ -2,7 +2,7 @@
 
 import { newId, type BankItemCard, type InkEngine } from "@forma/ink";
 import { useEffect, useRef, useState } from "react";
-import { questionBank } from "@/lib/course";
+import { bankLabel, bankNumber, questionBank } from "@/lib/course";
 
 /** Search the question bank and insert a card that links to the question. */
 export function BankPicker({ engine, open, onClose }: { engine: InkEngine; open: boolean; onClose: () => void }) {
@@ -10,13 +10,13 @@ export function BankPicker({ engine, open, onClose }: { engine: InkEngine; open:
   const [q, setQ] = useState("");
   useEffect(() => { const d = dlg.current; if (open && d && !d.open) d.showModal(); else if (!open && d?.open) d.close(); }, [open]);
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
-  const hits = questionBank.filter((b) => { const hay = `${b.id} ${b.paper} ${b.question} ${b.text}`.toLowerCase(); return words.every((w) => hay.includes(w)); }).slice(0, 30);
+  const hits = questionBank.filter((b) => { const hay = `${bankNumber(b.id)} ${b.text}`.toLowerCase(); return words.every((w) => hay.includes(w)); }).slice(0, 30);
 
   const insert = (b: (typeof questionBank)[number]) => {
     const w = 320, h = 150, v = engine.camera.visibleRect(engine.renderer.w, engine.renderer.h);
     const card: BankItemCard = {
-      id: newId(), kind: "bank", questionId: b.id, title: `${b.paper} ${b.question}${b.marks ? ` · ${b.marks} marks` : ""}`,
-      text: b.text.length > 220 ? b.text.slice(0, 219) + "…" : b.text, w, h, href: `/past-papers#${b.id}`,
+      id: newId(), kind: "bank", questionId: b.id, title: bankLabel(b),
+      text: b.text.length > 220 ? b.text.slice(0, 219) + "…" : b.text, w, h, href: `/questions#${b.id}`,
       z: engine.nextZ(), transform: [1, 0, 0, 1, v.x + v.w / 2 - w / 2, v.y + v.h / 2 - h / 2], style: { ...engine.style },
     };
     engine.do({ type: "add", items: [card] });
@@ -32,7 +32,7 @@ export function BankPicker({ engine, open, onClose }: { engine: InkEngine; open:
         {hits.map((b) => (
           <li key={b.id}>
             <button className="w-full rounded p-2 text-left text-sm hover:bg-[var(--paper-2)]" onClick={() => insert(b)}>
-              <span className="font-semibold">{b.paper} {b.question}</span> <span className="label">{b.id}</span>
+              <span className="font-semibold">{bankLabel(b)}</span>
               <span className="line-clamp-2 block text-soft">{b.text}</span>
             </button>
           </li>

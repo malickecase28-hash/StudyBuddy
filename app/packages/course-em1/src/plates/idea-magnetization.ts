@@ -23,7 +23,7 @@ export const ideaMagnetization = defineIdeaPlate({
       explain: [
         {
           id: "m", title: "Magnetization M", show: ["axes", "mb", "eq"], focus: ["mb", "eq"],
-          note: "Atoms carry tiny current loops: orbiting and spinning electrons. In a field they line up, and their net magnetic dipole moment per unit volume is the magnetization M, in A/m like H. These bound currents add to the free ones, so B = μ₀(H + M). In Finals 2024-25 Q3(b), region 1 has μ₁ = 2μ₀ and H₁ = ax + 3ay + 2az A/m; there, M₁ = H₁ = ax + 3ay + 2az A/m.",
+          note: "Atoms carry tiny current loops: orbiting and spinning electrons. In a field they line up, and their net magnetic dipole moment per unit volume is the magnetization M, in A/m like H. These bound currents add to the free ones, so B = μ₀(H + M). On the plate, region 1 has μ₁ = 2μ₀ and H₁ = ax + 3ay + 2az A/m; there, M₁ = H₁ = ax + 3ay + 2az A/m.",
           claims: [{ instance: "mb", readout: "M1x", value: 1, unit: "A/m" }, { instance: "mb", readout: "M1y", value: 3, unit: "A/m" }],
         },
         {
@@ -55,7 +55,7 @@ export const ideaMagnetization = defineIdeaPlate({
           trap: "Using μrH = 1719 A/m. M is the material's extra contribution: (μr − 1)H.",
         },
         {
-          id: "f2324", level: "tutorial", title: "Finals 2023-24 Q3(c)(i): M₁ and B₁",
+          id: "f2324", level: "tutorial", title: "M₁ and B₁",
           setup: { mb: { given: "H", F1: [2, 3, -1], normal: [-1, 1, 0], mur1: 1, mur2: 3, show: ["H", "B", "M"] } },
           problem: "H₁ = 2ax + 3ay − az A/m in the region y − x − 2 ≤ 0, where μ₁ = μ₀. Calculate M₁ and B₁.",
           lines: [
@@ -66,7 +66,7 @@ export const ideaMagnetization = defineIdeaPlate({
           trap: "Writing M₁ = H₁ out of habit. In free space χm = 0, so there is no magnetization.",
         },
         {
-          id: "f2425", level: "exam", title: "Finals 2024-25 Q3(b)(i)–(ii): M₁ and B₁",
+          id: "f2425", level: "exam", title: "M₁ and B₁",
           setup: { mb: { ...F2425, show: ["H", "B", "M"] } },
           problem: "H₁ = ax + 3ay + 2az A/m fills the region y + 2x − 4 ≤ 0, where μ₁ = 2μ₀. Calculate (i) the magnetization M₁ and (ii) B₁.",
           lines: [
@@ -111,7 +111,7 @@ export const ideaMagnetization = defineIdeaPlate({
           covers: ["text:hayt-d8.6"],
         },
         {
-          id: "f2425-m", title: "Check: Finals 2024-25 Q3(b)(i)",
+          id: "f2425-m", title: "Check: magnetization M₁",
           note: "Last one.",
           interaction: { id: "f2425-m", type: "numeric", prompt: "H₁ = ax + 3ay + 2az A/m in a material with μ₁ = 2μ₀. Find M₁ᵧ, in A/m.", answer: { value: 3, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 6, unit: "A/m", errorClass: "conceptual", tag: "M_UNITS", feedback: "That's μrH. χm = μr − 1 = 1, so M₁ᵧ = 3." }],

@@ -1,7 +1,7 @@
-import { assessmentsForItem, course, diagnostic, formulaSheet, foundations, ideaPlates, questionBank } from "@forma/course-em1";
+import { assessmentsForItem, bankLabel, bankNumber, course, diagnostic, formulaSheet, foundations, ideaPlates, questionBank } from "@forma/course-em1";
 import { topoOrder, type Concept, type Course, type Lesson } from "@forma/engine";
 
-export { assessmentsForItem, course, diagnostic, formulaSheet, foundations, questionBank };
+export { assessmentsForItem, bankLabel, bankNumber, course, diagnostic, formulaSheet, foundations, questionBank };
 export { templatesFor } from "@forma/course-em1";
 
 /** Every course, prerequisite first. `course` stays the EMag course the Desk, map and assessments are built around. */

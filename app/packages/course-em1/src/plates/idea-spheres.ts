@@ -37,17 +37,17 @@ export const ideaSpheres = defineIdeaPlate({
         },
         {
           id: "profile", title: "Up, then down", patch: { surface: { size: 1 }, ep: { point: [1, 0, 0] } }, focus: ["surface", "ep"],
-          note: "Put the two results together. D rises linearly from zero at the centre to its peak at the surface, D = ρv a/3 = 1 µC/m², then falls as 1/r² outside. The two formulas agree exactly at r = a, so D is continuous. Past papers test both sides, so always ask first: is r inside or outside?",
+          note: "Put the two results together. D rises linearly from zero at the centre to its peak at the surface, D = ρv a/3 = 1 µC/m², then falls as 1/r² outside. The two formulas agree exactly at r = a, so D is continuous. Exam questions test both sides, so always ask first: is r inside or outside?",
           claims: [{ instance: "ep", readout: "Dmag", value: 1, unit: "µC/m^2" }],
         },
         {
           id: "from-d", title: "Backwards: Q from D", patch: { eq: eqp(R`Q_{\text{enc}}=D(r)\cdot4\pi r^2`, "Q equals D at r times four pi r squared") }, focus: ["eq", "surface"],
-          note: "The same equation runs backwards. If a question gives D as a radial function of r, the charge inside radius r is D(r) × 4πr². Tutorial Q.08 and Finals 2024-25 Q2(a) both work this way. The Gauss's law lesson works through the given radial field numerically.",
+          note: "The same equation runs backwards. If a question gives D as a radial function of r, the charge inside radius r is D(r) × 4πr². Many exam questions work this way. The Gauss's law lesson works through the given radial field numerically.",
         },
       ],
       examples: [
         {
-          id: "q08", level: "basic", title: "Tutorial Q.08: Q from a given D",
+          id: "q08", level: "basic", title: "Q from a given D",
           setup: { surface: { size: 2 } },
           problem: "In free space D = 0.5r² a_r nC/m². Find the total charge within the sphere r = 2 m.",
           lines: [
@@ -113,7 +113,7 @@ export const ideaSpheres = defineIdeaPlate({
           interaction: { id: "ball-num", type: "numeric", prompt: bd.prompt, answer: bd.spec.answer, distractors: bd.spec.distractors, relTol: bd.spec.relTol, hints: bd.hints, template: "ball-d", dimension: "application" },
         },
         {
-          id: "q08-num", title: "Check: Tutorial Q.08",
+          id: "q08-num", title: "Check: Q from a given D",
           note: "Last one.",
           interaction: { id: "q08-num", type: "numeric", prompt: q08.prompt, answer: q08.spec.answer, distractors: q08.spec.distractors, relTol: q08.spec.relTol, hints: q08.hints, template: "q08-q", dimension: "computational" },
           covers: ["tutorial:q08"],

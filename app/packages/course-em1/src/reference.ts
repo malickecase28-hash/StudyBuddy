@@ -1,12 +1,12 @@
 import { SLIDES, WENT } from "./sources";
 
-const L2C = "UTech ELE3001 Lec 2c slides (G. D. Boswell)";
-const L3A = "UTech ELE3001 Lec 3a slides (G. D. Boswell)";
-const L3B = "UTech ELE3001 Lec 3b slides (G. D. Boswell)";
+const L2C = "Course notes, Unit 2c";
+const L3A = "Course notes, Unit 3a";
+const L3B = "Course notes, Unit 3b";
 const WENT3 = "Wentworth, Fundamentals of Electromagnetics with Engineering Applications, Ch. 3";
 const WENT4 = "Wentworth, Fundamentals of Electromagnetics with Engineering Applications, Ch. 4";
 const WENT5 = "Wentworth, Fundamentals of Electromagnetics with Engineering Applications, Ch. 5";
-const MAXH = "UTech ELE3001 handout: Maxwell's Equations Explained (G. D. Boswell)";
+const MAXH = "Course notes: Maxwell's equations explained";
 
 const U2 = "Unit 2 · Electrostatics";
 const U3 = "Unit 3 · Magnetostatics";

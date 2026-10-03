@@ -21,7 +21,7 @@ export const ideaDivTheorem = defineIdeaPlate({
       explain: [
         {
           id: "two-ways", title: "Two routes to the same charge", show: ["vs", "eq"], focus: ["vs", "eq"],
-          note: "The divergence theorem says the flux out of a closed surface equals the integral of the divergence over the volume inside. With D, the divergence is ρv, so both sides are the enclosed charge: one computed on the surface, one through the volume. For HW02's D = 3xy âₓ + x² âᵧ and the cube 0 < x, y, z < 2 m, the plate's box (side 2, centred at (1, 1, 1)) reports 24 of flux out.",
+          note: "The divergence theorem says the flux out of a closed surface equals the integral of the divergence over the volume inside. With D, the divergence is ρv, so both sides are the enclosed charge: one computed on the surface, one through the volume. For D = 3xy âₓ + x² âᵧ and the cube 0 < x, y, z < 2 m, the plate's box (side 2, centred at (1, 1, 1)) reports 24 of flux out.",
           claims: [{ instance: "vs", readout: "boxFlux", value: 24, unit: "" }],
         },
         {
@@ -36,13 +36,13 @@ export const ideaDivTheorem = defineIdeaPlate({
         },
         {
           id: "open-face", title: "A face with no flux", focus: ["vs", "eq"], patch: { eq: eqp(R`\int_{z=-3}\mathbf D\cdot d\mathbf S=\int(\ldots)\,\mathbf a_x\cdot\mathbf a_z+\ldots=0`, "D has no z component, so no flux through a z face"), vs: { probe: [0.5, 0.5, -3], offset: -3 } },
-          note: "HW02 2.6(b) asks for the flux through the square 0 < x, y < 1 m at z = −3 m. Its normal is âz, and D = 3xy âₓ + x² âᵧ has no âz part, so D·dS = 0 everywhere on it: zero flux, with no integral needed. Check whether the field even has a component along the normal before integrating anything.",
+          note: "Take the flux through the square 0 < x, y < 1 m at z = −3 m. Its normal is âz, and D = 3xy âₓ + x² âᵧ has no âz part, so D·dS = 0 everywhere on it: zero flux, with no integral needed. Check whether the field even has a component along the normal before integrating anything.",
           givens: [{ value: 1, unit: "m" }],
         },
       ],
       examples: [
         {
-          id: "hw26b", level: "basic", title: "HW02 2.6(b): flux through a z-face",
+          id: "hw26b", level: "basic", title: "Flux through a z-face",
           setup: { vs: { field: "hw-2.6", plane: "xy", probe: [0.5, 0.5, -3], offset: -3, box: 0 } },
           problem: "Given D = 3xy âₓ + x² âᵧ C/m², find the total flux through the surface 0 < x, y < 1 m, z = −3 m.",
           givens: [{ value: 1, unit: "m" }],
@@ -54,7 +54,7 @@ export const ideaDivTheorem = defineIdeaPlate({
           trap: "Integrating 3xy over the square gives 0.75, which is flux of the wrong component. Only the normal component, D_z, counts.",
         },
         {
-          id: "hw26c-vol", level: "tutorial", title: "HW02 2.6(c): charge in the cube, volume route",
+          id: "hw26c-vol", level: "tutorial", title: "Charge in the cube, volume route",
           setup: { region: { system: "cart", ranges: [[0, 2], [0, 2], [0, 2]], density: "hw-2.6", drawScale: 0.7 } },
           problem: "Calculate the total charge in the region 0 < x, y, z < 2 m.",
           show: ["region"],
@@ -114,7 +114,7 @@ export const ideaDivTheorem = defineIdeaPlate({
             ] },
         },
         {
-          id: "q-num", title: "Check: HW02 2.6(c)",
+          id: "q-num", title: "Check: charge in the cube",
           note: "Last one.",
           interaction: { id: "q-num", type: "numeric", prompt: "D = 3xy âₓ + x² âᵧ C/m². Find the total charge in 0 < x, y, z < 2 m.", answer: { value: 24, unit: "C" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 6, unit: "C", errorClass: "conceptual", feedback: "That integrates over y only. Include the x- and z-ranges." }],

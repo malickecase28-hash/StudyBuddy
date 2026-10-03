@@ -52,7 +52,7 @@ export const ideaCapEnergy = defineIdeaPlate({
           trap: "Dropping the ½ doubles the answer.",
         },
         {
-          id: "mst5b-i", level: "tutorial", title: "MST Q5(b)(i): energy density",
+          id: "mst5b-i", level: "tutorial", title: "Energy density",
           setup: { cap: { ...MST } },
           problem: "The capacitor has S = 0.120 m², d = 80 µm, V₀ = 15.0 V and W_E = 50.0 µJ. Calculate the energy density w_E. (The paper asks for J·m⁻²; energy density is per volume, J/m³.)",
           lines: [
@@ -77,7 +77,7 @@ export const ideaCapEnergy = defineIdeaPlate({
       asks: [
         { id: "half", q: "Where does the ½ come from?", tags: ["ENERGY_HALF"], a: "While charging, the voltage climbs from 0 to V. On average each bit of charge crosses only half the final voltage, so the work is ½QV, not QV." },
         { id: "three-forms", q: "Which of ½CV², ½QV and ½Q²/C should I use?", a: "They're equal. Use the one whose quantities you know, or the one whose quantity is held constant when something changes." },
-        { id: "density-units", q: "J/m² or J/m³?", tags: ["ENERGY_DENSITY_UNIT"], a: "J/m³: energy per unit volume, because the energy fills the gap's volume. MST Q5(b) printed J·m⁻²; note the slip in your answer and give J/m³." },
+        { id: "density-units", q: "J/m² or J/m³?", tags: ["ENERGY_DENSITY_UNIT"], a: "J/m³: energy per unit volume, because the energy fills the gap's volume. If a paper prints J·m⁻², note the slip in your answer and give J/m³." },
         { id: "d-dot-e", q: "Why ½D·E?", a: "In a linear dielectric D = εE, so ½D·E = ½εE². The D·E form also works when D and E are given as vectors." },
         { id: "where", q: "Is the energy on the plates or in the gap?", a: "In the field. The energy-density picture assigns ½εE² to every point where E exists, which is what lets electromagnetic waves carry energy through empty space." },
         { id: "pulled-in", q: "Why is a dielectric pulled into an isolated charged capacitor?", a: "With Q fixed, W = ½Q²/C falls as C rises. Systems move toward lower energy, so the fringing field draws the slab in." },
@@ -105,10 +105,10 @@ export const ideaCapEnergy = defineIdeaPlate({
           interaction: { id: "energy-num", type: "numeric", prompt: ce.prompt, answer: ce.spec.answer, distractors: ce.spec.distractors, relTol: ce.spec.relTol, hints: ce.hints, template: "cap-energy", dimension: "computational" },
         },
         {
-          id: "density-c", title: "Check: MST Q5(b)(i)",
+          id: "density-c", title: "Check: energy density in the gap",
           note: "Last one.",
           patch: { cap: { ...MST } },
-          interaction: { id: "density-c", type: "numeric", prompt: "MST Q5(b)(i): S = 0.120 m², d = 80 µm, W_E = 50.0 µJ. Find the energy density w_E in J/m³.", answer: { value: 5.20833, unit: "J/m^3" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "density-c", type: "numeric", prompt: "S = 0.120 m², d = 80 µm, W_E = 50.0 µJ. Find the energy density w_E in J/m³.", answer: { value: 5.20833, unit: "J/m^3" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 4.16667e-4, unit: "J/m^3", errorClass: "conceptual", tag: "ENERGY_DENSITY_UNIT", feedback: "That divides by the area only. Energy density is per unit volume: divide by Sd." }],
             hints: ["w_E = W/volume.", "Volume = S × d = 0.120 × 8 × 10⁻⁵ m³.", "50 × 10⁻⁶ / (9.6 × 10⁻⁶)."] },
           covers: ["mst-2324-q5b"],

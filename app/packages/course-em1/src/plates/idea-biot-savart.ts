@@ -49,7 +49,7 @@ export const ideaBiotSavart = defineIdeaPlate({
         },
         {
           id: "square", title: "A square loop", patch: { c: SQUARE }, focus: ["c"],
-          note: "A square loop is four segments (Lec 3a Q.02). Each contributes (I/4πρ)(sin α₂ − sin α₁) with ρ = L/2 and α = ±45°, and at the centre all four point the same way. So H = 4 × √2 I/(2πL) = 2√2 I/(πL) az. For a square of side 2 carrying 10 A: 4.502 A/m. A circle of the same width gives I/(2a) = 5 A/m.",
+          note: "A square loop is four segments. Each contributes (I/4πρ)(sin α₂ − sin α₁) with ρ = L/2 and α = ±45°, and at the centre all four point the same way. So H = 4 × √2 I/(2πL) = 2√2 I/(πL) az. For a square of side 2 carrying 10 A: 4.502 A/m. A circle of the same width gives I/(2a) = 5 A/m.",
           claims: [{ instance: "c", readout: "Hz", value: 4.50158, unit: "A/m" }],
         },
       ],
@@ -79,7 +79,7 @@ export const ideaBiotSavart = defineIdeaPlate({
           trap: "Taking aR from the origin toward the filament. R runs from the source to the field point.",
         },
         {
-          id: "hw03", level: "exam", title: "HW03 3.1(a): a 200-turn coil",
+          id: "hw03", level: "exam", title: "A 200-turn coil",
           setup: { c: HW03 },
           problem: "A 200-turn coil of radius 30.0 cm, parallel to the xy plane and centred at the origin, carries 2.82 A in the −aφ direction. Using Biot–Savart's law, calculate H at P(0, 0, −50) cm.",
           lines: [
@@ -128,10 +128,10 @@ export const ideaBiotSavart = defineIdeaPlate({
             ] },
         },
         {
-          id: "hw03-num", title: "Check: HW03 3.1(a)",
+          id: "hw03-num", title: "Check: Hz on the coil's axis",
           note: "Last one.",
           patch: { c: HW03 },
-          interaction: { id: "hw03-num", type: "numeric", prompt: "HW03 3.1(a): 200 turns, radius 30.0 cm, 2.82 A in −aφ, centred at the origin in the xy plane. Find Hz at P(0, 0, −50) cm, in A/m.", answer: { value: -128.019, unit: "A/m" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "hw03-num", type: "numeric", prompt: "200 turns, radius 30.0 cm, 2.82 A in −aφ, centred at the origin in the xy plane. Find Hz at P(0, 0, −50) cm, in A/m.", answer: { value: -128.019, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 128.019, unit: "A/m", errorClass: "sign", tag: "BS_DIRECTION", feedback: "The current runs in −aφ, so H points along −az." }],
             hints: ["On the axis, H = NIa²/(2(a² + z²)^(3/2)).", "a = 0.3, z = −0.5 (in metres).", "Sign: −aφ current gives −az."] },
           covers: ["hw03-2425-3.1a"],

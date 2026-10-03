@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { countdownText } from "@/lib/assessments";
-import { questionBank } from "@/lib/course";
+import { bankLabel, questionBank } from "@/lib/course";
 import { useStudy } from "@/lib/store";
 import { ConceptMap } from "../map/ConceptMap";
 import { RetrievalQuiz } from "../screens/RetrievalQuiz";
@@ -30,7 +30,7 @@ export function ReviseMode({ conceptId, split, onSplit }: { conceptId: string; s
             <ul className="space-y-3">
               {exam.map((q) => (
                 <li key={q.id} className="card space-y-1 text-sm">
-                  <p className="label">{q.paper} · {q.question}{q.marks ? ` · ${q.marks} marks` : ""}</p>
+                  <p className="label">{bankLabel(q)}</p>
                   <p><Markup text={q.text} /></p>
                 </li>
               ))}
@@ -38,7 +38,7 @@ export function ReviseMode({ conceptId, split, onSplit }: { conceptId: string; s
           ) : (
             <p className="text-soft">No bank questions map to this concept yet.</p>
           )}
-          <Link className="underline" href="/past-papers">All past papers →</Link>
+          <Link className="underline" href="/questions">All questions →</Link>
         </section>
       </div>
     </Split>

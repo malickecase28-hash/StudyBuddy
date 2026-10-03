@@ -10,7 +10,7 @@ export type BankItem = {
   marks?: number;
   text: string;
   concepts: { conceptId: string; weight: number }[];
-  /** Catalog ids of every paper this question appeared in (the lecturer reuses homework). */
+  /** Catalog ids of every paper this question appeared in (homework questions are often reused). */
   seenIn?: string[];
   /** conceptId/lessonId to practise it, when a lesson exists. */
   practice?: string;
@@ -38,22 +38,26 @@ const K = {
   dyn: "em1.dynamic.faraday",
   wave: "em1.waves.plane-waves",
 } as const;
+/** Questions are shown by number only: "Question 12". */
+export const bankNumber = (id: string) => questionBank.findIndex((q) => q.id === id) + 1;
+export const bankLabel = (q: Pick<BankItem, "id" | "marks">) => `Question ${bankNumber(q.id)}${q.marks !== undefined ? ` · ${q.marks} marks` : ""}`;
+
 const w = (...pairs: [string, number][]) => pairs.map(([conceptId, weight]) => ({ conceptId, weight }));
 
-const MST = "Mid-semester test 2023-24";
-const ICT2 = "ICT 2 2024-25";
-const HW2324 = "HW02 2023-24 (reissued as HW01 2024-25)";
-const HW03 = "HW03 2024-25";
-const HW04 = "HW04 2024-25";
-const F1415 = "Finals 2014-15 (Apr/May 2015)";
-const F1516 = "Finals 2015-16 Sem 1";
-const F1718 = "Finals 2017-18 Sem 1";
-const F1819S1 = "Finals 2018-19 Sem 1";
-const F1819S3 = "Finals 2018-19 Sem 3";
-const F2425R = "Finals 2024-25 Sem 1 (resit)";
-const DR23 = "Drill 2023";
-const DR24 = "Drill 2024";
-const DR25 = "Drill 2025";
+const MST = "Test";
+const ICT2 = "Test";
+const HW2324 = "Homework";
+const HW03 = "Homework";
+const HW04 = "Homework";
+const F1415 = "Exam-style question";
+const F1516 = "Exam-style question";
+const F1718 = "Exam-style question";
+const F1819S1 = "Exam-style question";
+const F1819S3 = "Exam-style question";
+const F2425R = "Exam-style question";
+const DR23 = "Tutorial";
+const DR24 = "Tutorial";
+const DR25 = "Tutorial";
 
 export const questionBank: BankItem[] = [
   // Mid-semester test, 23 Oct 2023 (catalog: mst2324)
@@ -417,7 +421,7 @@ export const questionBank: BankItem[] = [
     ],
   },
 
-  // Finals 2024-25 Sem 1 resit (catalog: f2425r), with the lecturer's solution.
+  // Finals 2024-25 Sem 1 resit (catalog: f2425r), with a model solution.
   {
     id: "f2425r-q1a", source: "f2425r", kind: "finals", paper: F2425R, question: "Q1(a)", marks: 15,
     text: "Q1 = +10.0 µC is at the origin and Q2 = −15.0 µC is at (4, 2, 6) cm. (i) State Coulomb's law in vector form. (ii) Calculate F12, the force Q1 exerts on Q2. (iii) Calculate E at the midpoint (2, 1, 3) cm due only to Q1.",
@@ -427,7 +431,7 @@ export const questionBank: BankItem[] = [
       "(ii) R12 = (0.04, 0.02, 0.06) m; |R12| = 0.07483 m.",
       "F12 = 8.988 × 10⁹ × (10 × 10⁻⁶)(−15 × 10⁻⁶)(0.04, 0.02, 0.06)/0.07483³ = −128.7ax − 64.34ay − 193.0az N: an attraction, toward Q1.",
       "(iii) R = (0.02, 0.01, 0.03) m: E = 3.431 × 10⁷ ax + 1.716 × 10⁷ ay + 5.147 × 10⁷ az V/m.",
-      "(The lecturer used k = 9.00 × 10⁹ and got 128.9, 64.43 and 193.3 N in size.)",
+      "(With k = 9.00 × 10⁹ the sizes come out 128.9, 64.43 and 193.3 N.)",
     ],
   },
   {
@@ -460,7 +464,7 @@ export const questionBank: BankItem[] = [
       "(i) dS = ρ dφ dz aρ.",
       "(ii) ψ = ∫∫ (50e^(−4)/z²)(4) dφ dz µC = 200e^(−4) × (π/2) × (1 − 1/9) µC.",
       "ψ = 5.115 µC.",
-      "(The lecturer's draft gives 2.557 µC, exactly half: the φ range is π/2 wide, not π/4.)",
+      "(A common slip gives 2.557 µC, exactly half: the φ range is π/2 wide, not π/4.)",
     ],
   },
   {
@@ -517,7 +521,7 @@ export const questionBank: BankItem[] = [
 
   // Drill 2023 (catalog: drill23). Questions 1–6, 9 and 10 repeat papers above; 7 and 8 come from Finals 2015 Sem 3 (not in the drop).
   {
-    id: "drill23-q7", source: "drill23", kind: "finals", paper: DR23, question: "Q7 (Finals 2015 Sem 3, Q1)", marks: 15, seenIn: ["drill23", "drill24"],
+    id: "drill23-q7", source: "drill23", kind: "finals", paper: DR23, question: "Q7", marks: 15, seenIn: ["drill23", "drill24"],
     text: "(b) Explain divergence of a vector field, and why an electric field can have divergence but a magnetic field cannot. (c) A soap bubble with charge 10 µC has radius 3 cm and thickness 2 mm. It collapses into a spherical drop; find the drop's surface potential. (d) In vacuum, E(r) = πr³ for 0 < r ≤ 2 m and 32π/r² for r > 2 m (radial). Use Gauss's law to find ρv at (i) r = 1 m and (ii) r = 3 m.",
     concepts: w([K.div, 0.6], [K.pot, 0.4]), practice: "em1.electrostatics.divergence/main",
     solution: [
@@ -529,7 +533,7 @@ export const questionBank: BankItem[] = [
     ],
   },
   {
-    id: "drill23-q8", source: "drill23", kind: "finals", paper: DR23, question: "Q8 (Finals 2015 Sem 3, Q5)", marks: 25,
+    id: "drill23-q8", source: "drill23", kind: "finals", paper: DR23, question: "Q8", marks: 25,
     text: "In free space: a point charge Q = 8 nC at (−2, 0, 0) m, a line charge ρL = 10 nC/m along the line y = −9 m (in the plane z = 0), and a sheet ρS = 12 nC/m² at z = −2 m. (a) Find E at the origin due to each. (b) Find the total E at the origin. (c) If D = 5az in a region, is the region free of charge?",
     concepts: w([K.field, 0.8], [K.div, 0.2]), practice: "em1.electrostatics.field/main",
     solution: [
@@ -541,7 +545,7 @@ export const questionBank: BankItem[] = [
     ],
   },
   {
-    id: "drill23-q10", source: "drill23", kind: "finals", paper: DR23, question: "Q10 (Finals 2014 Sem 2, Q1)", marks: 25,
+    id: "drill23-q10", source: "drill23", kind: "finals", paper: DR23, question: "Q10", marks: 25,
     text: "(a) Using dl, find the length of the curve r = 10, 30° ≤ φ ≤ 90°, z constant. (b) Find the charge density for D = r sin φ ar + 2r cos φ aφ + 2z² az (cylindrical). (c) Q1 = −3 C at (1, 0, 3), Q2 = −6 C at (−2, 1, 0) and Q3 = 4 C at (1, 2, 3) are in free space. Find (i) E and (ii) V at the origin.",
     concepts: w([K.vec, 0.3], [K.div, 0.3], [K.field, 0.4]), practice: "em1.math.vectors/main",
     solution: [
@@ -599,7 +603,7 @@ export const questionBank: BankItem[] = [
     ],
   },
   {
-    id: "drill24-q8", source: "drill24", kind: "finals", paper: DR24, question: "Q08 (Finals 2015 Sem 3, Q1)", marks: 18,
+    id: "drill24-q8", source: "drill24", kind: "finals", paper: DR24, question: "Q08", marks: 18,
     text: "(a) Explain briefly the significance of (i) ∇ × E = 0 and (ii) ∇ × H = Jc + ∂D/∂t. (b) Explain what is meant by the divergence of a vector field. (c) Discuss why an electric field can have divergence and a magnetic field cannot.",
     concepts: w([K.dyn, 0.6], [K.div, 0.4]),
     solution: [

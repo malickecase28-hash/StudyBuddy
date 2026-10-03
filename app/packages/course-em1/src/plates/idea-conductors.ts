@@ -70,7 +70,7 @@ export const ideaConductors = defineIdeaPlate({
           trap: "Scaling δ by 1000 for a 1000× change in f. It scales as 1/√f.",
         },
         {
-          id: "compare", level: "exam", title: "Resit Q4(c), Finals 2023-24 Q4(b) and HW04 4.3(a): dielectric versus conductor",
+          id: "compare", level: "exam", title: "Dielectric versus conductor",
           setup: { pw: CU1G },
           problem: "Using appropriate diagrams, compare the propagation of EM waves in a dielectric and in a conductor.",
           lines: [

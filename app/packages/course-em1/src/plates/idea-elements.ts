@@ -45,7 +45,7 @@ export const ideaElements = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "mst-patch", level: "basic", title: "MST Q3(a): the area of a spherical patch",
+          id: "mst-patch", level: "basic", title: "The area of a spherical patch",
           setup: { region: { system: "sph", ranges: [[0, 0.25], [0, 60], [30, 45]], face: 0, drawScale: 4 } },
           problem: "Find the area of the part of the sphere r = 25.0 cm bounded by 0 < θ < π/3 and π/6 < φ < π/4.",
           lines: [
@@ -58,21 +58,21 @@ export const ideaElements = defineIdeaPlate({
           trap: "Using dS = dθ dφ, with no r² sin θ, gives an area in radians squared. The scale factors turn angles into lengths.",
         },
         {
-          id: "cyl-side", level: "tutorial", title: "HW02 2.5(b): the side of a cylinder",
+          id: "cyl-side", level: "tutorial", title: "The side of a cylinder",
           setup: { region: { system: "cyl", ranges: [[0, 4], [0, 360], [0, 7]], face: 0, drawScale: 0.25 } },
-          problem: "Find the area of the cylindrical surface ρ = 4 m, 0 < z < 7 m. (HW02 then puts a charge density on it.)",
+          problem: "Find the area of the cylindrical surface ρ = 4 m, 0 < z < 7 m. (Next, put a charge density on it.)",
           lines: [
             { text: "On the side ρ = 4 m, dS = ρ dφ dz.", focus: ["region"] },
             { text: "S = ∫∫ 4 dφ dz over a full turn and 0 to 7 = 4 × 2π × 7 = 175.9 m².", latex: R`S=\int_0^{2\pi}\!\!\int_0^{7}4\,d\phi\,dz=56\pi`, focus: ["region"], claims: [{ instance: "region", readout: "area", value: 175.929, unit: "m^2" }] },
-            { text: "With a charge density ρS on it, the same element gives Q = ∫ρS dS. HW02 2.5(b) and the Gauss applications lesson finish that.", focus: ["region"] },
+            { text: "With a charge density ρS on it, the same element gives Q = ∫ρS dS. The Gauss applications lesson finishes that.", focus: ["region"] },
           ],
           covers: ["hw-2324-2.5"],
           trap: "Writing dS = dφ dz forgets the ρ. The answer would be 44 instead of 175.9: four times too small.",
         },
         {
-          id: "mst-vol", level: "exam", title: "MST Q4(b): the region's volume, then its charge",
+          id: "mst-vol", level: "exam", title: "The region's volume, then its charge",
           setup: { region: { system: "cyl", ranges: [[0, 0.2], [0, 180], [-4, -2]], face: null, drawScale: 0.45 } },
-          problem: "MST Q4(b) integrates ρv = ρ² sin φ µC/m³ over 0 ≤ ρ ≤ 0.2 m, 0 ≤ φ ≤ π and −4 ≤ z ≤ −2 m. Set up dv, find the region's volume, then the charge.",
+          problem: "Integrate ρv = ρ² sin φ µC/m³ over 0 ≤ ρ ≤ 0.2 m, 0 ≤ φ ≤ π and −4 ≤ z ≤ −2 m. Set up dv, find the region's volume, then the charge.",
           lines: [
             { text: "In cylindrical coordinates dv = ρ dρ dφ dz: the extra ρ is the scale factor on dφ.", focus: ["region"] },
             { text: "Volume: ∫ρ dρ ∫dφ ∫dz = (0.02)(π)(2) = 0.1257 m³.", latex: R`V=\int_0^{0.2}\rho\,d\rho\int_0^{\pi}d\phi\int_{-4}^{-2}dz=(0.02)(\pi)(2)`, focus: ["region"], claims: [{ instance: "region", readout: "volume", value: 0.125664, unit: "m^3" }] },
@@ -109,7 +109,7 @@ export const ideaElements = defineIdeaPlate({
         },
         {
           id: "patch-num", title: "Check: a patch, your numbers",
-          note: "A patch of your own, like MST Q3(a).",
+          note: "A patch of your own.",
           interaction: { id: "patch-num", type: "numeric", prompt: patch.prompt, answer: patch.spec.answer, distractors: patch.spec.distractors, relTol: patch.spec.relTol, hints: patch.hints, template: "sph-patch-area", dimension: "computational" },
           covers: ["mst-2324-q3a"],
         },

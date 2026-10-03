@@ -14,12 +14,12 @@ import { capacitanceConcept } from "./concepts/capacitance";
 import { ampereConcept, inductanceConcept, magMaterialsConcept } from "./concepts/magnetostatics";
 import { faradayConcept, wavesConcept } from "./concepts/dynamics";
 
-/** Electromagnetics I (ELE3001) vertical slice. Parsed (and thereby validated) at import time. */
+/** Electromagnetics I. Parsed (and thereby validated) at import time. */
 const concepts = [emWorld, vectors, vectorCalculus, surfaceIntegrals, coulomb, field, gaussLaw, gaussApplications, divergence, potentialConcept, currentConcept, dielectricsConcept, capacitanceConcept, ampereConcept, magMaterialsConcept, inductanceConcept, faradayConcept, wavesConcept, ...lockedConcepts];
 export const retiredConcepts = [{ from: "em1.electrostatics.flux-density", to: "em1.electrostatics.gauss-law", lessonId: "flux-density" }];
 export const course = Course.parse({
   id: "em1",
-  code: "ELE3001",
+  code: "EM1",
   title: "Electromagnetics I",
   examDate: EXAM_DATE,
   assessments: assessmentsFor(concepts),
@@ -36,7 +36,7 @@ export const course = Course.parse({
 export { diagnostic } from "./diagnostic";
 export { foundations } from "./foundations";
 export { formulaSheet } from "./reference";
-export { questionBank } from "./questions";
+export { bankLabel, bankNumber, questionBank } from "./questions";
 export type { BankItem } from "./questions";
 /** Assessment ids (in date order) whose scope covers any of the item's concepts. */
 export const assessmentsForItem = (item: BankItem) =>

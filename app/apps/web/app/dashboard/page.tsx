@@ -2,7 +2,7 @@
 
 import { DIMENSIONS } from "@forma/engine";
 import Link from "next/link";
-import { course, getConcept, lessonHref, mainLesson, misconceptionInfo, questionBank, splitRef } from "@/lib/course";
+import { bankLabel, course, getConcept, lessonHref, mainLesson, misconceptionInfo, questionBank, splitRef } from "@/lib/course";
 import { conceptProgress, pct, STATE_GLYPH } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
 
@@ -134,7 +134,7 @@ export default function DashboardPage() {
           return (
             <div key={q.id} className="flex items-center gap-3 text-sm">
               <span className="w-72">
-                {q.paper} {q.question} ({q.marks} marks)
+                {bankLabel(q)}
               </span>
               <div className="h-2 flex-1 rounded bg-line">
                 <div className="h-2 rounded" style={{ width: pct(readiness), background: "var(--sem-confirmed)" }} />
@@ -143,7 +143,7 @@ export default function DashboardPage() {
             </div>
           );
         })}
-        <Link href="/past-papers" className="text-sm underline">
+        <Link href="/questions" className="text-sm underline">
           See the concept breakdown per question
         </Link>
       </section>

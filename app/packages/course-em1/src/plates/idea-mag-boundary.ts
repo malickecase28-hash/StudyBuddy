@@ -36,7 +36,7 @@ export const ideaMagBoundary = defineIdeaPlate({
         },
         {
           id: "split", title: "Split H₁", focus: ["mb"],
-          note: "Finals 2024-25 Q3(b): the plane y + 2x − 4 = 0 has normal (2, 1, 0), so n̂ = (2, 1, 0)/√5. With H₁ = ax + 3ay + 2az A/m, H₁·n̂ = 5/√5, so H₁ₙ = 2ax + ay and H₁ₜ = H₁ − H₁ₙ = −ax + 2ay + 2az A/m. Tangential H carries over unchanged. Normal B carries over, so μ₁H₁ₙ = μ₂H₂ₙ.",
+          note: "Take the plane y + 2x − 4 = 0: it has normal (2, 1, 0), so n̂ = (2, 1, 0)/√5. With H₁ = ax + 3ay + 2az A/m, H₁·n̂ = 5/√5, so H₁ₙ = 2ax + ay and H₁ₜ = H₁ − H₁ₙ = −ax + 2ay + 2az A/m. Tangential H carries over unchanged. Normal B carries over, so μ₁H₁ₙ = μ₂H₂ₙ.",
           claims: [
             { instance: "mb", readout: "H1nx", value: 2, unit: "A/m" }, { instance: "mb", readout: "H1ny", value: 1, unit: "A/m" },
             { instance: "mb", readout: "H1tx", value: -1, unit: "A/m" }, { instance: "mb", readout: "H1tz", value: 2, unit: "A/m" },
@@ -55,7 +55,7 @@ export const ideaMagBoundary = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "drill25-q9", level: "basic", title: "Drill 2025 Q9: the ratio from B alone",
+          id: "drill25-q9", level: "basic", title: "The ratio from B alone",
           setup: { mb: { given: "B", F1: [40 / iMU, 0, -25 / iMU], normal: [0, 0, 1], mur1: 8, mur2: 7, measure: "tangent", show: ["B", "angles"] } },
           problem: "A plane interface between two magnetic regions is normal to one Cartesian axis. B₁ = μ₀(40.0ax − 25.0az) T and B₂ = μ₀(35.0ax − 25.0az) T. Find tan θ₁/tan θ₂, with the angles measured from the interface.",
           lines: [
@@ -67,7 +67,7 @@ export const ideaMagBoundary = defineIdeaPlate({
           trap: "Assuming the interface is normal to ax. The x components differ, so x is tangential.",
         },
         {
-          id: "f1718", level: "tutorial", title: "Finals 2017-18 Q4(a): H₂ and B₂",
+          id: "f1718", level: "tutorial", title: "H₂ and B₂",
           setup: { mb: { given: "H", F1: [-2, 6, 4], normal: [-1, 1, 0], mur1: 1, mur2: 2, measure: "normal", show: ["n", "split", "H", "B"] } },
           problem: "H₁ = −2ax + 6ay + 4az A/m in the region y − x − 2 ≤ 0, where μ₁ = μ₀. Calculate (i) M₁ and B₁, (ii) H₂ and B₂ in the region y − x − 2 ≥ 0, where μ₂ = 2μ₀.",
           lines: [
@@ -79,7 +79,7 @@ export const ideaMagBoundary = defineIdeaPlate({
           trap: "Dividing the whole of H₁ by 2. Only the normal part changes; the tangential part crosses unchanged.",
         },
         {
-          id: "hw03", level: "exam", title: "HW03 3.3: H₂, B₂, the angles and M",
+          id: "hw03", level: "exam", title: "H₂, B₂, the angles and M",
           setup: { mb: { ...HW033, show: ["n", "H", "B", "angles"] } },
           problem: "Region 1 (μr1 = 4.66) and region 2 (μr2 = 1.5μr1) meet at the plane 5x + 4y + 10z − 12 = 0, with K = 0. In region 1, H₁ = (1/μ₀)(9.44ax + 6.87ay − 12.2az) A/m. Calculate (a) H₂ in terms of μ₀, (b) B₂, (c) θ₁ and θ₂ from the normal, (d) M₁ and M₂.",
           lines: [
@@ -98,7 +98,7 @@ export const ideaMagBoundary = defineIdeaPlate({
         { id: "k", q: "What if there is a surface current K?", a: "Then H₁ₜ − H₂ₜ = K × aₙ₁₂: tangential H jumps by the surface current density. Every course question sets K = 0 and says so." },
         { id: "twin", q: "How do these compare with the electric conditions?", a: "Swap D for B, E for H, ε for μ and ρs for K. Normal D becomes normal B; tangential E becomes tangential H." },
         { id: "iron", q: "Why does iron guide magnetic flux?", a: "With μ₂ ≫ μ₁, tan θ₂ = (μ₂/μ₁) tan θ₁ is huge, so inside iron the field runs almost parallel to the surface. Flux stays in the iron, which is how magnetic circuits work." },
-        { id: "mu0", q: "Do I keep μ₀ as a symbol?", a: "Often, yes. HW03 3.3 gives H₁ with 1/μ₀ outside, and the cleanest answers keep it: H₂ = (1/μ₀)(…) A/m. Note the units, as the lecturer stresses." },
+        { id: "mu0", q: "Do I keep μ₀ as a symbol?", a: "Often, yes. Some questions give H₁ with 1/μ₀ outside, and the cleanest answers keep it: H₂ = (1/μ₀)(…) A/m. Always note the units." },
         { id: "plane", q: "How do I get the normal of y − x − 2 = 0?", a: "Read the coefficients, (−1, 1, 0), and divide by the length √2. The constant 2 only places the plane." },
       ],
       checks: [
@@ -124,31 +124,31 @@ export const ideaMagBoundary = defineIdeaPlate({
           interaction: { id: "mbn-num", type: "numeric", prompt: mbn.prompt, answer: mbn.spec.answer, distractors: mbn.spec.distractors, relTol: mbn.spec.relTol, hints: mbn.hints, template: "mag-bnd-normal", dimension: "computational" },
         },
         {
-          id: "ict2-q3", title: "Check: ICT 2 Q3",
-          note: "From the lecturer's ICT.",
-          interaction: { id: "ict2-q3", type: "numeric", prompt: "ICT 2 Q3: B₁ = 14ax − 35ay + 28az µT meets the plane 12x + 5z = 3π, with μr1 = 8 and μr2 = 25 (K = 0). Find the angle B₂ makes with the normal, in degrees.", answer: { value: 79.4078, unit: "°" }, relTol: 0.01, dimension: "computational",
+          id: "ict2-q3", title: "Check: B₂'s angle to the normal",
+          note: "An in-course test question.",
+          interaction: { id: "ict2-q3", type: "numeric", prompt: "B₁ = 14ax − 35ay + 28az µT meets the plane 12x + 5z = 3π, with μr1 = 8 and μr2 = 25 (K = 0). Find the angle B₂ makes with the normal, in degrees.", answer: { value: 79.4078, unit: "°" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 59.6986, unit: "°", errorClass: "conceptual", feedback: "That's θ₁, in region 1. B₂ₜ = (25/8)B₁ₜ makes region 2's angle larger." }],
             hints: ["n̂ = (12, 0, 5)/13; B₁ₙ = (308/169)(12, 0, 5) µT.", "B₂ₙ = B₁ₙ; B₂ₜ = (μ₂/μ₁)B₁ₜ.", "θ₂ = cos⁻¹(|B₂ₙ|/|B₂|)."] },
           covers: ["ict2-2425-q3"],
         },
         {
-          id: "f2324-q3c", title: "Check: Finals 2023-24 Q3(c)(ii)",
+          id: "f2324-q3c", title: "Check: H₂ across a slanted boundary",
           note: "Another plane.",
-          interaction: { id: "f2324-q3c", type: "numeric", prompt: "Finals 2023-24 Q3(c): H₁ = 2ax + 3ay − az A/m (μ₁ = μ₀) at the plane y − x − 2 = 0; μ₂ = 3μ₀. Find H₂ᵧ, in A/m.", answer: { value: 2.66667, unit: "A/m" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "f2324-q3c", type: "numeric", prompt: "H₁ = 2ax + 3ay − az A/m (μ₁ = μ₀) at the plane y − x − 2 = 0; μ₂ = 3μ₀. Find H₂ᵧ, in A/m.", answer: { value: 2.66667, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 3, unit: "A/m", errorClass: "conceptual", tag: "MBND_SWAP", feedback: "y isn't purely tangential to this plane: H₁ₙ = −0.5ax + 0.5ay changes by μ₁/μ₂." }],
             hints: ["n̂ = (−1, 1, 0)/√2; H₁ₙ = −0.5ax + 0.5ay.", "H₂ₙ = H₁ₙ/3.", "H₂ᵧ = (3 − 0.5) + 0.5/3."] },
           covers: ["f2324-q3c"],
         },
         {
-          id: "f2425r", title: "Check: the 2024-25 resit Q3(b)",
-          note: "The resit.",
+          id: "f2425r", title: "Check: H₂ across 3x + 4z = 19",
+          note: "A slanted boundary again.",
           interaction: { id: "f2425r", type: "numeric", prompt: "H₁ = 6ax + 3ay + 2az A/m with μ₁ = 2μ₀ in 3x + 4z ≤ 19; μ₂ = 4μ₀ beyond. Find H₂ₓ, in A/m.", answer: { value: 4.44, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 6, unit: "A/m", errorClass: "conceptual", tag: "MBND_SWAP", feedback: "x has a normal part here: n̂ = (0.6, 0, 0.8)." }],
             hints: ["n̂ = (0.6, 0, 0.8); H₁·n̂ = 5.2.", "H₁ₙ = 3.12ax + 4.16az; H₂ₙ = H₁ₙ/2.", "H₂ₓ = 2.88 + 1.56."] },
           covers: ["f2425r-q3b"],
         },
         {
-          id: "drill25-q8", title: "Check: Drill 2025 Q8",
+          id: "drill25-q8", title: "Check: B₂ across z = 0",
           note: "From the interface.",
           interaction: { id: "drill25-q8", type: "numeric", prompt: "B₁ = 12ax + 10ay − 14az T in region 1 (z < 0, μr1 = 15); region 2 (z > 0) has μr2 = 1. Find the angle B₂ makes with the interface, in degrees.", answer: { value: 85.746, unit: "°" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 41.8685, unit: "°", errorClass: "conceptual", feedback: "That's region 1's angle. B₂ₜ = B₁ₜ/15, so B₂ stands much steeper." }],
@@ -156,7 +156,7 @@ export const ideaMagBoundary = defineIdeaPlate({
           covers: ["drill25-q8"],
         },
         {
-          id: "f1516", title: "Check: Finals 2015-16 Q4(c)",
+          id: "f1516", title: "Check: B₂ across the xy-plane",
           note: "Last one.",
           interaction: { id: "f1516", type: "numeric", prompt: "At the xy-plane boundary, B₁ = 5ax + 6ay + 7az Wb/m² in medium 1 (μr1 = 1); medium 2 has μr2 = 16. Find H₂z, in A/m.", answer: { value: 348151, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 5.57042e6, unit: "A/m", errorClass: "conceptual", tag: "MBND_SWAP", feedback: "That copies H₁z. It's B₂z = 7 that's continuous; H₂z = 7/(16μ₀)." }],

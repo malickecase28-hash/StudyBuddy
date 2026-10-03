@@ -22,7 +22,7 @@ export const ideaPolarization = defineIdeaPlate({
       explain: [
         {
           id: "bound", title: "Why a material weakens E", show: ["axes", "b", "eq"], focus: ["b", "eq"],
-          note: "Put a dielectric in a field and its molecules stretch into tiny dipoles: each nucleus shifts one way, its electrons the other. That is polarization, P: dipole moment per unit volume, in C/m². The dipoles' own fields point back against the applied field, so E inside the material is weaker. The free charge hasn't changed, and D counts only free charge, so D = ε₀E + P. On the plate, region 1 has εr1 = 5 and holds D₁ = âₓ + 3âᵧ − 7âz C/m², Finals 2024-25's data.",
+          note: "Put a dielectric in a field and its molecules stretch into tiny dipoles: each nucleus shifts one way, its electrons the other. That is polarization, P: dipole moment per unit volume, in C/m². The dipoles' own fields point back against the applied field, so E inside the material is weaker. The free charge hasn't changed, and D counts only free charge, so D = ε₀E + P. On the plate, region 1 has εr1 = 5 and holds D₁ = âₓ + 3âᵧ − 7âz C/m².",
           claims: [{ instance: "b", readout: "P1x", value: 0.8, unit: "C/m^2" }],
         },
         {
@@ -43,9 +43,9 @@ export const ideaPolarization = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "f2425-p", level: "basic", title: "E and P in Finals 2024-25's region 1",
+          id: "f2425-p", level: "basic", title: "E and P in region 1",
           setup: { b: { ...F2425 } },
-          problem: "Region 1 of Finals 2024-25 Q2(b) has εr1 = 5 and D₁ = âₓ + 3âᵧ − 7âz C/m². Find E₁ and P₁.",
+          problem: "Region 1 has εr1 = 5 and D₁ = âₓ + 3âᵧ − 7âz C/m². Find E₁ and P₁.",
           lines: [
             { text: "E₁ = D₁/(εr1 ε₀) = (0.2, 0.6, −1.4)/ε₀ V/m.", focus: ["b"], claims: [{ instance: "b", readout: "E1y", value: 6.77645e10, unit: "V/m" }] },
             { text: "P₁ = D₁ − ε₀E₁ = (1 − 1/5)D₁ = (0.8, 2.4, −5.6) C/m².", focus: ["b"], claims: [{ instance: "b", readout: "P1y", value: 2.4, unit: "C/m^2" }] },
@@ -53,9 +53,9 @@ export const ideaPolarization = defineIdeaPlate({
           trap: "Dividing D by εr alone gives ε₀E, not E. Divide by εr ε₀.",
         },
         {
-          id: "hw03-p", level: "tutorial", title: "HW03 3.2's region 1",
+          id: "hw03-p", level: "tutorial", title: "A second region 1",
           setup: { b: { D1: [-10, -20, 14], normal: [-3, 0, 4], er1: 8, er2: 5 } },
-          problem: "In HW03 3.2, region 1 has ε₁ = 8ε₀ and D₁ = −10âₓ − 20âᵧ + 14âz C/m². Find E₁ in terms of ε₀, then P₁.",
+          problem: "Another region 1 has ε₁ = 8ε₀ and D₁ = −10âₓ − 20âᵧ + 14âz C/m². Find E₁ in terms of ε₀, then P₁.",
           lines: [
             { text: "E₁ = D₁/(8ε₀) = (−1.25, −2.5, 1.75)/ε₀ V/m.", focus: ["b"], claims: [{ instance: "b", readout: "E1x", value: -1.41176e11, unit: "V/m" }] },
             { text: "P₁ = (1 − 1/8)D₁ = 0.875D₁ = (−8.75, −17.5, 12.25) C/m².", focus: ["b"], claims: [{ instance: "b", readout: "P1x", value: -8.75, unit: "C/m^2" }] },
@@ -69,7 +69,7 @@ export const ideaPolarization = defineIdeaPlate({
           problem: "In a dielectric, D₁ = −10âₓ − 20âᵧ + 14âz C/m² and P₁ = (−9.524, −19.05, 13.33) C/m². Find εr1 and the susceptibility χe.",
           lines: [
             { text: "P = (1 − 1/εr)D, so 1 − 1/εr1 = P₁ₓ/D₁ₓ = −9.524/−10 = 0.9524.", focus: ["b"], claims: [{ instance: "b", readout: "P1x", value: -9.52381, unit: "C/m^2" }] },
-            { text: "1/εr1 = 0.04762, so εr1 = 21 and χe = εr1 − 1 = 20. (These are ICT 2's region 1 values.)", focus: ["b"] },
+            { text: "1/εr1 = 0.04762, so εr1 = 21 and χe = εr1 − 1 = 20. (The same values appear in the boundary lesson.)", focus: ["b"] },
           ],
           trap: "Taking εr = D/P = 1.05. P is the material's share of D; the ratio P/D is 1 − 1/εr, not 1/εr.",
         },

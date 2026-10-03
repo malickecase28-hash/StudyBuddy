@@ -50,7 +50,7 @@ export const ideaAmpere = defineIdeaPlate({
         },
         {
           id: "sheets", title: "Shells and sheets", patch: { c: SHEETS, eq: eqp(R`H_\phi=\dfrac{I_{\text{enc}}}{2\pi\rho}`, "H phi equals I enclosed over two pi rho") }, focus: ["c"],
-          note: "A cylindrical current sheet is invisible from inside, like a charged shell in electrostatics: it only adds to circles larger than itself. Hayt Problem 7.11, set as Finals 2014-15 Q3(b), puts a 20π mA filament inside sheets of 400, −250 and −300 mA/m at 1, 2 and 3 cm. At ρ = 1.5 cm the filament and the first sheet are enclosed, 87.96 mA, so Hφ = 0.9333 A/m.",
+          note: "A cylindrical current sheet is invisible from inside, like a charged shell in electrostatics: it only adds to circles larger than itself. Hayt Problem 7.11 puts a 20π mA filament inside sheets of 400, −250 and −300 mA/m at 1, 2 and 3 cm. At ρ = 1.5 cm the filament and the first sheet are enclosed, 87.96 mA, so Hφ = 0.9333 A/m.",
           claims: [{ instance: "c", readout: "Ienc", value: 0.0879646, unit: "A" }, { instance: "c", readout: "Hphi", value: 0.933333, unit: "A/m" }],
         },
         {
@@ -73,7 +73,7 @@ export const ideaAmpere = defineIdeaPlate({
           trap: "Using all 20 A inside the wire: 6366 A/m at 0.5 mm, four times too much.",
         },
         {
-          id: "f1415", level: "tutorial", title: "Finals 2014-15 Q4: J, H and B in and out",
+          id: "f1415", level: "tutorial", title: "J, H and B in and out",
           setup: { c: { items: [{ id: "w", kind: "cylinder", I: 2, a: 0, b: 0.0002 }], probe: [0.0001, 0, 0], drawScale: 1000 } },
           problem: "A long straight nonmagnetic conductor of 0.2 mm radius carries a uniform 2 A d.c. Find J, then H and B within and outside it.",
           lines: [
@@ -85,7 +85,7 @@ export const ideaAmpere = defineIdeaPlate({
           trap: "Squaring 0.2 instead of 2 × 10⁻⁴: leaving mm unconverted is off by a factor of 10⁶.",
         },
         {
-          id: "f2425", level: "exam", title: "Finals 2024-25 Q4(a): Ampère inside a conductor",
+          id: "f2425", level: "exam", title: "Ampère inside a conductor",
           setup: { c: { items: [{ id: "w", kind: "cylinder", I: 50, a: 0, b: 0.008 }], probe: [0.004, 0, 0], drawScale: 40 } },
           problem: "A long, straight, nonmagnetic conductor of radius 8.00 mm carries a uniform d.c. current of 50.0 A along z. (i) State Ampère's circuital law. (ii) Find J. (iii) Develop H and B inside. (iv) State and justify ∇ × H outside.",
           lines: [
@@ -101,7 +101,7 @@ export const ideaAmpere = defineIdeaPlate({
       asks: [
         { id: "enc", q: "Why does H inside a wire grow with ρ?", tags: ["AMP_ENC_INSIDE"], a: "A bigger circle encloses more current, I(ρ/a)², while its circumference grows only as ρ. So H = Iρ/(2πa²) rises linearly until the surface." },
         { id: "when", q: "When does Ampère's law give H directly?", a: "When symmetry makes H constant in size and parallel to dL along a path you can draw: long wires, cylinders, coaxes, sheets, solenoids and toroids." },
-        { id: "drawback", q: "One drawback and one advantage of Ampère's law?", a: "Drawback: it only yields H when there's enough symmetry. Advantage: when there is, it replaces a Biot–Savart integral with one line. HW03 3.1(b)(ii) asks exactly this." },
+        { id: "drawback", q: "One drawback and one advantage of Ampère's law?", a: "Drawback: it only yields H when there's enough symmetry. Advantage: when there is, it replaces a Biot–Savart integral with one line. Exam questions ask exactly this." },
         { id: "outside-coax", q: "Why is H zero outside a coax?", a: "A circle outside encloses I from the inner conductor and −I from the outer one: zero net current. So ∮H·dL = 0 and, by symmetry, H = 0. Coax cables don't leak magnetic field." },
         { id: "sheet", q: "What does an infinite flat current sheet give?", a: "H = ½K × aN: uniform on each side and reversed across it (Wentworth Example 3.6), like a charged sheet's E." },
         { id: "solenoid", q: "And a long solenoid?", a: "H = NI/ℓ inside, along the axis, and nearly zero outside (Wentworth Example 3.9). Its two sides act like a pair of opposite current sheets." },
@@ -131,17 +131,17 @@ export const ideaAmpere = defineIdeaPlate({
           interaction: { id: "inside-num", type: "numeric", prompt: ai.prompt, answer: ai.spec.answer, distractors: ai.spec.distractors, relTol: ai.spec.relTol, hints: ai.hints, template: "amp-inside", dimension: "computational" },
         },
         {
-          id: "ict2-1b", title: "Check: ICT 2 Q1(b)",
+          id: "ict2-1b", title: "Check: |H| outside a solid conductor",
           note: "Outside this time.",
-          interaction: { id: "ict2-1b", type: "numeric", prompt: "ICT 2 Q1(b): a conductor of radius 5 cm carries 100 A uniformly along az. Find |H| at a point 22 cm from its axis, in A/m.", answer: { value: 72.3432, unit: "A/m" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "ict2-1b", type: "numeric", prompt: "A conductor of radius 5 cm carries 100 A uniformly along az. Find |H| at a point 22 cm from its axis, in A/m.", answer: { value: 72.3432, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 1400.55, unit: "A/m", errorClass: "conceptual", tag: "AMP_ENC_INSIDE", feedback: "That's the inside formula. At 22 cm you're outside, where all 100 A is enclosed." }],
             hints: ["22 cm > 5 cm: outside the conductor.", "H = I/(2πρ).", "100/(2π × 0.22)."] },
           covers: ["ict2-2425-q1"],
         },
         {
-          id: "hw03-b", title: "Check: HW03 3.1(b)",
+          id: "hw03-b", title: "Check: |H| inside a conductor",
           note: "Inside this time.",
-          interaction: { id: "hw03-b", type: "numeric", prompt: "HW03 3.1(b): J = 95.49 kA/m² flows uniformly in a conductor of radius 20.0 mm. Find |H| at ρ = 15 mm, in A/m.", answer: { value: 716.175, unit: "A/m" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "hw03-b", type: "numeric", prompt: "J = 95.49 kA/m² flows uniformly in a conductor of radius 20.0 mm. Find |H| at ρ = 15 mm, in A/m.", answer: { value: 716.175, unit: "A/m" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 1273.2, unit: "A/m", errorClass: "conceptual", tag: "AMP_ENC_INSIDE", feedback: "That uses the whole 120 A. Inside, H = Jρ/2." }],
             hints: ["Inside: H · 2πρ = Jπρ².", "So H = Jρ/2.", "95 490 × 0.015/2."] },
           covers: ["hw03-2425-3.1b"],

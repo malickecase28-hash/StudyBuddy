@@ -80,7 +80,7 @@ const q09a = defineTemplate<{ q1: number; q2: number }>({
 const f2425 = defineTemplate<{ a: number; R: number }>({
   id: "f2425-qt",
   params: { a: { min: 1, max: 9, step: 1 }, R: { min: 5, max: 15, step: 1 } },
-  prompt: (p) => `Finals 2024-25 Q2(a) style: in free space D = ${p.a}.0r² a_r nC/m². A sphere of radius r = ${p.R} m is centred at the origin. Compute Q_T, the total charge inside.`,
+  prompt: (p) => `In free space D = ${p.a}.0r² a_r nC/m². A sphere of radius r = ${p.R} m is centred at the origin. Compute Q_T, the total charge inside.`,
   solve: (p) => ({
     answer: { value: r4((p.a * p.R ** 4 * 4 * Math.PI) / 1000), unit: "µC" },
     distractors: [
@@ -576,7 +576,7 @@ const continuityRate = defineTemplate<{ a: number; x0: number }>({
   tags: { concepts: ["em1.electrostatics.current"], misconceptions: ["CONTINUITY_SIGN"], difficulty: 1 },
 });
 
-/** dir 0: dielectric region 1 into free space (Finals 24-25); dir 1: free space into a dielectric (Finals 23-24). */
+/** dir 0: dielectric region 1 into free space ; dir 1: free space into a dielectric. */
 const sides = (dir: number, er: number) => (dir === 0 ? { er1: er, er2: 1 } : { er1: 1, er2: er });
 const DIEL = "em1.electrostatics.dielectrics";
 const CAP = "em1.electrostatics.capacitance";

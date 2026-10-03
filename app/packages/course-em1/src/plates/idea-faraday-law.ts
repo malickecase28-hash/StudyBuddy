@@ -70,7 +70,7 @@ export const ideaFaradayLaw = defineIdeaPlate({
           trap: "Answering NΦ = 0.1 Wb as the emf. That's the flux linkage; the emf is its rate of change.",
         },
         {
-          id: "resit", level: "exam", title: "Finals 2024-25 resit Q4(a)",
+          id: "resit", level: "exam", title: "Faraday's law in practice",
           setup: { loop: TRANS, eq: eqp(R`\nabla\times\mathbf H=\mathbf J+\dfrac{\partial\mathbf D}{\partial t}`, "curl H equals J plus the rate of change of D") },
           problem: "(i) State, in integral form, Maxwell's equation that embodies Faraday's work. (ii) Deduce two important implications of Faraday's discovery. (iii) Express in point form Maxwell's equation that completes Ampère's circuital law, and name the additional term.",
           lines: [

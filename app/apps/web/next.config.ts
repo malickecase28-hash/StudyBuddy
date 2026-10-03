@@ -6,6 +6,7 @@ const config: NextConfig = {
   typescript: { ignoreBuildErrors: true },
   async redirects() {
     return [
+      { source: "/past-papers", destination: "/questions", permanent: true },
       { source: "/c/:course/em1.electrostatics.flux-density", destination: "/c/:course/em1.electrostatics.gauss-law", permanent: true },
       { source: "/learn/em1.electrostatics.flux-density/:lesson", destination: "/learn/em1.electrostatics.gauss-law/flux-density", permanent: true },
     ];

@@ -1,7 +1,7 @@
 import { meta, src } from "../sources";
 
-const L3A = "UTech ELE3001 Lec 3a slides (G. D. Boswell)";
-const L3B = "UTech ELE3001 Lec 3b slides (G. D. Boswell)";
+const L3A = "Course notes, Unit 3a";
+const L3B = "Course notes, Unit 3b";
 const WENT3 = "Wentworth, Fundamentals of Electromagnetics with Engineering Applications, Ch. 3";
 const plate = (id: string, where: string, ref = L3A) => ({ ...meta("vivid", src(ref, where)), id, type: "plate" as const, plateId: id });
 
@@ -24,8 +24,8 @@ export const ampereConcept = {
     { tag: "CURL_ZERO", description: "Thinks ∇ × H is nonzero where there is no current.", remediation: `${A}/main` },
   ],
   examLinks: [
-    { paper: "UTech ELE3001 Finals 2024-25 Sem 1", question: "Q3(a), Q4(a)", marks: 23, weight: 1 },
-    { paper: "UTech ELE3001 Finals 2023-24 Sem 1", question: "Q3(b), Q4(a)", marks: 21, weight: 1 },
+    { paper: "Exam-style question", question: "Q3(a), Q4(a)", marks: 23, weight: 1 },
+    { paper: "Exam-style question", question: "Q3(b), Q4(a)", marks: 21, weight: 1 },
   ],
   sources: [src(L3A, "Biot–Savart and Ampère"), src(WENT3, "§3.1–3.6")],
   status: "verified" as const,
@@ -60,8 +60,8 @@ export const magMaterialsConcept = {
     { tag: "MBND_SWAP", description: "Treats tangential B or normal H as continuous.", remediation: `${M}/main` },
   ],
   examLinks: [
-    { paper: "UTech ELE3001 Finals 2024-25 Sem 1", question: "Q3(b)", marks: 17, weight: 1 },
-    { paper: "UTech ELE3001 Finals 2023-24 Sem 1", question: "Q3(c)", marks: 15, weight: 1 },
+    { paper: "Exam-style question", question: "Q3(b)", marks: 17, weight: 1 },
+    { paper: "Exam-style question", question: "Q3(c)", marks: 15, weight: 1 },
   ],
   sources: [src(L3A, "Magnetization and boundary conditions"), src(WENT3, "§3.7–3.8")],
   status: "verified" as const,
@@ -91,7 +91,7 @@ export const inductanceConcept = {
     { tag: "IND_LN", description: "Uses log₁₀ in the coax or two-wire inductance.", remediation: `${I}/main` },
     { tag: "WM_HALF", description: "Drops the ½ in W = ½LI².", remediation: `${I}/main` },
   ],
-  examLinks: [{ paper: "UTech ELE3001 Finals 2017-18 Sem 1", question: "Q4(b)", marks: 10, weight: 1 }],
+  examLinks: [{ paper: "Exam-style question", question: "Q4(b)", marks: 10, weight: 1 }],
   sources: [src(L3B, "Inductance"), src(WENT3, "§3.9–3.10")],
   status: "verified" as const,
   rules: [],

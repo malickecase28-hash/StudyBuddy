@@ -29,7 +29,7 @@ const PLACES: { href: string; label: string; caption: string; icon: string; matc
   { href: "/", label: "Desk", caption: "Desk", icon: "desk", match: (p) => p === "/" },
   { href: "/courses", label: "Learn: courses and lessons", caption: "Learn", icon: "courses", match: (p) => p.startsWith("/courses") || p.startsWith("/c/") || p.startsWith("/learn") },
   { href: "/ink", label: "Ink: your handwritten notebooks", caption: "Ink", icon: "ink", match: (p) => p.startsWith("/ink") || p.startsWith("/paper") },
-  { href: "/past-papers", label: "Question bank", caption: "Questions", icon: "bank", match: (p) => p.startsWith("/past-papers") },
+  { href: "/questions", label: "Question bank", caption: "Questions", icon: "bank", match: (p) => p.startsWith("/questions") },
   { href: "/review", label: "Review what's due", caption: "Review", icon: "review", match: (p) => p.startsWith("/review") },
   { href: "/dashboard", label: "Progress and exam readiness", caption: "Progress", icon: "progress", match: (p) => p.startsWith("/dashboard") || p.startsWith("/diagnostic") },
   { href: "/map", label: "Concept map", caption: "Map", icon: "map", match: (p) => p.startsWith("/map") },

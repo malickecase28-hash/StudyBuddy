@@ -41,7 +41,7 @@ export const ideaEnergy = defineIdeaPlate({
         },
         {
           id: "zero", title: "When the answer is zero", givens: [{ value: 10, unit: "µC" }], patch: { q: { items: [pt("a", 2, [0, 0, 0], "Q = +2 µC")], oblique: false, drawScale: 1 }, ep: { point: [2, 0, 0], oblique: false, drawScale: 1 }, eq: { latex: R`V=r^3\sin\theta\cos\phi:\quad V(\theta=0^\circ)=0,\ \ V(\phi=90^\circ)=0`, speech: "V is zero at theta zero and at phi ninety degrees", shortSpeech: "zero potential points" } }, focus: ["eq"],
-          note: "Finals 2023-24 Q1(b)(ii) moves 10 µC from X(2, 0°, 100°) to Y(5, 45°, 90°) in V = r³ sin θ cos φ. At X, sin 0° = 0, so V_X = 0. At Y, cos 90° = 0, so V_Y = 0. The work is 10 µC × (0 − 0) = 0 J. The field is not zero along the way; the path simply begins and ends on the same equipotential. Look for that before grinding through numbers.",
+          note: "Move 10 µC from X(2, 0°, 100°) to Y(5, 45°, 90°) in V = r³ sin θ cos φ. At X, sin 0° = 0, so V_X = 0. At Y, cos 90° = 0, so V_Y = 0. The work is 10 µC × (0 − 0) = 0 J. The field is not zero along the way; the path simply begins and ends on the same equipotential. Look for that before grinding through numbers.",
         },
       ],
       examples: [
@@ -68,7 +68,7 @@ export const ideaEnergy = defineIdeaPlate({
           trap: "Squaring R as in Coulomb's force law. Energy uses R, not R².",
         },
         {
-          id: "f2324", level: "exam", title: "Finals 2023-24 Q1(b)(ii)",
+          id: "f2324", level: "exam", title: "Work along an equipotential",
           setup: { eq: { latex: R`V=r^3\sin\theta\cos\phi`, speech: "V equals r cubed sine theta cosine phi", shortSpeech: "the given potential" } },
           problem: "In a region where V = r³ sin θ cos φ volts, calculate the energy required to move a 10 µC charge from X(2, 0°, 100°) to Y(5, 45°, 90°).",
           givens: [{ value: 10, unit: "µC" }],
@@ -106,7 +106,7 @@ export const ideaEnergy = defineIdeaPlate({
           interaction: { id: "move-num", type: "numeric", prompt: wm.prompt, answer: wm.spec.answer, distractors: wm.spec.distractors, relTol: wm.spec.relTol, hints: wm.hints, template: "work-move", dimension: "computational" },
         },
         {
-          id: "f2324-w", title: "Check: Finals 2023-24 Q1(b)(ii)",
+          id: "f2324-w", title: "Check: work between two points",
           note: "Look before you calculate.",
           interaction: { id: "f2324-w", type: "numeric", prompt: "V = r³ sin θ cos φ. Energy to move 10 µC from X(2, 0°, 100°) to Y(5, 45°, 90°), in J?", answer: { value: 0, unit: "J" }, relTol: 0.01, dimension: "application",
             distractors: [{ value: 8.84e-4, unit: "J", errorClass: "conceptual", feedback: "Check V at each end: sin 0° = 0 at X and cos 90° = 0 at Y." }],

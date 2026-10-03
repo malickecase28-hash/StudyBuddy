@@ -27,13 +27,13 @@ export const ideaPointForm = defineIdeaPlate({
           note: "Gauss's law in integral form says the flux out of a closed surface equals the charge inside. Shrink the surface to a tiny box around a point: the flux out per unit volume is the divergence, and the charge per unit volume is the density. So, point by point, ∇·D = ρv. Where D spreads out, there is positive charge; where it converges, negative charge; where the divergence is zero, there is no charge at all.",
         },
         {
-          id: "hw26", title: "Reading ρv from a field (HW02 2.6)", focus: ["vs"],
-          note: "HW02 2.6 gives D = 3xy âₓ + x² âᵧ C/m². Its divergence is ∂(3xy)/∂x + ∂(x²)/∂y = 3y + 0, so ρv = 3y C/m³. The charge density grows with y and has nothing to do with x. At the probe, (1, 2, 0.5), ρv = 6, and the plate's box, flux ÷ volume, agrees.",
+          id: "hw26", title: "Reading ρv from a field", focus: ["vs"],
+          note: "Take D = 3xy âₓ + x² âᵧ C/m². Its divergence is ∂(3xy)/∂x + ∂(x²)/∂y = 3y + 0, so ρv = 3y C/m³. The charge density grows with y and has nothing to do with x. At the probe, (1, 2, 0.5), ρv = 6, and the plate's box, flux ÷ volume, agrees.",
           claims: [{ instance: "vs", readout: "div", value: 6, unit: "" }, { instance: "vs", readout: "boxRatio", value: 6, unit: "" }],
         },
         {
           id: "from-e", title: "Given E, not D: multiply by ε₀", patch: { vs: { field: "f2324-2b", plane: "xz", probe: [2, 0, 0], offset: 0, box: 0 }, eq: eqp(R`\rho_v=\nabla\cdot\mathbf D=\varepsilon_0\,\nabla\cdot\mathbf E`, "rho v equals epsilon nought times divergence of E") }, focus: ["vs", "eq"],
-          note: "Finals 2023-24 Q2(b) gives E, not D. In a vacuum D = ε₀E, so ρv = ε₀∇·E. For E = πr² âr inside r = 3 m, the spherical divergence is (1/r²)∂(r² · πr²)/∂r = 4πr. At r = 2 m that is 8π, and ρv = 8πε₀ = 2.225 × 10⁻¹⁰ C/m³. Forget the ε₀ and the density comes out about ten billion times too large.",
+          note: "Sometimes a question gives E, not D. In a vacuum D = ε₀E, so ρv = ε₀∇·E. For E = πr² âr inside r = 3 m, the spherical divergence is (1/r²)∂(r² · πr²)/∂r = 4πr. At r = 2 m that is 8π, and ρv = 8πε₀ = 2.225 × 10⁻¹⁰ C/m³. Forget the ε₀ and the density comes out about ten billion times too large.",
           givens: [{ value: 3, unit: "m" }],
           claims: [{ instance: "vs", readout: "div", value: 25.1327, unit: "" }],
         },
@@ -45,7 +45,7 @@ export const ideaPointForm = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "hw26a", level: "basic", title: "HW02 2.6(a): ρv from D",
+          id: "hw26a", level: "basic", title: "ρv from D",
           setup: { vs: { field: "hw-2.6", plane: "xy", probe: [1, 2, 0.5], offset: 0.5, box: 0.3 } },
           problem: "Given D = 3xy âₓ + x² âᵧ C/m², calculate the volume charge density ρv.",
           lines: [
@@ -56,7 +56,7 @@ export const ideaPointForm = defineIdeaPlate({
           trap: "Differentiating x² with respect to x (giving 2x) when it's the y-component: ∂D_y/∂y is what's needed.",
         },
         {
-          id: "f2324-in", level: "tutorial", title: "Finals 2023-24 Q2(b)(ii): inside, at r = 2 m",
+          id: "f2324-in", level: "tutorial", title: "Inside, at r = 2 m",
           setup: { vs: { field: "f2324-2b", plane: "xz", probe: [2, 0, 0], offset: 0, box: 0 } },
           problem: "In a vacuum, E = πr² âr N/C for 0 < r ≤ 3 m. Compute ρv at r = 2 m.",
           givens: [{ value: 3, unit: "m" }],
@@ -69,7 +69,7 @@ export const ideaPointForm = defineIdeaPlate({
           trap: "Using the cartesian ∂E/∂r without the (1/r²)∂(r² …) structure gives 2πr = 12.57, half the right value.",
         },
         {
-          id: "f2324-out", level: "exam", title: "Finals 2023-24 Q2(b)(iii): outside, at r = 5 m",
+          id: "f2324-out", level: "exam", title: "Outside, at r = 5 m",
           setup: { vs: { field: "f2324-2b", plane: "xz", probe: [5, 0, 0], offset: 0, box: 0 } },
           problem: "For r > 3 m, E = (6π/r³) âr N/C. State Gauss's law, then compute ρv at r = 5 m.",
           givens: [{ value: 3, unit: "m" }],
@@ -114,7 +114,7 @@ export const ideaPointForm = defineIdeaPlate({
           covers: ["hw-2324-2.6"],
         },
         {
-          id: "f2324-num", title: "Check: Finals 2023-24 Q2(b)(ii)",
+          id: "f2324-num", title: "Check: ρv inside",
           note: "Last one.",
           interaction: { id: "f2324-num", type: "numeric", prompt: "In a vacuum, E = πr² âr N/C for r ≤ 3 m. Find ρv at r = 2 m, in C/m³.", answer: { value: 8 * Math.PI * EPS0, unit: "C/m^3" }, relTol: 0.01, dimension: "application",
             distractors: [{ value: 8 * Math.PI, unit: "C/m^3", errorClass: "conceptual", tag: "POINT_FORM_EPS", feedback: "That's ∇·E. Multiply by ε₀ for the charge density." }],

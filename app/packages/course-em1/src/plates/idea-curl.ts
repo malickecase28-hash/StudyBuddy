@@ -35,7 +35,7 @@ export const ideaCurl = defineIdeaPlate({
         },
         {
           id: "curved", title: "Cylindrical and spherical curls", patch: { vs: { field: "tut-3.6b", plane: "xz", probe: [0, 5, 1], offset: 5, loop: 0 }, eq: eqp(R`(\nabla\times\mathbf H)_z=\dfrac1\rho\left[\dfrac{\partial(\rho H_\phi)}{\partial\rho}-\dfrac{\partial H_\rho}{\partial\phi}\right]`, "the z-part of the cylindrical curl") }, focus: ["vs", "eq"],
-          note: "The curved-coordinate curls are on the formula sheet, and every term carries scale factors. In cylindrical coordinates the z-part is (1/ρ)[∂(ρHφ)/∂ρ − ∂Hρ/∂φ]. For Tutorial 3.8(b), B = ρz sin φ âρ + 3ρz² cos φ âφ, and ∇ × B = −6ρz cos φ âρ + ρ sin φ âφ + (6z − 1)z cos φ âz. At (5, π/2, 1), where cos φ = 0, only the middle term survives: ∇ × B = 5âφ.",
+          note: "The curved-coordinate curls are on the formula sheet, and every term carries scale factors. In cylindrical coordinates the z-part is (1/ρ)[∂(ρHφ)/∂ρ − ∂Hρ/∂φ]. For B = ρz sin φ âρ + 3ρz² cos φ âφ, and ∇ × B = −6ρz cos φ âρ + ρ sin φ âφ + (6z − 1)z cos φ âz. At (5, π/2, 1), where cos φ = 0, only the middle term survives: ∇ × B = 5âφ.",
           claims: [{ instance: "vs", readout: "c1", value: 0, unit: "" }, { instance: "vs", readout: "c2", value: 5, unit: "" }, { instance: "vs", readout: "c3", value: 0, unit: "" }],
         },
         {
@@ -46,7 +46,7 @@ export const ideaCurl = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "tut38a", level: "basic", title: "Tutorial 3.8(a): a cartesian curl",
+          id: "tut38a", level: "basic", title: "A cartesian curl",
           setup: { vs: { field: "tut-3.6a", plane: "xz", probe: [1, -2, 3], offset: -2, loop: 0 } },
           problem: "Find the curl of A = yz âₓ + 4xy âᵧ + y âz and evaluate it at (1, −2, 3).",
           lines: [
@@ -59,7 +59,7 @@ export const ideaCurl = defineIdeaPlate({
           trap: "Swapping the order in a term, such as ∂Aᵧ/∂z − ∂A_z/∂y, flips that component's sign. Follow the cycle x → y → z.",
         },
         {
-          id: "tut38b", level: "tutorial", title: "Tutorial 3.8(b): a cylindrical curl",
+          id: "tut38b", level: "tutorial", title: "A cylindrical curl",
           setup: { vs: { field: "tut-3.6b", plane: "xz", probe: [0, 5, 1], offset: 5, loop: 0 } },
           problem: "Find the curl of B = ρz sin φ âρ + 3ρz² cos φ âφ and evaluate it at (5, π/2, 1).",
           lines: [
@@ -72,7 +72,7 @@ export const ideaCurl = defineIdeaPlate({
           trap: "Forgetting the ρ inside ∂(ρBφ)/∂ρ gives (3z²/ρ) cos φ where 6z² cos φ belongs.",
         },
         {
-          id: "tut38c", level: "exam", title: "Tutorial 3.8(c): a spherical curl",
+          id: "tut38c", level: "exam", title: "A spherical curl",
           setup: { vs: { field: "tut-3.6c", plane: "xz", probe: C_PT, offset: S3 / 4, loop: 0 } },
           problem: "Find the curl of C = 2r cos θ cos φ âr + √r âφ and evaluate it at (1, π/6, π/3).",
           lines: [
@@ -90,7 +90,7 @@ export const ideaCurl = defineIdeaPlate({
         { id: "paddle", q: "What's a good picture of curl?", a: "A tiny paddle wheel dropped into the field. If the field pushes harder on one side than the other, the wheel spins, and the curl points along its axle. In the swirl field it spins at the same rate everywhere." },
         { id: "static", q: "What does ∇ × E = 0 mean for electrostatics?", a: "A static electric field has no swirl: the work done moving a charge around any closed loop is zero. That is what lets us define a potential V with E = −∇V." },
         { id: "grad-curl", q: "Why is the curl of a gradient always zero?", a: "A gradient field points steepest uphill. Walk any loop back to your start and you gain and lose exactly the same height, so the circulation is zero everywhere, and so is the curl." },
-        { id: "ampere", q: "Where will I use curl next?", a: "In Ampère's law, ∇ × H = J: the magnetic field swirls around currents. Finals 2024-25 Q4(a)(iv) asks for ∇ × H outside a conductor. There J = 0, so the curl is zero." },
+        { id: "ampere", q: "Where will I use curl next?", a: "In Ampère's law, ∇ × H = J: the magnetic field swirls around currents. A common exam question asks for ∇ × H outside a conductor. There J = 0, so the curl is zero." },
         { id: "factors", q: "Which scale factors appear in the cylindrical curl?", tags: ["MISSING_SCALE_FACTORS"], a: "The z-part has 1/ρ outside and ρHφ inside the derivative: (1/ρ)[∂(ρHφ)/∂ρ − ∂Hρ/∂φ]. The ρ-part has 1/ρ on the φ-derivative. Copy them from the formula sheet rather than rebuilding them from memory." },
       ],
       checks: [
@@ -117,7 +117,7 @@ export const ideaCurl = defineIdeaPlate({
             feedback: { close: "Right: still 2. This field swirls equally everywhere.", far: "∇ × A = 2âz at every point, so every small loop gives 2." } },
         },
         {
-          id: "outside", title: "Check: outside a wire (Finals Q4(a)(iv))",
+          id: "outside", title: "Check: outside a wire",
           note: "Last one.",
           interaction: { id: "outside", type: "choose", prompt: "Outside a long, straight wire carrying current, ∇ × H is…", dimension: "application",
             options: [

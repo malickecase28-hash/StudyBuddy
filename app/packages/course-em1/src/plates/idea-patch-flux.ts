@@ -30,11 +30,11 @@ export const ideaPatchFlux = defineIdeaPlate({
         },
         {
           id: "radius", title: "The radius doesn't matter", patch: { region: { ranges: [[0, 1.8], [0, 90], [0, 360]] } }, focus: ["region"],
-          note: "Grow the sphere to 1.8 m. The hemisphere's area grows, but so does the whole sphere's, by the same factor, so the share, and the flux, stay at 6 µC. That is why the radius in a question like MST Q3(a) is a distraction: only the angles matter. The share is (1 − cos θ₂)Δφ/(4π) for a patch 0 < θ < θ₂ with a φ-range of Δφ.",
+          note: "Grow the sphere to 1.8 m. The hemisphere's area grows, but so does the whole sphere's, by the same factor, so the share, and the flux, stay at 6 µC. That is why the radius in a question about a patch is a distraction: only the angles matter. The share is (1 − cos θ₂)Δφ/(4π) for a patch 0 < θ < θ₂ with a φ-range of Δφ.",
           claims: [{ instance: "region", readout: "patchFlux", value: 6, unit: "µC" }],
         },
         {
-          id: "octant", title: "The octant (Tutorial Q.06)", patch: { region: { ranges: [[0, 1.4], [0, 90], [0, 90]] } }, focus: ["region"],
+          id: "octant", title: "The octant", patch: { region: { ranges: [[0, 1.4], [0, 90], [0, 90]] } }, focus: ["region"],
           note: "0 < θ < π/2 is the top half, and 0 < φ < π/2 is a quarter of the way round. Together they make an eighth of the sphere, so an eighth of the flux: 12/8 = 1.5 µC. The tutorial's version is exactly this reasoning with its own Q.",
           claims: [{ instance: "region", readout: "patchFlux", value: 1.5, unit: "µC" }],
         },
@@ -46,7 +46,7 @@ export const ideaPatchFlux = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "q06", level: "basic", title: "Tutorial Q.06: the octant",
+          id: "q06", level: "basic", title: "The octant",
           setup: { region: { system: "sph", ranges: [[0, 1.4], [0, 90], [0, 90]], face: 0, centralCharge: 40 } },
           problem: "A 40 µC point charge sits at the origin. Find the flux through the part of the sphere r = 26 cm with 0 < θ < π/2 and 0 < φ < π/2.",
           lines: [
@@ -57,7 +57,7 @@ export const ideaPatchFlux = defineIdeaPlate({
           trap: "Computing the patch area and multiplying by Q. Flux is Q times the area's share of 4πr², not Q times the area.",
         },
         {
-          id: "mst3a", level: "tutorial", title: "MST Q3(a): a narrower patch",
+          id: "mst3a", level: "tutorial", title: "A narrower patch",
           setup: { region: { system: "sph", ranges: [[0, 0.25], [0, 60], [30, 45]], face: 0, centralCharge: 100, drawScale: 4 } },
           problem: "A 100 µC point charge is at the origin. Calculate the flux through the part of the sphere r = 25.0 cm bounded by 0 < θ < π/3 and π/6 < φ < π/4.",
           lines: [
@@ -122,7 +122,7 @@ export const ideaPatchFlux = defineIdeaPlate({
           covers: ["mst-2324-q3a"],
         },
         {
-          id: "q06-num", title: "Check: Tutorial Q.06",
+          id: "q06-num", title: "Check: flux through the octant",
           note: "Last one.",
           interaction: { id: "q06-num", type: "numeric", prompt: q06.prompt, answer: q06.spec.answer, distractors: q06.spec.distractors, relTol: q06.spec.relTol, hints: q06.hints, template: "q06-octant", dimension: "application" },
           covers: ["tutorial:q06"],

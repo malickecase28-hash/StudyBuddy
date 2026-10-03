@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { assessmentsForItem, getConcept, lessonHref, mainLesson, questionBank, splitRef } from "@/lib/course";
+import { assessmentsForItem, bankLabel, course, getConcept, lessonHref, mainLesson, questionBank, splitRef } from "@/lib/course";
 import { DiscussLink } from "@/components/commons/Post";
 import { conceptProgress, pct } from "@/lib/progress";
 import { useStudy } from "@/lib/store";
@@ -18,10 +18,10 @@ export default function QuestionBankPage() {
       <div>
         <p className="label">Question bank</p>
         <h1 className="text-2xl font-semibold">Question bank</h1>
-        <p className="read text-soft">Every question from past tests, homework and finals, split into the ideas it tests. The lecturer reuses homework, so these are worth knowing cold.</p>
+        <p className="read text-soft">Exam-style questions, each split into the ideas it tests. Work one, then strengthen the idea that costs you the most marks.</p>
       </div>
       <fieldset role="radiogroup" aria-label="Assessment" className="flex flex-wrap gap-4">
-        {([["all", "All"], ["ict1", "ICT 1"], ["ict2", "ICT 2"], ["finals", "Finals"]] as const).map(([value, label]) => (
+        {[["all", "All"] as const, ...course.assessments.map((a) => [a.id, a.short] as const)].map(([value, label]) => (
           <label key={value} className="flex items-center gap-2 text-sm">
             <input type="radio" name="scope" value={value} checked={scope === value} onChange={() => setScope(value)} />
             {label}
@@ -39,10 +39,9 @@ export default function QuestionBankPage() {
         return (
           <article key={q.id} id={q.id} className="card space-y-4">
             <div className="flex items-baseline justify-between gap-4">
-              <h2 className="font-semibold">{q.paper} · {q.question}</h2>
+              <h2 className="font-semibold">{bankLabel({ id: q.id })}</h2>
               {q.marks !== undefined && <span className="label">{q.marks} marks</span>}
             </div>
-            {q.seenIn && q.seenIn.length > 1 && <p className="label">Set {q.seenIn.length} times</p>}
             <p className="read"><Markup text={q.text} /></p>
             {q.solution && (
               <details>
@@ -70,12 +69,11 @@ export default function QuestionBankPage() {
             <div className="flex flex-wrap gap-2">
               {practice && <Link className="btn btn-primary" href={lessonHref(practice.conceptId, practice.lessonId)}>Work this question →</Link>}
               {weak && <Link className="btn" href={lessonHref(weak.id, mainLesson(weak)!.id)}>Strengthen {weak.title}</Link>}
-              <DiscussLink anchor={{ conceptId: q.concepts[0]!.conceptId, bankItemId: q.id, label: `${q.paper} · ${q.question}` }} />
+              <DiscussLink anchor={{ conceptId: q.concepts[0]!.conceptId, bankItemId: q.id, label: bankLabel({ id: q.id }) }} />
             </div>
           </article>
         );
       })}
-      <p className="text-xs text-faint">Question text is quoted from course materials for private study and will be replaced by original questions before any public release.</p>
     </div>
   );
 }

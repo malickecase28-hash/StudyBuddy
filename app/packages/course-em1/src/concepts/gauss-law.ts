@@ -34,7 +34,7 @@ export const fluxDensityBlocks = [
           ...meta("assessment", src(SLIDES, "p. 59 (Q.07a)")),
           id: "q7a",
           type: "numeric",
-          prompt: "Q.07(a): a point charge Q_A = 55 mC sits at (−2, 3, −6). Find D_z at P(2, −3, 6).",
+          prompt: "A point charge Q_A = 55 mC sits at (−2, 3, −6). Find D_z at P(2, −3, 6).",
           answer: { value: 19.14, unit: "µC/m^2" },
           distractors: [
             { value: 1.595, unit: "µC/m^2", errorClass: "conceptual", feedback: "That's Q/(4π|R|³). Multiply by R_z = 12 for the z-component." },
@@ -77,8 +77,8 @@ export const gaussLaw = {
     { tag: "GAUSS_WITHOUT_SYMMETRY", description: "Tries to pull D out of the integral without symmetry.", remediation: `${ID}/symmetry` },
   ],
   examLinks: [
-    { paper: "Finals 2024-25 Sem 1", question: "Q2(a)", marks: 8, weight: 0.5 },
-    { paper: "Finals 2023-24 Sem 1", question: "Q2(b)", marks: 12, weight: 0.4 },
+    { paper: "Exam-style question", question: "Q2(a)", marks: 8, weight: 0.5 },
+    { paper: "Exam-style question", question: "Q2(b)", marks: 12, weight: 0.4 },
   ],
   sources: [src(SLIDES, "pp. 29-38"), src(WENT, "§2.7 Gauss's Law and Applications, p. 47")],
   status: "verified",

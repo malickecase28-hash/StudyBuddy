@@ -1,7 +1,7 @@
 import { meta, src } from "../sources";
 
 const ID = "em1.electrostatics.capacitance";
-const L2C = "UTech ELE3001 Lec 2c slides (G. D. Boswell)";
+const L2C = "Course notes, Unit 2c";
 export const capacitanceConcept = {
   id: ID,
   title: "Capacitance and stored energy",
@@ -19,8 +19,8 @@ export const capacitanceConcept = {
     { tag: "CAP_LN", description: "Uses log₁₀, or diameters, in C = 2πεL/ln(b/a).", remediation: `${ID}/main` },
   ],
   examLinks: [
-    { paper: "UTech ELE3001 Mid-semester test 2023-24", question: "Q4(c)", marks: 6, weight: 1 },
-    { paper: "UTech ELE3001 Mid-semester test 2023-24", question: "Q5(b)", marks: 10, weight: 1 },
+    { paper: "Exam-style question", question: "Q4(c)", marks: 6, weight: 1 },
+    { paper: "Exam-style question", question: "Q5(b)", marks: 10, weight: 1 },
   ],
   sources: [src(L2C, "Capacitance")],
   status: "verified" as const,

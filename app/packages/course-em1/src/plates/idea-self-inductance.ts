@@ -70,7 +70,7 @@ export const ideaSelfInductance = defineIdeaPlate({
           trap: "log₁₀ 5 = 0.699 gives 24.5 µH. The flux integral gives the natural log.",
         },
         {
-          id: "lines", level: "exam", title: "Finals 2017-18 Q4(b) and 2014-15 Q2(b): derive them",
+          id: "lines", level: "exam", title: "Derive them",
           setup: { ind: { kind: "twowire", a: 0.001, s: 0.1, length: 1, mur: 1, internal: true, I: 1 } },
           problem: "Determine the self-inductance per metre of (a) a coaxial cable of inner radius a and outer radius b and (b) a two-wire line of radius a and separation s, in air. Evaluate (b) for a = 1 mm and s = 10 cm.",
           lines: [

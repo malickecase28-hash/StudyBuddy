@@ -47,7 +47,7 @@ export const ideaGradient = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "tut34", level: "basic", title: "Tutorial 3.4: gradient and directional derivative",
+          id: "tut34", level: "basic", title: "Gradient and directional derivative",
           setup: { sl: { field: "tut-3.4", probe: [1, 2, 3], offset: 2 } }, hide: ["eq"],
           problem: "Given Φ = xy + yz + xz, find ∇Φ at (1, 2, 3), and the directional derivative of Φ there toward (3, 4, 4).",
           lines: [
@@ -60,7 +60,7 @@ export const ideaGradient = defineIdeaPlate({
           trap: "Using the displacement (2, 2, 1) without dividing by its length 3 gives 21. A directional derivative needs a unit vector.",
         },
         {
-          id: "hw21b", level: "tutorial", title: "HW02 2.1(b): a cylindrical gradient",
+          id: "hw21b", level: "tutorial", title: "A cylindrical gradient",
           setup: { sl: { field: "hw-2.1b", probe: [0, 2, -1], offset: 2 } },
           problem: "Find the gradient of U = 2ρ sin φ + ρz and evaluate it at Q(2, 90°, −1).",
           lines: [
@@ -72,7 +72,7 @@ export const ideaGradient = defineIdeaPlate({
           trap: "Getting −âρ: 2 sin 90° + z with z = −1 is +1. Substitute signs one at a time.",
         },
         {
-          id: "hw21c", level: "exam", title: "HW02 2.1(c): a spherical gradient",
+          id: "hw21c", level: "exam", title: "A spherical gradient",
           setup: { sl: { field: "hw-2.1c", probe: R_PT, offset: 0.5 } },
           problem: "Find the gradient of W = (4/r) sin θ cos φ and evaluate it at R(1, π/6, π/2).",
           lines: [
@@ -113,7 +113,7 @@ export const ideaGradient = defineIdeaPlate({
         },
         {
           id: "cart-num", title: "Check: a cartesian component",
-          note: "HW02 2.1(a) with your numbers.",
+          note: "The cartesian gradient again, with your numbers.",
           interaction: { id: "cart-num", type: "numeric", prompt: gc.prompt, answer: gc.spec.answer, distractors: gc.spec.distractors, relTol: gc.spec.relTol, hints: gc.hints, template: "grad-comp", dimension: "computational" },
           covers: ["hw-2324-2.1"],
         },
@@ -123,7 +123,7 @@ export const ideaGradient = defineIdeaPlate({
           interaction: { id: "cyl-num", type: "numeric", prompt: gcyl.prompt, answer: gcyl.spec.answer, distractors: gcyl.spec.distractors, relTol: gcyl.spec.relTol, hints: gcyl.hints, template: "grad-cyl-phi", dimension: "computational" },
         },
         {
-          id: "mst5a", title: "Check: mid-semester Q5(a)",
+          id: "mst5a", title: "Check: E_z from V",
           note: "Last one: E = −∇V from the 2023 test.",
           interaction: { id: "mst5a", type: "numeric", prompt: "V = ρ²z³ + 5z cos φ volts. Find E_z = −(∇V)_z at P(2, π, 3).", answer: { value: -103, unit: "V/m" }, relTol: 0.01, dimension: "application",
             distractors: [{ value: 103, unit: "V/m", errorClass: "sign", feedback: "E = −∇V. The minus sign flips the gradient." }],

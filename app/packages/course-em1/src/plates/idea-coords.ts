@@ -46,7 +46,7 @@ export const ideaCoords = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "points", level: "basic", title: "Tutorial 2.1(a): convert T and S",
+          id: "points", level: "basic", title: "Convert T and S",
           setup: { cf: { point: [0, -4, 3], system: "cyl" } },
           problem: "Convert P(1, 3, 5), T(0, −4, 3) and S(−3, −4, −10) from cartesian to cylindrical and spherical coordinates. (The explanations converted P; this example does T and S.)",
           lines: [
@@ -68,7 +68,7 @@ export const ideaCoords = defineIdeaPlate({
           trap: "Swapping θ and φ in the spherical formulas. θ is measured from the z-axis, so it pairs with cos θ in z; φ goes around, so it appears as cos φ and sin φ in x and y.",
         },
         {
-          id: "vector", level: "exam", title: "Tutorial 2.1(b, c): one vector, three systems",
+          id: "vector", level: "exam", title: "One vector, three systems",
           setup: { cf: { point: [0, -4, 3], system: "cyl" } },
           problem: "Q = √(x² + y²)/√(x² + y² + z²) âₓ − yz/√(x² + y² + z²) âz. Evaluate Q at T(0, −4, 3) in cartesian, cylindrical and spherical components.",
           lines: [

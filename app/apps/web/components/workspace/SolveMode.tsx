@@ -9,7 +9,7 @@ import { useStudy } from "@/lib/store";
 import { NumericField } from "../blocks/numeric";
 
 const TITLES: Record<string, string> = {
-  "q06-octant": "Q.06 Octant", "q08-e": "Q.08 |E|", "q08-q": "Q.08 Charge", "q09a-cube": "Q.09(a) Cube", "f2425-qt": "Finals 24-25 Q2(a)",
+  "q06-octant": "Flux through an octant", "q08-e": "|E| from a given D", "q08-q": "Charge from a given D", "q09a-cube": "Flux out of a cube", "f2425-qt": "Charge in a sphere from D",
 };
 
 export function SolveMode({ conceptId }: { conceptId: string }) {

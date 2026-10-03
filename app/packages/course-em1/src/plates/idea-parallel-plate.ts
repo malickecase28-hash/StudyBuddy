@@ -67,7 +67,7 @@ export const ideaParallelPlate = defineIdeaPlate({
           trap: "Dividing by εr. A dielectric raises C; it lowers E for a given Q.",
         },
         {
-          id: "mst5b", level: "exam", title: "MST Q5(b)(ii)–(iii): C and εr",
+          id: "mst5b", level: "exam", title: "C and εr",
           setup: { cap: { ...MST } },
           problem: "A parallel-plate capacitor has plate area S = 0.120 m² and separation d = 80 µm. At V₀ = 15.0 V it stores W_E = 50.0 µJ. Calculate (ii) the capacitance C and (iii) the relative permittivity εr of its dielectric.",
           lines: [
@@ -109,10 +109,10 @@ export const ideaParallelPlate = defineIdeaPlate({
           interaction: { id: "cap-num", type: "numeric", prompt: cp.prompt, answer: cp.spec.answer, distractors: cp.spec.distractors, relTol: cp.spec.relTol, hints: cp.hints, template: "cap-parallel", dimension: "computational" },
         },
         {
-          id: "mst-er", title: "Check: MST Q5(b)(iii)",
+          id: "mst-er", title: "Check: εr from C",
           note: "Last one.",
           patch: { cap: { ...MST } },
-          interaction: { id: "mst-er", type: "numeric", prompt: "MST Q5(b)(iii): C = 444.4 nF, S = 0.120 m², d = 80 µm. Find εr.", answer: { value: 33.46, unit: "" }, relTol: 0.01, dimension: "computational",
+          interaction: { id: "mst-er", type: "numeric", prompt: "C = 444.4 nF, S = 0.120 m², d = 80 µm. Find εr.", answer: { value: 33.46, unit: "" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 33464, unit: "", errorClass: "unit", tag: "CAP_UNITS", feedback: "That reads 80 µm as 80 mm. 80 µm = 8 × 10⁻⁵ m." }],
             hints: ["εr = Cd/(ε₀S).", "d = 8 × 10⁻⁵ m.", "4.444 × 10⁻⁷ × 8 × 10⁻⁵ / (8.854 × 10⁻¹² × 0.120)."] },
           covers: ["mst-2324-q5b"],

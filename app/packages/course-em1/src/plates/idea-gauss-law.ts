@@ -80,7 +80,7 @@ export const ideaGaussLaw = defineIdeaPlate({
         {
           id: "state-verify", level: "exam", title: "State it, then verify it",
           setup: { surface: { shape: "sphere", size: 1 }, q: { items: [point("q1", 2, [0, 0, 0])] }, field: { probe: 1 } },
-          problem: "(Finals 2023-24 Q2(b)(i) style.) State Gauss's law in words and as an equation, then verify it for a +2 µC charge at the centre of a 1 m sphere.",
+          problem: "State Gauss's law in words and as an equation, then verify it for a +2 µC charge at the centre of a 1 m sphere.",
           lines: [
             { text: "In words: the net outward flux of D through any closed surface equals the free charge enclosed.", focus: ["eq"] },
             { text: "As an equation: ∮ D · dS = Q_enc.", latex: LAW, focus: ["eq"] },

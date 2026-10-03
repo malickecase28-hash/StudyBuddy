@@ -32,12 +32,12 @@ export const ideaCurlStokes = defineIdeaPlate({
         },
         {
           id: "zero", title: "No current, no curl", patch: { vs: { field: "filament", probe: [1, 0.5, 0], offset: 0 } }, focus: ["vs"],
-          note: "Away from a wire, its H = I/(2πρ) aφ circles but has zero curl: (1/ρ)d(ρHφ)/dρ = (1/ρ)d(I/2π)/dρ = 0. Lec 3a Q.05 makes the point. The field lines curve, yet ∇ × H = 0 everywhere except on the wire itself, where J is. Curl measures circulation at a point, not the bending of lines.",
+          note: "Away from a wire, its H = I/(2πρ) aφ circles but has zero curl: (1/ρ)d(ρHφ)/dρ = (1/ρ)d(I/2π)/dρ = 0. A classic exercise makes the point. The field lines curve, yet ∇ × H = 0 everywhere except on the wire itself, where J is. Curl measures circulation at a point, not the bending of lines.",
           claims: [{ instance: "vs", readout: "c3", value: 0, unit: "" }],
         },
         {
-          id: "f1718", title: "Finals 2017-18 Q3(c)", patch: { vs: { field: "f1718-3c", probe: [5, 2, -3], offset: -3 } }, focus: ["vs"],
-          note: "Finals 2017-18 Q3(c) gives H = yz(x² + y²) ax − y²xz ay + 4x²y² az. Its curl is J = xy(8x + y) ax + y(x² − 8xy + y²) ay − z(x² + 4y²) az, which at (5, 2, −3) is 420ax − 102ay + 123az A/m². Its divergence is zero, as it must be for any B or μ₀H: ∇·B = 0.",
+          id: "f1718", title: "A field with a known curl", patch: { vs: { field: "f1718-3c", probe: [5, 2, -3], offset: -3 } }, focus: ["vs"],
+          note: "Take H = yz(x² + y²) ax − y²xz ay + 4x²y² az. Its curl is J = xy(8x + y) ax + y(x² − 8xy + y²) ay − z(x² + 4y²) az, which at (5, 2, −3) is 420ax − 102ay + 123az A/m². Its divergence is zero, as it must be for any B or μ₀H: ∇·B = 0.",
           claims: [{ instance: "vs", readout: "c1", value: 420, unit: "" }, { instance: "vs", readout: "c2", value: -102, unit: "" }, { instance: "vs", readout: "c3", value: 123, unit: "" }, { instance: "vs", readout: "div", value: 0, unit: "" }],
         },
       ],
@@ -68,7 +68,7 @@ export const ideaCurlStokes = defineIdeaPlate({
           trap: "Using the Cartesian curl on cylindrical or spherical components. Use the formula sheet's version for each system.",
         },
         {
-          id: "f1718", level: "exam", title: "Finals 2017-18 Q3(c): J, current and ∇·B",
+          id: "f1718", level: "exam", title: "J, current and ∇·B",
           setup: { vs: { field: "f1718-3c", probe: [5, 2, -3], offset: -3, loop: 0, plane: "xy" } },
           problem: "H = yz(x² + y²) ax − y²xz ay + 4x²y² az A/m. (i) Find J at (5, 2, −3). (ii) Find the current through x = −1, 0 < y, z < 2. (iii) Show ∇·B = 0.",
           lines: [
@@ -86,7 +86,7 @@ export const ideaCurlStokes = defineIdeaPlate({
         { id: "point", q: "How does ∇ × H = J follow from Ampère's law?", a: "Apply Ampère's law to a tiny loop: ∮H·dL ≈ (∇ × H)·ΔS, and I_enc = J·ΔS. Divide by ΔS and shrink it: ∇ × H = J." },
         { id: "divb", q: "Why must ∇·B be zero?", a: "There are no magnetic charges. Every B line closes, so no small volume is a source or a sink." },
         { id: "units", q: "What are the units of ∇ × H?", a: "A/m per metre, A/m²: the units of current density, as Ampère's point form requires." },
-        { id: "cyl", q: "Which curl do I use for H = Hφ(ρ) aφ?", a: "The cylindrical curl. Only (1/ρ) d(ρHφ)/dρ survives, along az: that's how Finals 2024-25 Q4(a) and 2023-24 Q4(a) want ∇ × H shown." },
+        { id: "cyl", q: "Which curl do I use for H = Hφ(ρ) aφ?", a: "The cylindrical curl. Only (1/ρ) d(ρHφ)/dρ survives, along az: that's how exam answers show ∇ × H." },
       ],
       checks: [
         {

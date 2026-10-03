@@ -14,7 +14,7 @@ export default function CoursesPage() {
           <h2 className="text-2xl">{k.title}</h2>
           <p className="text-soft">
             {k.concepts.filter((c) => !c.locked).length} concepts open
-            {k.id === course.id ? ` · finals ${k.examDate}` : " · the maths Electromagnetics leans on"}
+            {k.id === course.id ? ` · final exam ${k.examDate}` : " · the maths Electromagnetics leans on"}
           </p>
         </Link>
       ))}

@@ -59,7 +59,7 @@ export const ideaTemWave = defineIdeaPlate({
           trap: "Taking ω for f: 1 Mrad/s is 159.2 kHz, not a megahertz.",
         },
         {
-          id: "hw04", level: "tutorial", title: "HW04 4.2 and the resit Q4(b): what the terms mean",
+          id: "hw04", level: "tutorial", title: "What the terms mean",
           setup: { pw: AIR },
           problem: "E(z, t) = E₀e^(−αz) cos(ωt ± βz + φ) ay. (a) What is a TEM wave? (b) What are α, ω, β and φ? (c) State H(z, t). (d) Relate E, H and u.",
           lines: [

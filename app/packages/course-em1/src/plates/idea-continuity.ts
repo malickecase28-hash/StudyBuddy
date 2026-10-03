@@ -49,7 +49,7 @@ export const ideaContinuity = defineIdeaPlate({
           trap: "Reporting +5. Current spreading out means charge leaving, so the density falls.",
         },
         {
-          id: "proof", level: "tutorial", title: "Finals 2024-25 Q4(b): the proof",
+          id: "proof", level: "tutorial", title: "The proof",
           setup: { vs: { field: "cont-5x", box: 0.8 } },
           problem: "By considering conservation of charge, prove the continuity equation in point form, ∇·J = −∂ρv/∂t.",
           lines: [
@@ -62,7 +62,7 @@ export const ideaContinuity = defineIdeaPlate({
           trap: "Skipping 'for every volume'. That step is what lets you drop the integral and equate the integrands.",
         },
         {
-          id: "state", level: "exam", title: "HW04 4.1(a): state it, and use it",
+          id: "state", level: "exam", title: "State it, and use it",
           setup: { vs: { field: "uniform", box: 0.6 } },
           problem: "State the current continuity equation and express it mathematically. What does it say about a steady (d.c.) current?",
           lines: [

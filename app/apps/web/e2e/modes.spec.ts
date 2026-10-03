@@ -3,7 +3,7 @@ import { concept, G, margin, next, open } from "./helpers";
 
 test("solve: a templated variant grades, and a new variant replaces it", async ({ page }) => {
   await open(page, concept("em1.electrostatics.gauss-applications", "mode=solve"));
-  await page.getByRole("radio", { name: "Q.09(a) Cube" }).click();
+  await page.getByRole("radio", { name: "Flux out of a cube" }).click();
   await expect(page.getByText("Variant 1")).toBeVisible();
   const prompt = await page.getByText(/Find the total flux leaving the cube/).textContent();
   const [, a, b] = prompt!.match(/charges ([\d.]+) µC at .* and ([\d.]+) µC at/)!;

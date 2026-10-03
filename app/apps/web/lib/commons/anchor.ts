@@ -7,7 +7,7 @@ export const anchorKey = (a: Anchor) =>
   a.bankItemId ? `bank:${a.bankItemId}` : [a.conceptId, a.lessonId, a.blockId, a.step].filter((x) => x !== undefined).join("/");
 
 export function anchorHref(a: Anchor): string | null {
-  if (a.bankItemId) return questionBank.some((q) => q.id === a.bankItemId) ? `/past-papers#${encodeURIComponent(a.bankItemId)}` : null;
+  if (a.bankItemId) return questionBank.some((q) => q.id === a.bankItemId) ? `/questions#${encodeURIComponent(a.bankItemId)}` : null;
   if (!getConcept(a.conceptId)) return null;
   const q: Record<string, string> = {};
   if (a.lessonId) q.lesson = a.lessonId;

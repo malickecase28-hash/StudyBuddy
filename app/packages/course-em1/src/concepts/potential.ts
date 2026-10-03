@@ -18,8 +18,8 @@ export const potentialConcept = {
     { tag: "GRAD_SIGN", description: "Writes E = ∇V without the minus sign.", remediation: `${ID}/main` },
     { tag: "V_INVERSE_SQUARE", description: "Uses 1/R² for a point charge's potential.", remediation: `${ID}/main` },
   ],
-  examLinks: [{ paper: "UTech ELE3001 Finals 2024-25 Sem 1", question: "Q1(c)", marks: 10, weight: 1 }],
-  sources: [src(SLIDES, "Electric potential"), src("UTech ELE3001 Unit 2b slides (G. D. Boswell)", "Examples 4 and 5")],
+  examLinks: [{ paper: "Exam-style question", question: "Q1(c)", marks: 10, weight: 1 }],
+  sources: [src(SLIDES, "Electric potential"), src("Course notes, Unit 2b", "Examples 4 and 5")],
   status: "verified" as const,
   rules: [],
   lessons: [

@@ -35,12 +35,12 @@ export const ideaVPoint = defineIdeaPlate({
         },
         {
           id: "scalar", title: "Potentials add as numbers", patch: { q: EX5, ep: { point: [1, 0, 1], oblique: true, drawScale: 0.3 } }, focus: ["q", "ep"],
-          note: "Potential is a scalar, so superposition is simple addition: no unit vectors, no components. Each charge contributes Qᵢ/(4πε₀|r − rᵢ|), with its sign. For lecture Example 5, −4 µC at (2, −1, 3) and +5 µC at (0, 4, −2) give V = −5.864 kV at (1, 0, 1). The lecture's −5.872 kV used 1/(4πε₀) ≈ 9 × 10⁹; with ε₀ = 8.854 × 10⁻¹², it is −5.864 kV.",
+          note: "Potential is a scalar, so superposition is simple addition: no unit vectors, no components. Each charge contributes Qᵢ/(4πε₀|r − rᵢ|), with its sign. For two charges, −4 µC at (2, −1, 3) and +5 µC at (0, 4, −2) give V = −5.864 kV at (1, 0, 1). A −5.872 kV answer comes from 1/(4πε₀) ≈ 9 × 10⁹; with ε₀ = 8.854 × 10⁻¹², it is −5.864 kV.",
           claims: [{ instance: "ep", readout: "V", value: -5863.59, unit: "V" }],
         },
         {
           id: "sphere", title: "A charged sphere", patch: { q: { items: [pt("a", 200000, [0, 0, 0], "Q = +200 mC")], oblique: false, drawScale: 1 }, ep: { point: [0.064, 0, 0], oblique: false, drawScale: 10 } }, focus: ["ep"],
-          note: "Outside a charged metal sphere, the charge acts as if it sits at the centre, so on the surface V = Q/(4πε₀R) with R the sphere's radius. The mid-semester test's 12.8 cm sphere holding +200 mC has R = 0.064 m and V = 2.809 × 10¹⁰ V, about 28 GV: an absurd voltage, because 200 mC is an enormous charge for a small sphere.",
+          note: "Outside a charged metal sphere, the charge acts as if it sits at the centre, so on the surface V = Q/(4πε₀R) with R the sphere's radius. A 12.8 cm sphere holding +200 mC has R = 0.064 m and V = 2.809 × 10¹⁰ V, about 28 GV: an absurd voltage, because 200 mC is an enormous charge for a small sphere.",
           claims: [{ instance: "ep", readout: "V", value: 2.80861e10, unit: "V" }],
         },
       ],
@@ -62,13 +62,13 @@ export const ideaVPoint = defineIdeaPlate({
           lines: [
             { text: "|r − r₁| = |(−1, 1, −2)| = √6 and |r − r₂| = |(1, −4, 3)| = √26.", focus: ["q"] },
             { text: "V = 8.988 × 10⁹ × 10⁻⁶ × (−4/√6 + 5/√26) = 8988 × (−1.633 + 0.9806).", focus: ["ep"] },
-            { text: "V = −5864 V = −5.864 kV (the lecture's −5.872 kV used k = 9 × 10⁹).", focus: ["ep"], claims: [{ instance: "ep", readout: "V", value: -5863.59, unit: "V" }] },
+            { text: "V = −5864 V = −5.864 kV (−5.872 kV if you use k = 9 × 10⁹).", focus: ["ep"], claims: [{ instance: "ep", readout: "V", value: -5863.59, unit: "V" }] },
           ],
           covers: ["lecture:lec2b-ex5"],
           trap: "Taking absolute values of the charges. The −4 µC term must stay negative, or V comes out positive.",
         },
         {
-          id: "mst2c", level: "exam", title: "MST Q2(c): a charged sphere",
+          id: "mst2c", level: "exam", title: "A charged sphere",
           setup: { q: { items: [pt("a", 200000, [0, 0, 0], "Q = +200 mC")], oblique: false, drawScale: 1 }, ep: { point: [0.064, 0, 0], oblique: false, drawScale: 10 } },
           problem: "A thin metallic sphere of diameter 12.8 cm is charged to +200 mC. Calculate V at its surface.",
           lines: [
@@ -85,7 +85,7 @@ export const ideaVPoint = defineIdeaPlate({
         { id: "negative", q: "Can the potential be negative?", a: "Yes, near negative charges. With V = 0 at infinity, a negative charge makes its surroundings negative, just as a positive one makes them positive." },
         { id: "zero-point", q: "Can V be zero where E isn't?", a: "Yes. Midway between +Q and −Q, their potentials cancel, but their fields add, pointing from + to −." },
         { id: "sphere-inside", q: "What is V inside the metal sphere?", a: "The same as on its surface. Inside a conductor E = 0, so no work is done moving around inside, and V stays constant at the surface value." },
-        { id: "units", q: "V or kV or GV?", a: "Match the size: the lecture's answers use kV for thousands of volts, and GV (10⁹ V) appears for the mid-semester sphere. Keep four significant figures." },
+        { id: "units", q: "V or kV or GV?", a: "Match the size: model answers use kV for thousands of volts, and GV (10⁹ V) appears for the small charged sphere. Keep four significant figures." },
       ],
       checks: [
         {

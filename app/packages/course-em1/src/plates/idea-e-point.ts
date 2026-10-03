@@ -40,7 +40,7 @@ export const ideaEPoint = defineIdeaPlate({
         },
         {
           id: "force-from-field", title: "From field to force: F = qE", focus: ["ep", "eq"], patch: { eq: { latex: R`\mathbf F=q\,\mathbf E`, speech: "F equals q E", shortSpeech: "force from field" } },
-          note: "Once you know E at a point, the force on any charge q placed there is F = qE. A test charge of one microcoulomb at the probe would feel 0.01798 N toward the −2 µC charge; a negative one of the same size would be pushed away just as hard. This is why the finals ask for F first and then say 'hence, compute E': E = F/q with the same vector, divided by the charge that felt it.",
+          note: "Once you know E at a point, the force on any charge q placed there is F = qE. A test charge of one microcoulomb at the probe would feel 0.01798 N toward the −2 µC charge; a negative one of the same size would be pushed away just as hard. This is why exam questions ask for F first and then say 'hence, compute E': E = F/q with the same vector, divided by the charge that felt it.",
         },
       ],
       examples: [
@@ -55,7 +55,7 @@ export const ideaEPoint = defineIdeaPlate({
           trap: "Halving the field when the distance doubles. The field falls as 1/R², so doubling R quarters E.",
         },
         {
-          id: "hw24b", level: "tutorial", title: "HW02 2.4(b): 2.45 nm from −6.76 µC",
+          id: "hw24b", level: "tutorial", title: "2.45 nm from −6.76 µC",
           setup: { q: { items: [pt("a", -6.76, [0, 0, 0], "−6.76 µC")], drawScale: 4e8 }, ep: { point: [2.45 * nm, 0, 0], drawScale: 4e8 } },
           problem: "Calculate the field intensity at a distance of 2.45 nm from a −6.76 µC point charge.",
           lines: [
@@ -67,7 +67,7 @@ export const ideaEPoint = defineIdeaPlate({
           trap: "Stopping at the size. A negative charge's field points inward; say so, with −a_R.",
         },
         {
-          id: "finals", level: "exam", title: "Finals 2024-25 Q1(b)(ii): hence E_B",
+          id: "finals", level: "exam", title: "Hence E_B",
           setup: { q: { items: [pt("a", 2.5, [1 * nm, 2 * nm, 3 * nm], "qA = +2.5 µC")], oblique: true, drawScale: 1e8 }, ep: { point: [0, 2 * nm, 8 * nm], oblique: true, drawScale: 1e8 } },
           givens: [{ value: -3.8, unit: "µC" }],
           problem: "From part (i), F_AB = 6.440 × 10¹⁴ âₓ − 3.220 × 10¹⁵ âz N acts on qB = −3.8 µC at B(0, 2, 8) nm. Hence compute E_B, the field at qB's location.",
@@ -90,7 +90,7 @@ export const ideaEPoint = defineIdeaPlate({
       ],
       checks: [
         {
-          id: "define", title: "Check: the definition (MST Q2(a))", show: ["q", "ep", "eq"], patch: { q: { items: [pt("a", 2, [0, 0, 0], "Q = +2 µC")], drawScale: 1, oblique: false }, ep: { point: [1, 0, 0], drawScale: 1, oblique: false } },
+          id: "define", title: "Check: the definition", show: ["q", "ep", "eq"], patch: { q: { items: [pt("a", 2, [0, 0, 0], "Q = +2 µC")], drawScale: 1, oblique: false }, ep: { point: [1, 0, 0], drawScale: 1, oblique: false } },
           note: "Four checks on the field of a point charge. Get each right to move on (a prediction counts as soon as you commit it).",
           interaction: { id: "define", type: "choose", prompt: "Electric field intensity at a point is…", dimension: "recognition",
             options: [

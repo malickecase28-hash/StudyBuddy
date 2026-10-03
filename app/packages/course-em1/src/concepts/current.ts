@@ -1,7 +1,7 @@
 import { meta, src } from "../sources";
 
 const ID = "em1.electrostatics.current";
-const L2C = "UTech ELE3001 Lec 2c slides (G. D. Boswell)";
+const L2C = "Course notes, Unit 2c";
 export const currentConcept = {
   id: ID,
   title: "Current density, continuity and Ohm's law",
@@ -15,7 +15,7 @@ export const currentConcept = {
     { tag: "J_AREA", description: "Divides current by the circumference or diameter instead of the cross-sectional area.", remediation: `${ID}/main` },
     { tag: "CONTINUITY_SIGN", description: "Drops the minus sign: thinks outflow increases the enclosed charge.", remediation: `${ID}/main` },
   ],
-  examLinks: [{ paper: "UTech ELE3001 Finals 2024-25 Sem 1", question: "Q4(b)", marks: 5, weight: 1 }],
+  examLinks: [{ paper: "Exam-style question", question: "Q4(b)", marks: 5, weight: 1 }],
   sources: [src(L2C, "Current and Ohm's law")],
   status: "verified" as const,
   rules: [],

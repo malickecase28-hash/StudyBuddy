@@ -70,7 +70,7 @@ export const ideaEmWorld = defineIdeaPlate({
           trap: "Using the full wavelength gives an antenna twice as long as it needs to be. The common designs are half-wave, and quarter-wave over a ground plane.",
         },
         {
-          id: "infrastructure", level: "exam", title: "Finals 2024-25 Q1(a): EM and critical infrastructure",
+          id: "infrastructure", level: "exam", title: "EM and critical infrastructure",
           setup: { spec: { f: 50 } },
           problem: "Very briefly comment on how electromagnetics theory has been important to technological advances in a chosen critical infrastructure. (4 marks: aim for four distinct points.)",
           lines: [

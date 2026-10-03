@@ -46,7 +46,7 @@ export const ideaOhm = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "f2425", level: "basic", title: "Finals 2024-25 Q4(a)(ii): J in a conductor",
+          id: "f2425", level: "basic", title: "J in a conductor",
           setup: { wire: { radius: 0.008, length: 1, sigma: 5.8e7, current: 50 } },
           problem: "A long straight conductor of radius 8.00 mm carries I = 50.0 A, uniformly distributed, along z. Find J within the conductor.",
           lines: [
@@ -68,7 +68,7 @@ export const ideaOhm = defineIdeaPlate({
           trap: "Using the 2 mm diameter as the radius gives S four times too big, so J and R come out a quarter of the right values.",
         },
         {
-          id: "f2324", level: "exam", title: "Finals 2023-24 Q4(a)(i), then heating",
+          id: "f2324", level: "exam", title: "J in a wire, then heating",
           setup: { wire: { radius: 0.0005, length: 1, sigma: 5.8e7, current: 8 } },
           problem: "An 8.0 A d.c. current flows uniformly in a straight conductor of radius 0.50 mm. (i) Find J. Then, if the conductor is copper, find the power dissipated per metre.",
           lines: [
@@ -110,7 +110,7 @@ export const ideaOhm = defineIdeaPlate({
           interaction: { id: "r-num", type: "numeric", prompt: ow.prompt, answer: ow.spec.answer, distractors: ow.spec.distractors, relTol: ow.spec.relTol, hints: ow.hints, template: "ohm-wire", dimension: "computational" },
         },
         {
-          id: "f2324-j", title: "Check: Finals 2023-24 Q4(a)(i)",
+          id: "f2324-j", title: "Check: |J| in a wire",
           note: "Last one.",
           interaction: { id: "f2324-j", type: "numeric", prompt: "8.0 A flows uniformly in a straight conductor of radius 0.50 mm. Find |J| in A/m².", answer: { value: 1.0186e7, unit: "A/m^2" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: 2.5465e6, unit: "A/m^2", errorClass: "conceptual", tag: "J_AREA", feedback: "That uses 1 mm, the diameter, as the radius." }],

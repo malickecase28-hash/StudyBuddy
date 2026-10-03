@@ -14,7 +14,7 @@ const numeric = (id: string, v: ReturnType<typeof tpl>, template: string, covers
   interaction: { id, type: "numeric", prompt: v.prompt, answer: v.spec.answer, distractors: v.spec.distractors, relTol: v.spec.relTol, hints: v.hints, template, dimension: "computational" },
 });
 
-// Finals 2024-25 Q2(a): D = 5.0 r² nC/m² on a sphere of radius 10 m (too big to draw: stated as givens).
+// The exam question: D = 5.0 r² nC/m² on a sphere of radius 10 m (too big to draw: stated as givens).
 const R_F = 10;
 const D_F = 5 * R_F * R_F; // nC/m²
 const A_F = 4 * Math.PI * R_F * R_F; // m²
@@ -88,7 +88,7 @@ export const ideaSymmetry = defineIdeaPlate({
           trap: "Using 4πr² as for a point charge. A line has cylindrical symmetry: the area that counts is 2πρh.",
         },
         {
-          id: "finals", level: "exam", title: "Finals 2024-25 Q2(a)",
+          id: "finals", level: "exam", title: "D given as a radial field",
           show: ["eq"], hide: ["q", "field", "surface"],
           setup: { eq: { latex: R`Q_T=\oint_S\mathbf D\cdot d\mathbf S=D(R)\,4\pi R^2`, speech: "Q T equals the closed surface integral of D dot d S, which equals D at R times four pi R squared", shortSpeech: "total charge from D" } },
           problem: "In free space D = 5.0r² a_r nC/m². A sphere of radius 10 m is centred at the origin. (i) Compute Q_T, the total charge inside. (ii) Deduce the total flux leaving the sphere. (The sphere is too big for the plate; its numbers are given.)",
@@ -133,9 +133,9 @@ export const ideaSymmetry = defineIdeaPlate({
               choice("divide", "D = 2 µC divided by the surface area", false, "That needs |D| constant and along every normal, which a lumpy surface doesn't give.", "GAUSS_WITHOUT_SYMMETRY"),
             ] },
         },
-        numeric("q06", q06, "q06-octant", "tutorial:q06", "tutorial Q.06, a symmetric share"),
-        numeric("q08", q08, "q08-q", "tutorial:q08", "tutorial Q.08, charge from D"),
-        numeric("f2425", f2425, "f2425-qt", "past:f2425-q2a", "Finals 2024-25 Q2(a)"),
+        numeric("q06", q06, "q06-octant", "tutorial:q06", "a symmetric share"),
+        numeric("q08", q08, "q08-q", "tutorial:q08", "charge from D"),
+        numeric("f2425", f2425, "f2425-qt", "past:f2425-q2a", "D given as a radial field"),
       ],
       recap: {
         points: [

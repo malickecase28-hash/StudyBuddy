@@ -67,7 +67,7 @@ export const ideaPoynting = defineIdeaPlate({
           trap: "Using 377 Ω in the dielectric halves the answer.",
         },
         {
-          id: "state", level: "exam", title: "Finals 2024-25 Q4(c), 2023-24 Q4(c) and HW04 4.3(b): describe it",
+          id: "state", level: "exam", title: "Describe it",
           setup: { pw: AIR },
           problem: "Briefly describe the transmission of electromagnetic wave power using Poynting's theorem. On what principle is it based, and how are the Poynting vector and the average power computed?",
           lines: [

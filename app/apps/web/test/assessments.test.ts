@@ -6,13 +6,13 @@ const ja = (iso: string) => Date.parse(`${iso}-05:00`);
 
 describe("assessment countdown", () => {
   it("names the next sitting, then the one after", () => {
-    expect(countdownText(ja("2026-09-26T12:00:00"))).toBe("ICT 1 in 16 days");
-    expect(countdownText(ja("2026-10-12T23:00:00"))).toBe("ICT 1 today");
-    expect(countdownText(ja("2026-10-13T00:01:00"))).toBe("ICT 2 in 34 days");
+    expect(countdownText(ja("2026-09-26T12:00:00"))).toBe("Test 1 in 16 days");
+    expect(countdownText(ja("2026-10-12T23:00:00"))).toBe("Test 1 today");
+    expect(countdownText(ja("2026-10-13T00:01:00"))).toBe("Test 2 in 34 days");
     expect(countdownText(ja("2026-12-16T00:01:00"))).toBe("");
   });
   it("follows a concept's own scope", () => {
-    expect(countdownText(ja("2026-09-26T12:00:00"), "em1.waves.plane-waves")).toBe("Finals in 80 days");
+    expect(countdownText(ja("2026-09-26T12:00:00"), "em1.waves.plane-waves")).toBe("Final exam in 80 days");
   });
 });
 

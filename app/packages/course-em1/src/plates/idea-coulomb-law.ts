@@ -68,7 +68,7 @@ export const ideaCoulombLaw = defineIdeaPlate({
           trap: "Writing |F| = 29.96 N and stopping. The question asks for the force, a vector: give all three components.",
         },
         {
-          id: "mst", level: "tutorial", title: "MST 2023-24 Q1(b): millimetres and nanocoulombs",
+          id: "mst", level: "tutorial", title: "Millimetres and nanocoulombs",
           setup: { q: MST, fc: { on: "b", oblique: true, drawScale: 120 } },
           problem: "In a vacuum, q1 = +25.0 nC is at P1(2, 2, 13) mm and q2 = −42.0 nC is at P2(10, 2, 7) mm. (i) Find R12 and its length in metres. (ii) Calculate F12, the force on q2 due to q1. (iii) State the effect of changing only the sign of q2.",
           lines: [
@@ -81,7 +81,7 @@ export const ideaCoulombLaw = defineIdeaPlate({
           trap: "Squaring the millimetre value as if it were metres makes the force a million times too small. Convert R12 to metres first.",
         },
         {
-          id: "finals", level: "exam", title: "Finals 2024-25 Q1(b)(i): nanometres",
+          id: "finals", level: "exam", title: "Nanometres",
           setup: { q: F2425, fc: { on: "b", oblique: true, drawScale: 2e8 } },
           problem: "qA = +2.5 µC and qB = −3.8 µC are fixed at A(1, 2, 3) nm and B(0, 2, 8) nm. Calculate F_AB, the force qA exerts on qB.",
           lines: [
@@ -94,7 +94,7 @@ export const ideaCoulombLaw = defineIdeaPlate({
         },
       ],
       asks: [
-        { id: "k", q: "Should I use k = 9 × 10⁹ or 1/(4πε₀)?", a: "Use whatever the paper gives. The finals and the mid-semester test print ε₀ = 8.854 × 10⁻¹², which gives 1/(4πε₀) = 8.988 × 10⁹; the homework sheets allow k ≈ 9.00 × 10⁹. The difference is about 0.1%, so match the paper's constant and keep four significant figures." },
+        { id: "k", q: "Should I use k = 9 × 10⁹ or 1/(4πε₀)?", a: "Use whatever the paper gives. Many papers print ε₀ = 8.854 × 10⁻¹², which gives 1/(4πε₀) = 8.988 × 10⁹; others allow k ≈ 9.00 × 10⁹. The difference is about 0.1%, so match the paper's constant and keep four significant figures." },
         { id: "which", q: "Is F12 the force on 1 or on 2?", tags: ["COULOMB_DIRECTION"], a: "On 2, due to 1. Read the subscripts as 'from 1 to 2'. R12 = r2 − r1, and F12 acts on Q2. Swap both and you get F21, the force on Q1: the same size, opposite direction." },
         { id: "vector-marks", q: "Why do I lose marks for giving |F|?", tags: ["FORCE_MAGNITUDE_ONLY"], a: "Because 'find the force' asks for a vector. A magnitude alone says nothing about direction, which is half the physics. Give F = Fₓâₓ + Fᵧâᵧ + F_zâz, and add |F| if you like." },
         { id: "point", q: "What makes a charge a point charge?", a: "Its size is tiny compared with the distances involved, so all of it sits effectively at one point. The question's phrase 'infinitely small, isolated charges' is telling you exactly that." },
@@ -104,7 +104,7 @@ export const ideaCoulombLaw = defineIdeaPlate({
       ],
       checks: [
         {
-          id: "state", title: "Check: state the law (MST Q1(a))", show: ["q", "fc", "eq"], patch: { q: { items: BASE, oblique: false, drawScale: 1 }, fc: { on: "b", oblique: false, drawScale: 1 } },
+          id: "state", title: "Check: state the law", show: ["q", "fc", "eq"], patch: { q: { items: BASE, oblique: false, drawScale: 1 }, fc: { on: "b", oblique: false, drawScale: 1 } },
           note: "Five checks on Coulomb's law. Get each right to move on (a prediction counts as soon as you commit it).",
           interaction: { id: "state", type: "choose", prompt: "The vector form of Coulomb's law for the force on Q2 due to Q1 is…", dimension: "recognition",
             options: [
@@ -126,8 +126,8 @@ export const ideaCoulombLaw = defineIdeaPlate({
           interaction: { id: "mag-num", type: "numeric", prompt: cm.prompt, answer: cm.spec.answer, distractors: cm.spec.distractors, relTol: cm.spec.relTol, hints: cm.hints, template: "coulomb-mag", dimension: "computational" },
         },
         {
-          id: "hw24a", title: "Check: HW02 2.4(a)",
-          note: "A homework question the lecturer reuses. Give the x-component.",
+          id: "hw24a", title: "Check: Fx between two charges",
+          note: "A classic exercise. Give the x-component.",
           interaction: { id: "hw24a", type: "numeric", prompt: "Q1 = 5 µC and Q2 = −4 µC are at (2, 1, 3) cm and (−4, 0, 6) cm. Find the x-component of the force on Q1.", answer: { value: -34.57, unit: "N" }, relTol: 0.01, dimension: "application",
             distractors: [
               { value: 34.57, unit: "N", errorClass: "sign", feedback: "The charges attract, so Q1 is pulled toward Q2, which lies at negative x relative to it." },
@@ -137,7 +137,7 @@ export const ideaCoulombLaw = defineIdeaPlate({
           covers: ["hw-2324-2.4"],
         },
         {
-          id: "flip", title: "Check: flip a sign (MST Q1(b)(iii))",
+          id: "flip", title: "Check: flip a sign",
           note: "Last one.",
           interaction: { id: "flip", type: "choose", prompt: "Changing only q2 from −42.0 nC to +42.0 nC makes F12…", dimension: "conceptual",
             options: [

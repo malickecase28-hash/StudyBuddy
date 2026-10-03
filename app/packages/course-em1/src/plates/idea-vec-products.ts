@@ -33,7 +33,7 @@ export const ideaVecProducts = defineIdeaPlate({
         },
         {
           id: "angle", title: "Finding the angle", patch: { eq: eqp(R`\cos\theta=\dfrac{\mathbf A\cdot\mathbf B}{|\mathbf A||\mathbf B|}`, "cos theta equals A dot B over the magnitudes") }, focus: ["a", "b", "eq"],
-          note: "Rearranged, the dot product gives the angle between two vectors: cos θ = A·B / (|A||B|) = −13 / (3.162 × 8.062) = −0.5099, so θ = 120.66°. The angle always lies between 0° and 180°: the dot product can't tell left from right, only how aligned two vectors are. This is Tutorial 1.4, and it is how flux picks out the angle between D and a surface normal.",
+          note: "Rearranged, the dot product gives the angle between two vectors: cos θ = A·B / (|A||B|) = −13 / (3.162 × 8.062) = −0.5099, so θ = 120.66°. The angle always lies between 0° and 180°: the dot product can't tell left from right, only how aligned two vectors are. It is how flux picks out the angle between D and a surface normal.",
           claims: [{ instance: "a", readout: "vmag", value: 3.16228, unit: "" }, { instance: "b", readout: "vmag", value: 8.06226, unit: "" }],
         },
         {
@@ -49,7 +49,7 @@ export const ideaVecProducts = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "angle", level: "basic", title: "Tutorial 1.4: θ between A and B",
+          id: "angle", level: "basic", title: "θ between A and B",
           show: ["a", "b"], hide: ["e", "f", "n"], setup: {},
           problem: "If A = âₓ + 3âz and B = 5âₓ + 2âᵧ − 6âz, find θ_AB.",
           lines: [
@@ -61,7 +61,7 @@ export const ideaVecProducts = defineIdeaPlate({
           trap: "Taking cos⁻¹ of +0.5099 because angles feel positive gives 59.34°. Keep the sign: a negative dot product means an obtuse angle.",
         },
         {
-          id: "component", level: "tutorial", title: "Tutorial 1.5(a): the component of E along F",
+          id: "component", level: "tutorial", title: "The component of E along F",
           show: ["e", "f"], hide: ["a", "b", "n"], setup: {},
           problem: "Let E = 3âᵧ + 4âz and F = 4âₓ − 10âᵧ + 5âz. Find the component of E along F.",
           lines: [
@@ -73,7 +73,7 @@ export const ideaVecProducts = defineIdeaPlate({
           trap: "Dividing by |F| instead of |F|² gives a vector 11.87 times too long. Scalar component: ÷ |F|. Vector component: ÷ |F|², then × F.",
         },
         {
-          id: "perp", level: "exam", title: "Tutorial 1.5(b): a unit vector perpendicular to both",
+          id: "perp", level: "exam", title: "A unit vector perpendicular to both",
           show: ["e", "f", "n"], hide: ["a", "b"], setup: {},
           problem: "Determine a unit vector perpendicular to both E and F.",
           lines: [
@@ -92,7 +92,7 @@ export const ideaVecProducts = defineIdeaPlate({
         { id: "unit-dots", q: "What are âₓ·âₓ and âₓ·âᵧ?", a: "âₓ·âₓ = 1 and âₓ·âᵧ = 0. The axis unit vectors have length one and are mutually perpendicular. That is exactly why A·B = AₓBₓ + AᵧBᵧ + A_zB_z: all the cross terms vanish." },
         { id: "unit-cross", q: "What are âₓ × âᵧ and âᵧ × âₓ?", a: "âₓ × âᵧ = âz, following the cycle x → y → z → x. Going against the cycle flips the sign: âᵧ × âₓ = −âz. Any unit vector crossed with itself gives zero." },
         { id: "range", q: "Why is the angle never more than 180°?", a: "The angle between two vectors is measured the short way round, from 0° to 180°. cos θ covers exactly that range once, so cos⁻¹ gives a single answer." },
-        { id: "triple", q: "What is the scalar triple product?", a: "A·(B × C): the volume of the box the three vectors span. It is zero when the three lie in one plane. It appears in the lecture slides; in this course it is mostly a check." },
+        { id: "triple", q: "What is the scalar triple product?", a: "A·(B × C): the volume of the box the three vectors span. It is zero when the three lie in one plane. In this course it is mostly a check." },
       ],
       checks: [
         {
@@ -129,7 +129,7 @@ export const ideaVecProducts = defineIdeaPlate({
         },
         {
           id: "comp-num", title: "Check: a scalar component",
-          note: "Last one: Tutorial 1.5's numbers.",
+          note: "Last one.",
           interaction: { id: "comp-num", type: "numeric", prompt: "For E = 3âᵧ + 4âz and F = 4âₓ − 10âᵧ + 5âz, find the scalar component of E along F.", answer: { value: -0.8422, unit: "" }, relTol: 0.01, dimension: "computational",
             distractors: [{ value: -0.07092, unit: "", errorClass: "conceptual", feedback: "That divides by |F|². The scalar component divides by |F| once." }],
             hints: ["E·F first.", "Then divide by |F| = √141.", "−10 ÷ 11.87."] },

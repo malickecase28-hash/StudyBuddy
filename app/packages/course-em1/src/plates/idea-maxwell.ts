@@ -30,7 +30,7 @@ export const ideaMaxwell = defineIdeaPlate({
         },
         {
           id: "static", title: "Static fields", patch: { eq: eqp(R`\nabla\cdot\mathbf D=\rho_v,\ \nabla\times\mathbf E=0;\qquad \nabla\cdot\mathbf B=0,\ \nabla\times\mathbf H=\mathbf J`, "the static equations") }, focus: ["eq"],
-          note: "Set every ∂/∂t to zero and the equations split into two pairs: ∇·D = ρv with ∇ × E = 0 (electrostatics, where E = −∇V), and ∇·B = 0 with ∇ × H = J (magnetostatics). Only time variation couples E and H. This is what Finals 2023-24 Q3(a) and 2018-19 Q1(c) ask for.",
+          note: "Set every ∂/∂t to zero and the equations split into two pairs: ∇·D = ρv with ∇ × E = 0 (electrostatics, where E = −∇V), and ∇·B = 0 with ∇ × H = J (magnetostatics). Only time variation couples E and H. Exam questions ask for exactly this.",
         },
         {
           id: "light", title: "The prediction: light", patch: { eq: eqp(R`\nabla^2\mathbf E=\mu_0\varepsilon_0\dfrac{\partial^2\mathbf E}{\partial t^2},\quad u=\dfrac{1}{\sqrt{\mu_0\varepsilon_0}}`, "the wave equation, with speed one over root mu nought epsilon nought") }, focus: ["eq", "pw"],
@@ -40,7 +40,7 @@ export const ideaMaxwell = defineIdeaPlate({
       ],
       examples: [
         {
-          id: "both", level: "basic", title: "Finals 2015-16 Q4(a): both forms",
+          id: "both", level: "basic", title: "Both forms",
           setup: { pw: FS, eq: eqp(R`\nabla\cdot\mathbf D=\rho_v,\quad \nabla\cdot\mathbf B=0,\quad \oint\mathbf E\cdot d\mathbf L=-\dfrac{d}{dt}\int\mathbf B\cdot d\mathbf S,\quad \oint\mathbf H\cdot d\mathbf L=I+\int\dfrac{\partial\mathbf D}{\partial t}\cdot d\mathbf S`, "Maxwell equations in point and integral form") },
           problem: "State Maxwell's equations in both integral and point form.",
           lines: [
@@ -53,7 +53,7 @@ export const ideaMaxwell = defineIdeaPlate({
           trap: "Mixing up the pairs: the divergence equations become closed-surface integrals; the curl equations become closed-line integrals.",
         },
         {
-          id: "static", level: "tutorial", title: "Finals 2023-24 Q3(a): the static equations",
+          id: "static", level: "tutorial", title: "The static equations",
           setup: { pw: FS, eq: eqp(R`\nabla\cdot\mathbf D=\rho_v,\quad \nabla\times\mathbf E=0,\quad \nabla\cdot\mathbf B=0,\quad \nabla\times\mathbf H=\mathbf J`, "the static Maxwell equations") },
           problem: "State Maxwell's equations for static electromagnetic fields in point form, and explain each.",
           lines: [
@@ -66,7 +66,7 @@ export const ideaMaxwell = defineIdeaPlate({
           trap: "Keeping −∂B/∂t in a 'static' answer. Static means every time derivative is zero.",
         },
         {
-          id: "significance", level: "exam", title: "Drill 2024 Q08: what the equations mean",
+          id: "significance", level: "exam", title: "What the equations mean",
           setup: { pw: FS, eq: eqp(R`\nabla\cdot\mathbf D=\rho_v,\quad \nabla\cdot\mathbf B=0,\quad \nabla\times\mathbf E=-\dfrac{\partial\mathbf B}{\partial t},\quad \nabla\times\mathbf H=\mathbf J+\dfrac{\partial\mathbf D}{\partial t}`, "the time-varying Maxwell equations") },
           problem: "Explain the significance of (i) ∇ × E = 0 and (ii) ∇ × H = Jc + ∂D/∂t. Then explain divergence, and why E can have divergence but B cannot.",
           lines: [
