@@ -100,7 +100,8 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
   .rail-tools { border-top: 0; border-left: 1.5px solid var(--grid); padding: 0 0 0 4px; margin-left: 4px; }
   .rail-heading { display: none; }
   .rail-item { min-width: 58px; }
-  .shell { padding-bottom: 64px; }
+  .shell { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .tool-dock { padding-bottom: env(safe-area-inset-bottom); }
 }
 .shell-main { min-width: 0; padding: 20px 24px 32px; }
 .status-footer { padding: 8px 16px; border-top: 1.5px solid var(--ink); }
@@ -143,7 +144,8 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
   .topbar .segmented { order: 3; width: 100%; }
   .topbar .segmented > button { flex: 1; padding: 6px 4px; }
   .topbar-wide { display: none; }
-  .topbar-narrow { display: inline; font-size: 1.1rem; line-height: 1; }
+  .topbar-narrow { display: inline-flex; line-height: 1; }
+  .topbar-end > .btn { min-width: 44px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; }
   .tool-pane { top: 0; }
 }
 
@@ -159,8 +161,8 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .calc-hide { margin-left: auto; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; color: var(--paper); border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent); }
 .calc-screen { color: var(--ink); background: var(--paper-2); border-radius: 6px; border: 3px solid color-mix(in srgb, var(--graphite) 50%, var(--ink)); overflow: hidden; }
 .calc-tabs { display: flex; align-items: stretch; gap: 2px; padding: 3px 3px 0; background: color-mix(in srgb, var(--ink) 88%, var(--paper)); }
-.calc-tabs > [role="tab"] { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px 4px 0 0; color: var(--ink); background: var(--grid); }
-.calc-tabs > [role="tab"][aria-selected="true"] { background: var(--paper-2); font-weight: 600; }
+.calc-tabs [role="tab"] { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px 4px 0 0; color: var(--ink); background: var(--grid); }
+.calc-tabs [role="tab"][aria-selected="true"] { background: var(--paper-2); font-weight: 600; }
 .calc-page { font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.75; }
 .calc-status { margin-left: auto; align-self: center; margin-bottom: 3px; padding: 3px 8px; border-radius: 4px; border: 1px solid color-mix(in srgb, var(--paper) 40%, transparent); font-family: var(--font-mono); font-size: 0.72rem; color: var(--paper); }
 .calc-status:focus-visible { outline: 2px solid var(--paper); outline-offset: 1px; }
@@ -183,3 +185,35 @@ h1, h2, h3 { font-family: var(--font-read); font-weight: 600; letter-spacing: -0
 .snip-overlay { position: fixed; inset: 0; z-index: 80; cursor: crosshair; touch-action: none; background: color-mix(in srgb, var(--ink) 12%, transparent); outline: none; }
 .snip-hint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 14px; background: var(--paper-2); color: var(--ink); border: 1.5px solid var(--ink); font-size: 0.9rem; white-space: nowrap; }
 .snip-rect { position: absolute; border: 2px solid var(--flux); box-shadow: 0 0 0 100vmax color-mix(in srgb, var(--ink) 30%, transparent); pointer-events: none; }
+
+/* Concept map: React Flow's zoom controls follow the theme (they default to white). */
+.react-flow {
+  --xy-controls-button-background-color: var(--paper-2); --xy-controls-button-background-color-hover: var(--grid);
+  --xy-controls-button-color: var(--ink); --xy-controls-button-color-hover: var(--ink); --xy-controls-button-border-color: var(--grid);
+}
+.react-flow__controls-button svg { fill: currentColor; }
+
+/* Ink's Insert and Export menus: a bottom sheet on phones, so they never run off the screen. */
+@media (max-width: 640px) {
+  .ink-menu { position: fixed; left: 8px; right: 8px; bottom: 8px; top: auto; width: auto; z-index: 70; box-shadow: 0 -4px 24px color-mix(in srgb, var(--ink) 25%, transparent); }
+}
+
+/* Phones: the timeline names only the current step; the other labels overlapped. The slider still reaches every step. */
+@media (max-width: 640px) {
+  .timeline-ticks li:not(:has([aria-current="step"])) { display: none; }
+  .timeline-ticks li { position: static !important; max-width: 100%; }
+  .timeline-ticks button { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+/* Calculator on phones: screen and keypad always share the screen; the grip between them sets the keypad's share. */
+.calc-grip { display: none; }
+@media (max-width: 700px) {
+  .calc-device.calc-split { display: flex; flex-direction: column; height: calc(100dvh - 150px); min-height: 460px; }
+  .calc-split .calc-screen { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+  .calc-split .calc-body { flex: 1 1 0; min-height: 0; max-height: none; overflow-y: auto; }
+  .calc-split .calc-keys { flex: 0 0 calc(var(--split) * 100%); min-height: 0; margin-top: 0; grid-auto-rows: 1fr; }
+  .calc-split .calc-key { min-height: 0; }
+  .calc-grip { display: flex; flex: 0 0 26px; align-items: center; justify-content: center; cursor: ns-resize; touch-action: none; }
+  .calc-grip > span { width: 48px; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--paper) 55%, transparent); }
+  .calc-grip:focus-visible { outline: 2px solid var(--paper); outline-offset: -2px; }
+}

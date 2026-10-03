@@ -11,6 +11,7 @@ import { useUi } from "@/lib/ui";
 import { CommandPalette, useShortcuts } from "./CommandPalette";
 import { Hydrated } from "./Providers";
 import { SettingsDialog } from "./SettingsDialog";
+import { SearchIcon } from "./icons";
 import { Snip } from "./Snip";
 import { ToolDock } from "./ToolDock";
 import { ToolSplit } from "./ToolPanel";
@@ -80,7 +81,7 @@ function TopBar() {
       <div className="topbar-end">
         <Snip />
         <button className="btn" onClick={() => setPalette(true)} aria-label="Search and jump (Control K)">
-          <span className="topbar-wide">Search </span><span className="topbar-narrow" aria-hidden>⌕</span><kbd className="label topbar-wide">{shortcut}</kbd>
+          <span className="topbar-wide">Search </span><span className="topbar-narrow"><SearchIcon /></span><kbd className="label topbar-wide">{shortcut}</kbd>
         </button>
         <SettingsDialog />
         <AccountLink />

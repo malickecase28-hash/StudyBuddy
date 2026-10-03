@@ -65,7 +65,7 @@ export function ExportMenu({ engine, notebook, page }: { engine: InkEngine; note
     <>
       <details ref={menu} className="relative">
         <summary className="btn list-none">Export</summary>
-        <div className="absolute right-0 z-20 mt-1 flex w-56 flex-col gap-1 rounded border border-[var(--grid)] bg-[var(--paper)] p-2 shadow-sm" role="menu">
+        <div className="ink-menu absolute right-0 z-20 mt-1 flex w-56 flex-col gap-1 rounded border border-[var(--grid)] bg-[var(--paper)] p-2 shadow-sm" role="menu">
           <button role="menuitem" className="btn justify-start" onClick={png(false)}>Page as PNG</button>
           <button role="menuitem" className="btn justify-start" onClick={png(true)} disabled={!hasSelection}>Selection as PNG</button>
           <button role="menuitem" className="btn justify-start" onClick={svg}>Page as SVG</button>

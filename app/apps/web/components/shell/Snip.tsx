@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { listNotebooksEnsuringScratch, SCRATCH_ID } from "@/lib/ink-store";
 import { captureRect, holdSnip, offerSnip } from "@/lib/snip";
 import { useUi } from "@/lib/ui";
+import { SnipIcon } from "./icons";
 import { useToolState } from "./ToolPanel";
 
 type Rect = { x: number; y: number; w: number; h: number };
@@ -78,7 +79,7 @@ export function Snip() {
   return (
     <>
       <button className="btn" onClick={() => setPhase("pick")} disabled={phase !== "off"} aria-label="Snip: take a picture of part of the page" title="Snip part of the page">
-        <span className="topbar-wide">{phase === "busy" ? "Snipping…" : "Snip"}</span><span className="topbar-narrow" aria-hidden>✂</span>
+        <span className="topbar-wide">{phase === "busy" ? "Snipping…" : "Snip"}</span><span className="topbar-narrow"><SnipIcon /></span>
       </button>
       {phase === "pick" && (
         <div ref={overlay} data-snip-ui="" className="snip-overlay" tabIndex={-1} role="application" aria-label="Drag round the part of the page to snip. Escape cancels."

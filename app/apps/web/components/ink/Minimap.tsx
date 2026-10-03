@@ -53,7 +53,7 @@ export function Minimap({ engine, version, contentVersion }: { engine: InkEngine
 
   return (
     <canvas ref={ref} width={W} height={H} aria-hidden title="Page overview: click to move there"
-      className="absolute bottom-2 right-2 z-[6] cursor-pointer rounded border border-[var(--grid)] bg-[var(--paper)] opacity-90 shadow-sm"
+      className="absolute bottom-2 right-2 z-[6] cursor-pointer max-[640px]:hidden rounded border border-[var(--grid)] bg-[var(--paper)] opacity-90 shadow-sm"
       onPointerDown={(e) => { e.stopPropagation(); e.currentTarget.setPointerCapture(e.pointerId); jump(e); }} onPointerMove={jump} />
   );
 }

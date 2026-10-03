@@ -5,6 +5,7 @@ import { normalizeProps, Portal, useMachine } from "@zag-js/react";
 import type { Settings } from "@forma/engine";
 import { useId } from "react";
 import { useStudy } from "@/lib/store";
+import { GearIcon } from "./icons";
 
 type Option<K extends keyof Settings> = { key: K; label: string; hint: string; values: [Settings[K], string][] };
 
@@ -39,7 +40,7 @@ export function SettingsDialog() {
   return (
     <>
       <button className="btn px-2.5 py-1" {...api.getTriggerProps()} aria-label="Settings">
-        <span aria-hidden>⚙</span><span className="topbar-wide"> Settings</span>
+        <span className="topbar-narrow"><GearIcon /></span><span className="topbar-wide">⚙ Settings</span>
       </button>
       {api.open && (
         <Portal>
@@ -64,8 +65,7 @@ export function SettingsDialog() {
                     {o.values.map(([v, label]) => (
                       <button
                         key={v}
-                        className="btn py-1 text-sm data-[on=true]:border-ink data-[on=true]:bg-sunken"
-                        data-on={settings[o.key] === v}
+                        className={`btn py-1 text-sm ${settings[o.key] === v ? "btn-primary" : ""}`}
                         aria-pressed={settings[o.key] === v}
                         onClick={() => update({ [o.key]: v } as Partial<Settings>)}
                       >

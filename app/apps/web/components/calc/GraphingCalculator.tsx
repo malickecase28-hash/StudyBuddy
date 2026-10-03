@@ -27,12 +27,14 @@ export function GraphingCalculator({ tall = false }: { tall?: boolean }) {
   const [keys, setKeys] = useSaved<boolean>("keys", true);
   const [abc, setAbc] = useState(false);
   const [angle, setAngle] = useSaved<AngleMode>("angle", "rad");
+  const [split, setSplit] = useSaved<number>("split", 0.45);
+  const device = useRef<HTMLDivElement>(null);
   const screen = useRef<HTMLDivElement>(null);
   const last = useRef<HTMLInputElement | null>(null);
   // On touch screens the keypad replaces the system keyboard, until "abc" asks for it (units, names).
   const keyboardFor = (el: HTMLInputElement) => { el.inputMode = keys && !abc && matchMedia("(pointer: coarse)").matches ? "none" : ""; };
   return (
-    <div className="calc-device" data-theme="paper">
+    <div ref={device} className={`calc-device${keys ? " calc-split" : ""}`} data-theme="paper" style={{ "--split": split } as React.CSSProperties}>
       <div className="calc-brand">
         <Wordmark height={13} title="Forma" />
         <span className="calc-model">graphing</span>
@@ -57,6 +59,7 @@ export function GraphingCalculator({ tall = false }: { tall?: boolean }) {
           {tab === "integrate" && <IntegrateTab />}
         </div>
       </div>
+      {keys && <SplitHandle split={split} onSplit={setSplit} device={device} />}
       {keys && <Keypad abc={abc} press={(k) => {
         const root = screen.current;
         if (!root) return;
@@ -84,6 +87,24 @@ const KEYS: Key[] = [
   N("1"), N("2"), N("3"), K("−", "-", "minus"), K("to", " to ", "convert units to"), K("|x|", "abs(", "absolute value"),
   N("0"), N("."), K("r"), K("+", "+", "plus"), { label: "enter", act: "enter", kind: "enter", wide: true },
 ];
+
+/**
+ * Phones: the screen and the keypad share the height, and this bar sets the share (drag it, or arrow keys).
+ * Hidden on wider screens, where both fit.
+ */
+function SplitHandle({ split, onSplit, device }: { split: number; onSplit: (n: number) => void; device: React.RefObject<HTMLDivElement | null> }) {
+  const clamp = (n: number) => Math.min(0.75, Math.max(0.2, Math.round(n * 100) / 100));
+  const at = (y: number) => { const r = device.current?.getBoundingClientRect(); if (r) onSplit(clamp((r.bottom - y) / r.height)); };
+  return (
+    <div role="separator" aria-orientation="horizontal" aria-label="Keypad size" aria-valuemin={20} aria-valuemax={75} aria-valuenow={Math.round(split * 100)} tabIndex={0}
+      className="calc-grip"
+      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); at(e.clientY); }}
+      onPointerMove={(e) => { if (e.currentTarget.hasPointerCapture(e.pointerId)) at(e.clientY); }}
+      onKeyDown={(e) => { if (e.key === "ArrowUp") onSplit(clamp(split + 0.05)); if (e.key === "ArrowDown") onSplit(clamp(split - 0.05)); }}>
+      <span aria-hidden />
+    </div>
+  );
+}
 
 function Keypad({ abc, press }: { abc: boolean; press: (k: Key) => void }) {
   return (
@@ -181,7 +202,8 @@ function GraphTab({ tall, angle }: { tall: boolean; angle: AngleMode }) {
       const layout = view.mode3d && hasSurface
         ? { paper_bgcolor: paper, font: { color: ink, family: "IBM Plex Sans, sans-serif" }, margin: { l: 0, r: 0, t: 0, b: 0 }, showlegend: false, scene: { xaxis: { title: { text: "x" }, color: ink }, yaxis: { title: { text: "y" }, color: ink }, zaxis: { title: { text: "z" }, color: ink } } }
         : { paper_bgcolor: paper, plot_bgcolor: paper, font: { color: ink, family: "IBM Plex Sans, sans-serif" }, margin: { l: 40, r: 10, t: 10, b: 30 }, showlegend: false, xaxis: axis([view.x0, view.x1]), yaxis: { ...axis([view.y0, view.y1]) } };
-      void Plotly.react(el, data, layout, { displaylogo: false, responsive: true, modeBarButtonsToRemove: ["select2d", "lasso2d", "toImage"] });
+      const touch = matchMedia("(pointer: coarse)").matches;
+      void Plotly.react(el, data, touch ? { ...layout, dragmode: "pan" } : layout, { displaylogo: false, responsive: true, modeBarButtonsToRemove: ["select2d", "lasso2d", "toImage"] });
     });
     return () => { live = false; };
   }, [lines, scope, view, hasSurface, angle]);

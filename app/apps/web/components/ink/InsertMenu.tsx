@@ -41,7 +41,7 @@ export function InsertMenu({ engine, conceptId }: { engine: InkEngine; conceptId
     <>
       <details ref={menu} className="relative">
         <summary className="btn list-none">Insert</summary>
-        <div className="absolute right-0 z-20 mt-1 flex w-60 flex-col gap-1 rounded border border-[var(--grid)] bg-[var(--paper)] p-2 shadow-sm" role="menu">
+        <div className="ink-menu absolute right-0 z-20 mt-1 flex w-60 flex-col gap-1 rounded border border-[var(--grid)] bg-[var(--paper)] p-2 shadow-sm" role="menu">
           <button role="menuitem" className="btn justify-start" onClick={() => { setDialog("plate"); close(); }}>Plate snapshot…</button>
           <button role="menuitem" className="btn justify-start" onClick={() => { setDialog("bank"); close(); }}>Question card…</button>
           <button role="menuitem" className="btn justify-start" onClick={() => { file.current?.click(); close(); }}>Image or photo…</button>

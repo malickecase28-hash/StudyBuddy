@@ -64,6 +64,7 @@ test("workbench changes the physics and working paper keeps what you wrote", asy
 test("working paper opens in Ink with its tools, and nothing reads NaN", async ({ page }) => {
   await page.goto("/paper?concept=em1.electrostatics.gauss-law");
   await expect(page.getByRole("toolbar", { name: "Ink tools" })).toBeVisible();
+  await page.getByRole("button", { name: "More ▾" }).click();
   await expect(page.getByRole("button", { name: "Colour charge" })).toBeVisible();
   await expect(page.getByText(/NaN/)).toHaveCount(0);
 });
